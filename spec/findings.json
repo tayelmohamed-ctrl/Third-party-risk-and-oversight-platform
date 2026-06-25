@@ -1,0 +1,80 @@
+[
+  {
+    "id": "fd-001",
+    "thirdPartyId": "tp-001",
+    "assessmentId": "as-001",
+    "title": "Encryption key rotation exceeds policy threshold",
+    "description": "Provider rotates KMS keys every 18 months versus our 12-month requirement for restricted data.",
+    "severity": "High",
+    "status": "In Remediation",
+    "owner": "Priya Raman",
+    "identifiedDate": "2026-01-15",
+    "dueDate": "2026-07-31",
+    "remediationPlan": "Vendor committed to 12-month rotation; contractual addendum in legal review."
+  },
+  {
+    "id": "fd-002",
+    "thirdPartyId": "tp-004",
+    "assessmentId": "as-004",
+    "title": "Annual security assessment overdue",
+    "description": "Vendor has not returned the security questionnaire 30+ days past due.",
+    "severity": "High",
+    "status": "Open",
+    "owner": "Security GRC Team",
+    "identifiedDate": "2026-04-02",
+    "dueDate": "2026-06-15",
+    "remediationPlan": "Escalation issued to vendor account manager; review onboarding alternatives."
+  },
+  {
+    "id": "fd-003",
+    "thirdPartyId": "tp-003",
+    "assessmentId": "as-003",
+    "title": "Sub-processor list not contractually pinned",
+    "description": "Vendor may add sub-processors without 30-day prior notice clause.",
+    "severity": "Medium",
+    "status": "Open",
+    "owner": "Sara Nguyen",
+    "identifiedDate": "2026-05-10",
+    "dueDate": "2026-08-10",
+    "remediationPlan": "Add sub-processor notification clause at next renewal."
+  },
+  {
+    "id": "fd-004",
+    "thirdPartyId": "tp-001",
+    "assessmentId": null,
+    "title": "Disaster recovery RTO not independently tested",
+    "description": "DR runbooks exist but no evidence of an independent failover test in last 12 months.",
+    "severity": "Medium",
+    "status": "Risk Accepted",
+    "owner": "Priya Raman",
+    "identifiedDate": "2025-11-20",
+    "dueDate": "2026-05-20",
+    "remediationPlan": "Risk accepted for one cycle; joint failover test scheduled for Q4."
+  },
+  {
+    "id": "fd-005",
+    "thirdPartyId": "tp-002",
+    "assessmentId": "as-002",
+    "title": "Quarterly access review evidence incomplete",
+    "description": "Two of four quarterly access reviews lacked sign-off artifacts.",
+    "severity": "Low",
+    "status": "Resolved",
+    "owner": "Tomas Becker",
+    "identifiedDate": "2026-02-20",
+    "dueDate": "2026-04-20",
+    "remediationPlan": "Backfilled evidence and added calendar controls. Closed."
+  },
+  {
+    "id": "fd-006",
+    "thirdPartyId": "tp-006",
+    "assessmentId": "as-007",
+    "title": "Single-region warehouse concentration risk",
+    "description": "All fulfilment routed through one facility with no hot standby.",
+    "severity": "Medium",
+    "status": "In Remediation",
+    "owner": "Diego Alvarez",
+    "identifiedDate": "2025-08-10",
+    "dueDate": "2026-09-30",
+    "remediationPlan": "Secondary fulfilment partner under evaluation."
+  }
+]
