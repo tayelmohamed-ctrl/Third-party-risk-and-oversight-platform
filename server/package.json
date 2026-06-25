@@ -1,0 +1,11 @@
+{
+  "name": "tprm-api",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Zero-dependency mock REST API serving the spec/ data for controls, cases, and reg-changes on port 3001.",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  }
+}
