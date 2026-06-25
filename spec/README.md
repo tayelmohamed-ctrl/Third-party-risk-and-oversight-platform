@@ -10,6 +10,13 @@ the single source of truth.
 | `third-parties.json`  | Vendor / partner inventory with risk profile          |
 | `assessments.json`    | Risk assessments linked to third parties              |
 | `findings.json`       | Findings / issues linked to third parties             |
+| `controls.json`       | Control library / control assessments                 |
+| `cases.json`          | Oversight cases (incidents, issues, investigations)   |
+| `reg-changes.json`    | Regulatory change tracking                            |
+
+> `controls.json`, `cases.json`, and `reg-changes.json` are served by the mock
+> API (`server/`) at `http://localhost:3001/api/<resource>` and are also imported
+> by the frontend as the seeded offline fallback.
 
 ## Relationships
 
@@ -25,6 +32,11 @@ the single source of truth.
 - **Assessment type**: `Security`, `Privacy`, `Financial`, `Operational`, `Compliance`
 - **Assessment status**: `Draft`, `In Progress`, `Submitted`, `Completed`, `Overdue`
 - **Finding status**: `Open`, `In Remediation`, `Resolved`, `Risk Accepted`
+- **Control status**: `Implemented`, `Partially Implemented`, `Not Implemented`, `Not Applicable`
+- **Control effectiveness**: `Effective`, `Needs Improvement`, `Ineffective`, `Not Tested`
+- **Case type**: `Incident`, `Issue`, `Investigation`, `Exception`, `Due Diligence`
+- **Case status**: `Open`, `In Progress`, `Pending Review`, `Closed`
+- **Reg-change status**: `Horizon`, `Assessing`, `Impact Identified`, `Implementing`, `Complete`
 
 To extend the dataset, add records that conform to `schema.json`. IDs follow the
-prefixes `tp-`, `as-`, and `fd-`.
+prefixes `tp-`, `as-`, `fd-`, `ctrl-`, `case-`, and `reg-`.

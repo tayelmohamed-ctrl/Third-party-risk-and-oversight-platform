@@ -29,6 +29,77 @@
       "type": "string",
       "enum": ["Open", "In Remediation", "Resolved", "Risk Accepted"]
     },
+    "controlStatus": {
+      "type": "string",
+      "enum": ["Implemented", "Partially Implemented", "Not Implemented", "Not Applicable"]
+    },
+    "controlEffectiveness": {
+      "type": "string",
+      "enum": ["Effective", "Needs Improvement", "Ineffective", "Not Tested"]
+    },
+    "caseType": {
+      "type": "string",
+      "enum": ["Incident", "Issue", "Investigation", "Exception", "Due Diligence"]
+    },
+    "caseStatus": {
+      "type": "string",
+      "enum": ["Open", "In Progress", "Pending Review", "Closed"]
+    },
+    "regChangeStatus": {
+      "type": "string",
+      "enum": ["Horizon", "Assessing", "Impact Identified", "Implementing", "Complete"]
+    },
+    "control": {
+      "type": "object",
+      "required": ["id", "name", "domain", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^ctrl-[0-9]+$" },
+        "name": { "type": "string" },
+        "domain": { "type": "string" },
+        "framework": { "type": "string" },
+        "description": { "type": "string" },
+        "owner": { "type": "string" },
+        "status": { "$ref": "#/definitions/controlStatus" },
+        "effectiveness": { "$ref": "#/definitions/controlEffectiveness" },
+        "lastTested": { "type": "string", "format": "date" },
+        "nextTest": { "type": "string", "format": "date" }
+      },
+      "additionalProperties": false
+    },
+    "case": {
+      "type": "object",
+      "required": ["id", "title", "type", "severity", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^case-[0-9]+$" },
+        "title": { "type": "string" },
+        "type": { "$ref": "#/definitions/caseType" },
+        "thirdParty": { "type": "string" },
+        "severity": { "$ref": "#/definitions/riskTier" },
+        "status": { "$ref": "#/definitions/caseStatus" },
+        "owner": { "type": "string" },
+        "openedDate": { "type": "string", "format": "date" },
+        "dueDate": { "type": "string", "format": "date" },
+        "summary": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "regChange": {
+      "type": "object",
+      "required": ["id", "title", "status", "impact"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^reg-[0-9]+$" },
+        "title": { "type": "string" },
+        "regulator": { "type": "string" },
+        "jurisdiction": { "type": "string" },
+        "status": { "$ref": "#/definitions/regChangeStatus" },
+        "impact": { "$ref": "#/definitions/riskTier" },
+        "effectiveDate": { "type": "string", "format": "date" },
+        "owner": { "type": "string" },
+        "summary": { "type": "string" },
+        "affectedThirdParties": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
     "thirdParty": {
       "type": "object",
       "required": [
@@ -117,6 +188,18 @@
     "findings": {
       "type": "array",
       "items": { "$ref": "#/definitions/finding" }
+    },
+    "controls": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/control" }
+    },
+    "cases": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/case" }
+    },
+    "reg-changes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/regChange" }
     }
   }
 }

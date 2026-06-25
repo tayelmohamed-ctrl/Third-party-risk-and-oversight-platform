@@ -1,0 +1,74 @@
+[
+  {
+    "id": "reg-001",
+    "title": "DORA — ICT third-party risk requirements",
+    "regulator": "EU (ESAs)",
+    "jurisdiction": "European Union",
+    "status": "Implementing",
+    "impact": "High",
+    "effectiveDate": "2025-01-17",
+    "owner": "Compliance Office",
+    "summary": "Digital Operational Resilience Act mandates register of information and exit strategies for critical ICT providers.",
+    "affectedThirdParties": 3
+  },
+  {
+    "id": "reg-002",
+    "title": "EBA Guidelines on outsourcing arrangements",
+    "regulator": "EBA",
+    "jurisdiction": "European Union",
+    "status": "Complete",
+    "impact": "Medium",
+    "effectiveDate": "2019-09-30",
+    "owner": "Vendor Management Office",
+    "summary": "Outsourcing register and risk assessment obligations for critical/important functions.",
+    "affectedThirdParties": 5
+  },
+  {
+    "id": "reg-003",
+    "title": "FCA operational resilience policy (PS21/3)",
+    "regulator": "FCA",
+    "jurisdiction": "United Kingdom",
+    "status": "Impact Identified",
+    "impact": "High",
+    "effectiveDate": "2025-03-31",
+    "owner": "Ops Resilience",
+    "summary": "Important business services must remain within impact tolerances, including third-party dependencies.",
+    "affectedThirdParties": 2
+  },
+  {
+    "id": "reg-004",
+    "title": "OCC third-party risk management guidance",
+    "regulator": "OCC / FRB / FDIC",
+    "jurisdiction": "United States",
+    "status": "Assessing",
+    "impact": "Medium",
+    "effectiveDate": "2023-06-06",
+    "owner": "Risk Management",
+    "summary": "Interagency guidance on managing risks across the full third-party relationship lifecycle.",
+    "affectedThirdParties": 4
+  },
+  {
+    "id": "reg-005",
+    "title": "EU AI Act — high-risk system obligations",
+    "regulator": "EU",
+    "jurisdiction": "European Union",
+    "status": "Horizon",
+    "impact": "Medium",
+    "effectiveDate": "2026-08-02",
+    "owner": "Privacy Office",
+    "summary": "Vendors providing AI components may trigger conformity and transparency obligations.",
+    "affectedThirdParties": 1
+  },
+  {
+    "id": "reg-006",
+    "title": "GDPR international data transfer (SCC refresh)",
+    "regulator": "EDPB",
+    "jurisdiction": "European Union",
+    "status": "Implementing",
+    "impact": "Medium",
+    "effectiveDate": "2024-12-31",
+    "owner": "Privacy Office",
+    "summary": "Refresh Standard Contractual Clauses and transfer impact assessments for non-EU processors.",
+    "affectedThirdParties": 3
+  }
+]
