@@ -1,11 +1,12 @@
 # Third-Party Risk & Oversight Platform
 
 A lightweight Third-Party Risk Management (TPRM) and oversight platform for
-tracking vendors, risk assessments, findings, and continuous monitoring across
-the vendor portfolio.
+tracking vendors, controls, oversight cases, regulatory changes, risk
+assessments, and findings.
 
-The repository is organized so the **data spec is the source of truth** and the
-**frontend renders directly from it**:
+The repository is organized so the **data spec is the source of truth**, a small
+**API** serves it over HTTP, and the **frontend renders from the API with a
+seeded offline fallback**:
 
 ```
 .
@@ -13,47 +14,93 @@ The repository is organized so the **data spec is the source of truth** and the
 │   ├── schema.json
 │   ├── third-parties.json
 │   ├── assessments.json
-│   └── findings.json
-└── frontend/    # Vite + React (JSX) single-page app that reads ../spec
-    └── src/
+│   ├── findings.json
+│   ├── controls.json
+│   ├── cases.json
+│   └── reg-changes.json
+├── server/      # Zero-dependency mock REST API (http://localhost:3001/api)
+│   └── index.js
+└── frontend/    # Vite + React (JSX) app (http://localhost:5173)
+    ├── Mal_ThirdParty_Risk_Oversight_Platform.jsx   # the single-file app
+    └── src/      # entry point + styles
 ```
 
-## Features
+## Quick start
 
-- **Dashboard** — portfolio metrics: third-party counts, open findings, due/overdue
-  assessments, residual-risk distribution, and a weighted portfolio risk score.
-- **Third parties** — searchable, filterable inventory with per-vendor detail
-  pages (risk profile, assessments, findings, relationship metadata).
-- **Assessments** — security, privacy, financial, operational, and compliance
-  assessments with status and posture scores.
-- **Findings** — issue tracking with severity, status, owner, and remediation
-  plans, linked back to vendors and assessments.
+Open two terminals.
 
-## Data spec (source of truth)
+**1. API** (`http://localhost:3001`):
 
-All application data lives in [`spec/`](./spec) as JSON validated by
-[`spec/schema.json`](./spec/schema.json). The frontend imports these files
-directly, so editing the JSON updates the app. See [`spec/README.md`](./spec/README.md)
-for the entity model and relationships.
+```bash
+cd server
+npm start          # or: node index.js
+```
 
-## Running the frontend
-
-Requires Node.js 18+.
+**2. Frontend** (`http://localhost:5173`):
 
 ```bash
 cd frontend
-npm install      # or pnpm install
-npm run dev      # start the dev server (http://localhost:5173)
-npm run build    # production build into frontend/dist
-npm run preview  # preview the production build
+npm install        # or pnpm install
+npm run dev        # Vite dev server, fixed to port 5173
 ```
 
-The dev server is configured (`vite.config.js`) to read the sibling `spec/`
-directory so the JSON spec can be imported as the single source of truth.
+Then open http://localhost:5173. The header shows **Online · API** when it can
+reach the API, or **Offline · seeded data** when it falls back to the bundled
+seed.
+
+> The frontend works **without** the API running — it loads the seeded data from
+> `spec/` (persisted to `window.localStorage`) and continues to support
+> create/update/delete locally. When the API is reachable, reads and writes go to
+> it instead.
+
+## API routes
+
+Base URL: `http://localhost:3001/api`
+
+Resources: `controls`, `cases`, `reg-changes`
+
+| Method   | Path                    | Description                  |
+| -------- | ----------------------- | ---------------------------- |
+| `GET`    | `/api/health`           | Health check + resource list |
+| `GET`    | `/api/:resource`        | List all records             |
+| `GET`    | `/api/:resource/:id`    | Get a single record          |
+| `POST`   | `/api/:resource`        | Create a record              |
+| `PUT`    | `/api/:resource/:id`    | Update a record              |
+| `DELETE` | `/api/:resource/:id`    | Delete a record              |
+
+Examples:
+
+```
+GET    http://localhost:3001/api/controls
+POST   http://localhost:3001/api/cases
+PUT    http://localhost:3001/api/cases/case-001
+DELETE http://localhost:3001/api/reg-changes/reg-005
+```
+
+The server seeds its in-memory store from `spec/*.json` at startup and enables
+CORS so the Vite app on `:5173` can call it directly.
+
+## Frontend data access
+
+`frontend/Mal_ThirdParty_Risk_Oversight_Platform.jsx` contains the data layer.
+Each resource is read and written through `fetch()` against `API_BASE`
+(`http://localhost:3001/api`); every call is wrapped so that any network/HTTP
+error falls back to the seeded data in `window.localStorage`:
+
+- **read** → `GET /api/:resource`, else seeded cache
+- **create** → `POST /api/:resource`, else append to cache
+- **update** → `PUT /api/:resource/:id`, else patch cache
+- **delete** → `DELETE /api/:resource/:id`, else remove from cache
+
+## Data spec (source of truth)
+
+All data lives in [`spec/`](./spec) as JSON validated by
+[`spec/schema.json`](./spec/schema.json). See [`spec/README.md`](./spec/README.md)
+for the entity model, enums, and relationships.
 
 ## Tech stack
 
-- React 18 + React Router (single-page app)
-- Vite 6 build tooling
-- Plain CSS (no UI framework) for a self-contained, dependency-light UI
+- React 18 + Vite 6 (frontend, single-file app)
+- Node.js built-in `http` (zero-dependency mock API)
 - JSON + JSON Schema (draft-07) data spec
+- Plain CSS for a self-contained, dependency-light UI
