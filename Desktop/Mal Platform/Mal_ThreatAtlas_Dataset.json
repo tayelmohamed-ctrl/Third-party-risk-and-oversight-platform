@@ -1,0 +1,1705 @@
+{
+ "meta": {
+  "name": "Mal MSB — Compliance Risk Typology Register",
+  "basis": "MSB_Compliance_Risk_Typology_Register.xlsx — internal working draft compiled to best knowledge, no live web access; every FATF rating, threshold, retention period and NRA finding is time-sensitive and marked [VERIFY] in the source. Incorporates the US 2026 Treasury NMLRA / NTFRA / NPFRA, Pakistan NRA 2023 and FATF/Egmont MSB typologies.",
+  "jurisdictions": [
+   "Bangladesh",
+   "Egypt",
+   "Malaysia",
+   "Morocco",
+   "Pakistan",
+   "Philippines",
+   "Singapore",
+   "United Arab Emirates"
+  ],
+  "distribution": {
+   "Critical": 45,
+   "High": 27,
+   "Medium": 2,
+   "Low": 1
+  },
+  "headline": [
+   [
+    "Fraud — IC3 2024",
+    "859,532 complaints, >$16B losses (+33% YoY)",
+    "2026 NMLRA"
+   ],
+   [
+    "Pig-butchering / digital-asset scams",
+    "$5.8B (+47%), run from SE-Asia scam centres",
+    "2026 NMLRA"
+   ],
+   [
+    "Investment fraud (overall)",
+    "$6.57B (IC3 2024, +44%)",
+    "2026 NMLRA"
+   ],
+   [
+    "DPRK digital-asset heists",
+    "Bybit ~$1.5B (Feb 2025) — top PF threat",
+    "2026 NPFRA"
+   ],
+   [
+    "Iran 'shadow banking' shells",
+    "~$4.2B moved (FinCEN Oct 2025)",
+    "2026 NPFRA"
+   ],
+   [
+    "Hizballah financing",
+    "~$700M/yr (historical) via fronts & exchange houses",
+    "2026 NTFRA"
+   ]
+  ]
+ },
+ "typologies": [
+  {
+   "id": "1",
+   "jur": "Bangladesh",
+   "name": "Hawala / hundi informal remittance",
+   "cat": "ML/TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Value moved outside the formal banking channel via informal brokers; major risk given large diaspora.",
+   "flags": "Inbound/outbound flows with no corresponding bank settlement; customer references 'agent' for delivery; mismatched sender/receiver relationship; round-amount FX.",
+   "xb": true,
+   "xbName": "Hawala / informal value transfer (IVTS)",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "OM-3",
+    "TM-1",
+    "TPO-4"
+   ]
+  },
+  {
+   "id": "2",
+   "jur": "Bangladesh",
+   "name": "Trade-based ML (over/under-invoicing)",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Mis-priced or phantom RMG/import-export trade used to move value.",
+   "flags": "Invoice value inconsistent with goods/market price; payments to third-party not on invoice; goods routed via high-risk transit.",
+   "xb": true,
+   "xbName": "Trade-based money laundering",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "3",
+   "jur": "Bangladesh",
+   "name": "Inbound remittance layering",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Legitimate migrant-worker remittance corridors abused to inject illicit funds.",
+   "flags": "Remittance volume inconsistent with stated occupation; many senders to one beneficiary; rapid cash-out.",
+   "xb": true,
+   "xbName": "Remittance-corridor abuse",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "CDD-2",
+    "EDD-1",
+    "OM-3",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "4",
+   "jur": "Bangladesh",
+   "name": "Mobile financial services structuring",
+   "cat": "ML",
+   "type": "Emerging/Fintech",
+   "desc": "bKash/Nagad-type wallets & agent networks used for smurfing.",
+   "flags": "Many small loads just under reporting/KYC tiers; rapid wallet-to-wallet hops; agent self-dealing.",
+   "xb": true,
+   "xbName": "Cash structuring (smurfing)",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "5",
+   "jur": "Bangladesh",
+   "name": "NPO / charity abuse for TF",
+   "cat": "TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Charitable conduits used to raise/move funds for terrorism.",
+   "flags": "Donations routed to conflict regions; opaque beneficiaries; cash-intensive collections.",
+   "xb": true,
+   "xbName": "Terrorist / proliferation financing",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SANC-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "6",
+   "jur": "Bangladesh",
+   "name": "PEP / corruption proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Embezzlement and bribery proceeds laundered domestically and offshore.",
+   "flags": "Government-linked customer; wealth inconsistent with role; use of family nominees.",
+   "xb": true,
+   "xbName": "Corruption & PEP proceeds",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "PEP-2"
+   ]
+  },
+  {
+   "id": "7",
+   "jur": "Egypt",
+   "name": "Parallel-market FX / currency smuggling",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Black-market currency dealing and cross-border cash given FX controls.",
+   "flags": "Demand for large cash FX; rates off official; structuring around FX limits.",
+   "xb": true,
+   "xbName": "Cash structuring (smurfing)",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "8",
+   "jur": "Egypt",
+   "name": "Hawala informal transfer",
+   "cat": "ML/TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Informal value transfer bypassing banks.",
+   "flags": "No bank settlement leg; 'agent' delivery references.",
+   "xb": true,
+   "xbName": "Hawala / informal value transfer (IVTS)",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "TM-1",
+    "TPO-4"
+   ]
+  },
+  {
+   "id": "9",
+   "jur": "Egypt",
+   "name": "Trade-based ML",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Mis-invoiced imports/exports.",
+   "flags": "Price/quantity mismatch; third-party payers; transit via high-risk ports.",
+   "xb": true,
+   "xbName": "Trade-based money laundering",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "10",
+   "jur": "Egypt",
+   "name": "Remittance-corridor abuse",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Large worker-remittance inflows used to layer funds.",
+   "flags": "Sender/beneficiary mismatch; many-to-one patterns.",
+   "xb": true,
+   "xbName": "Remittance-corridor abuse",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "OM-3",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "11",
+   "jur": "Egypt",
+   "name": "Antiquities / cultural-property proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Smuggled antiquities monetised through the system.",
+   "flags": "Dealings in cultural goods; cash settlement; vague provenance.",
+   "xb": false,
+   "xbName": "",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "12",
+   "jur": "Egypt",
+   "name": "Regional terrorist financing",
+   "cat": "TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Funds raised/moved for regional terrorist activity.",
+   "flags": "Transfers to conflict-adjacent areas; cash collection networks.",
+   "xb": true,
+   "xbName": "Terrorist / proliferation financing",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SANC-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "13",
+   "jur": "Egypt",
+   "name": "Corruption / PEP proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Public-sector embezzlement laundered via nominees.",
+   "flags": "State-linked customers; unexplained wealth.",
+   "xb": true,
+   "xbName": "Corruption & PEP proceeds",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "PEP-2"
+   ]
+  },
+  {
+   "id": "14",
+   "jur": "Malaysia",
+   "name": "Cyber-enabled fraud & investment scams",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Scam proceeds funnelled through mule accounts/wallets.",
+   "flags": "Rapid in-out; many unrelated payers; accounts opened then immediately funded & drained; device/IP anomalies.",
+   "xb": true,
+   "xbName": "Cyber fraud, scams & money mules",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "DOB-3",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "15",
+   "jur": "Malaysia",
+   "name": "Illegal online gambling proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Unlicensed gambling settled through MSBs and e-wallets.",
+   "flags": "Frequent small credits from gaming-linked sources; payouts to many beneficiaries.",
+   "xb": true,
+   "xbName": "Online / illegal gambling",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "TM-1",
+    "TM-4"
+   ]
+  },
+  {
+   "id": "16",
+   "jur": "Malaysia",
+   "name": "Grand corruption (1MDB-type) layering",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Misappropriated public funds layered via shells & offshore.",
+   "flags": "Complex layering; offshore SPVs; high-value assets.",
+   "xb": true,
+   "xbName": "Shell companies / complex structures",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "CDD-2",
+    "EDD-1",
+    "EDD-2",
+    "PEP-2"
+   ]
+  },
+  {
+   "id": "17",
+   "jur": "Malaysia",
+   "name": "Trade-based ML / free-zone abuse",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Mis-invoicing and free-zone transit.",
+   "flags": "Price mismatch; circular trade; FTZ re-routing.",
+   "xb": true,
+   "xbName": "Trade-based money laundering",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "18",
+   "jur": "Malaysia",
+   "name": "Drug-trafficking proceeds (regional transit)",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Narcotics proceeds via cash & MSBs.",
+   "flags": "Cash-heavy; border-region nexus.",
+   "xb": false,
+   "xbName": "",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SAR-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "19",
+   "jur": "Malaysia",
+   "name": "Real estate & luxury-goods laundering",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Proceeds parked in property/luxury assets.",
+   "flags": "Third-party funding; rapid resale; under/over-valuation.",
+   "xb": true,
+   "xbName": "Real estate & high-value assets",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "20",
+   "jur": "Malaysia",
+   "name": "Cross-border worker remittance abuse",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Migrant corridors used for layering.",
+   "flags": "Sender/beneficiary mismatch; many-to-one.",
+   "xb": true,
+   "xbName": "Remittance-corridor abuse",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "OM-3",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "21",
+   "jur": "Morocco",
+   "name": "Cash economy & structuring",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Large informal cash economy enables smurfing.",
+   "flags": "Repeated sub-threshold cash; layered deposits.",
+   "xb": true,
+   "xbName": "Cash structuring (smurfing)",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "22",
+   "jur": "Morocco",
+   "name": "Hawala-type informal transfer",
+   "cat": "ML/TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Informal value transfer networks.",
+   "flags": "No bank settlement; 'agent' delivery.",
+   "xb": true,
+   "xbName": "Hawala / informal value transfer (IVTS)",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "TM-1",
+    "TPO-4"
+   ]
+  },
+  {
+   "id": "23",
+   "jur": "Morocco",
+   "name": "Drug-trafficking (cannabis) proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Cannabis cultivation/export proceeds laundered.",
+   "flags": "Cash-heavy; northern-region nexus; rapid asset purchase.",
+   "xb": false,
+   "xbName": "",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SAR-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "24",
+   "jur": "Morocco",
+   "name": "Smuggling / enclave-border trade",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Contraband proceeds via border trade.",
+   "flags": "Goods/cash inconsistent with declared trade.",
+   "xb": true,
+   "xbName": "Trade-based money laundering",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "25",
+   "jur": "Morocco",
+   "name": "Real estate & tourism laundering",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Proceeds invested in property/tourism developments.",
+   "flags": "Third-party funding; valuation anomalies.",
+   "xb": true,
+   "xbName": "Real estate & high-value assets",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "26",
+   "jur": "Morocco",
+   "name": "Regional / Sahel terrorist financing",
+   "cat": "TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Funds for regional terrorist activity.",
+   "flags": "Transfers toward Sahel; cash collection.",
+   "xb": true,
+   "xbName": "Terrorist / proliferation financing",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SANC-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "27",
+   "jur": "Morocco",
+   "name": "Remittance-corridor abuse",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Diaspora remittances used to layer funds.",
+   "flags": "Sender/beneficiary mismatch.",
+   "xb": true,
+   "xbName": "Remittance-corridor abuse",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "OM-3",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "28",
+   "jur": "Pakistan",
+   "name": "Hawala / hundi",
+   "cat": "ML/TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Dominant informal value-transfer system.",
+   "flags": "No bank leg; 'agent' settlement; FX-rate arbitrage.",
+   "xb": true,
+   "xbName": "Hawala / informal value transfer (IVTS)",
+   "src": "Pakistan Summarized NRA 2023 (FMU / National FATF Secretariat) — confirmed; + APG MER",
+   "def": [
+    "TM-1",
+    "TPO-4"
+   ]
+  },
+  {
+   "id": "29",
+   "jur": "Pakistan",
+   "name": "Terrorist financing",
+   "cat": "TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Heightened TF risk and supervisory focus.",
+   "flags": "Transfers to listed/conflict areas; charity conduits; cash collection.",
+   "xb": true,
+   "xbName": "Terrorist / proliferation financing",
+   "src": "Pakistan Summarized NRA 2023 (FMU / National FATF Secretariat) — confirmed; + APG MER",
+   "def": [
+    "SANC-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "30",
+   "jur": "Pakistan",
+   "name": "Proliferation financing",
+   "cat": "PF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Sanctions/PF-evasion exposure.",
+   "flags": "Dual-use goods trade; front companies; sanctioned-nexus counterparties.",
+   "xb": true,
+   "xbName": "Terrorist / proliferation financing",
+   "src": "Pakistan Summarized NRA 2023 (FMU / National FATF Secretariat) — confirmed; + APG MER",
+   "def": [
+    "SANC-1",
+    "SANC-2"
+   ]
+  },
+  {
+   "id": "31",
+   "jur": "Pakistan",
+   "name": "Trade-based ML / mis-invoicing",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Mis-priced trade to move value.",
+   "flags": "Price/quantity mismatch; third-party payers.",
+   "xb": true,
+   "xbName": "Trade-based money laundering",
+   "src": "Pakistan Summarized NRA 2023 (FMU / National FATF Secretariat) — confirmed; + APG MER",
+   "def": [
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "32",
+   "jur": "Pakistan",
+   "name": "Cash economy & structuring",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Large undocumented cash economy.",
+   "flags": "Sub-threshold cash patterns.",
+   "xb": true,
+   "xbName": "Cash structuring (smurfing)",
+   "src": "Pakistan Summarized NRA 2023 (FMU / National FATF Secretariat) — confirmed; + APG MER",
+   "def": [
+    "REP-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "33",
+   "jur": "Pakistan",
+   "name": "NPO / charity misuse",
+   "cat": "TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Charity conduits for TF.",
+   "flags": "Opaque beneficiaries; conflict-region disbursement.",
+   "xb": true,
+   "xbName": "Terrorist / proliferation financing",
+   "src": "Pakistan Summarized NRA 2023 (FMU / National FATF Secretariat) — confirmed; + APG MER",
+   "def": [
+    "SANC-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "34",
+   "jur": "Pakistan",
+   "name": "Remittance-corridor abuse",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Large worker-remittance inflows layered.",
+   "flags": "Sender/beneficiary mismatch; many-to-one.",
+   "xb": true,
+   "xbName": "Remittance-corridor abuse",
+   "src": "Pakistan Summarized NRA 2023 (FMU / National FATF Secretariat) — confirmed; + APG MER",
+   "def": [
+    "OM-3",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "35",
+   "jur": "Philippines",
+   "name": "Cyber fraud, romance & investment scams",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Scam proceeds laundered via mules, wallets & remittance.",
+   "flags": "Rapid in-out; many unrelated payers; new account quickly drained.",
+   "xb": true,
+   "xbName": "Cyber fraud, scams & money mules",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "DOB-3",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "36",
+   "jur": "Philippines",
+   "name": "Offshore/online gaming (POGO-type) proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Online-gaming operations used to launder & move value.",
+   "flags": "Gaming-linked counterparties; bulk payouts; foreign-worker payroll anomalies.",
+   "xb": true,
+   "xbName": "Online / illegal gambling",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "TM-1",
+    "TM-4"
+   ]
+  },
+  {
+   "id": "37",
+   "jur": "Philippines",
+   "name": "Casino-related laundering",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Junket/casino channels layer funds.",
+   "flags": "Chip purchases with minimal play; third-party cash-out.",
+   "xb": true,
+   "xbName": "Online / illegal gambling",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "TM-1",
+    "TM-4"
+   ]
+  },
+  {
+   "id": "38",
+   "jur": "Philippines",
+   "name": "Drug-trafficking proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Narcotics proceeds via cash & MSBs.",
+   "flags": "Cash-heavy; structuring.",
+   "xb": false,
+   "xbName": "",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SAR-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "39",
+   "jur": "Philippines",
+   "name": "OFW remittance abuse",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Overseas-worker remittance corridors layered.",
+   "flags": "Sender/beneficiary mismatch; many-to-one; rapid cash-out.",
+   "xb": true,
+   "xbName": "Remittance-corridor abuse",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "OM-3",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "40",
+   "jur": "Philippines",
+   "name": "Corruption / plunder proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Public-fund misuse laundered via nominees.",
+   "flags": "State-linked customers; unexplained wealth.",
+   "xb": true,
+   "xbName": "Corruption & PEP proceeds",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "PEP-2"
+   ]
+  },
+  {
+   "id": "41",
+   "jur": "Philippines",
+   "name": "Human-trafficking proceeds",
+   "cat": "ML/Predicate",
+   "type": "Jurisdiction-recognised",
+   "desc": "Trafficking & exploitation proceeds.",
+   "flags": "Payments tied to recruitment fees; victim-linked accounts.",
+   "xb": false,
+   "xbName": "",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SAR-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "42",
+   "jur": "Singapore",
+   "name": "Layering of foreign criminal proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Hub status exploited to layer offshore proceeds.",
+   "flags": "Foreign-sourced funds with weak economic rationale; rapid pass-through.",
+   "xb": true,
+   "xbName": "Shell companies / complex structures",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "CDD-2",
+    "EDD-1"
+   ]
+  },
+  {
+   "id": "43",
+   "jur": "Singapore",
+   "name": "Complex structures / shell & nominee arrangements",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Opaque corporate layers obscure beneficial ownership.",
+   "flags": "Multiple SPVs; nominee directors; circular ownership.",
+   "xb": true,
+   "xbName": "Shell companies / complex structures",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "CDD-2",
+    "EDD-1"
+   ]
+  },
+  {
+   "id": "44",
+   "jur": "Singapore",
+   "name": "Foreign PEP & high-net-worth flows",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Foreign PEP wealth routed through private banking/family offices.",
+   "flags": "PEP nexus; large unexplained inflows; reluctance to evidence source of wealth.",
+   "xb": true,
+   "xbName": "Corruption & PEP proceeds",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "PEP-2"
+   ]
+  },
+  {
+   "id": "45",
+   "jur": "Singapore",
+   "name": "Real estate & luxury-asset laundering",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "High-value property/assets (cf. 2023 case).",
+   "flags": "Third-party/foreign funding; cash component; rapid purchase.",
+   "xb": true,
+   "xbName": "Real estate & high-value assets",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "46",
+   "jur": "Singapore",
+   "name": "Trade-based ML / trade finance",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Mis-invoicing through trade-finance hub.",
+   "flags": "Document/price mismatch; circular trade; round-tripping.",
+   "xb": true,
+   "xbName": "Trade-based money laundering",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "47",
+   "jur": "Singapore",
+   "name": "Digital-payment-token / crypto flows",
+   "cat": "ML",
+   "type": "Emerging/Fintech",
+   "desc": "DPT/crypto used to move/layer value.",
+   "flags": "On/off-ramp bursts; unhosted-wallet exposure; chain-hopping.",
+   "xb": true,
+   "xbName": "Virtual-asset / crypto layering",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SANC-1",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "48",
+   "jur": "Singapore",
+   "name": "Correspondent banking & sanctions evasion",
+   "cat": "ML/PF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Cross-border nested relationships & evasion.",
+   "flags": "Nested/ shell correspondents; sanctioned-nexus routing.",
+   "xb": true,
+   "xbName": "Terrorist / proliferation financing",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SANC-1",
+    "SANC-2"
+   ]
+  },
+  {
+   "id": "49",
+   "jur": "United Arab Emirates",
+   "name": "Trade-based ML (re-export hub)",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Mis-invoicing & re-export trade move value.",
+   "flags": "Price/quantity mismatch; third-party payers; circular/transit trade.",
+   "xb": true,
+   "xbName": "Trade-based money laundering",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "50",
+   "jur": "United Arab Emirates",
+   "name": "Gold & precious-metals value transfer",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Gold/DPMS used to store & move value.",
+   "flags": "Bullion settlement; cash-for-gold; weight/value mismatch.",
+   "xb": true,
+   "xbName": "Gold & precious metals",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "51",
+   "jur": "United Arab Emirates",
+   "name": "Real estate laundering",
+   "cat": "ML",
+   "type": "MSB-specific",
+   "desc": "Property used to park proceeds.",
+   "flags": "Cash/third-party funding; rapid flip; under/over-valuation.",
+   "xb": true,
+   "xbName": "Real estate & high-value assets",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "52",
+   "jur": "United Arab Emirates",
+   "name": "Free-zone & shell-company misuse",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Free-zone entities obscure ownership/flows.",
+   "flags": "Opaque BO; no real substance; circular invoicing.",
+   "xb": true,
+   "xbName": "Shell companies / complex structures",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "CDD-2",
+    "EDD-1",
+    "REP-2",
+    "TM-1"
+   ]
+  },
+  {
+   "id": "53",
+   "jur": "United Arab Emirates",
+   "name": "Hawala & cash couriering",
+   "cat": "ML/TF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Informal transfer & bulk-cash movement.",
+   "flags": "No bank leg; bulk cash; 'agent' settlement.",
+   "xb": true,
+   "xbName": "Hawala / informal value transfer (IVTS)",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "TM-1",
+    "TPO-4"
+   ]
+  },
+  {
+   "id": "54",
+   "jur": "United Arab Emirates",
+   "name": "Sanctions & proliferation-financing evasion",
+   "cat": "PF",
+   "type": "Jurisdiction-recognised",
+   "desc": "Front companies & dual-use trade evade sanctions.",
+   "flags": "Sanctioned-nexus counterparties; dual-use goods; rerouting.",
+   "xb": true,
+   "xbName": "Terrorist / proliferation financing",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "SANC-1",
+    "SANC-2"
+   ]
+  },
+  {
+   "id": "55",
+   "jur": "United Arab Emirates",
+   "name": "Foreign PEP / illicit foreign proceeds",
+   "cat": "ML",
+   "type": "Jurisdiction-recognised",
+   "desc": "Foreign PEP wealth routed in.",
+   "flags": "PEP nexus; unexplained foreign inflows.",
+   "xb": true,
+   "xbName": "Corruption & PEP proceeds",
+   "src": "FATF/FSRB MER & follow-up; national NRA; regulator guidance",
+   "def": [
+    "EDD-2",
+    "PEP-2"
+   ]
+  }
+ ],
+ "crossborder": [
+  {
+   "name": "Trade-based money laundering",
+   "jurs": "Bangladesh, Egypt, Malaysia, Morocco, Pakistan, Singapore, United Arab Emirates",
+   "why": "Mis-invoiced trade moves value across borders through transit hubs (Singapore, UAE) into and out of manufacturing/import economies.",
+   "flags": "Invoice price/quantity inconsistent with market; third-party (non-invoice) payers; circular or transit trade; round-tripping."
+  },
+  {
+   "name": "Remittance-corridor abuse",
+   "jurs": "Bangladesh, Egypt, Malaysia, Morocco, Pakistan, Philippines",
+   "why": "Migrant-worker corridors connect sending hubs (UAE, Singapore, Malaysia) with receiving economies (Bangladesh, Pakistan, Philippines, Egypt, Morocco).",
+   "flags": "Remittance volume inconsistent with stated occupation; many senders to one beneficiary; rapid cash-out; new corridor with no profile."
+  },
+  {
+   "name": "Terrorist / proliferation financing",
+   "jurs": "Bangladesh, Egypt, Morocco, Pakistan, Singapore, United Arab Emirates",
+   "why": "Funds are raised and moved toward conflict-adjacent regions; charity conduits and cash collection cross borders.",
+   "flags": "Transfers toward listed/conflict regions; charity conduits; small structured collections; sanctioned-nexus counterparties."
+  },
+  {
+   "name": "Corruption & PEP proceeds",
+   "jurs": "Bangladesh, Egypt, Philippines, Singapore, United Arab Emirates",
+   "why": "Foreign PEP and corruption proceeds are routed into hub markets (UAE, Singapore) from across the region.",
+   "flags": "PEP or state-linked nexus; unexplained wealth/inflows; use of family nominees; reluctance to evidence source of wealth."
+  },
+  {
+   "name": "Hawala / informal value transfer (IVTS)",
+   "jurs": "Bangladesh, Egypt, Morocco, Pakistan, United Arab Emirates",
+   "why": "Informal value-transfer networks span sender and receiver countries with no settling bank leg; corridors interconnect South Asia, MENA and the Gulf.",
+   "flags": "No corresponding bank settlement; 'agent will deliver' references; mismatched sender/receiver; round-amount FX; corridor concentration."
+  },
+  {
+   "name": "Cash structuring (smurfing)",
+   "jurs": "Bangladesh, Egypt, Morocco, Pakistan",
+   "why": "Bulk cash and structuring feed into informal corridors and are carried across borders.",
+   "flags": "Repeated sub-threshold cash; multiple branches/agents; rapid aggregation then transfer."
+  },
+  {
+   "name": "Real estate & high-value assets",
+   "jurs": "Malaysia, Morocco, Singapore, United Arab Emirates",
+   "why": "Proceeds are parked in property/luxury assets in hub markets (UAE, Singapore, Malaysia) regardless of origin.",
+   "flags": "Third-party/foreign funding; cash component; rapid purchase/resale; under- or over-valuation."
+  },
+  {
+   "name": "Shell companies / complex structures",
+   "jurs": "Malaysia, Singapore, United Arab Emirates",
+   "why": "Opaque structures and free-zone/offshore entities layer proceeds across multiple jurisdictions.",
+   "flags": "Multiple SPVs; nominee directors; circular ownership; free-zone entity with no substance; opaque beneficial owner."
+  },
+  {
+   "name": "Cyber fraud, scams & money mules",
+   "jurs": "Malaysia, Philippines",
+   "why": "Scam syndicates operate across borders; mule networks and wallets move proceeds between jurisdictions rapidly.",
+   "flags": "Account funded then immediately drained; many unrelated payers; device/IP anomalies; victim-pattern inbound credits."
+  },
+  {
+   "name": "Online / illegal gambling",
+   "jurs": "Malaysia, Philippines",
+   "why": "Online/illegal gaming operations and payouts cross borders (notably Philippines and Malaysia).",
+   "flags": "Gaming-linked counterparties; bulk payouts to many beneficiaries; chip purchase with minimal play."
+  },
+  {
+   "name": "Gold & precious metals",
+   "jurs": "United Arab Emirates",
+   "why": "Gold/DPMS store and move value across the Gulf and Asian trade routes.",
+   "flags": "Bullion/cash-for-gold settlement; weight/value mismatch; rapid resale."
+  },
+  {
+   "name": "Virtual-asset / crypto layering",
+   "jurs": "Singapore",
+   "why": "Virtual assets are inherently cross-border; layering and off-ramping move between regulated (Singapore, UAE, Malaysia, Philippines) and restricted markets.",
+   "flags": "Bursty on/off-ramp activity; unhosted-wallet exposure; chain-hopping; mismatch with customer profile; travel-rule gaps."
+  }
+ ],
+ "segments": [
+  {
+   "seg": "Licensed professionals",
+   "typ": "Gatekeeper / professional facilitation & client-fund commingling",
+   "method": "Practice or client accounts used to move or layer third-party funds.",
+   "flags": "Client/pooled-account flows inconsistent with the practice; third-party funds passing through; payments unrelated to the profession.",
+   "L": "2.0",
+   "I": "4.0",
+   "score": 8,
+   "rating": "Medium"
+  },
+  {
+   "seg": "Licensed professionals",
+   "typ": "Tax-evasion / unexplained-wealth layering",
+   "method": "Undeclared income routed through professional accounts.",
+   "flags": "Income inconsistent with declared profession; structured cash; offshore movement.",
+   "L": "2.0",
+   "I": "3.0",
+   "score": 6,
+   "rating": "Medium"
+  },
+  {
+   "seg": "Remote workers",
+   "typ": "Money-mule recruitment via fake remote roles",
+   "method": "‘Job’ requires receiving and forwarding funds, masking origin.",
+   "flags": "Inbound from many unrelated payers then forwarded; employer/geography mismatch; rapid in-out; reluctance to explain.",
+   "L": "3.0",
+   "I": "3.0",
+   "score": 9,
+   "rating": "High"
+  },
+  {
+   "seg": "Remote workers",
+   "typ": "Third-party-funded pass-through",
+   "method": "Account funded by parties unrelated to stated employment.",
+   "flags": "Funder ≠ stated employer; salary pattern absent; sudden volume change.",
+   "L": "3.0",
+   "I": "2.0",
+   "score": 6,
+   "rating": "Medium"
+  },
+  {
+   "seg": "Migrant workers",
+   "typ": "Funnel / many-to-one remittance & account sharing",
+   "method": "One account used to receive and remit on behalf of many.",
+   "flags": "One account receiving for many senders; remittances exceeding wages; third-party control of the account; coercion signs.",
+   "L": "3.0",
+   "I": "3.0",
+   "score": 9,
+   "rating": "High"
+  },
+  {
+   "seg": "Migrant workers",
+   "typ": "Hawala / IVTS interface & labour-exploitation proceeds",
+   "method": "Account interfaces with informal value transfer or holds trafficking/exploitation proceeds.",
+   "flags": "No bank settlement leg; corridor concentration; recruitment-fee-linked flows; account controlled by a third party.",
+   "L": "3.0",
+   "I": "3.0",
+   "score": 9,
+   "rating": "High"
+  },
+  {
+   "seg": "Freelancers",
+   "typ": "Fake / inflated service invoicing (value transfer)",
+   "method": "Invoices without real deliverables used to move value.",
+   "flags": "Invoices with no evidence of work; round-sum recurring from unrelated parties; income inconsistent with history; rapid withdrawal.",
+   "L": "3.0",
+   "I": "3.0",
+   "score": 9,
+   "rating": "High"
+  },
+  {
+   "seg": "Freelancers",
+   "typ": "Mule / rapid pass-through",
+   "method": "Account used to receive and forward third-party funds.",
+   "flags": "Inbound then immediate outbound; unrelated payers; profile mismatch.",
+   "L": "3.0",
+   "I": "2.0",
+   "score": 6,
+   "rating": "Medium"
+  },
+  {
+   "seg": "Employed (salaried)",
+   "typ": "Mule pass-through / structuring of unexplained side-inflows",
+   "method": "Salaried account used for unrelated third-party throughput.",
+   "flags": "Salary credits plus unexplained third-party inflows; sudden volume change; forwarding behaviour.",
+   "L": "2.0",
+   "I": "3.0",
+   "score": 6,
+   "rating": "Medium"
+  },
+  {
+   "seg": "Platform-based earners (Upwork/Fiverr/Toptal)",
+   "typ": "Collusive / fake-gig self-laundering via platform payouts",
+   "method": "Self-dealing or collusive buyer-seller gigs used to legitimise funds.",
+   "flags": "Platform payouts inconsistent with account history; circular payments; clients in high-risk jurisdictions; rapid cash-out / crypto off-ramp.",
+   "L": "3.0",
+   "I": "3.0",
+   "score": 9,
+   "rating": "High"
+  },
+  {
+   "seg": "Platform-based earners (Upwork/Fiverr/Toptal)",
+   "typ": "Sanctions-nexus client payments",
+   "method": "Payments from clients in sanctioned / high-risk locations.",
+   "flags": "Counterparties in sanctioned or high-risk jurisdictions; IP/geo mismatch; payment routing anomalies.",
+   "L": "2.0",
+   "I": "4.0",
+   "score": 8,
+   "rating": "Medium"
+  },
+  {
+   "seg": "Self-employed / sole traders",
+   "typ": "Cash-intensive business layering & commingling",
+   "method": "Personal and business funds mixed to obscure illicit cash.",
+   "flags": "Cash deposits inconsistent with the business; round-number patterns; third-party funding; rapid movement out.",
+   "L": "3.0",
+   "I": "3.0",
+   "score": 9,
+   "rating": "High"
+  },
+  {
+   "seg": "Self-employed / sole traders",
+   "typ": "Trade mis-invoicing (goods/services)",
+   "method": "Over/under-invoicing used to move value across borders.",
+   "flags": "Invoice value vs goods/market mismatch; third-party payers; high-risk counterparties.",
+   "L": "2.0",
+   "I": "4.0",
+   "score": 8,
+   "rating": "Medium"
+  },
+  {
+   "seg": "Retired and students",
+   "typ": "Mule recruitment / account rental (vulnerable-group targeting)",
+   "method": "Vulnerable customers recruited to receive/forward funds or rent accounts.",
+   "flags": "Activity inconsistent with pension/student profile; sudden high-volume throughput; third-party control; inbound from unrelated parties then forwarded.",
+   "L": "3.0",
+   "I": "3.0",
+   "score": 9,
+   "rating": "High"
+  },
+  {
+   "seg": "Crypto users",
+   "typ": "Virtual-asset on/off-ramp layering & illicit-wallet exposure",
+   "method": "Fiat↔crypto conversion used to layer; exposure to mixers / high-risk VASPs.",
+   "flags": "Frequent fiat↔crypto conversion; exposure to mixers / sanctioned wallets; chain-hopping; structuring around VASP limits.",
+   "L": "4.0",
+   "I": "4.0",
+   "score": 16,
+   "rating": "Critical"
+  },
+  {
+   "seg": "Crypto users",
+   "typ": "Scam / ransomware proceeds & sanctions-nexus wallets",
+   "method": "Crypto channels used to move fraud/ransomware proceeds or evade sanctions.",
+   "flags": "Inbound from scam/ransomware-linked addresses; sanctioned-wallet exposure; bursty on/off-ramp; victim-pattern flows.",
+   "L": "3.0",
+   "I": "4.0",
+   "score": 12,
+   "rating": "High"
+  }
+ ],
+ "corridors": [
+  {
+   "corridor": "US → Bangladesh",
+   "profile": "Large diaspora & migrant-worker remittance corridor; cash-out heavy at agents.",
+   "typ": "Hundi/hawala diversion of formal remittance; trade-based ML (RMG/import-export); inbound-remittance layering; NPO/charity TF; MFS (bKash/Nagad) structuring.",
+   "flags": "Sender income inconsistent with volume; many senders → one beneficiary; rapid agent cash-out; payments linked to garment trade; beneficiary near conflict/charity nexus.",
+   "actors": "Hundi/hawala networks; trade mis-invoicing rings; labour-recruitment fraud; charity-linked TF.",
+   "adv": "FATF, ‘Role of Hawala & Other Similar Service Providers’ (2013); FinCEN Human Trafficking advisory (2014/2020…",
+   "L": "4.0",
+   "I": "4.0",
+   "score": 16,
+   "rating": "Critical",
+   "ids": "1-6 (Bangladesh)"
+  },
+  {
+   "corridor": "US → Egypt",
+   "profile": "Diaspora remittance into a cash-heavy, FX-controlled economy.",
+   "typ": "Parallel-market FX / currency smuggling; hawala settlement; structuring to evade FX limits; trade-based ML.",
+   "flags": "Pressure to convert to USD cash; sender/beneficiary mismatch; transfers timed to FX-rate gaps; rapid cash withdrawal.",
+   "actors": "Hawala / parallel-FX dealers; trade mis-invoicing; (rarely) antiquities proceeds.",
+   "adv": "FATF, ‘Role of Hawala...’ (2013); MENAFATF Egypt MER; FinCEN BEC advisory (2016/2019).",
+   "L": "3.0",
+   "I": "4.0",
+   "score": 12,
+   "rating": "High",
+   "ids": "7-13 (Egypt)"
+  },
+  {
+   "corridor": "US → Malaysia",
+   "profile": "Transit & scam-syndicate hub in SE Asia; growing e-wallet/crypto use.",
+   "typ": "Cyber-scam proceeds (pig-butchering/romance/investment) via mules; online-gambling settlement; virtual-asset on/off-ramp layering; TBML / free-zone.",
+   "flags": "Inbound to newly-opened mule accounts then onward; links to scam-compound regions; crypto bridging; gaming-linked counterparties.",
+   "actors": "SE-Asian cyber-scam syndicates (often using trafficked labour); illegal online gambling; drug-transit launderers.",
+   "adv": "FinCEN ‘pig-butchering’/online-scam Alert (Sept 2023); FinCEN Ransomware/CVC advisory (2020/2021); FinCEN Hum…",
+   "L": "4.0",
+   "I": "4.0",
+   "score": 16,
+   "rating": "Critical",
+   "ids": "14-20 (Malaysia)"
+  },
+  {
+   "corridor": "US → Morocco",
+   "profile": "Diaspora remittance; cash economy; Sahel TF adjacency.",
+   "typ": "Hawala-type informal transfer; cash structuring; drug (cannabis) proceeds; regional/Sahel TF; real-estate placement.",
+   "flags": "Sender mismatch; cash-out near border regions; transfers to high-risk adjacency; rapid property-linked payouts.",
+   "actors": "Hawala networks; cannabis-trafficking launderers; smuggling rings.",
+   "adv": "FATF, ‘Role of Hawala...’ (2013); MENAFATF Morocco MER; FATF ‘Emerging Terrorist Financing Risks’ (2015).",
+   "L": "3.0",
+   "I": "4.0",
+   "score": 12,
+   "rating": "High",
+   "ids": "21-27 (Morocco)"
+  },
+  {
+   "corridor": "US → Pakistan",
+   "profile": "One of the largest global remittance corridors; hawala/hundi dominant; elevated TF/PF.",
+   "typ": "Hundi/hawala diversion; terrorist financing to designated groups; proliferation-financing nexus; charity/NPO abuse; TBML.",
+   "flags": "Many senders → one beneficiary; charity-linked transfers; sends to high-risk regions; hundi (no settlement leg); sanctioned-nexus counterparties.",
+   "actors": "Hundi networks; designated-group TF facilitators; PF front companies; smuggling/TBML rings.",
+   "adv": "FATF, ‘Role of Hawala...’ (2013); FATF Pakistan MER & action-plan history; FinCEN/OFAC sanctions-screening ex…",
+   "L": "4.0",
+   "I": "5.0",
+   "score": 20,
+   "rating": "Critical",
+   "ids": "28-34 (Pakistan)"
+  },
+  {
+   "corridor": "US → Philippines",
+   "profile": "Huge OFW remittance corridor; scam-syndicate & online-gaming exposure.",
+   "typ": "OFW-remittance pattern abuse; cyber-scam (pig-butchering/romance) mule layering; POGO/online-gaming settlement; casino-linked ML; human-trafficking proceeds.",
+   "flags": "Many-to-one beneficiary patterns abused; victim-pattern inbound then rapid cash-out; gaming-linked credits; new accounts drained quickly.",
+   "actors": "Cyber-scam syndicates; POGO-linked launderers; casino junket networks; trafficking rings.",
+   "adv": "FinCEN ‘pig-butchering’/online-scam Alert (Sept 2023); FinCEN Human Trafficking advisory (2014/2020); FinCEN…",
+   "L": "5.0",
+   "I": "4.0",
+   "score": 20,
+   "rating": "Critical",
+   "ids": "35-41 (Philippines)"
+  },
+  {
+   "corridor": "US → Singapore",
+   "profile": "Major financial hub / pass-through point; high-value & crypto exposure.",
+   "typ": "Layering of foreign proceeds; shell / complex-structure pass-through; high-value-asset & property placement; virtual-asset flows; sanctions/PF transit.",
+   "flags": "Pass-through with no economic rationale; complex/nominee structures; foreign-PEP inflows; immediate onward high-value transfer.",
+   "actors": "Foreign-proceeds layering networks; sanctions/PF transit facilitators; professional enablers.",
+   "adv": "FATF Singapore MER; FinCEN/OFAC Iran (2018) & DPRK (2017) illicit-finance advisories; Russia export-control e…",
+   "L": "3.0",
+   "I": "4.0",
+   "score": 12,
+   "rating": "High",
+   "ids": "42-48 (Singapore)"
+  },
+  {
+   "corridor": "US → UAE",
+   "profile": "Major re-export / trade & gold hub; hawala & sanctions-evasion exposure.",
+   "typ": "Trade-based ML (re-export); gold/precious-metals value transfer; real-estate placement; free-zone shell misuse; hawala; sanctions/PF evasion (onward to Iran).",
+   "flags": "Onward transfer to higher-risk jurisdictions; gold/trade settlement; free-zone entity with no substance; sanctioned-nexus or dual-use goods.",
+   "actors": "TBML & gold-laundering rings; sanctions-evasion / re-export facilitators; hawala networks.",
+   "adv": "FATF UAE MER & grey-list history; FinCEN/OFAC Iran illicit-finance advisory (2018); Russia export-control eva…",
+   "L": "4.0",
+   "I": "5.0",
+   "score": 20,
+   "rating": "Critical",
+   "ids": "49-55 (UAE)"
+  },
+  {
+   "corridor": "UAE → Pakistan",
+   "profile": "Top-tier real-world remittance & hawala corridor; very high TF/hawala density.",
+   "typ": "Hawala/hundi settlement; TF to high-risk regions; TBML/gold; bulk-cash & re-export linkage.",
+   "flags": "No bank settlement leg; many-to-one; charity/high-risk-region nexus; gold/trade settlement.",
+   "actors": "Hawala networks; TF facilitators; TBML/gold rings.",
+   "adv": "FATF, ‘Role of Hawala...’ (2013); FATF Pakistan & UAE MERs; FATF ‘Emerging TF Risks’ (2015).",
+   "L": "5.0",
+   "I": "5.0",
+   "score": 25,
+   "rating": "Critical",
+   "ids": "28-34 (Pakistan)"
+  },
+  {
+   "corridor": "UAE → Bangladesh",
+   "profile": "Large Gulf→South-Asia remittance & hawala corridor.",
+   "typ": "Hawala diversion; TBML (RMG); inbound-remittance layering; labour-migration fraud nexus.",
+   "flags": "Sender mismatch; many-to-one; rapid cash-out; trade-linked payments.",
+   "actors": "Hawala networks; trade mis-invoicing; recruitment-fraud rings.",
+   "adv": "FATF, ‘Role of Hawala...’ (2013); FATF–Egmont TBML (2020); FinCEN Human Trafficking advisory.",
+   "L": "4.0",
+   "I": "4.0",
+   "score": 16,
+   "rating": "Critical",
+   "ids": "1-6 (Bangladesh)"
+  },
+  {
+   "corridor": "Singapore / Malaysia → Philippines",
+   "profile": "Intra-SEA remittance & scam-proceeds corridor.",
+   "typ": "Cyber-scam mule layering; online-gaming/POGO settlement; OFW-pattern abuse; crypto bridging.",
+   "flags": "Mule-account inbound then onward; gaming-linked; victim-pattern flows; crypto on/off-ramp.",
+   "actors": "Cyber-scam syndicates; POGO launderers; trafficking rings.",
+   "adv": "FinCEN ‘pig-butchering’ Alert (Sept 2023); FinCEN Ransomware/CVC advisory; APG Philippines MER.",
+   "L": "4.0",
+   "I": "4.0",
+   "score": 16,
+   "rating": "Critical",
+   "ids": "35-41 (Philippines)"
+  },
+  {
+   "corridor": "UAE → Egypt / Morocco",
+   "profile": "Gulf→North-Africa remittance & hawala corridor.",
+   "typ": "Hawala settlement; parallel-FX (Egypt); cash structuring; trade-based ML.",
+   "flags": "FX-gap timing; cash-out; sender mismatch; trade-linked settlement.",
+   "actors": "Hawala / parallel-FX dealers; TBML rings.",
+   "adv": "FATF, ‘Role of Hawala...’ (2013); MENAFATF Egypt & Morocco MERs.",
+   "L": "3.0",
+   "I": "4.0",
+   "score": 12,
+   "rating": "High",
+   "ids": "7-13 (Egypt) & 21-27 (Morocco)"
+  }
+ ],
+ "jurProfiles": [
+  {
+   "jur": "Bangladesh",
+   "reg": "Bangladesh Bank (central bank / AML-CFT supervisor)",
+   "fiu": "Bangladesh Financial Intelligence Unit (BFIU) – goAML",
+   "fw": "Money Laundering Prevention Act 2012 (amended); Anti-Terrorism Act 2009; BFIU AML/CFT Guidelines & Master Circular",
+   "body": "APG (Asia/Pacific Group)",
+   "fatf": "Assessed by APG (3rd-round MER ~2016 + follow-ups). Not on the FATF increased-monitoring list per last knowledge. [VERIFY current MER ratings & follow-up status]",
+   "defi": "Common themes: use of financial intelligence & ML prosecution outcomes; TBML detection; NPO/charity oversight; beneficial-ownership transparency. [VERIFY against published MER]",
+   "thr": "CTR to BFIU at/above BDT 1,000,000 single cash txn; STR any amount. [VERIFY]",
+   "ret": "≥ 5 years [VERIFY]"
+  },
+  {
+   "jur": "Egypt",
+   "reg": "Central Bank of Egypt (CBE)",
+   "fiu": "Egyptian Money Laundering & Terrorist Financing Combating Unit (EMLCU)",
+   "fw": "Anti-Money Laundering Law No. 80 of 2002 (amended) & Executive Regulations; EMLCU instructions",
+   "body": "MENAFATF",
+   "fatf": "Assessed by MENAFATF (MER ~2021). Not on the increased-monitoring list per last knowledge. [VERIFY]",
+   "defi": "Themes: risk-based supervision (esp. DNFBPs); beneficial ownership; ML investigation/prosecution effectiveness; TF. [VERIFY against MER]",
+   "thr": "Suspicion-based STR to EMLCU; CDD threshold for occasional txns per Executive Regs. [VERIFY]",
+   "ret": "≥ 5 years [VERIFY]"
+  },
+  {
+   "jur": "Malaysia",
+   "reg": "Bank Negara Malaysia (BNM)",
+   "fiu": "Financial Intelligence & Enforcement Department (FIED), BNM",
+   "fw": "AMLA 2001 (Anti-Money Laundering, Anti-Terrorism Financing & Proceeds of Unlawful Activities Act); BNM AML/CFT/CPF poli…",
+   "body": "FATF & APG",
+   "fatf": "FATF member; 4th-round MER 2015 + follow-ups; generally moderate-to-substantial effectiveness. [VERIFY ratings & latest follow-up]",
+   "defi": "Themes: DNFBP supervision; beneficial ownership; ML conviction outcomes. [VERIFY against MER]",
+   "thr": "CTR at/above RM 25,000 cash; STR any amount. [VERIFY]",
+   "ret": "≥ 6 years [VERIFY]"
+  },
+  {
+   "jur": "Morocco",
+   "reg": "Bank Al-Maghrib (central bank)",
+   "fiu": "Autorité Nationale du Renseignement Financier (ANRF, formerly UTRF)",
+   "fw": "Law No. 43-05 on AML (amended, incl. Law 12-18); Penal Code provisions; ANRF instructions",
+   "body": "MENAFATF",
+   "fatf": "On FATF increased-monitoring list Feb 2021; removed Feb 2023. [VERIFY post-exit follow-up status]",
+   "defi": "Action-plan themes (now addressed per exit): risk-based supervision; beneficial ownership; TF & targeted sanctions; effectiveness of investigations. [VERIFY]",
+   "thr": "Suspicion-based déclaration de soupçon to ANRF; CDD threshold for occasional txns. [VERIFY]",
+   "ret": "Commonly cited up to 10 years [VERIFY exact period]"
+  },
+  {
+   "jur": "Pakistan",
+   "reg": "State Bank of Pakistan (SBP) [banks, MFBs, ECs, DFIs]; SECP [securities, NBFCs, insurance…",
+   "fiu": "Financial Monitoring Unit (FMU) – goAML",
+   "fw": "Anti-Money Laundering Act 2010 (amended); Anti-Terrorism Act 1997; SBP AML/CFT/CPF Regulations",
+   "body": "APG",
+   "fatf": "3rd National Risk Assessment completed 2023 (after 2017 & 2019). On the FATF increased-monitoring (grey) list June 2018 – exited Oct 2022 after completing two action plans. Source: Pakistan Summarize…",
+   "defi": "Per NRA 2023, highest ML threats (Very High): corruption/bribery, illegal MVTS (hawala/hundi), tax crimes, smuggling & cash smuggling. Most-vulnerable sectors: banks, real-estate agents, exchange companies, DPMS; Privat…",
+   "thr": "CTR at/above PKR 2,000,000 single cash txn; STR any amount. [VERIFY]",
+   "ret": "≥ 5 years [VERIFY]"
+  },
+  {
+   "jur": "Philippines",
+   "reg": "Bangko Sentral ng Pilipinas (BSP)",
+   "fiu": "Anti-Money Laundering Council (AMLC)",
+   "fw": "Anti-Money Laundering Act 2001 (RA 9160, amended by RA 10365 / RA 11521); Terrorism Financing Prevention & Suppression…",
+   "body": "APG",
+   "fatf": "Added to FATF grey list Jun 2021; best knowledge indicates removal ~Feb 2025 – [VERIFY HARD: confirm current status, time-sensitive]",
+   "defi": "Action-plan themes: casino/DNFBP & MVTS supervision; beneficial ownership; TF investigation/prosecution; targeted financial sanctions; cross-border/remittance controls. [VERIFY]",
+   "thr": "CTR for single cash/equivalent txn > PHP 500,000 in one banking day; STR any amount. [VERIFY]",
+   "ret": "≥ 5 years [VERIFY]"
+  },
+  {
+   "jur": "Singapore",
+   "reg": "Monetary Authority of Singapore (MAS)",
+   "fiu": "Suspicious Transaction Reporting Office (STRO), Commercial Affairs Department, SPF – SONAR",
+   "fw": "CDSA 1992 (Corruption, Drug Trafficking & Other Serious Crimes); TSOFA 2002; MAS Notice 626 (banks); PS Act 2019 (payme…",
+   "body": "FATF",
+   "fatf": "FATF member; MER 2016 – strong overall effectiveness. Not listed. Post-2023 ~S$3bn ML case heightened scrutiny of wealth/property/family-office channels. [VERIFY ratings & latest follow-up]",
+   "defi": "Historic improvement areas: DNFBP supervision; legal persons / beneficial-ownership transparency. Risk arises mainly from scale & cross-border exposure, not weak controls. [VERIFY]",
+   "thr": "Suspicion-based STR (CDSA); no routine domestic CTR threshold; cross-border physical currency/bearer instruments ≥ SGD…",
+   "ret": "≥ 5 years [VERIFY]"
+  },
+  {
+   "jur": "United Arab Emirates",
+   "reg": "Central Bank of the UAE (CBUAE); DFSA (DIFC); FSRA (ADGM)",
+   "fiu": "UAE FIU / Anti-Money Laundering & Suspicious Cases Unit (AMLSCU) – goAML",
+   "fw": "Federal Decree-Law No. 20 of 2018 (amended by Decree-Law 26 of 2021); Cabinet Decision No. 10 of 2019; CBUAE AML/CFT re…",
+   "body": "MENAFATF / FATF",
+   "fatf": "MER 2020; on FATF grey list Mar 2022; removed Feb 2024 after action plan. [VERIFY post-exit follow-up status]",
+   "defi": "Action-plan themes (per exit): beneficial ownership; MVTS/hawala registration & supervision; targeted financial sanctions; ML investigation/prosecution; international cooperation. [VERIFY]",
+   "thr": "Suspicion-based STR/SAR via goAML; CDD threshold for occasional txns commonly stated AED 55,000 (~USD 15,000). [VERIFY]",
+   "ret": "≥ 5 years [VERIFY]"
+  }
+ ],
+ "usThreats": {
+  "NMLRA": [
+   {
+    "area": "Fraud (overall)",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Investment fraud (incl. digital-asset “pig-butcheri…",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Confidence scams (BEC, impersonation, romance, adva…",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Elder financial exploitation",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Use of AI in fraud / deepfakes",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Check fraud (update)",
+    "score": 9,
+    "rating": "High"
+   },
+   {
+    "area": "Drug trafficking",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Cybercrime (identity theft, ransomware, sextortion)",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Professional money laundering / CMLNs",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Money mules",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Human trafficking & smuggling",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Corruption (domestic & foreign)",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Illicit trade",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Banks (incl. BaaS sponsor partners)",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Money services businesses (MSBs)",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "BaaS / third-party program oversight",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Broker-dealers & investment advisers",
+    "score": 9,
+    "rating": "High"
+   },
+   {
+    "area": "Casinos & gaming",
+    "score": 9,
+    "rating": "High"
+   },
+   {
+    "area": "Complicit insiders",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Cash — bulk cash smuggling",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Funnel accounts",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Digital assets",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "P2P payments & prepaid / gift cards",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Money orders",
+    "score": 9,
+    "rating": "High"
+   },
+   {
+    "area": "Insurance",
+    "score": 2,
+    "rating": "Low"
+   },
+   {
+    "area": "Legal entities & arrangements",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Gatekeepers",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "High-value goods & property",
+    "score": 12,
+    "rating": "High"
+   }
+  ],
+  "NTFRA": [
+   {
+    "area": "ISIS (Islamic State of Iraq & Syria)",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Al-Qa’ida (AQ) & affiliates (al-Shabaab, JNIM)",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Hizballah",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Hamas",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Homegrown Violent Extremists (HVEs)",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Domestic Violent Extremists (DVEs)",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Cartels / TCOs designated as FTOs (special focus)",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Money Services Businesses (MSBs)",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Banks",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Online fundraising",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Peer-to-peer (P2P) payments",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Cash",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Digital assets",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Non-Profit Organisations (NPOs)",
+    "score": 12,
+    "rating": "High"
+   }
+  ],
+  "NPFRA": [
+   {
+    "area": "DPRK (North Korea)",
+    "score": 25,
+    "rating": "Critical"
+   },
+   {
+    "area": "Iran",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Russia",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Chinese individuals & entities facilitating evasion",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Other state actors (Pakistan, Syria)",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Non-state actors (Hizballah, Houthis, TCOs/FTOs)",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Economic & trade (USD / financial-centre scale)",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Regulatory (sanctions, export controls, jurisdictio…",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Industrial & technological (dual-use goods)",
+    "score": 12,
+    "rating": "High"
+   },
+   {
+    "area": "Banking & correspondent banking",
+    "score": 16,
+    "rating": "Critical"
+   },
+   {
+    "area": "Digital Asset Service Providers (DASPs)",
+    "score": 20,
+    "rating": "Critical"
+   },
+   {
+    "area": "Non-financial sectors (IT workers, maritime & shipp…",
+    "score": 16,
+    "rating": "Critical"
+   }
+  ]
+ }
+}

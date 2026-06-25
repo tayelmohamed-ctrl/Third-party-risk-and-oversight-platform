@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mal · Third-Party Risk & Oversight Platform</title>
+    <script>
+      /* Shim: the platform persists via window.storage (Claude artifacts API).
+         In a normal browser we back it with localStorage so edits persist. */
+      (function () {
+        if (window.storage) return;
+        window.storage = {
+          async get(k) { const v = localStorage.getItem(k); return v === null ? null : { key: k, value: v, shared: false }; },
+          async set(k, v) { localStorage.setItem(k, v); return { key: k, value: v, shared: false }; },
+          async delete(k) { localStorage.removeItem(k); return { key: k, deleted: true, shared: false }; },
+          async list(prefix = "") { return { keys: Object.keys(localStorage).filter((x) => x.startsWith(prefix)), prefix, shared: false }; },
+        };
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
