@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: mal
+      POSTGRES_PASSWORD: mal
+      POSTGRES_DB: mal_tpro
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mal -d mal_tpro"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  api:
+    build: .
+    depends_on:
+      db: { condition: service_healthy }
+    environment:
+      DATABASE_URL: "postgresql://mal:mal@db:5432/mal_tpro?schema=public"
+      PORT: "3001"
+      CORS_ORIGIN: "http://localhost:5173"
+      AUTH_MODE: "stub"
+    ports: ["3001:3001"]
+    command: sh -c "npx prisma migrate deploy && npm run seed && npm run start:prod"
+volumes:
+  pgdata:
