@@ -2855,7 +2855,6 @@ export default function App() {
 
   const SUP_NAV = [
     { id: "oversight", label: "Oversight dashboard", icon: LayoutDashboard },
-    { id: "ard1", label: "ARD-1 Supervisor Dashboard", icon: ShieldCheck },
     { id: "agents", label: "Partners", icon: Users },
     { id: "lifecycle", label: "Product lifecycle", icon: Film },
     { id: "onboarding", label: "Onboarding & forms", icon: UserPlus },
@@ -2950,7 +2949,6 @@ export default function App() {
           {/* SUPERVISOR */}
           {role === "supervisor" && profileId && <Profile {...{ store, agents, id: profileId, back: () => setProfileId(null), now, supervisor: true, updateReview, setModal, onScreen: fetchScreening, screenLoading: screeningLoading }} />}
           {role === "supervisor" && !profileId && tab === "oversight" && <Oversight {...{ agents, store, openProfile: setProfileId }} />}
-          {role === "supervisor" && !profileId && tab === "ard1" && <ARD1Dashboard {...{ agents, store, openProfile: setProfileId }} />}
           {role === "supervisor" && !profileId && tab === "agents" && <Directory {...{ agents, store, openProfile: setProfileId }} />}
           {role === "supervisor" && !profileId && tab === "lifecycle" && <LifecycleShow />}
           {role === "supervisor" && !profileId && tab === "reviews" && <Reviews {...{ store, partnerName, updateReview, supervisor: true, setModal }} />}
@@ -2995,107 +2993,8 @@ export default function App() {
 }
 
 /* ============================================================================
-   SUPERVISOR — Oversight dashboard
-============================================================================ */
-function Oversight({ agents, store, openProfile }) {
-  const rows = agents.map(({ base, slice }) => {
-    const sc = overall(base), r = ratingFor(sc), tr = trendOf(base), dd = ddStatus(slice);
-    const open = Object.values(store.reviews).filter(rv => rv.agent === base.id && rv.status !== "Closed");
-    const findings = open.reduce((n, rv) => n + (rv.findings?.filter(f => f.status === "Open").length || 0), 0);
-    const ew = earlyWarnings(base, slice, store.reviews);
-    return { base, slice, sc, r, tr, dd, training: trainingRate(slice), findings, openReviews: open.length, ew };
-  });
-  const jurAgg = useMemo(() => {
-    const m = {}; rows.forEach(x => { (m[x.base.jur] ||= []).push(x.sc); });
-    return Object.entries(m).map(([jur, arr]) => ({ jur, avg: Math.round(arr.reduce((a, b) => a + b, 0) / arr.length), n: arr.length }));
-  }, [rows]);
-  const escalations = rows.flatMap(x => x.ew.map(w => ({ agent: x.base.name, w, c: x.r.c }))).slice(0, 8);
-
-  return (
-    <>
-      <h1 className="h1">Third-party oversight dashboard</h1>
-      <p className="sub">Live status across every partner — payout, banking, card and processor — with partner-as-customer controls (due diligence) and partner-as-channel controls (reporting, monitoring) in one view. Anything a partner files syncs here automatically.</p>
-      <div className="grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
-        <Kpi label="Partners under oversight" value={agents.length} />
-        <Kpi label="High / critical risk" value={rows.filter(x => x.r.t === "High" || x.r.t === "Critical").length} accent="var(--red)" />
-        <Kpi label="Open program reviews" value={Object.values(store.reviews).filter(r => r.status !== "Closed").length} />
-        <Kpi label="Overdue obligations" value={store.tasks.filter(t => t.status === "Open" && slaStatus(t.due).cd < 0).length + Object.values(store.reviews).filter(r => r.status !== "Closed" && slaStatus(r.foDue).cd < 0).length} accent="var(--amber)" />
-      </div>
-
-      <div className="grid" style={{ gridTemplateColumns: "1.4fr 1fr", marginTop: 13 }}>
-        <div className="card">
-          <h3>Jurisdiction risk heat map</h3>
-          <div className="heat">
-            {jurAgg.map(j => { const r = ratingFor(j.avg); return (
-              <div className="tile" key={j.jur} style={{ borderColor: r.c + "66" }}>
-                <div className="row" style={{ justifyContent: "space-between" }}><b>{j.jur}</b><Globe size={14} color={r.c} /></div>
-                <div className="kpi" style={{ fontSize: 22, color: r.c, marginTop: 6 }}>{j.avg}</div>
-                <div className="muted" style={{ fontSize: 11 }}>{j.n} partner{j.n > 1 ? "s" : ""} · {r.t} risk</div>
-              </div>
-            ); })}
-          </div>
-        </div>
-        <div className="card">
-          <h3>Escalations & early-warning</h3>
-          {escalations.length === 0 ? <div className="muted" style={{ fontSize: 13 }}>No escalations.</div> :
-            escalations.map((e, i) => (
-              <div className="row" key={i} style={{ justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #e7e9f2" }}>
-                <span style={{ fontSize: 12.5 }}><AlertTriangle size={13} color={e.c} style={{ verticalAlign: "-2px", marginRight: 6 }} />{e.w}</span>
-                <span className="muted mono" style={{ fontSize: 11 }}>{e.agent}</span>
-              </div>
-            ))}
-        </div>
-      </div>
-
-      <div className="card" style={{ marginTop: 13 }}>
-        <h3>Partners by category (service relationship to Mal)</h3>
-        <div className="heat">
-          {CATEGORIES.map(cat => { const inCat = rows.filter(x => x.base.category === cat.id); if (!inCat.length) return null; const avg = Math.round(inCat.reduce((s, x) => s + x.sc, 0) / inCat.length); const rr = ratingFor(avg); return (
-            <div className="tile" key={cat.id} style={{ borderColor: cat.color + "55" }}>
-              <div className="row" style={{ gap: 8 }}><span className="catdot" style={{ background: cat.color }} /><b style={{ fontSize: 13 }}>{cat.id}</b></div>
-              <div className="kpi" style={{ fontSize: 20, marginTop: 7, color: rr.c }}>{avg}</div>
-              <div className="muted" style={{ fontSize: 11 }}>{inCat.length} partner{inCat.length > 1 ? "s" : ""} · avg score · {cat.note}</div>
-            </div>
-          ); })}
-        </div>
-      </div>
-
-      <div className="card" style={{ marginTop: 13 }}>
-        <h3>All partners</h3>
-        <div className="tablewrap">
-          <table>
-            <thead><tr><th>Partner</th><th>Category</th><th>Jurisdiction</th><th>Score</th><th>Risk</th><th>Trend</th><th>Training</th><th>DD</th><th>Open findings</th><th>Reviews</th><th></th></tr></thead>
-            <tbody>{rows.slice().sort((a, b) => CATEGORIES.findIndex(c => c.id === a.base.category) - CATEGORIES.findIndex(c => c.id === b.base.category)).map(x => (
-              <tr key={x.base.id}>
-                <td style={{ fontWeight: 700 }}>{x.base.name}</td>
-                <td><span className="chip" style={{ background: (CATEGORIES.find(c => c.id === x.base.category)?.color || "#888") + "22", color: CATEGORIES.find(c => c.id === x.base.category)?.color || "#888" }}>{x.base.category}</span></td>
-                <td>{x.base.jur}</td>
-                <td className="mono" style={{ color: x.r.c, fontWeight: 700 }}>{x.sc}</td>
-                <td><span className="chip" style={{ background: x.r.c + "22", color: x.r.c }}>{x.r.t}</span></td>
-                <td>{x.tr > 0 ? <TrendingUp size={15} color="var(--green)" /> : x.tr < 0 ? <TrendingDown size={15} color="var(--red)" /> : <Minus size={15} color="var(--muted)" />}</td>
-                <td className="mono">{x.training}%</td>
-                <td className="mono">{x.dd.done}/{x.dd.total}</td>
-                <td className="mono" style={{ color: x.findings ? "var(--red)" : "var(--muted)" }}>{x.findings}</td>
-                <td className="mono">{x.openReviews}</td>
-                <td><button className="btn ghost" onClick={() => openProfile(x.base.id)}>Open <ChevronRight size={13} /></button></td>
-              </tr>
-            ))}</tbody>
-          </table>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function Kpi({ label, value, sub, accent, onClick }) {
-  return <div className="card" style={{ cursor: onClick ? "pointer" : "default" }} onClick={onClick}>
-    <h3>{label}</h3><div className="kpi" style={{ color: accent || "var(--text)" }}>{value}</div>
-    {sub && <div className="muted" style={{ fontSize: 12, marginTop: 5 }}>{sub}</div>}
-  </div>;
-}
-
-/* ============================================================================
-   ARD-1 — Supervisor Oversight Dashboard
+   SUPERVISOR — Oversight dashboard (master record)
+   Merged from ARD-1 — jurisdiction CRAM, quarterly reviews, escalation log
 ============================================================================ */
 const JUR_CRAM = {
   "Pakistan":             { cram: "High",   fatf: "Grey-listed (historical)",  supervisor: "SBP / FMU",     freq: "Annual" },
@@ -3109,8 +3008,9 @@ const JUR_CRAM = {
   "Global":               { cram: "Medium", fatf: "Multi-jurisdictional",       supervisor: "Various",        freq: "3 years" },
 };
 const CRAM_C = { High: "#ef4444", Medium: "#f59e0b", Low: "#17a34a" };
+const LOG_KIND_COLOR = { SAR: "#ef4444", STR: "#f59e0b", "Audit finding": "#8b5cf6", Correspondence: "#1e63e9", Escalation: "#ef4444", "Speak-up": "#0ea5e9" };
 
-function ARD1Dashboard({ agents, store, openProfile }) {
+function Oversight({ agents, store, openProfile }) {
   const [logFilter, setLogFilter] = useState("All");
   const today = new Date();
   const qNum = Math.floor(today.getMonth() / 3) + 1;
@@ -3126,13 +3026,16 @@ function ARD1Dashboard({ agents, store, openProfile }) {
     const qRevs = allRevs.filter(rv => rv.start && new Date(rv.start) >= qStart);
     const qDone = qRevs.filter(rv => rv.status === "Closed").length;
     const qOverdue = qRevs.filter(rv => rv.status !== "Closed" && rv.foDue && slaStatus(rv.foDue).cd < 0).length;
+    const ew = earlyWarnings(base, slice, store.reviews);
     const cram = JUR_CRAM[base.jur] || { cram: "Medium", fatf: "—", supervisor: "—", freq: "Annual" };
-    return { base, slice, sc, r, tr, dd, training, findings, openRevs, qRevs, qDone, qOverdue, cram };
+    return { base, slice, sc, r, tr, dd, training, findings, openRevs, qRevs, qDone, qOverdue, ew, cram };
   });
 
   const avgScore = Math.round(rows.reduce((s, x) => s + x.sc, 0) / rows.length);
-  const openTotal = rows.reduce((n, x) => n + x.openRevs.length, 0);
-  const findingsTotal = rows.reduce((n, x) => n + x.findings, 0);
+  const highCritCount = rows.filter(x => x.r.t === "High" || x.r.t === "Critical").length;
+  const openRevsTotal = rows.reduce((n, x) => n + x.openRevs.length, 0);
+  const overdueTotal = store.tasks.filter(t => t.status === "Open" && slaStatus(t.due).cd < 0).length
+    + Object.values(store.reviews).filter(r => r.status !== "Closed" && slaStatus(r.foDue).cd < 0).length;
   const qRevsDone = rows.reduce((n, x) => n + x.qDone, 0);
   const qRevsTotal = rows.reduce((n, x) => n + x.qRevs.length, 0);
 
@@ -3148,21 +3051,34 @@ function ARD1Dashboard({ agents, store, openProfile }) {
       .sort((a, b) => a.avg - b.avg);
   }, [agents, store.reviews]);
 
+  const escalations = useMemo(() => {
+    const items = [];
+    rows.forEach(x => {
+      x.ew.forEach(w => items.push({ partner: x.base.name, text: w, c: x.r.c, sev: x.r.t === "Critical" ? "crit" : "high", kind: "Warning" }));
+      const reg = x.slice?.registers || {};
+      (reg.sar || []).slice(0, 1).forEach(s => items.push({ partner: x.base.name, text: s.summary, c: SEV.crit.c, sev: "crit", kind: "SAR", ref: s.ref }));
+      (reg.str || []).slice(0, 1).forEach(s => items.push({ partner: x.base.name, text: s.summary, c: SEV.high.c, sev: "high", kind: "STR", ref: s.ref }));
+    });
+    Object.values(store.reviews).forEach(rv => {
+      (rv.findings || []).filter(f => f.status === "Open" && (f.sev === "Critical" || f.sev === "High")).forEach(f => {
+        const pb = agents.find(a => a.base.id === rv.agent)?.base;
+        items.push({ partner: pb?.name || rv.agent, text: f.desc, c: f.sev === "Critical" ? SEV.crit.c : SEV.high.c, sev: f.sev === "Critical" ? "crit" : "high", kind: "Finding", ref: f.ref });
+      });
+    });
+    return items.slice(0, 10);
+  }, [rows, store.reviews]);
+
   const byCat = useMemo(() => {
     const m = {};
     rows.forEach(x => {
       const cat = x.base.category;
       if (!m[cat]) { const cd = CATEGORIES.find(c => c.id === cat); m[cat] = { label: cat, note: cd?.note || "", color: cd?.color || "#8000ff", count: 0, scores: [], openRevs: 0 }; }
-      m[cat].count++;
-      m[cat].scores.push(x.sc);
-      m[cat].openRevs += x.openRevs.length;
+      m[cat].count++; m[cat].scores.push(x.sc); m[cat].openRevs += x.openRevs.length;
     });
     return Object.values(m).map(c => ({ ...c, avg: Math.round(c.scores.reduce((a, b) => a + b, 0) / c.scores.length) }));
   }, [agents, store.reviews]);
 
   const LOG_TYPES = ["All", "SAR", "STR", "Audit finding", "Correspondence", "Escalation", "Speak-up"];
-  const KIND_COLOR = { SAR: "#ef4444", STR: "#f59e0b", "Audit finding": "#8b5cf6", Correspondence: "#1e63e9", Escalation: "#ef4444", "Speak-up": "#0ea5e9" };
-
   const reportingLog = useMemo(() => {
     const log = [];
     agents.forEach(({ base, slice }) => {
@@ -3174,8 +3090,8 @@ function ARD1Dashboard({ agents, store, openProfile }) {
     });
     Object.values(store.reviews).forEach(rv => {
       (rv.findings || []).filter(f => f.status === "Open" && (f.sev === "Critical" || f.sev === "High")).forEach(f => {
-        const partnerBase = agents.find(a => a.base.id === rv.agent)?.base;
-        log.push({ partner: partnerBase?.name || rv.agent, jur: partnerBase?.jur || rv.country || "—", kind: "Escalation", ref: f.ref || rv.id, at: rv.start || "", summary: f.desc || rv.reason, sev: f.sev === "Critical" ? "crit" : "high" });
+        const pb = agents.find(a => a.base.id === rv.agent)?.base;
+        log.push({ partner: pb?.name || rv.agent, jur: pb?.jur || rv.country || "—", kind: "Escalation", ref: f.ref || rv.id, at: rv.start || "", summary: f.desc || rv.reason, sev: f.sev === "Critical" ? "crit" : "high" });
       });
     });
     (store.speakup || []).forEach(s => log.push({ partner: s.anon ? "Anonymous" : s.from, jur: "Internal", kind: "Speak-up", ref: s.id, at: s.at, summary: s.topic + (s.body ? " — " + s.body.slice(0, 55) : ""), sev: "med" }));
@@ -3184,32 +3100,32 @@ function ARD1Dashboard({ agents, store, openProfile }) {
 
   const visibleLog = logFilter === "All" ? reportingLog : reportingLog.filter(l => l.kind === logFilter);
   const critAlerts = reportingLog.filter(l => l.sev === "crit").length;
-  const highAlerts = reportingLog.filter(l => l.sev === "high").length;
 
   return (
     <>
-      {/* Header */}
+      {/* ── Header ─────────────────────────────────────────────────── */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
         <div>
-          <h1 className="h1">ARD-1 · Supervisor Oversight Dashboard</h1>
-          <p className="sub">Third-party risk oversight programme record — partner scoring, quarterly programme reviews, jurisdiction CRAM assessment, and consolidated escalation log.</p>
+          <h1 className="h1">Third-party oversight</h1>
+          <p className="sub">Master oversight record — partner compliance scoring, programme reviews, CRAM-based jurisdiction risk, and consolidated escalation log across all Mal corridors.</p>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0, marginLeft: 16 }}>
-          <span className="chip" style={{ background: "#8000ff22", color: "#8000ff", fontWeight: 700, display: "inline-block", marginBottom: 4 }}>ARD-1</span><br />
+          {critAlerts > 0 && <span className="chip" style={{ background: "#ef444422", color: "var(--red)", fontWeight: 700, display: "inline-block", marginBottom: 4, marginRight: 6 }}>{critAlerts} critical</span>}
           <span className="muted mono" style={{ fontSize: 11 }}>{today.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })} · {qLabel}</span>
         </div>
       </div>
 
-      {/* KPI Row */}
-      <div className="grid" style={{ gridTemplateColumns: "repeat(5,1fr)" }}>
+      {/* ── KPI Row ────────────────────────────────────────────────── */}
+      <div className="grid" style={{ gridTemplateColumns: "repeat(6,1fr)" }}>
         <Kpi label="Partners under oversight" value={agents.length} sub={CATEGORIES.length + " categories"} />
-        <Kpi label="Network avg compliance score" value={avgScore} accent={ratingFor(avgScore).c} sub={ratingFor(avgScore).t + " risk"} />
-        <Kpi label="Open programme reviews" value={openTotal} accent={openTotal > 0 ? "var(--amber)" : undefined} sub={findingsTotal + " open findings"} />
-        <Kpi label="Critical & high alerts" value={critAlerts + highAlerts} accent={critAlerts > 0 ? "var(--red)" : highAlerts > 0 ? "var(--amber)" : undefined} sub={critAlerts + " critical · " + highAlerts + " high"} />
+        <Kpi label="Network avg score" value={avgScore} accent={ratingFor(avgScore).c} sub={ratingFor(avgScore).t + " risk"} />
+        <Kpi label="High / critical risk" value={highCritCount} accent={highCritCount > 0 ? "var(--red)" : undefined} sub={agents.length - highCritCount + " within tolerance"} />
+        <Kpi label="Open programme reviews" value={openRevsTotal} accent={openRevsTotal > 0 ? "var(--amber)" : undefined} />
+        <Kpi label="Overdue obligations" value={overdueTotal} accent={overdueTotal > 0 ? "var(--red)" : undefined} sub="reviews + tasks" />
         <Kpi label={qLabel + " reviews"} value={qRevsDone + "/" + (qRevsTotal || agents.length)} accent={qRevsTotal > 0 && qRevsDone < qRevsTotal ? "var(--amber)" : qRevsTotal > 0 ? "var(--green)" : undefined} sub={qRevsDone < qRevsTotal ? "outstanding" : qRevsTotal > 0 ? "all conducted" : "none scheduled"} />
       </div>
 
-      {/* CRAM heat map + Escalations */}
+      {/* ── CRAM heat map + Escalations ────────────────────────────── */}
       <div className="grid" style={{ gridTemplateColumns: "1.6fr 1fr", marginTop: 13 }}>
         <div className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -3240,32 +3156,35 @@ function ARD1Dashboard({ agents, store, openProfile }) {
         </div>
 
         <div className="card">
-          <h3>Escalations & interdiction alerts</h3>
-          {reportingLog.filter(l => l.sev === "crit" || l.sev === "high").length === 0
+          <h3>Escalations & early-warning signals</h3>
+          {escalations.length === 0
             ? <div className="muted" style={{ fontSize: 13 }}>No active escalations.</div>
-            : reportingLog.filter(l => l.sev === "crit" || l.sev === "high").slice(0, 7).map((e, i) => (
+            : escalations.map((e, i) => (
               <div key={i} style={{ padding: "7px 0", borderBottom: "1px solid var(--line)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 6 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 6 }}>
                   <span style={{ fontSize: 12.5 }}>
-                    <AlertTriangle size={13} color={SEV[e.sev].c} style={{ verticalAlign: "-2px", marginRight: 5 }} />
-                    <b>{e.kind}</b> · {e.partner}
+                    <AlertTriangle size={13} color={e.c} style={{ verticalAlign: "-2px", marginRight: 5 }} />
+                    {e.kind !== "Warning" && <span className="chip" style={{ background: (LOG_KIND_COLOR[e.kind] || "#888") + "22", color: LOG_KIND_COLOR[e.kind] || "#888", fontSize: 10, marginRight: 5 }}>{e.kind}</span>}
+                    {e.text?.slice(0, 72)}{e.text?.length > 72 ? "…" : ""}
                   </span>
                   <span className="chip" style={{ background: SEV[e.sev].c + "22", color: SEV[e.sev].c, fontSize: 10, flexShrink: 0 }}>{SEV[e.sev].t}</span>
                 </div>
-                <div className="muted" style={{ fontSize: 11.5, marginTop: 2, paddingLeft: 18 }}>{e.summary?.slice(0, 100)}{e.summary?.length > 100 ? "…" : ""}</div>
-                <div className="muted mono" style={{ fontSize: 10, marginTop: 1, paddingLeft: 18 }}>{e.jur} · {e.ref}</div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2, paddingLeft: 18 }}>
+                  <span className="muted mono" style={{ fontSize: 10.5 }}>{e.partner}</span>
+                  {e.ref && <span className="muted mono" style={{ fontSize: 10 }}>{e.ref}</span>}
+                </div>
               </div>
             ))
           }
         </div>
       </div>
 
-      {/* Quarterly reviews + Partners by category */}
+      {/* ── Quarterly reviews + Partners by category ───────────────── */}
       <div className="grid" style={{ gridTemplateColumns: "1.2fr 1fr", marginTop: 13 }}>
         <div className="card">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
             <h3 style={{ margin: 0 }}>Programme reviews · {qLabel}</h3>
-            <span className="muted" style={{ fontSize: 12 }}>{qRevsDone} of {qRevsTotal || agents.length} reviewed this quarter</span>
+            <span className="muted" style={{ fontSize: 12 }}>{qRevsDone} of {qRevsTotal || agents.length} reviewed</span>
           </div>
           <div className="tablewrap">
             <table>
@@ -3279,10 +3198,13 @@ function ARD1Dashboard({ agents, store, openProfile }) {
                     <td className="mono">{qDone > 0 ? <span style={{ color: "var(--green)" }}>{qDone}</span> : <span className="muted">0</span>}</td>
                     <td className="mono">{qOverdue > 0 ? <span style={{ color: "var(--red)", fontWeight: 700 }}>{qOverdue}</span> : "—"}</td>
                     <td>
-                      {qOverdue > 0 ? <span className="chip" style={{ background: "#ef444422", color: "var(--red)", fontSize: 11 }}>Overdue</span>
-                        : qDone === qRevs.length && qRevs.length > 0 ? <span className="chip" style={{ background: "#17a34a22", color: "var(--green)", fontSize: 11 }}>Done</span>
-                        : qRevs.length > 0 ? <span className="chip" style={{ background: "#f59e0b22", color: "var(--amber)", fontSize: 11 }}>In progress</span>
-                        : <span className="chip" style={{ background: "var(--line)", color: "var(--muted)", fontSize: 11 }}>Pending</span>}
+                      {qOverdue > 0
+                        ? <span className="chip" style={{ background: "#ef444422", color: "var(--red)", fontSize: 11 }}>Overdue</span>
+                        : qDone === qRevs.length && qRevs.length > 0
+                          ? <span className="chip" style={{ background: "#17a34a22", color: "var(--green)", fontSize: 11 }}>Done</span>
+                          : qRevs.length > 0
+                            ? <span className="chip" style={{ background: "#f59e0b22", color: "var(--amber)", fontSize: 11 }}>In progress</span>
+                            : <span className="chip" style={{ background: "var(--line)", color: "var(--muted)", fontSize: 11 }}>Pending</span>}
                     </td>
                   </tr>
                 ))}
@@ -3316,22 +3238,22 @@ function ARD1Dashboard({ agents, store, openProfile }) {
         </div>
       </div>
 
-      {/* Partners oversight register */}
+      {/* ── Partners oversight register ─────────────────────────────── */}
       <div className="card" style={{ marginTop: 13 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
           <h3 style={{ margin: 0 }}>Partners oversight register</h3>
-          <span className="muted mono" style={{ fontSize: 11 }}>ARD-1 · {today.toLocaleDateString("en-GB")}</span>
+          <span className="muted mono" style={{ fontSize: 11 }}>{today.toLocaleDateString("en-GB")}</span>
         </div>
         <div className="tablewrap">
           <table>
             <thead>
-              <tr><th>Partner</th><th>Category</th><th>Jurisdiction</th><th>Score</th><th>Risk</th><th>Trend</th><th>Training</th><th>DD</th><th>Open findings</th><th>Reviews</th></tr>
+              <tr><th>Partner</th><th>Category</th><th>Jurisdiction</th><th>Score</th><th>Risk</th><th>Trend</th><th>Training</th><th>DD</th><th>Open findings</th><th>Reviews</th><th></th></tr>
             </thead>
             <tbody>
               {rows.slice().sort((a, b) => CATEGORIES.findIndex(c => c.id === a.base.category) - CATEGORIES.findIndex(c => c.id === b.base.category)).map(x => {
                 const catColor = CATEGORIES.find(c => c.id === x.base.category)?.color || "#888";
                 return (
-                  <tr key={x.base.id} style={{ cursor: "pointer" }} onClick={() => openProfile(x.base.id)}>
+                  <tr key={x.base.id}>
                     <td style={{ fontWeight: 700 }}>
                       <span style={{ width: 7, height: 7, borderRadius: "50%", background: catColor, display: "inline-block", marginRight: 7, verticalAlign: "middle" }} />
                       {x.base.name}
@@ -3352,6 +3274,7 @@ function ARD1Dashboard({ agents, store, openProfile }) {
                     <td className="mono" style={{ fontSize: 12, color: x.dd.done === x.dd.total ? "var(--green)" : "var(--amber)" }}>{x.dd.done}/{x.dd.total}</td>
                     <td className="mono" style={{ color: x.findings > 0 ? "var(--red)" : "var(--muted)", fontWeight: x.findings > 0 ? 700 : 400 }}>{x.findings || "—"}</td>
                     <td className="mono">{x.openRevs.length > 0 ? <span style={{ color: "var(--amber)" }}>{x.openRevs.length} open</span> : <span className="muted">—</span>}</td>
+                    <td><button className="btn ghost" onClick={() => openProfile(x.base.id)}>Open <ChevronRight size={13} /></button></td>
                   </tr>
                 );
               })}
@@ -3360,7 +3283,7 @@ function ARD1Dashboard({ agents, store, openProfile }) {
         </div>
       </div>
 
-      {/* Reporting & escalation log */}
+      {/* ── Reporting & escalation log ──────────────────────────────── */}
       <div className="card" style={{ marginTop: 13 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
           <h3 style={{ margin: 0 }}>Reporting & escalation log</h3>
@@ -3382,7 +3305,7 @@ function ARD1Dashboard({ agents, store, openProfile }) {
                       <td className="muted mono" style={{ whiteSpace: "nowrap", fontSize: 11 }}>{e.at ? fmtDate(e.at) : "—"}</td>
                       <td style={{ fontWeight: 600, fontSize: 12.5 }}>{e.partner}</td>
                       <td className="muted" style={{ fontSize: 12 }}>{e.jur}</td>
-                      <td><span className="chip" style={{ background: (KIND_COLOR[e.kind] || "#888") + "22", color: KIND_COLOR[e.kind] || "#888", fontSize: 10 }}>{e.kind}</span></td>
+                      <td><span className="chip" style={{ background: (LOG_KIND_COLOR[e.kind] || "#888") + "22", color: LOG_KIND_COLOR[e.kind] || "#888", fontSize: 10 }}>{e.kind}</span></td>
                       <td className="mono" style={{ fontSize: 11 }}>{e.ref}</td>
                       <td style={{ fontSize: 12 }}>{e.summary?.slice(0, 90)}{e.summary?.length > 90 ? "…" : ""}</td>
                       <td><span className="chip" style={{ background: (SEV[e.sev]?.c || "#888") + "22", color: SEV[e.sev]?.c || "#888", fontSize: 10 }}>{SEV[e.sev]?.t || e.sev}</span></td>
@@ -3396,6 +3319,13 @@ function ARD1Dashboard({ agents, store, openProfile }) {
       </div>
     </>
   );
+}
+
+function Kpi({ label, value, sub, accent, onClick }) {
+  return <div className="card" style={{ cursor: onClick ? "pointer" : "default" }} onClick={onClick}>
+    <h3>{label}</h3><div className="kpi" style={{ color: accent || "var(--text)" }}>{value}</div>
+    {sub && <div className="muted" style={{ fontSize: 12, marginTop: 5 }}>{sub}</div>}
+  </div>;
 }
 
 /* ============================================================================
