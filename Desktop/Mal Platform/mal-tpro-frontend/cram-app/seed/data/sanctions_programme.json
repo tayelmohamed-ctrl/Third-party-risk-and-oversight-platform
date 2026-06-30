@@ -1,0 +1,71 @@
+{
+  "categories": [
+    {
+      "category": "A",
+      "countries": [
+        "Iran",
+        "North Korea",
+        "Syria"
+      ],
+      "rule": "No account may be opened for residents or companies incorporated there; no remittances to/from these countries; neither the applicant nor the beneficiary may be located in a sanctioned country."
+    },
+    {
+      "category": "B",
+      "countries": [
+        "Cuba",
+        "Russia",
+        "Sudan",
+        "Yemen",
+        "Venezuela"
+      ],
+      "rule": "No USD / EUR / GBP transactions to or from these countries (transactions in other currencies are permitted)."
+    },
+    {
+      "category": "C",
+      "countries": [
+        "Afghanistan",
+        "Belarus",
+        "Central African Republic",
+        "CÃ´te dâIvoire",
+        "DR Congo",
+        "Eritrea",
+        "Guinea-Bissau",
+        "Iraq",
+        "Lebanon",
+        "Liberia",
+        "Libya",
+        "Myanmar",
+        "Somalia",
+        "Zimbabwe"
+      ],
+      "rule": "No dealings with sanctioned individuals/entities tied to repressive regimes or criminal organisations; no transactions in specified goods/services (arms, military equipment, munitions, diamonds, precious stones)."
+    }
+  ],
+  "safe_haven_countries": [
+    "Afghanistan",
+    "Burkina Faso",
+    "Cameroon",
+    "Chad",
+    "Colombia",
+    "Guinea",
+    "Indonesia",
+    "Iraq",
+    "Lebanon",
+    "Libya",
+    "Malaysia",
+    "Mali",
+    "Mauritania",
+    "Mozambique",
+    "Niger",
+    "Nigeria",
+    "Pakistan",
+    "Philippines",
+    "Sahel",
+    "Senegal",
+    "Somalia",
+    "Sudan",
+    "The Gambia",
+    "Venezuela",
+    "Yemen"
+  ]
+}

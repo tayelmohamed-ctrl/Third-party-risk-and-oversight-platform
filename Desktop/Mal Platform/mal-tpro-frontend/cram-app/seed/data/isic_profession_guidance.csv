@@ -1,0 +1,17 @@
+profession_customer_profile,indicative_aml_risk,primary_risk_drivers,suggested_cra_treatment
+Lawyer / notary / legal consultant,High,Gatekeeper services; legal-person formation; client money or escrow,"EDD where forming/controlling entities, handling client funds, property transactions, or high-risk jurisdictions are involved"
+Accountant / auditor / tax advisor,High,Gatekeeper services; structuring; company administration,"EDD for company formation, nominee, tax structuring, or client fund activity"
+Real estate broker / property developer,High,High-value property transactions and third-party payment risk,"EDD, source of funds/wealth, property documentation, buyer/seller/agent checks"
+Dealer in gold / precious metals / diamonds / jewelry,High,Portable high-value goods and sanctions/PF exposure,"EDD, provenance and import/export checks, supplier/customer screening"
+Casino / betting operator or owner,High,Cash-intensive gambling typologies,"Senior approval, licensing, cash controls and enhanced monitoring"
+Money changer / remittance / payments / fintech operator,High,Third-party funds movement and cross-border flows,"Licensing, AML controls assessment, transaction monitoring, agent/correspondent review"
+Virtual asset / crypto business owner/operator,High,"Anonymity, rapid value transfer, sanctions and typology exposure","VASP licensing, blockchain analytics, source of funds, senior approval"
+Importer/exporter / freight forwarder / customs broker,Medium,TBML and sanctions exposure,"Trade document review, country/counterparty checks, goods and dual-use screening"
+"Oil, gas or commodities trader",High,"Sanctions, corruption and high-value commodity flows","EDD, origin/destination, BO, SoF and sanctions screening"
+NPO/charity officer or fundraiser,High,TF/sanctions exposure depending on geography/beneficiaries,"Program, donor and beneficiary validation; sanctions screening"
+Public official / senior government-linked role,High,PEP/corruption exposure,"PEP controls, SoW/SoF, senior management approval where required"
+Healthcare professional,Low,Generally regulated professional income,"Standard CDD; adjust for ownership of clinics, unusual cash, or procurement exposure"
+Teacher / professor / education professional,Low,Stable employment profile,Simplified/standard CDD unless high-risk geography/PEP/adverse media applies
+Salaried employee in ordinary private sector,Low,Employment income with limited business activity,Standard employment and source of funds validation
+Restaurant/bar/hotel owner,Medium,Cash-intensive hospitality operations,Validate expected cash profile and transaction behavior
+Used car / boat / luxury goods dealer,High,High-value movable assets and trade/cash exposure,EDD for high-value/cross-border transactions and source of funds

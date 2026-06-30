@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "country_risk row",
+  "type": "object",
+  "required": ["country","fatf","basel","sanctions","safe_haven","overall","band","firm_score"],
+  "properties": {
+    "country": {"type": "string", "minLength": 1},
+    "fatf": {"type": "integer", "minimum": 1, "maximum": 3},
+    "basel": {"type": "integer", "minimum": 1, "maximum": 3},
+    "sanctions": {"type": "integer", "minimum": 1, "maximum": 3},
+    "safe_haven": {"type": "integer", "minimum": 1, "maximum": 3},
+    "overall": {"type": "number", "minimum": 0, "maximum": 4},
+    "band": {"enum": ["Low","Medium","High","Prohibited"]},
+    "firm_score": {"type": "number", "minimum": 0, "maximum": 4}
+  }
+}

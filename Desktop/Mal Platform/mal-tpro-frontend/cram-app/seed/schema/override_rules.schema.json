@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "override_rule row (after load-time enrichment)",
+  "type": "object",
+  "required": ["rule_id","outcome","priority","class","active_flag","auto_evaluated"],
+  "properties": {
+    "rule_id": {"type": "string", "pattern": "^OVR-0(0[1-9]|1[0-9]|20)$"},
+    "trigger": {"type": "string"},
+    "outcome": {"type": "string"},
+    "priority": {"enum": ["Highest","High","Medium"]},
+    "evidence_required": {"type": "string"},
+    "class": {"enum": ["PROHIBITED","HIGH","MEDIUM"]},
+    "active_flag": {"enum": ["LOCKED","ACTIVE","INACTIVE"]},
+    "auto_evaluated": {"type": "boolean"},
+    "segment_applicability": {"type": "array", "items": {"enum": ["NP","LP","MER","FI","EMP","EXT"]}}
+  }
+}

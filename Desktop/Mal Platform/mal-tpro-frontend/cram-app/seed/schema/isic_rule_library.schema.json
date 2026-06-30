@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "isic_rule_library",
+  "type": "object",
+  "required": ["rules"],
+  "properties": {
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule_id","risk_rating","risk_score","keyword_regex"],
+        "properties": {
+          "rule_id": {"type": "string", "pattern": "^(VH|H|MH|LOW)\\d+$"},
+          "risk_rating": {"enum": ["Low","Medium","High"]},
+          "risk_score": {"type": "integer", "minimum": 1, "maximum": 3},
+          "risk_theme": {"type": "string"},
+          "keyword_regex": {"type": "string"},
+          "risk_driver": {"type": "string"},
+          "suggested_controls": {"type": "string"}
+        }
+      }
+    }
+  }
+}

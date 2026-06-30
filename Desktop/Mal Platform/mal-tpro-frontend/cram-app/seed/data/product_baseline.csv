@@ -1,0 +1,13 @@
+product_service,baseline,key_risk_driver,system_treatment,high_trigger_condition
+Basic Current/Savings Account,Medium,Entry account; mule risk,Medium unless low-limit salary/own-account,"High-volume, third-party funding, unverified"
+Salary/Payroll Account,Low-Medium,Lower risk with verified employer,Medium if employer high-risk or source unclear,"Unexplained top-ups, cash deposits"
+Debit Card,Medium,Cash withdrawals; card-not-present,High where cross-border/high-risk MCC enabled,Crypto/gambling/cross-border without controls
+Credit / Virtual Card,Medium-High,Cash advances; high velocity; scam,High for high limits or instant virtual issuance,Weak identity assurance; instant issuance
+Domestic Transfers / Instant Payments,Medium-High,Rapid movement; mule/scam,High for high limits or new-beneficiary velocity,Weak authentication; high-velocity transfers
+International Transfers / Remittances,High,Cross-border; sanctions; layering,High by default; corridor controls mandatory,Always High â controls required
+Wallet / Stored Value,High,Prepaid; rapid movement; third-party,High by default; prohibited if anonymous,Anonymous/unverified = Prohibited
+Virtual Accounts / Virtual IBANs,High,Opacity; nested-customer risk,High; LP/MER/FI due diligence required,Third-party payer without controls
+Merchant Acquiring / Payment Gateway,High,Merchant fraud; chargebacks; CNP,High for high-risk MCCs; digital goods,Cross-border merchants; payment facilitators
+Open Banking / API Access,Medium-High,Third-party access; automation,High for bulk payment initiation,Nested customers; bulk API without controls
+Trade Finance / Invoice Finance,High,TBML; sanctions; dual-use goods,High by default; PF/goods screening required,Always High
+Crypto / Virtual Asset Exposure,Prohibited/Restricted,Requires specific licensing,Reject/block unless expressly permitted,No license = Prohibited

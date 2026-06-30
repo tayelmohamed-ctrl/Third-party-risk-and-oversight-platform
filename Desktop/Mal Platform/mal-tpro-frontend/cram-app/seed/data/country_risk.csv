@@ -1,0 +1,252 @@
+country,fatf,basel,sanctions,safe_haven,overall,band,firm_score
+United Arab Emirates,1,2,1,1,1.35,Medium,1.35
+Afghanistan,1,3,2,3,2.1,High,2.1
+Aland Islands,2,2,1,1,1.65,Medium,1.65
+Albania,1,2,2,1,1.65,Medium,1.65
+Algeria,2,2,1,1,1.65,Medium,3
+American Samoa,1,1,1,1,1.0,Low,1
+Andorra,1,1,1,1,1.0,Low,1
+Angola,2,2,1,1,1.65,Medium,3
+Anguilla,1,2,1,1,1.35,Medium,1.35
+Antarctica,1,1,1,1,1.0,Low,1
+Antigua and Barbuda,1,2,1,1,1.35,Medium,1.35
+Argentina,1,2,2,1,1.65,Medium,1.65
+Armenia,1,1,2,1,1.3,Medium,1.3
+Aruba,1,2,1,1,1.35,Medium,1.35
+Australia,1,2,1,1,1.35,Medium,1.35
+Austria,1,2,1,1,1.35,Medium,1.35
+Azerbaijan,1,2,2,1,1.65,Medium,1.65
+Bahamas,1,2,1,1,1.35,Medium,1.35
+Bahrain,1,2,1,1,1.35,Medium,1.35
+Bangladesh,1,2,1,1,1.35,Medium,1.35
+Barbados,1,2,1,1,1.35,Medium,1.35
+Belarus,1,2,2,1,1.65,Medium,1.65
+Belgium,1,2,1,1,1.35,Medium,1.35
+Belize,1,1,1,1,1.0,Low,1
+Benin,1,2,1,1,1.35,Medium,1.35
+Bermuda,1,2,1,1,1.35,Medium,1.35
+Bhutan,1,2,1,1,1.35,Medium,1.35
+Bolivia,2,2,1,1,1.65,Medium,3
+Bonaire,1,1,1,1,1.0,Low,1
+Bosnia-Herzegovina,1,2,2,1,1.65,Medium,1.65
+Botswana,1,2,1,1,1.35,Medium,1.35
+Bouvet Island,1,1,1,1,1.0,Low,1
+Brazil,1,2,1,1,1.35,Medium,1.35
+British Indian Ocean Territory,1,1,1,1,1.0,Low,1
+British Virgin Islands,2,3,1,1,2.0,Medium,3
+Brunei,1,2,1,1,1.35,Medium,1.35
+Bulgaria,2,2,2,1,1.95,Medium,3
+Burkina Faso,1,2,1,3,1.45,Medium,1.45
+Burundi,1,2,2,1,1.65,Medium,1.65
+Cambodia,1,2,1,1,1.35,Medium,1.35
+Cameroon,2,2,1,3,1.75,Medium,3
+Canada,1,2,1,1,1.35,Medium,1.35
+Cape Verde,1,2,1,1,1.35,Medium,1.35
+Cayman Islands,1,2,1,1,1.35,Medium,1.35
+Central African Republic,1,3,2,1,2.0,Medium,2
+Chad,1,3,1,3,1.8,Medium,1.8
+Chile,1,2,1,1,1.35,Medium,1.35
+China,1,3,2,1,2.0,Medium,2
+Christmas Island,1,1,1,1,1.0,Low,1
+Cocos (Keeling) Islands,1,1,1,1,1.0,Low,1
+Colombia,1,2,1,3,1.45,Medium,1.45
+Comoros,1,2,1,1,1.35,Medium,1.35
+Cook Islands,1,1,1,1,1.0,Low,1
+Costa Rica,1,2,1,1,1.35,Medium,1.35
+Cote Dâivoire,2,2,1,1,1.65,Medium,3
+Croatia,1,2,2,1,1.65,Medium,1.65
+Cuba,1,2,3,1,1.95,Medium,1.95
+Curacao,1,1,1,1,1.0,Low,1
+Cyprus,1,2,1,1,1.35,Medium,1.35
+Czech Republic,1,1,1,1,1.0,Low,1
+Democratic Republic of the Congo,2,3,2,1,2.3,High,3
+Denmark,1,1,1,1,1.0,Low,1
+Djibouti,1,2,1,1,1.35,Medium,1.35
+Dominica,1,2,1,1,1.35,Medium,1.35
+Dominican Republic,1,2,1,1,1.35,Medium,1.35
+Ecuador,1,2,1,1,1.35,Medium,1.35
+Egypt,1,2,2,3,1.75,Medium,1.75
+El Salvador,1,2,1,1,1.35,Medium,1.35
+Equatorial Guinea,1,3,1,1,1.7,Medium,1.7
+Eritrea,1,2,1,1,1.35,Medium,1.35
+Estonia,1,1,1,1,1.0,Low,1
+Ethiopia,1,2,1,1,1.35,Medium,1.35
+Falkland Islands,1,1,1,1,1.0,Low,1
+Faroe Islands,1,1,1,1,1.0,Low,1
+Fiji,1,2,1,1,1.35,Medium,1.35
+Finland,1,1,1,1,1.0,Low,1
+France,1,1,1,1,1.0,Low,1
+French Guiana,1,1,1,1,1.0,Low,1
+French Polynesia,1,1,1,1,1.0,Low,1
+French Southern Territories,1,1,1,1,1.0,Low,1
+Gabon,1,3,1,1,1.7,Medium,1.7
+Gambia,1,2,1,3,1.45,Medium,1.45
+Georgia,1,2,1,1,1.35,Medium,1.35
+Germany,1,2,1,1,1.35,Medium,1.35
+Ghana,1,2,1,1,1.35,Medium,1.35
+Gibraltar,1,1,1,1,1.0,Low,1
+Greece,1,1,2,1,1.3,Medium,1.3
+Greenland,1,1,1,1,1.0,Low,1
+Grenada,1,2,1,1,1.35,Medium,1.35
+Guadeloupe,1,1,1,1,1.0,Low,1
+Guam,1,1,1,1,1.0,Low,1
+Guatemala,1,2,1,1,1.35,Medium,1.35
+Guernsey,1,1,1,1,1.0,Low,1
+Guinea,1,2,2,3,1.75,Medium,1.75
+Guinea-Bissau,1,3,2,1,2.0,Medium,2
+Guyana,1,2,1,1,1.35,Medium,1.35
+Haiti,2,3,1,1,2.0,Medium,3
+Heard McDonald,1,1,1,1,1.0,Low,1
+Honduras,1,2,1,1,1.35,Medium,1.35
+Hong Kong,1,2,1,1,1.35,Medium,1.35
+Hungary,1,2,1,1,1.35,Medium,1.35
+Iceland,1,1,1,1,1.0,Low,1
+India,1,2,1,1,1.35,Medium,1.35
+Indonesia,1,2,1,3,1.45,Medium,1.45
+Iran,3,3,3,1,2.9,High,4
+Iraq,1,2,2,3,1.75,Medium,1.75
+Ireland,1,2,1,1,1.35,Medium,1.35
+Isle of Man,1,1,1,1,1.0,Low,1
+Israel,1,1,1,1,1.0,Low,1
+Italy,1,2,1,1,1.35,Medium,1.35
+Jamaica,1,2,1,1,1.35,Medium,1.35
+Japan,1,2,1,1,1.35,Medium,1.35
+Jersey,1,1,1,1,1.0,Low,1
+Jordan,1,2,1,1,1.35,Medium,1.35
+Kazakhstan,1,2,1,1,1.35,Medium,1.35
+Kenya,2,2,1,1,1.65,Medium,3
+Kosovo,1,1,2,1,1.3,Medium,1.3
+Kuwait,1,2,1,1,1.35,Medium,1.35
+Kyrgyzstan,1,2,1,1,1.35,Medium,1.35
+Laos,2,3,1,1,2.0,Medium,3
+Latvia,1,2,1,1,1.35,Medium,1.35
+Lebanon,2,2,2,3,2.05,High,3
+Lesotho,1,2,1,1,1.35,Medium,1.35
+Liberia,1,3,1,1,1.7,Medium,1.7
+Libya,1,3,2,3,2.1,High,2.1
+Liechtenstein,1,2,1,1,1.35,Medium,1.35
+Lithuania,1,1,1,1,1.0,Low,1
+Luxembourg,1,1,1,1,1.0,Low,1
+Maarten Dutch/ Sint Maarten,1,1,1,1,1.0,Low,1
+Macao,1,2,1,1,1.35,Medium,1.35
+Macedonia,1,2,2,1,1.65,Medium,1.65
+Madagascar,1,2,1,1,1.35,Medium,1.35
+Malawi,1,2,1,1,1.35,Medium,1.35
+Malaysia,1,2,1,3,1.45,Medium,1.45
+Maldives,1,2,1,1,1.35,Medium,1.35
+Mali,1,2,2,3,1.75,Medium,1.75
+Malta,1,2,1,1,1.35,Medium,1.35
+Marshall Islands,1,2,1,1,1.35,Medium,1.35
+Martinique,1,1,1,1,1.0,Low,1
+Mauritania,1,2,1,3,1.45,Medium,1.45
+Mauritius,1,2,1,1,1.35,Medium,1.35
+Mayotte,1,1,1,1,1.0,Low,1
+Mexico,1,2,1,1,1.35,Medium,1.35
+Micronesia,1,1,1,1,1.0,Low,1
+Moldova,1,2,2,1,1.65,Medium,1.65
+Monaco,2,1,1,1,1.3,Medium,3
+Mongolia,1,2,1,1,1.35,Medium,1.35
+Montenegro,1,2,2,1,1.65,Medium,1.65
+Montserrat,1,1,1,1,1.0,Low,1
+Morocco,1,2,1,1,1.35,Medium,1.35
+Mozambique,1,3,1,3,1.8,Medium,1.8
+Myanmar,3,3,2,1,2.6,High,4
+Namibia,2,2,1,1,1.65,Medium,3
+Nauru,1,1,1,1,1.0,Low,1
+Nepal,2,2,1,1,1.65,Medium,3
+Netherlands,1,2,1,1,1.35,Medium,1.35
+Netherlands Antilles,,,,,0.0,Low,0
+New Caledonia,1,1,1,1,1.0,Low,1
+New Zealand,1,1,1,1,1.0,Low,1
+Nicaragua,1,2,2,1,1.65,Medium,1.65
+Niger,1,2,1,3,1.45,Medium,1.45
+Nigeria,1,2,1,3,1.45,Medium,1.45
+Niue,1,1,1,1,1.0,Low,1
+Norfolk Island,1,1,1,1,1.0,Low,1
+North Korea,3,3,3,1,2.9,High,4
+Northern Mariana Islands,1,1,1,1,1.0,Low,1
+Norway,1,1,1,1,1.0,Low,1
+Oman,1,2,1,1,1.35,Medium,1.35
+Pakistan,1,2,1,3,1.45,Medium,1.45
+Palau,1,2,1,1,1.35,Medium,1.35
+Palestine and West Bank & Gaza,1,1,1,1,1.0,Low,1
+Panama,1,2,1,1,1.35,Medium,1.35
+Papua New Guinea,1,2,1,1,1.35,Medium,1.35
+Paraguay,1,2,1,1,1.35,Medium,1.35
+Peru,1,2,1,1,1.35,Medium,1.35
+Philippines,1,2,1,3,1.45,Medium,1.45
+Pitcairn Islands,1,1,1,1,1.0,Low,1
+Poland,1,2,1,1,1.35,Medium,1.35
+Portugal,1,2,1,1,1.35,Medium,1.35
+Puerto Rico,1,2,1,1,1.35,Medium,1.35
+Qatar,1,2,1,1,1.35,Medium,1.35
+Republic of Congo,1,3,1,1,1.7,Medium,1.7
+Republic of Kiribati,1,1,1,1,1.0,Low,1
+Reunion,1,1,1,1,1.0,Low,1
+Romania,1,2,2,1,1.65,Medium,1.65
+Russia,1,2,2,1,1.65,Medium,3
+Rwanda,1,2,1,1,1.35,Medium,1.35
+Saint Barthelemy,1,1,1,1,1.0,Low,1
+Saint Helena,1,1,1,1,1.0,Low,1
+Saint Martin,1,1,1,1,1.0,Low,1
+Saint Pierre and Miquelon,1,1,1,1,1.0,Low,1
+Samoa,1,2,1,1,1.35,Medium,1.35
+San Marino,1,1,1,1,1.0,Low,1
+Sao Tome & Principe,1,2,1,1,1.35,Medium,1.35
+Saudi Arabia,1,2,1,1,1.35,Medium,1.35
+Senegal,1,2,1,3,1.45,Medium,1.45
+Serbia,1,2,2,1,1.65,Medium,1.65
+Seychelles,1,2,1,1,1.35,Medium,1.35
+Sierra Leone,1,2,1,1,1.35,Medium,1.35
+Singapore,1,2,1,1,1.35,Medium,1.35
+Slovakia,1,2,1,1,1.35,Medium,1.35
+Slovenia,1,1,2,1,1.3,Medium,1.3
+Solomon Islands,1,2,1,1,1.35,Medium,1.35
+Somalia,1,3,2,3,2.1,High,2.1
+South Africa,1,2,1,1,1.35,Medium,1.35
+South Georgia & South Sandwich Islands,1,1,1,1,1.0,Low,1
+South Korea,1,2,1,1,1.35,Medium,1.35
+South Sudan,2,3,2,1,2.3,High,3
+Spain,1,2,1,1,1.35,Medium,1.35
+Sri Lanka,1,2,1,1,1.35,Medium,1.35
+St. Kitts and Nevis,1,2,1,1,1.35,Medium,1.35
+St. Lucia,1,2,1,1,1.35,Medium,1.35
+St. Vincent And The Grenadines,1,2,1,1,1.35,Medium,1.35
+Sudan,1,2,2,3,1.75,Medium,1.75
+Suriname,1,2,1,1,1.35,Medium,1.35
+Svalbard,1,1,1,1,1.0,Low,1
+Swaziland,1,2,1,1,1.35,Medium,1.35
+Sweden,1,1,1,1,1.0,Low,1
+Switzerland,1,2,1,1,1.35,Medium,1.35
+Syria,2,2,3,1,2.25,High,3
+Taiwan,1,2,1,1,1.35,Medium,1.35
+Tajikistan,1,2,1,1,1.35,Medium,1.35
+Tanzania,1,2,1,1,1.35,Medium,1.35
+Thailand,1,2,1,1,1.35,Medium,1.35
+Timor-Leste (east Timor),1,2,1,1,1.35,Medium,1.35
+Togo,1,2,1,1,1.35,Medium,1.35
+Tokelau,1,1,1,1,1.0,Low,1
+Tonga,1,2,1,1,1.35,Medium,1.35
+Trinidad & Tobago,1,2,1,1,1.35,Medium,1.35
+Tunisia,1,2,2,1,1.65,Medium,1.65
+Turkey,1,2,2,1,1.65,Medium,1.65
+Turkmenistan,1,2,1,1,1.35,Medium,1.35
+Turks and Caicos Islands,1,2,1,1,1.35,Medium,1.35
+Tuvalu,1,1,1,1,1.0,Low,1
+Uganda,1,2,1,1,1.35,Medium,1.35
+Ukraine,1,2,2,1,1.65,Medium,1.65
+United Kingdom and Channel Islands,1,1,1,1,1.0,Low,1
+United States of America,1,2,1,1,1.35,Medium,1.35
+Uruguay,1,2,1,1,1.35,Medium,1.35
+US Minor Outlying Islands,1,1,1,1,1.0,Low,1
+US Virgin Islands,1,1,1,1,1.0,Low,1
+Uzbekistan,1,2,1,1,1.35,Medium,1.35
+Vanuatu,1,2,1,1,1.35,Medium,1.35
+Vatican City (Holy See),1,1,1,1,1.0,Low,1
+Venezuela,2,3,2,3,2.4,High,3
+Vietnam,2,2,1,1,1.65,Medium,3
+Wallis and Futuna,1,1,1,1,1.0,Low,1
+Western Sahara,2,2,1,1,1.65,Medium,1.65
+Yemen,2,3,2,3,2.4,High,3
+Zambia,1,2,1,1,1.35,Medium,1.35
+Zimbabwe,1,2,2,1,1.65,Medium,1.65

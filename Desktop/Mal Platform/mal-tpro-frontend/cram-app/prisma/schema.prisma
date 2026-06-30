@@ -1,0 +1,260 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Assessment {
+  id           String   @id
+  customerId   String   @map("customer_id")
+  customerName String   @map("customer_name")
+  at           DateTime
+  trigger      String
+  triggerNote  String?  @map("trigger_note")
+  rating       String
+  prevRating   String?  @map("prev_rating")
+  composite    Float
+  mathBand     String   @map("math_band")
+  boundary     String
+  overrides    Json
+  reviewDue    DateTime @map("review_due")
+  actor        String
+  input        Json
+  governance   Json?
+  handoff       Json?
+  overrideJustification String? @map("override_justification")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([customerId, at])
+  @@map("assessments")
+}
+
+model FeedEvent {
+  id           String   @id
+  source       String
+  kind         String
+  customerId   String   @map("customer_id")
+  customerName String?  @map("customer_name")
+  at           DateTime
+  severity     String?
+  payload      Json
+  headline     String
+  outcome      String
+  detail       String
+  prevRating   String?  @map("prev_rating")
+  newRating    String?  @map("new_rating")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("feed_events")
+}
+
+model AuditLog {
+  id        String   @id
+  at        DateTime
+  actor     String
+  action    String
+  entity    String
+  entityId  String   @map("entity_id")
+  detail    String
+  before    String?
+  after     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([at])
+  @@map("audit_log")
+}
+
+model MlroAlert {
+  id           String   @id
+  at           DateTime
+  customerId   String   @map("customer_id")
+  customerName String   @map("customer_name")
+  prevRating   String   @map("prev_rating")
+  newRating    String   @map("new_rating")
+  trigger      String
+  headline     String
+  source       String
+  status       String   @default("open")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("mlro_alerts")
+}
+
+model VendorIdentity {
+  vendorId     String   @map("vendor_id")
+  source       String
+  customerId   String   @map("customer_id")
+  customerName String   @map("customer_name")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@id([vendorId, source])
+  @@map("vendor_identity")
+}
+
+model FeedQueueMessage {
+  id          String    @id @default(uuid())
+  eventId     String    @unique @map("event_id")
+  payload     Json
+  status      String    @default("pending")
+  attempts    Int       @default(0)
+  lastError   String?   @map("last_error")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  processedAt DateTime? @map("processed_at")
+
+  @@index([status, createdAt])
+  @@map("feed_queue")
+}
+
+model AppUser {
+  id        String   @id
+  email     String   @unique
+  name      String?
+  roles     String[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("app_users")
+}
+
+model ModelGovernance {
+  id             String    @id
+  modelVersionId String    @map("model_version_id")
+  status         String    @default("draft")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  promotedAt     DateTime? @map("promoted_at")
+  promotedBy     String?   @map("promoted_by")
+
+  @@map("model_governance")
+}
+
+model ValidationRun {
+  id              String   @id
+  at              DateTime
+  actor           String
+  runType         String   @map("run_type")
+  modelVersionId  String   @map("model_version_id")
+  verdict         String
+  goldenSummary   Json     @map("golden_summary")
+  backtestSummary Json?    @map("backtest_summary")
+  gates           Json
+  report          Json
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([at])
+  @@map("validation_runs")
+}
+
+model ScreeningCase {
+  id               String    @id
+  customerId       String    @map("customer_id")
+  customerName     String    @map("customer_name")
+  vendor           String    @default("vital4")
+  vendorCaseId     String    @map("vendor_case_id")
+  screeningType    String    @default("bundle") @map("screening_type")
+  status           String    @default("pending")
+  licenseRegion    String    @default("UAE") @map("license_region")
+  sanctions        String?
+  pep              String?
+  adverse          String?
+  watchlist        String?
+  disposition      String    @default("pending")
+  dispositionNotes String?   @map("disposition_notes")
+  disposedBy       String?   @map("disposed_by")
+  disposedAt       DateTime? @map("disposed_at")
+  slaDueAt         DateTime? @map("sla_due_at")
+  mirrorSource     String?   @map("mirror_source")
+  oscilarAlertId   String?   @map("oscilar_alert_id")
+  rawPayload       Json?     @map("raw_payload")
+  snapshot         Json?
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@unique([vendor, vendorCaseId])
+  @@index([customerId, createdAt])
+  @@map("screening_cases")
+}
+
+model CaseLink {
+  id              String   @id
+  customerId      String   @map("customer_id")
+  cramScreeningId String   @map("cram_screening_id")
+  vital4CaseId    String   @map("vital4_case_id")
+  oscilarAlertId  String?  @map("oscilar_alert_id")
+  oscilarCaseId   String?  @map("oscilar_case_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@unique([vital4CaseId])
+  @@index([customerId])
+  @@map("case_links")
+}
+
+model WebhookLog {
+  id         String   @id
+  vendor     String
+  eventId    String   @map("event_id")
+  payload    Json
+  outcome    String
+  detail     String?
+  receivedAt DateTime @default(now()) @map("received_at")
+
+  @@unique([vendor, eventId])
+  @@map("webhook_log")
+}
+
+model OnboardingCase {
+  id              String   @id
+  customerId      String   @map("customer_id")
+  customerName    String   @map("customer_name")
+  licenseRegion   String   @default("UAE") @map("license_region")
+  mode            String   @default("individual")
+  state           String   @default("INITIATED")
+  shuftiReference String?  @map("shufti_reference")
+  shuftiStatus    String?  @map("shufti_status")
+  screeningCaseId String?  @map("screening_case_id")
+  vital4CaseId    String?  @map("vital4_case_id")
+  kycContext      Json?    @map("kyc_context")
+  capture         Json?
+  subject         Json
+  blockReason     String?  @map("block_reason")
+  scoreResult     Json?    @map("score_result")
+  finalRating     String?  @map("final_rating")
+  composite       Float?
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([customerId, createdAt])
+  @@index([state])
+  @@map("onboarding_cases")
+}
+
+model TmAlert {
+  id              String   @id
+  oscilarAlertId  String   @unique @map("oscilar_alert_id")
+  oscilarCaseId   String?  @map("oscilar_case_id")
+  customerId      String   @map("customer_id")
+  customerName    String   @map("customer_name")
+  alertType       String   @default("transaction_monitoring") @map("alert_type")
+  severity        String   @default("medium")
+  ruleId          String?  @map("rule_id")
+  ruleName        String?  @map("rule_name")
+  channel         String?
+  amount          Float?
+  currency        String?
+  licenseRegion   String   @default("UAE") @map("license_region")
+  status          String   @default("open")
+  listHit         Boolean  @default(false) @map("list_hit")
+  vital4CaseId    String?  @map("vital4_case_id")
+  cramScreeningId String?  @map("cram_screening_id")
+  feedEventId     String?  @map("feed_event_id")
+  feedOutcome     String?  @map("feed_outcome")
+  paymentRef      String?  @map("payment_ref")
+  rawPayload      Json?    @map("raw_payload")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([customerId, createdAt])
+  @@index([status, severity])
+  @@map("tm_alerts")
+}
