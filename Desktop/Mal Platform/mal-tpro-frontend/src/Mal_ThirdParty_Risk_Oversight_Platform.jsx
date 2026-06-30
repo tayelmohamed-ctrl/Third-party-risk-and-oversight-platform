@@ -5,7 +5,7 @@ import {
   UploadCloud, Flame, Star, Check, X, AlertTriangle, Globe, ChevronRight, Plus,
   TrendingUp, TrendingDown, Minus, MessageSquare, Paperclip, Bell, Lock, ShieldCheck,
   Send, ClipboardCheck, Building2, Activity, CircleAlert, UserPlus, FileSignature,
-  Play, Pause, ChevronLeft, Film
+  Play, Pause, ChevronLeft, Film, Bookmark
 } from "lucide-react";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, RadialBarChart, RadialBar,
@@ -49,45 +49,69 @@ const TYPE_COLOR = { FRAUD: "#ef4444", TYPOLOGY: "#8000ff", SANCTIONS: "#8b5cf6"
 // component scores are 0-100, higher = better
 const AGENTS_BASE = [
   { id: "swiftx", name: "SwiftX DLT Pay", category: "Payout partners", relationship: "Pakistan corridor payout — last-mile disbursement", jur: "Pakistan", juris: ["Pakistan"], license: "FINTRAC MSB · Swiss VQF · SBP authorised-dealer chain", tier: "Critical", live: true,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "MLRO", reDDDue: "2027-05-01", blockingNote: null },
     contacts: [{ role: "Compliance Officer", name: "Faizan R.", email: "compliance@swiftx.example" }, { role: "Ops lead", name: "S. Ali", email: "ops@swiftx.example" }],
     scores: { reporting: 78, responsiveness: 72, training: 90, audit: 70, findings: 60, timeliness: 65, quality: 80, cooperation: 85, risk: 55 }, history: [70, 68, 72, 74, 73] },
   { id: "thunes", name: "Thunes", category: "Payout partners", relationship: "Multi-corridor payout (Bangladesh, Philippines)", jur: "Bangladesh", juris: ["Bangladesh", "Philippines"], license: "Multi-corridor PSP; per-corridor authorisation", tier: "High", live: false,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: false, terminationRights: true, approvedBy: null, reDDDue: null, blockingNote: "Not yet operational — ongoing monitoring not yet active; approval pending" },
     contacts: [{ role: "Compliance", name: "M. Rahman", email: "compliance@thunes.example" }],
     scores: { reporting: 84, responsiveness: 80, training: 75, audit: 82, findings: 80, timeliness: 78, quality: 85, cooperation: 80, risk: 70 }, history: [76, 78, 80, 81, 82] },
   { id: "gulf", name: "Gulf Remit FZ", category: "Payout partners", relationship: "UAE corridor payout", jur: "United Arab Emirates", juris: ["United Arab Emirates"], license: "CBUAE-registered; ADGM contracting", tier: "High", live: false,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: false, dataProtection: true, ongoingMonitoring: false, terminationRights: false, approvedBy: null, reDDDue: null, blockingNote: "Audit rights and termination clause not confirmed in contract; scores declining — MLRO hold" },
     contacts: [{ role: "MLRO", name: "H. Saeed", email: "mlro@gulfremit.example" }],
     scores: { reporting: 66, responsiveness: 60, training: 55, audit: 64, findings: 50, timeliness: 58, quality: 62, cooperation: 65, risk: 45 }, history: [64, 62, 60, 58, 57] },
   { id: "nile", name: "Nile Payments", category: "Payout partners", relationship: "Egypt corridor payout", jur: "Egypt", juris: ["Egypt"], license: "CBE MSB licence", tier: "Medium", live: false,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "Compliance", reDDDue: "2027-12-01", blockingNote: null },
     contacts: [{ role: "Compliance", name: "A. Mostafa", email: "compliance@nile.example" }],
     scores: { reporting: 72, responsiveness: 74, training: 80, audit: 70, findings: 75, timeliness: 76, quality: 73, cooperation: 78, risk: 68 }, history: [70, 71, 72, 74, 75] },
   { id: "pearl", name: "Pearl Payout", category: "Payout partners", relationship: "Philippines corridor payout", jur: "Philippines", juris: ["Philippines"], license: "BSP-registered EMI/RA", tier: "Medium", live: false,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "Compliance", reDDDue: "2028-01-01", blockingNote: null },
     contacts: [{ role: "Compliance", name: "J. Cruz", email: "compliance@pearl.example" }],
     scores: { reporting: 88, responsiveness: 86, training: 92, audit: 85, findings: 88, timeliness: 84, quality: 88, cooperation: 90, risk: 80 }, history: [82, 84, 86, 87, 89] },
   { id: "aktifpay", name: "AktifPay", category: "Payout partners", relationship: "Turkey corridor payout — last-mile disbursement", jur: "Turkey", juris: ["Turkey"], license: "BDDK-licensed payment institution", tier: "High", live: false,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: false, terminationRights: true, approvedBy: null, reDDDue: null, blockingNote: "Ongoing monitoring not yet established; approval pending go-live" },
     contacts: [{ role: "Compliance", name: "K. Yilmaz", email: "compliance@aktifpay.example" }],
     scores: { reporting: 72, responsiveness: 70, training: 68, audit: 70, findings: 65, timeliness: 71, quality: 72, cooperation: 74, risk: 58 }, history: [68, 69, 70, 71, 72] },
   { id: "doku", name: "Doku Wallet", category: "Payout partners", relationship: "Indonesia corridor payout — last-mile disbursement", jur: "Indonesia", juris: ["Indonesia"], license: "OJK-licensed payment service provider", tier: "High", live: false,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: false, terminationRights: true, approvedBy: null, reDDDue: null, blockingNote: "Ongoing monitoring not yet established; approval pending go-live" },
     contacts: [{ role: "Compliance", name: "R. Santoso", email: "compliance@doku.example" }],
     scores: { reporting: 74, responsiveness: 72, training: 70, audit: 68, findings: 68, timeliness: 72, quality: 73, cooperation: 72, risk: 60 }, history: [69, 70, 71, 72, 73] },
-  { id: "zenus", name: "Zenus Bank International, Inc.", category: "Banking partner", relationship: "USD banking rails — FBO master account, sub-accounts, ACH, settlement, Visa BIN", jur: "United States", juris: ["United States", "Puerto Rico"], license: "Puerto Rico IFE — OCIF-regulated (not FDIC-insured)", tier: "Critical", live: true,
+  { id: "zenus", name: "Zenus Bank International, Inc.", category: "Banking partner", relationship: "USD banking rails — FBO master account, sub-accounts, ACH, settlement, Visa BIN", jur: "United States", juris: ["United States", "Puerto Rico"], license: "IFE-061 — OCIF Puerto Rico (Act 273/2012) · Full-reserve · Not FDIC-insured", tier: "Critical", live: true,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "MLRO", reDDDue: "2027-05-29", blockingNote: null },
     contacts: [{ role: "Head of Risk (signatory)", name: "Jorge M. Soltero", email: "risk@zenus.example" }, { role: "BSA/AML", name: "Zenus Compliance", email: "compliance@zenus.example" }],
     kdp: [{ name: "Jorge M. Soltero", role: "Head of Risk — Zenus signatory" }],
     agreement: { entity: "Zenus Bank International, Inc.", counterparty: "Mal Money, Inc. (Program Manager)", signedFor: "Mal: Abdallah Abu Sheikh (Sole Director)", effective: "29 May 2026", term: "36-month initial, then 1-year renewals", notice: "90 days non-renewal; settlement-failure cure 5 business days", commercial: "Minimum FBO balance $50,000; fund to greater of min or 5-day trailing average", governingLaw: "Puerto Rico", status: "Executed (DocuSign)", doc: "Program Services Agreement (FBO)" },
     scores: { reporting: 88, responsiveness: 86, training: 82, audit: 74, findings: 76, timeliness: 84, quality: 84, cooperation: 86, risk: 80 }, history: [86, 86, 85, 84, 82] },
   { id: "rain", name: "Signify Holdings, Inc. (Rain)", category: "Card & settlement", relationship: "Card issuing sponsorship, program management & settlement (Visa); stablecoin settlement", jur: "United States", juris: ["United States"], license: "Card issuing program (Signify/Rain) — issuing depository unnamed in MSA", tier: "Critical", live: true,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: false, auditRights: false, dataProtection: false, ongoingMonitoring: false, terminationRights: false, approvedBy: null, reDDDue: null, blockingNote: "MSA not executed — Do Not Sign in current form (governing terms unilaterally amendable; MLRO hold)" },
     contacts: [{ role: "Signify contact", name: "Kay Galarza", email: "kay@rain.xyz" }, { role: "Mal program owner", name: "Loay Osama", email: "loay.malahmeh@mal.ai" }],
     kdp: [{ name: "Signify Holdings, Inc.", role: "Card issuing entity (brand: Rain)" }, { name: "Kay Galarza", role: "Signify commercial contact" }],
     agreement: { entity: "Signify Holdings, Inc. (brand: Rain)", counterparty: "Mal Money Inc. (Partner)", signedFor: "Mal: pending signature", effective: "On last signature (proposal issued 18 May 2026)", term: "5-year initial, auto-renew 1-year", notice: "90 days non-renewal", commercial: "Partner bears 100% program losses; reserve 4x largest daily settlement; USDC/USDG free, USDT 10bps", governingLaw: "Per Signify Terms of Service (controls MSA; unilaterally amendable)", status: "MLRO review — Do Not Sign in current form", doc: "Card Issuing & Program Management Agreement (MSA)" },
     scores: { reporting: 70, responsiveness: 72, training: 70, audit: 68, findings: 42, timeliness: 72, quality: 66, cooperation: 70, risk: 52 }, history: [80, 78, 74, 68, 60] },
   { id: "saascada", name: "SaaScada", category: "Technology & processors", relationship: "Core ledger / system of record", jur: "Global", juris: ["Global"], license: "Ledger integrity & reconciliation controls", tier: "Critical", live: true,
+    relType: "Outsourcing",
+    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "MLRO", reDDDue: "2027-01-01", blockingNote: null },
     contacts: [{ role: "Vendor compliance", name: "SaaScada", email: "compliance@saascada.example" }],
     scores: { reporting: 80, responsiveness: 82, training: 78, audit: 86, findings: 88, timeliness: 84, quality: 86, cooperation: 84, risk: 82 }, history: [80, 81, 82, 83, 84] },
   { id: "oscilar", name: "Oscilar", category: "Technology & processors", relationship: "AML transaction monitoring & screening engine (processor — never CDD reliance)", jur: "Global", juris: ["Global"], license: "AML TM rule library (card/ACH/wire/SWIFT) — OFAC & crypto modules absent OOTB", tier: "Critical", live: true,
+    relType: "System",
+    gates: { assuranceAssessed: false, appropriatenessAssessed: false, dataLocalisation: true, authControlsChecked: true, approvedBy: null, reDDDue: null, blockingNote: "Assurance-level assessment not completed — rule-library gap analysis in progress (CBUAE §5)" },
     contacts: [{ role: "Vendor compliance", name: "Oscilar", email: "compliance@oscilar.example" }],
     kdp: [{ name: "Oscilar (entity)", role: "TM / screening processor" }],
     agreement: { entity: "Oscilar", counterparty: "Mal Global Accounts", signedFor: "", effective: "Under review (June 2026)", term: "Pre-contract — rule-library gap analysis", notice: "—", commercial: "—", governingLaw: "—", status: "Gap analysis — competent floor, missing roof", doc: "Standard Rule Library Overview + Mal Gap Analysis" },
     scores: { reporting: 80, responsiveness: 84, training: 78, audit: 72, findings: 50, timeliness: 86, quality: 74, cooperation: 84, risk: 58 }, history: [84, 84, 83, 82, 80] },
   { id: "shufti", name: "ShuftiPro", category: "Technology & processors", relationship: "Identity verification (processor — never CDD reliance)", jur: "Global", juris: ["Global"], license: "IDV; model & rule documentation", tier: "High", live: true,
+    relType: "System",
+    gates: { assuranceAssessed: false, appropriatenessAssessed: false, dataLocalisation: true, authControlsChecked: true, approvedBy: "Compliance", reDDDue: "2027-01-01", blockingNote: "Assurance-level and appropriateness assessments not yet documented (CBUAE §5 — required before IDV use in CDD)" },
     contacts: [{ role: "Vendor compliance", name: "ShuftiPro", email: "compliance@shufti.example" }],
     scores: { reporting: 76, responsiveness: 78, training: 82, audit: 80, findings: 84, timeliness: 82, quality: 80, cooperation: 80, risk: 80 }, history: [76, 77, 79, 80, 81] },
 ];
@@ -101,12 +125,27 @@ const CATEGORIES = [
 
 const EMBLEM_PATH = "M948.44,590.83l-45.78-56.62,42.7-54.27c1.24-4.69,2.75-10.24,2.25-15.07-.62-6.07-11.92-31.06-14.99-39.13-6.66-17.55-17.34-50.81-26.04-65.49-2.04-3.45-4.24-6.33-7.76-8.4l-92.43-14.39,13.64-92.54c-.93-3.97-3.03-6.93-5.72-9.9-11.44-12.67-40.05-32.72-54.84-44.28-6.8-5.32-27.32-23.51-32.94-25.91-4.47-1.91-10.22-2.11-15.06-2.31l-68,26.05-38.42-57.38c-4.08-2.63-8.89-5.78-13.64-6.8-5.97-1.28-33.23,1.74-41.85,2.16-18.74.91-53.68.79-70.34,4.53-3.91.88-7.34,2.08-10.38,4.79l-42.25,83.46-83.8-41.57c-4.06-.35-7.52.74-11.18,2.38-15.58,6.97-43.5,27.98-59.06,38.47-7.16,4.83-30.8,18.72-34.82,23.32-3.19,3.66-5.16,9.07-6.86,13.61l3.76,72.72-66.44,18.81c-3.76,3.07-8.24,6.67-10.68,10.87-3.07,5.28-8.61,32.14-10.88,40.47-4.93,18.11-15.84,51.3-17.43,68.29-.37,3.99-.29,7.62,1.34,11.35l66.32,65.97-65.43,66.85c-1.59,3.76-1.62,7.39-1.19,11.37,1.81,16.97,13.17,50.02,18.34,68.05,2.38,8.3,8.28,35.08,11.42,40.32,2.5,4.17,7.03,7.71,10.83,10.73l70.32,18.89-2.64,69c1.76,4.52,3.79,9.9,7.04,13.52,4.07,4.55,27.9,18.12,35.13,22.85,15.7,10.28,43.89,30.92,59.57,37.68,3.68,1.59,7.16,2.63,11.21,2.23l83.24-42.69,43.36,82.89c3.08,2.67,6.52,3.82,10.45,4.65,16.7,3.52,51.64,2.93,70.39,3.59,8.63.3,35.92,2.96,41.87,1.6,4.74-1.08,9.51-4.3,13.55-6.98l39.7-61.04,64.81,23.84c4.84-.27,10.59-.55,15.03-2.52,5.58-2.47,25.86-20.94,32.59-26.35,14.63-11.75,42.97-32.19,54.24-45.01,2.65-3.01,4.71-5.99,5.59-9.98l-14.88-92.35,92.23-15.63c3.49-2.11,5.65-5.02,7.65-8.5,8.51-14.8,18.75-48.2,25.17-65.84,2.95-8.11,13.92-33.25,14.46-39.33.43-4.84-1.15-10.37-2.45-15.04ZM862.03,661.79c-1.75,6.33-19.21,53.12-21.92,54.2-3.64.48-5.87-3.76-8.04-6.05-18.01-18.99-35.46-48.93-53.87-65.73-4.85-4.43-7.2-6.48-14.23-6.16-13.01.61-51.28,6.74-63.55,10.46-.46.14-.89.29-1.31.45-1.82.3-3.26,1.19-4.2,2.75-1.17,1.39-1.56,3.05-1.25,4.86-.02.44-.02.9,0,1.38.43,12.81,6.93,51.02,10.54,63.53,1.95,6.76,4.65,8.32,10.41,11.49,21.83,12.02,55.78,18.91,79.56,29.86,2.87,1.32,7.6,2.07,8.31,5.67-.15,2.92-38.84,34.5-44.27,38.2-12.55,8.54-14.48,6.3-28.08,2.16-20.5-6.24-41.07-14.29-61.66-22.68l-23.84-48.68c-9.66-9.07-12.38-2.16-17.93,5.7-4.72,6.69-9.31,13.58-13.81,20.59-8.97-3.41-17.94-6.62-26.89-9.53-9.16-2.97-15.47-6.88-17.78,6.17l11.03,58.53c-11.31,18.76-22.82,37.25-35.33,54.27-8.42,11.45-8.62,14.41-23.78,15.08-6.57.29-56.45-1.85-58.33-4.1-1.58-3.31,1.76-6.74,3.27-9.52,12.5-23,35.57-48.84,45.86-71.54,2.71-5.98,3.94-8.85,1.46-15.43-4.6-12.19-22.26-46.69-29.58-57.2-.28-.4-.55-.76-.83-1.1-.84-1.64-2.14-2.73-3.91-3.15-1.69-.68-3.38-.54-5.01.31-.43.12-.86.26-1.32.42-12.05,4.36-46.38,22.35-57.17,29.66-5.82,3.94-6.48,7-7.71,13.45-4.69,24.47-.75,58.9-3.81,84.89-.37,3.14.38,7.87-2.82,9.66-2.83.76-44.81-26.27-50.01-30.3-12-9.29-10.46-11.83-10.73-26.04-.4-21.43.9-43.48,2.52-65.65l38.93-37.72c5.64-11.99-1.77-12.44-10.96-15.29-7.82-2.43-15.79-4.65-23.85-6.77.47-9.59.76-19.11.75-28.52,0-9.63,1.76-16.84-11.36-15l-52.25,28.58c-21.34-4.96-42.48-10.2-62.53-16.83-13.49-4.46-16.37-3.75-21.69-17.96-2.3-6.16-15.68-54.26-14.12-56.74,2.66-2.53,6.96-.41,10.06.17,25.74,4.78,57.45,18.74,82.21,21.51,6.53.73,9.64,1.01,15.13-3.38,10.17-8.14,37.52-35.6,45.26-45.81.29-.38.55-.76.79-1.13,1.3-1.31,1.94-2.88,1.79-4.7.13-1.82-.53-3.38-1.85-4.67-.25-.37-.51-.74-.81-1.12-7.87-10.11-35.59-37.2-45.87-45.2-5.55-4.32-8.66-4-15.17-3.18-24.72,3.1-56.24,17.48-81.91,22.61-3.1.62-7.37,2.79-10.06.3-1.59-2.46,11.14-50.74,13.36-56.92,5.13-14.29,8.01-13.61,21.45-18.25,20.25-7,41.63-12.58,63.22-17.89l47.91,25.37c13.14,1.66,11.29-5.53,11.16-15.15-.11-8.19-.45-16.46-.93-24.77,9.26-2.52,18.41-5.19,27.36-8.1,9.16-2.98,16.56-3.53,10.76-15.44l-43.33-40.87c-1.88-21.83-3.43-43.55-3.32-64.67.08-14.21-1.5-16.72,10.38-26.18,5.14-4.09,46.76-31.68,49.6-30.97,3.22,1.75,2.54,6.49,2.95,9.62,3.41,25.95-.07,60.43,4.95,84.83,1.32,6.43,2.01,9.48,7.89,13.34,10.88,7.16,45.45,24.69,57.56,28.89.46.16.89.29,1.32.4,1.65.83,3.34.95,5.02.25,1.77-.44,3.05-1.55,3.87-3.2.27-.35.55-.71.82-1.11,7.18-10.61,24.38-45.35,28.82-57.6,2.39-6.61,1.13-9.47-1.67-15.41-10.59-22.55-34.01-48.09-46.82-70.92-1.55-2.75-4.93-6.14-3.39-9.47,1.84-2.27,51.7-5.08,58.27-4.88,15.17.46,15.42,3.42,23.98,14.76,12.92,17.1,24.83,35.71,36.55,54.59l-9.33,53.4c2.48,13.01,8.74,9.03,17.86,5.93,7.75-2.63,15.51-5.52,23.27-8.54,5.26,8.03,10.62,15.9,16.16,23.52,5.66,7.79,8.47,14.66,18.01,5.46l25.48-53.84c20.18-8.53,40.36-16.72,60.48-23.14,13.54-4.32,15.44-6.59,28.1,1.78,5.48,3.63,44.58,34.68,44.78,37.6-.67,3.61-5.39,4.42-8.24,5.78-23.63,11.26-57.49,18.61-79.15,30.92-5.71,3.24-8.39,4.84-10.25,11.63-3.45,12.56-9.44,50.85-9.69,63.67-.01.48,0,.94.03,1.38-.28,1.82.12,3.47,1.32,4.85.96,1.55,2.42,2.42,4.24,2.69.42.15.85.3,1.31.43,12.31,3.55,50.66,9.18,63.68,9.61,7.03.23,9.35-1.85,14.14-6.35,18.18-17.04,35.23-47.21,52.98-66.44,2.14-2.32,4.32-6.59,7.96-6.16,2.73,1.05,20.81,47.6,22.65,53.91,4.25,14.57,1.52,15.72-6.62,27.37-12.27,17.57-26.29,34.65-40.63,51.64l-53.67,7.63c-11.61,6.38-5.88,11.1-.12,18.82,4.9,6.56,10.04,13.05,15.31,19.5-6.01,7.48-11.84,15.01-17.37,22.63-5.66,7.79-11.32,12.59.37,18.81l59.07,7.59c14.35,16.56,28.37,33.22,40.7,50.37,8.29,11.54,11.04,12.65,6.99,27.28Z";
 function MalEmblem({ size = 22 }) {
-  return (<svg width={size} height={size} viewBox="0 0 1080 1080" aria-hidden="true"><path d={EMBLEM_PATH} fill="#8000ff" /></svg>);
+  return (
+    <svg width={size} height={size} viewBox="0 0 1080 1080" aria-hidden="true">
+      <defs>
+        <linearGradient id="malg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#a855f7"/>
+          <stop offset="50%" stopColor="#818cf8"/>
+          <stop offset="100%" stopColor="#60a5fa"/>
+        </linearGradient>
+      </defs>
+      <path d={EMBLEM_PATH} fill="url(#malg)" />
+    </svg>
+  );
 }
 
 const KEY_LIVE = "mal_oversight_live_v1";
 async function loadLive() { try { if (window.storage) { const r = await window.storage.get(KEY_LIVE); if (r && r.value) return JSON.parse(r.value); } } catch (e) {} return null; }
 async function saveLive(o) { try { if (window.storage) await window.storage.set(KEY_LIVE, JSON.stringify(o)); } catch (e) {} }
+
+const KEY_FCIE = "mal_oversight_fcie_v1";
+async function loadFcie() { try { if (window.storage) { const r = await window.storage.get(KEY_FCIE); if (r && r.value) return JSON.parse(r.value); } } catch (e) {} return null; }
+async function saveFcie(o) { try { if (window.storage) await window.storage.set(KEY_FCIE, JSON.stringify(o)); } catch (e) {} }
 
 const SCORE_W = { reporting: .15, responsiveness: .12, training: .12, audit: .12, findings: .12, timeliness: .12, quality: .10, cooperation: .07, risk: .08 };
 const SCORE_LABEL = {
@@ -116,12 +155,18 @@ const SCORE_LABEL = {
 };
 
 const COURSES = [
-  { id: "c1", title: "AML/CFT foundations", cat: "AML/CFT", mins: 45 },
-  { id: "c2", title: "Sanctions & OFAC screening", cat: "Sanctions", mins: 40 },
-  { id: "c3", title: "Travel Rule & recordkeeping", cat: "AML/CFT", mins: 30 },
-  { id: "c4", title: "FATCA / CRS essentials", cat: "FATCA/CRS", mins: 35 },
-  { id: "c5", title: "Risk typologies — remittance corridors", cat: "Typologies", mins: 50 },
-  { id: "c6", title: "Beneficial ownership & PEPs", cat: "Due diligence", mins: 30 },
+  { id: "c1",  title: "AML/CFT foundations",                              cat: "AML/CFT",       mins: 45 },
+  { id: "c2",  title: "Sanctions & OFAC screening",                       cat: "Sanctions",      mins: 40 },
+  { id: "c3",  title: "Travel Rule & recordkeeping",                      cat: "AML/CFT",       mins: 30 },
+  { id: "c4",  title: "FATCA / CRS essentials",                           cat: "FATCA/CRS",     mins: 35 },
+  { id: "c5",  title: "Risk typologies — remittance corridors",           cat: "Typologies",    mins: 50 },
+  { id: "c6",  title: "Beneficial ownership & PEPs",                      cat: "Due diligence", mins: 30 },
+  { id: "c7",  title: "BaaS programme manager obligations",               cat: "BaaS",          mins: 45 },
+  { id: "c8",  title: "Regulation E & UDAAP — consumer protection",       cat: "Consumer law",  mins: 35 },
+  { id: "c9",  title: "Global sanctions — OFAC / UN / EU / OFSI / G7",   cat: "Sanctions",      mins: 40 },
+  { id: "c10", title: "Anti-bribery & corruption (FCPA / ABC)",           cat: "ABC",           mins: 30 },
+  { id: "c11", title: "Puerto Rico IFE framework & full-reserve model",   cat: "Licensing",     mins: 25 },
+  { id: "c12", title: "Section 311 & Zenus prohibited customer categories", cat: "AML/CFT",     mins: 30 },
 ];
 
 const REPORT_TYPES = [
@@ -129,6 +174,10 @@ const REPORT_TYPES = [
   { id: "str", name: "STR", reg: "goAML / local FIU" },
   { id: "fatca", name: "FATCA report", reg: "IRS / IGA" },
   { id: "crs", name: "CRS report", reg: "OECD / local tax authority" },
+  { id: "ofac_block", name: "OFAC blocking / rejection report", reg: "OFAC / 31 C.F.R. § 501.604" },
+  { id: "arbp", name: "Annual Blocked Property Report (ARBP)", reg: "OFAC / 31 C.F.R. § 501.603" },
+  { id: "a314", name: "314(a) response package", reg: "FinCEN / 31 C.F.R. § 1010.520" },
+  { id: "cbddq", name: "Wolfsberg CBDDQ submission", reg: "Wolfsberg Group V1.4" },
   { id: "questionnaire", name: "Regulatory questionnaire", reg: "Wolfsberg-style" },
   { id: "cert", name: "Annual compliance certification", reg: "Self-certification" },
   { id: "audit", name: "Audit finding & remediation", reg: "Independent audit" },
@@ -143,6 +192,19 @@ const DD_ITEMS = [
 ];
 
 const FEED_KINDS = ["SAR", "STR", "Filing", "Certification", "Audit", "Correspondence", "Policy update", "Risk assessment", "Training", "Corrective action"];
+
+/* ── Financial Crime Intelligence Engine ── */
+const FCIE_JURISDICTIONS = ["UAE", "Turkey", "Indonesia", "Pakistan", "Egypt", "United States", "Bangladesh", "Philippines", "Malaysia"];
+const FCIE_CATEGORIES = [
+  { id: "regulatory",      label: "Regulatory Updates",  color: "#2563eb" },
+  { id: "enforcement",     label: "Enforcement Actions", color: "#dc2626" },
+  { id: "financial-crime", label: "Financial Crime",     color: "#d97706" },
+  { id: "sanctions",       label: "Sanctions",           color: "#7c3aed" },
+  { id: "fatf",            label: "FATF",                color: "#0891b2" },
+  { id: "fiu",             label: "FIU",                 color: "#16a34a" },
+  { id: "central-bank",    label: "Central Banks",       color: "#db2777" },
+];
+const FCIE_SEV_COLOR = { critical: "#dc2626", high: "#d97706", medium: "#2563eb", low: "#6b7280" };
 
 /* ============================================================================
    STORAGE
@@ -235,7 +297,8 @@ function seed() {
       registers: {
         sar: i % 2 === 0 ? [{ ref: "SAR-" + a.id + "-001", at: daysFrom(-12), status: "Filed", summary: "Rapid pass-through, no economic rationale" }] : [],
         str: [{ ref: "STR-" + a.id + "-001", at: daysFrom(-5 - i), status: "Filed", summary: "Structuring under wallet-tier limits" }],
-        fatca: [], crs: [], questionnaire: [], cert: [{ ref: "CERT-2026", at: daysFrom(-40), status: "Submitted", summary: "Annual compliance certification 2026" }],
+        fatca: [], crs: [], ofac_block: [], arbp: [], a314: [], cbddq: [],
+        questionnaire: [], cert: [{ ref: "CERT-2026", at: daysFrom(-40), status: "Submitted", summary: "Annual compliance certification 2026" }],
         audit: [], correspondence: [{ ref: "RC-" + a.id + "-1", at: daysFrom(-20), status: "Closed", summary: "Regulator query on corridor volumes" }],
         corrective: [],
       },
@@ -307,6 +370,14 @@ function trainingRate(slice) { const t = slice.training; return Math.round(100 *
 function ddStatus(slice) { const v = Object.values(slice.dd); return { done: v.filter(x => x === "Complete").length, total: v.length }; }
 function bizDays(a, b) { const A = new Date(a), B = new Date(b); let d = new Date(A), n = 0, step = B < A ? -1 : 1; const inc = B < A ? -1 : 0; n = inc; while (d.toDateString() !== B.toDateString()) { d.setDate(d.getDate() + step); if (d.getDay() !== 0 && d.getDay() !== 6) n += step; } return n; }
 function slaStatus(foDue) { const cd = bizDays(new Date(), foDue); return { cd, st: cd < 0 ? "Overdue" : cd <= 3 ? "Due soon" : "On track", c: cd < 0 ? "#ef4444" : cd <= 3 ? "#f59e0b" : "#17a34a" }; }
+// FATF grey + black list jurisdictions (Feb 2025 plenary)
+const FATF_MONITORED_JURS = [
+  "Philippines", "Nigeria", "South Africa", "Kenya", "Tanzania", "Vietnam", "Laos",
+  "Monaco", "Bulgaria", "Croatia", "Algeria", "Angola", "Cameroon", "Côte d'Ivoire",
+  "Burkina Faso", "Mali", "Mozambique", "Namibia", "Venezuela", "Lebanon",
+  "Haiti", "South Sudan", "Syria", "Yemen", "Democratic Republic of Congo",
+];
+
 function earlyWarnings(a, slice, reviews) {
   const w = [];
   if (overall(a) < 60) w.push("Low compliance score");
@@ -316,7 +387,31 @@ function earlyWarnings(a, slice, reviews) {
   const rs = Object.values(reviews).filter(r => r.agent === a.id);
   if (rs.some(r => r.findings?.some(f => f.sev === "Critical" && f.status === "Open"))) w.push("Open critical finding");
   if (rs.some(r => r.status !== "Closed" && slaStatus(r.foDue).cd < 0)) w.push("Overdue program review");
+  // ── Regulatory risk flags from onboarding intake ──
+  const ob = slice?.onboarding;
+  if (ob) {
+    if (ob.fatfStatus === "Y") w.push("FATF grey/black list corridor — EDD mandatory (FATF R.1 / § 1022.210)");
+    if (ob.pepCustomers === "Y") w.push("PEP customer base — EDD required (Wolfsberg PEP 2017)");
+    if (ob.travelRuleAttest === "N") w.push("Travel Rule capability not confirmed — FATF R.16 / 31 C.F.R. § 1010.410(f) gap");
+    if (ob.stablecoinAttest === "N") w.push("Stablecoin GENIUS Act compliance not attested (Pub.L. 119-27)");
+    if (ob.prohibitedAttest === "N") w.push("CRITICAL: prohibited category exposure self-disclosed — immediate MLRO review");
+  }
+  // ── FATF-monitored corridor auto-detect (independent of onboarding answer) ──
+  const juris = a.juris || (a.jur ? [a.jur] : []);
+  if (juris.some(j => FATF_MONITORED_JURS.some(k => j === k || j.includes(k)))) {
+    w.push("FATF-monitored jurisdiction — verify grey/black list status and apply EDD");
+  }
   return w;
+}
+function gateStatus(base) {
+  const g = base.gates;
+  if (!g) return { status: "unknown", openCount: 0, clearedCount: 0, blockingNote: null };
+  if (g.blockingNote) return { status: "blocked", openCount: 0, clearedCount: 0, blockingNote: g.blockingNote };
+  const items = base.relType === "System"
+    ? ["assuranceAssessed", "appropriatenessAssessed", "dataLocalisation", "authControlsChecked"]
+    : ["s24DD", "amlContract", "auditRights", "dataProtection", "ongoingMonitoring", "terminationRights"];
+  const open = items.filter(k => !g[k]);
+  return { status: open.length === 0 ? "clear" : "review", openCount: open.length, clearedCount: items.length - open.length, openItems: open, blockingNote: null };
 }
 const fmtDate = (s) => new Date(s).toLocaleDateString();
 const fmtDT = (s) => new Date(s).toLocaleString();
@@ -325,94 +420,102 @@ const fmtDT = (s) => new Date(s).toLocaleString();
    STYLES
 ============================================================================ */
 const CSS = `
-:root{--page:#c3d2e7;--surface:#ffffff;--elevated:#f5f3fb;--ink:#ffffff;
---text:#0c0d14;--muted:#5b6472;--line:#e4e7ef;--panel:#ffffff;--panel2:#f4f1fb;
---gold:#8000ff;--gold2:#8f3bff;--brand600:#6a00d6;--brand50:#f5edff;--brand100:#f2e7ff;
---green:#17a34a;--amber:#f59e0b;--red:#ef4444;--blue:#1e63e9;--violet:#8b5cf6;
+:root{--page:#eef1fa;--surface:#ffffff;--elevated:#f4f6fc;--ink:#ffffff;
+--text:#111827;--muted:#6b7280;--line:#e2e8f0;--panel:#ffffff;--panel2:#f4f6fc;
+--brand:#8b5cf6;--brand2:#3b82f6;--brand600:#7c3aed;
+--brand50:rgba(139,92,246,.08);--brand100:rgba(139,92,246,.15);
+--brandGrad:linear-gradient(135deg,#a855f7,#818cf8,#60a5fa);
+--gold:#8b5cf6;--gold2:#60a5fa;
+--green:#16a34a;--amber:#d97706;--red:#dc2626;--blue:#2563eb;--violet:#7c3aed;--purple:#7c3aed;
 --sans:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
 --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
 *{box-sizing:border-box}
 .mpc{font-family:var(--sans);min-height:100vh;color:var(--text);
-background:radial-gradient(1200px 700px at 0% -10%,rgba(143,59,255,.20),transparent 60%),radial-gradient(900px 600px at 120% 0%,rgba(30,99,233,.14),transparent 60%),radial-gradient(900px 600px at 50% 110%,rgba(232,213,255,.55),transparent 70%),var(--page);background-attachment:fixed;-webkit-font-smoothing:antialiased;}
-.mpc *::-webkit-scrollbar{height:8px;width:8px}.mpc *::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:8px}
+background:var(--page);
+background-image:radial-gradient(ellipse 1400px 600px at 70% -10%,rgba(139,92,246,.06),transparent 60%),radial-gradient(ellipse 900px 500px at 0% 90%,rgba(96,165,250,.04),transparent 60%);
+background-attachment:fixed;-webkit-font-smoothing:antialiased;}
+.mpc *::-webkit-scrollbar{height:8px;width:8px}.mpc *::-webkit-scrollbar-thumb{background:rgba(139,92,246,.18);border-radius:8px}.mpc *::-webkit-scrollbar-track{background:transparent}
 .mono{font-family:var(--mono)}.muted{color:var(--muted)}
-.topbar{display:flex;align-items:center;gap:14px;padding:11px 18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.78);backdrop-filter:blur(10px);position:sticky;top:0;z-index:30;flex-wrap:wrap}
+.topbar{display:flex;align-items:center;gap:14px;padding:11px 18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(14px);position:sticky;top:0;z-index:30;flex-wrap:wrap}
 .brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--text)}
-.brand b{font-weight:800}
-.brandmark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,var(--brand100),var(--brand50));border:1px solid #e8d5ff}
+.brand b{font-weight:800;background:var(--brandGrad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brandmark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(168,85,247,.14),rgba(96,165,250,.1));border:1px solid rgba(139,92,246,.28);box-shadow:0 0 14px rgba(139,92,246,.1)}
 .brandmark svg{display:block}
 .spacer{flex:1}
-.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--elevated)}
 .seg button{background:transparent;color:var(--muted);border:none;padding:7px 15px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:var(--sans)}
-.seg button.on{background:var(--gold);color:#fff}
-.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12.5px;color:var(--text);cursor:pointer}
-.statchip{display:flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.seg button.on{background:var(--brandGrad);color:#fff;font-weight:800}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12.5px;color:var(--text);cursor:pointer}
+.statchip{display:flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid rgba(139,92,246,.22);border-radius:12px;background:rgba(139,92,246,.07)}
 .statchip .v{font-family:var(--mono);font-weight:700}
-.ticker{display:flex;align-items:stretch;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#f7f2ff,#ffffff);overflow:hidden}
-.ticker .live{display:flex;align-items:center;gap:8px;padding:8px 13px;background:var(--red);color:#fff;font-weight:800;font-size:11.5px;white-space:nowrap;letter-spacing:.4px}
+.ticker{display:flex;align-items:stretch;border-bottom:1px solid var(--line);background:rgba(248,249,252,.92);overflow:hidden}
+.ticker .live{display:flex;align-items:center;gap:8px;padding:8px 13px;background:rgba(220,38,38,.08);border-right:1px solid rgba(220,38,38,.18);color:var(--red);font-weight:800;font-size:11.5px;white-space:nowrap;letter-spacing:.4px}
 .ticker .track{overflow:hidden;flex:1;display:flex;align-items:center}
 .ticker .crawl{display:inline-flex;gap:40px;white-space:nowrap;padding-left:28px;animation:crawl 55s linear infinite}
 .ticker:hover .crawl{animation-play-state:paused}
 .ticker .item{display:inline-flex;align-items:center;gap:9px;font-size:13px;color:var(--text)}
-.ticker .livebtn{display:inline-flex;align-items:center;gap:7px;border:none;border-left:1px solid var(--line);background:#fff;color:var(--gold);font-weight:700;font-size:12px;padding:0 14px;cursor:pointer;font-family:var(--sans)}
-.ticker .livebtn:hover{background:var(--brand50)}.ticker .livebtn:disabled{opacity:.6;cursor:default}
+.ticker .livebtn{display:inline-flex;align-items:center;gap:7px;border:none;border-left:1px solid var(--line);background:transparent;color:var(--brand);font-weight:700;font-size:12px;padding:0 14px;cursor:pointer;font-family:var(--sans)}
+.ticker .livebtn:hover{background:rgba(139,92,246,.07)}.ticker .livebtn:disabled{opacity:.6;cursor:default}
 .tag{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px}
 .dot{width:8px;height:8px;border-radius:50%;flex:none}
 .catdot{width:10px;height:10px;border-radius:50%;flex:none}
-.pulse{width:9px;height:9px;border-radius:50%;background:#fff;animation:pulse 1.2s infinite}
+.pulse{width:9px;height:9px;border-radius:50%;background:var(--red);animation:pulse 1.2s infinite}
 @keyframes crawl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.7)}70%{box-shadow:0 0 0 7px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
-.shell{display:grid;grid-template-columns:236px 1fr;min-height:calc(100vh - 112px)}
-.rail{border-right:1px solid var(--line);padding:13px 9px;display:flex;flex-direction:column;gap:3px;position:sticky;top:112px;align-self:start;height:calc(100vh - 112px);overflow:auto}
-.railhead{font-size:10px;letter-spacing:.7px;color:var(--muted);font-weight:700;padding:8px 12px 4px}
-.navbtn{display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:12px;cursor:pointer;color:var(--muted);font-size:13.5px;font-weight:600;border:1px solid transparent}
-.navbtn:hover{background:#fff;color:var(--text)}
-.navbtn.active{background:var(--brand50);color:var(--brand600);border-color:#e8d5ff;box-shadow:inset 2px 0 0 var(--gold)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(220,38,38,.6)}70%{box-shadow:0 0 0 7px rgba(220,38,38,0)}100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}}
+.shell{display:grid;grid-template-columns:252px 1fr;min-height:calc(100vh - 112px)}
+.rail{border-right:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;gap:2px;position:sticky;top:112px;align-self:start;height:calc(100vh - 112px);overflow:auto;background:rgba(238,241,250,.65)}
+.railhead{font-size:9px;letter-spacing:1px;color:rgba(139,92,246,.6);font-weight:800;padding:12px 12px 4px;text-transform:uppercase;border-top:1px solid rgba(139,92,246,.1);margin-top:6px}
+.railhead.noline{border-top:none;margin-top:0}
+.navbtn{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:600;border:1px solid transparent;transition:all .15s}
+.navbtn:hover{background:rgba(139,92,246,.07);color:var(--text);border-color:rgba(139,92,246,.14)}
+.navbtn.active{background:rgba(139,92,246,.1);color:var(--brand);border-color:rgba(139,92,246,.22);box-shadow:inset 3px 0 0 var(--brand)}
 .navbtn .badge{margin-left:auto;font-family:var(--mono);font-size:11px;background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-weight:800}
-.main{padding:20px 24px;max-width:1240px}
-.h1{font-size:21px;font-weight:800;margin:0;letter-spacing:-.01em}.sub{color:var(--muted);font-size:13px;margin:4px 0 16px;max-width:900px}
+.main{padding:20px 24px;max-width:1260px}
+.h1{font-size:21px;font-weight:800;margin:0;letter-spacing:-.01em;color:var(--text)}.sub{color:var(--muted);font-size:13px;margin:4px 0 16px;max-width:900px}
 .grid{display:grid;gap:13px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:15px;box-shadow:0 1px 2px rgb(0 0 0/.04),0 8px 24px -12px rgb(0 0 0/.10)}
-.card h3{margin:0 0 10px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:0 1px 3px rgba(0,0,0,.05),0 4px 16px -6px rgba(0,0,0,.07)}
+.card h3{margin:0 0 10px;font-size:11px;font-weight:700;color:rgba(139,92,246,.75);text-transform:uppercase;letter-spacing:.7px}
 .kpi{font-family:var(--mono);font-size:27px;font-weight:800;line-height:1;color:var(--text)}
 .row{display:flex;align-items:center;gap:10px}
-.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--text);font-weight:700;font-size:12.5px;cursor:pointer;transition:.15s}
-.btn:hover{background:#faf7ff;border-color:#e0cdff}.btn.gold{background:var(--gold);color:#fff;border:none}.btn.gold:hover{background:var(--gold2)}
-.btn.ghost{background:transparent;border-color:transparent;color:var(--text)}.btn.ghost:hover{background:rgba(0,0,0,.04)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:#fff}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-weight:700;font-size:12.5px;cursor:pointer;transition:.15s}
+.btn:hover{background:rgba(139,92,246,.07);border-color:rgba(139,92,246,.28);color:var(--brand)}.btn.gold{background:var(--brandGrad);color:#fff;border:none;font-weight:800}.btn.gold:hover{opacity:.9;filter:brightness(1.05)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}.btn.ghost:hover{background:rgba(139,92,246,.05);color:var(--text)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 table{border-collapse:collapse;width:100%;font-size:12.5px}
-th{text-align:left;color:var(--muted);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;padding:9px 11px;background:#faf9fe;position:sticky;top:0;border-bottom:1px solid var(--line)}
-td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--text)}
+th{text-align:left;color:rgba(139,92,246,.7);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:9px 11px;background:rgba(238,241,250,.8);position:sticky;top:0;border-bottom:1px solid var(--line)}
+td{padding:9px 11px;border-bottom:1px solid rgba(226,232,240,.7);vertical-align:top;color:var(--text)}
 tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(139,92,246,.03)}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
-.bar{height:7px;border-radius:999px;background:#eceaf6;overflow:hidden;border:1px solid var(--line)}.bar>span{display:block;height:100%}
+.bar{height:7px;border-radius:999px;background:rgba(0,0,0,.06);overflow:hidden;border:1px solid var(--line)}.bar>span{display:block;height:100%}
 .heat{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.tile{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}
-.feeditem{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}.feeditem:last-child{border-bottom:none}
-.av{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;font-weight:800;background:var(--brand50);font-size:13px}
-.overlay{position:fixed;inset:0;background:rgba(20,12,40,.4);backdrop-filter:blur(3px);display:grid;place-items:center;z-index:60;padding:18px}
-.modal{width:100%;max-width:560px;background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px;max-height:90vh;overflow:auto;box-shadow:0 24px 64px -24px rgb(0 0 0/.3)}
+.tile{border:1px solid var(--line);border-radius:14px;padding:13px;background:var(--elevated)}
+.feeditem{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid rgba(226,232,240,.7)}.feeditem:last-child{border-bottom:none}
+.av{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;font-weight:800;background:rgba(139,92,246,.1);font-size:13px;color:var(--brand)}
+.overlay{position:fixed;inset:0;background:rgba(17,24,39,.5);backdrop-filter:blur(7px);display:grid;place-items:center;z-index:60;padding:18px}
+.modal{width:100%;max-width:560px;background:var(--surface);border:1px solid rgba(139,92,246,.2);border-radius:20px;padding:20px;max-height:90vh;overflow:auto;box-shadow:0 24px 80px -24px rgba(139,92,246,.18),0 0 0 1px rgba(139,92,246,.05)}
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:11px}
 .field label{font-size:12px;color:var(--muted);font-weight:600}
-.input,select,textarea{background:#faf9fe;border:1px solid var(--line);border-radius:12px;color:var(--text);padding:9px 11px;font-size:13px;font-family:var(--sans);width:100%}
+.input,select,textarea{background:var(--elevated);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:9px 11px;font-size:13px;font-family:var(--sans);width:100%}
+select option{background:var(--surface);color:var(--text)}
 textarea{min-height:70px;resize:vertical}
-.input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:transparent}
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--gold);border-radius:14px;padding:11px 17px;display:flex;gap:10px;z-index:80;box-shadow:0 12px 32px -16px rgb(128 0 255/.4);animation:pop .25s ease;color:var(--text)}
+.input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(139,92,246,.5);box-shadow:0 0 0 3px rgba(139,92,246,.1)}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid rgba(139,92,246,.35);border-radius:14px;padding:11px 17px;display:flex;gap:10px;z-index:80;box-shadow:0 12px 40px -16px rgba(139,92,246,.22);animation:pop .25s ease;color:var(--text)}
 @keyframes pop{from{transform:translate(-50%,12px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 @keyframes lcfill{from{width:0}to{width:100%}}
 .profhead{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.bigav{width:64px;height:64px;border-radius:16px;display:grid;place-items:center;font-weight:900;font-size:22px;background:linear-gradient(135deg,#efe9fb,#ffffff);border:1px solid var(--line);color:var(--brand600)}
+.bigav{width:64px;height:64px;border-radius:16px;display:grid;place-items:center;font-weight:900;font-size:22px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);color:var(--brand)}
 .tabs2{display:flex;gap:6px;border-bottom:1px solid var(--line);margin:14px 0;flex-wrap:wrap}
-.tabs2 button{background:transparent;border:none;color:var(--muted);font-weight:700;font-size:13px;padding:8px 12px;cursor:pointer;border-bottom:2px solid transparent;font-family:var(--sans)}
-.tabs2 button.on{color:var(--brand600);border-bottom-color:var(--gold)}
+.tabs2 button{background:transparent;border:none;color:var(--muted);font-weight:700;font-size:13px;padding:8px 12px;cursor:pointer;border-bottom:2px solid transparent;font-family:var(--sans);transition:.15s}
+.tabs2 button.on{color:var(--brand);border-bottom-color:var(--brand)}
 .badgegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
-.badge2{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;padding:15px 11px;border-radius:16px;border:1px solid var(--line);background:#fff}
-.badge2.on{border-color:var(--gold);background:linear-gradient(180deg,var(--brand50),#fff)}
-.badge2 .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#f1eefb;color:var(--brand600)}
-.badge2.on .ic{background:var(--gold);color:#fff}
+.badge2{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;padding:15px 11px;border-radius:14px;border:1px solid var(--line);background:var(--elevated)}
+.badge2.on{border-color:rgba(139,92,246,.32);background:rgba(139,92,246,.07)}
+.badge2 .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(139,92,246,.08);color:var(--brand)}
+.badge2.on .ic{background:var(--brandGrad);color:#fff}
 .ring{position:relative;width:46px;height:46px;border-radius:50%}
-.ring .hole{position:absolute;inset:5px;border-radius:50%;background:#fff;display:grid;place-items:center;font-family:var(--mono);font-weight:800;font-size:13px}
+.ring .hole{position:absolute;inset:5px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-family:var(--mono);font-weight:800;font-size:13px}
 @media (max-width:880px){.shell{grid-template-columns:1fr}.rail{position:static;height:auto;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--line)}}
 @media (prefers-reduced-motion:reduce){.ticker .crawl{animation:none}.pulse{animation:none}}
 `;
@@ -447,6 +550,7 @@ const COMMON_LIGHT = [
     { k: "website", label: "Website", t: "text" },
     { k: "jurisdictions", label: "Markets / corridors you serve (comma-separated)", t: "text", required: true },
     { k: "products", label: "What you do for Mal (one line)", t: "text" },
+    { k: "fatfStatus", label: "Do any corridors you serve appear on the FATF grey or black list? (31 C.F.R. § 1022.210 — risk-based approach)", t: "yn", required: true },
   ]},
   { title: "Who we contact", why: "So reviews and updates reach the right person without chasing.", fields: [
     { k: "coName", label: "Compliance contact name", t: "text", required: true },
@@ -455,36 +559,49 @@ const COMMON_LIGHT = [
   { title: "Licensing", why: "We confirm this directly with the regulator — you don't need to attach anything yet.", fields: [
     { k: "regulator", label: "Primary regulator", t: "text" },
     { k: "licenceNumber", label: "Licence / registration number", t: "text" },
+    { k: "fincenMSB", label: "FinCEN MSB registration number (if applicable — 31 C.F.R. § 1022.380)", t: "text" },
   ]},
   { title: "Owners & directors", why: "We verify ownership independently. Just tell us who you know — a tap, not paperwork.", fields: [
     { k: "ubos", label: "Beneficial owners / directors", t: "list", cols: [ { k: "name", label: "Name" }, { k: "role", label: "Role / %" }, { k: "nationality", label: "Nationality" } ] },
     { k: "pep", label: "Are any owners or directors a politically exposed person (PEP)?", t: "yn", required: true },
+    { k: "pepCustomers", label: "Does your business onboard politically exposed persons (PEPs) as customers? (Wolfsberg PEP Guidance 2017)", t: "yn", required: true },
   ]},
   { title: "Anything we should know", why: "It always lands better coming from you. We check public records either way, so a heads-up keeps us aligned.", fields: [
     { k: "priorIssues", label: "Any past regulatory action, enforcement, or material litigation?", t: "yn", required: true },
     { k: "priorNotes", label: "If yes, a short note (optional)", t: "area" },
   ]},
   { title: "Existing documents (optional)", why: "If you already hold these, share a link and we won't ask twice — we accept what you have.", fields: [
-    { k: "artefacts", label: "Links to licences, audited financials, SOC 2, or a completed Wolfsberg questionnaire", t: "area" },
+    { k: "artefacts", label: "Links to licences, audited financials, SOC 2, or a completed Wolfsberg CBDDQ / compliance questionnaire", t: "area" },
   ]},
   { title: "Our shared commitments", why: "These are the same commitments our own banks require of us. Agreeing up front is what keeps us aligned and the regulators comfortable.", fields: [
-    { k: "sanctionsAttest", label: "You and your owners are not sanctioned, and you screen against sanctions lists", t: "yn", required: true },
-    { k: "amlAttest", label: "You maintain an AML/CFT programme appropriate to your activity", t: "yn", required: true },
-    { k: "notifyAttest", label: "You'll tell Mal promptly of any change in ownership, licence, sanctions status or a security incident", t: "yn", required: true },
+    { k: "sanctionsAttest", label: "You and your owners are not sanctioned, and you screen against OFAC SDN and applicable sanctions lists", t: "yn", required: true },
+    { k: "amlAttest", label: "You maintain an AML/CFT/CPF programme appropriate to your activity and risk profile", t: "yn", required: true },
+    { k: "prohibitedAttest", label: "None of your services, customers, or partners fall within Mal's prohibited categories (MAL-CMP-AML-01 §8)", t: "yn", required: true },
+    { k: "boiAttest", label: "Beneficial ownership information is accurate and will be updated within 30 days of any change (AML Act 2020 / Corporate Transparency Act)", t: "yn", required: true },
+    { k: "travelRuleAttest", label: "You support Travel Rule data transmission for transfers ≥ $3,000 (31 C.F.R. § 1010.410(f) / FATF R.16)", t: "yn", required: true },
+    { k: "notifyAttest", label: "You'll tell Mal promptly of any change in ownership, licence, sanctions status, or a security incident", t: "yn", required: true },
     { k: "consent", label: "You authorise Mal to verify these details and screen you (registries, sanctions, adverse media)", t: "yn", required: true },
   ]},
 ];
 const CATEGORY_LIGHT = {
   "Payout partners": [{ title: "Payout — quick check", why: "Payouts must reach beneficiaries only through authorised channels.", fields: [
     { k: "corridors", label: "Payout corridors", t: "text" },
+    { k: "deliveryChannel", label: "How do you onboard customers? (Wolfsberg Digital Customer Lifecycle 2023)", t: "select", options: ["Fully digital (non-face-to-face)", "Face-to-face", "Hybrid"] },
     { k: "ivtsAttest", label: "You settle only through authorised channels — no hawala / hundi / IVTS", t: "yn", required: true },
+    { k: "stablecoinAttest", label: "Any stablecoin settlement uses only GENIUS Act-compliant issuers (Pub.L. 119-27, July 2025) — or N/A if no stablecoin activity", t: "yn", required: true },
   ]}],
   "Banking partner": [{ title: "Banking — quick check", why: "Confirms the licence type behind the rails you provide.", fields: [
-    { k: "charterType", label: "Charter / licence type", t: "text" } ]}],
+    { k: "charterType", label: "Charter / licence type", t: "text" },
+    { k: "travelRuleCapable", label: "Your rails support Travel Rule data transmission for covered transfers (FATF R.16 / 31 C.F.R. § 1010.410(f))", t: "yn", required: true },
+  ]}],
   "Card & settlement": [{ title: "Card & settlement — quick check", why: "Identifies the scheme rules that apply to the programme.", fields: [
-    { k: "scheme", label: "Card scheme(s)", t: "text" } ]}],
+    { k: "scheme", label: "Card scheme(s)", t: "text" },
+    { k: "visaRulesAttest", label: "You agree to operate within applicable card scheme rules (Visa Core Rules / Mastercard Standards)", t: "yn", required: true },
+  ]}],
   "Technology & processors": [{ title: "Technology — quick check", why: "We treat processors as never-CDD-reliance and validate your controls ourselves.", fields: [
-    { k: "serviceType", label: "Service type", t: "select", options: ["Screening / KYT", "Core ledger", "Identity verification", "Other"] } ]}],
+    { k: "serviceType", label: "Service type", t: "select", options: ["Screening / KYT", "Core ledger", "Identity verification", "Other"] },
+    { k: "dataResidency", label: "Data residency / primary hosting jurisdiction", t: "text" },
+  ]}],
 };
 const schemaFor = (cat) => [...COMMON_LIGHT, ...(CATEGORY_LIGHT[cat] || [])];
 
@@ -827,6 +944,19 @@ const OBLIGATIONS = [
   { id: "o22", partner: "oscilar", owner: "Partner", title: "Real-time preventive holds for Pakistan corridor", detail: "Real-Time Risk Assessment with minimum dwell time and age-scaled caps — prevention, not just post-transaction detection.", clause: "Gap O-3", cadence: "Before go-live", sla: "Pre-go-live", sev: "crit", kind: "pending", due: null },
   { id: "o23", partner: "oscilar", owner: "Partner", title: "Geographic weighting + MRM tuning", detail: "SBP/provincial corridor weighting, tuning of hardcoded OOTB defaults, and a zero-hit KRI.", clause: "Gap O-4", cadence: "Before go-live", sla: "Pre-go-live", sev: "high", kind: "pending", due: null },
   { id: "o1", partner: "oscilar", owner: "Mal", title: "Independent model validation & tuning", detail: "Validate and tune the monitoring rules; never rely on processor output as CDD (processor governance).", clause: "Doc 0.4 / processor governance", cadence: "Annual", sla: "Every 12 months", sev: "med", kind: "recurring", due: _nextAnnual(8, 30) },
+
+  /* ── Mal → Regulatory filing deadlines (BSA / OFAC / FinCEN) ── */
+  { id: "mf1", partner: "mal", owner: "Mal", title: "SAR filing — Path A (Mal direct filer)", detail: "File SAR with FinCEN BSA E-Filing within 30 calendar days of the initial detection date. Extension: additional 30 days if subject cannot be identified. Never tip off the subject.", clause: "31 C.F.R. § 1022.320; 31 U.S.C. § 5318(g)", cadence: "On detection", sla: "30 calendar days from detection", sev: "crit", kind: "event", due: null },
+  { id: "mf2", partner: "mal", owner: "Mal", title: "SAR escalation package to Zenus — Path B", detail: "Prepare the full SAR escalation package (narrative, supporting data, detection timeline) and deliver to Zenus within 20 business days of detection so Zenus can file as the BSA-reporting bank.", clause: "SOP 4 §5b; Governance Memo; 31 C.F.R. § 1022.320", cadence: "On detection", sla: "≤ 20 business days", sev: "high", kind: "event", due: null },
+  { id: "mf3", partner: "mal", owner: "Mal", title: "CTR filing — Path A (Mal direct filer)", detail: "File CTR with FinCEN BSA E-Filing within 15 calendar days of the transaction date for any cash transaction or series of related transactions exceeding $10,000.", clause: "31 C.F.R. § 1010.311", cadence: "On transaction", sla: "15 calendar days from transaction date", sev: "crit", kind: "event", due: null },
+  { id: "mf4", partner: "mal", owner: "Mal", title: "CTR trigger notice to Zenus — Path B", detail: "Notify Zenus of a CTR-triggering cash transaction within 5 business days of the transaction date so Zenus can file as the depository institution.", clause: "SOP 4 §7; 31 C.F.R. § 1010.311", cadence: "On transaction", sla: "≤ 5 business days from transaction date", sev: "high", kind: "event", due: null },
+  { id: "mf5", partner: "mal", owner: "Mal", title: "OFAC blocking / rejection report", detail: "Report blocking or rejection of a transaction or property to OFAC within 10 business days of the blocking event. Blocking report goes to OFAC Compliance Division.", clause: "31 C.F.R. § 501.604", cadence: "On blocking event", sla: "10 business days from blocking", sev: "crit", kind: "event", due: null },
+  { id: "mf6", partner: "mal", owner: "Mal", title: "Annual Blocked Property Report (ARBP) — first filing due", detail: "First ARBP: report all property blocked as of June 30, 2026 — file with OFAC by September 30, 2026. Subsequent annual reports due September 30 each year (property as of prior June 30).", clause: "31 C.F.R. § 501.603", cadence: "Annual (Sept 30)", sla: "September 30, 2026 — first filing", sev: "crit", kind: "deadline", due: "2026-09-30" },
+  { id: "mf7", partner: "mal", owner: "Mal", title: "314(a) FinCEN information request response", detail: "Respond to FinCEN 314(a) requests within the specified window (typically ~14 calendar days from the posting date). Search records going back 6 years.", clause: "31 C.F.R. § 1010.520", cadence: "On request", sla: "~14 days (per FinCEN notice)", sev: "high", kind: "event", due: null },
+  { id: "mf8", partner: "mal", owner: "Mal", title: "OFAC SDN screening update — < 3 business days", detail: "Incorporate OFAC SDN and applicable sanctions list updates into screening systems within 3 business days of each OFAC publication. Fail-open is not acceptable.", clause: "OFAC guidance; Zenus Programme SLA", cadence: "On each SDN publication", sla: "< 3 business days after publication", sev: "crit", kind: "event", due: null },
+  { id: "mf9", partner: "mal", owner: "Mal", title: "FinCEN advisory — TM rule incorporation", detail: "Incorporate typologies and red flags from FinCEN advisories into Oscilar transaction monitoring rules within 30 days of advisory publication. Log the update in the control register.", clause: "Mal Standards Hierarchy §6; BSA § 1022.210", cadence: "On advisory publication", sla: "30 days from publication", sev: "med", kind: "event", due: null },
+  { id: "mf10", partner: "mal", owner: "Mal", title: "Independent AML / BSA audit — post-launch", detail: "Conduct first independent AML/BSA audit within 12 months of commercial launch, by a qualified party other than the Compliance Officer, with findings reported to the Board.", clause: "31 C.F.R. § 1022.210; Board Resolution §4.4; Zenus Sch. 3.6(a)", cadence: "Annual (first: within 12 months of launch)", sla: "≤ 12 months from launch", sev: "high", kind: "pending", due: null },
+  { id: "mf11", partner: "mal", owner: "Mal", title: "Training & records retention — 5-year minimum", detail: "Retain all AML training completion records, SAR/CTR copies, CDD records, and correspondence for a minimum of 5 years per BSA recordkeeping requirements.", clause: "31 C.F.R. Chapter X; 31 C.F.R. § 1022.400", cadence: "Ongoing", sla: "5 years minimum", sev: "med", kind: "ongoing", due: null },
 ];
 
 function ObCard({ ob }) {
@@ -875,33 +1005,58 @@ function ObligationsView({ partnerId, base, supervisor }) {
 }
 
 function ObligationsRollup({ store, agents, viewProfile }) {
+  const MAL_REG = OBLIGATIONS.filter(o => o.partner === "mal");
   const rows = agents.map(({ base }) => {
     const mine = OBLIGATIONS.filter(o => o.partner === base.id);
     const overdue = mine.filter(o => o.due && dueIn(o.due) < 0).length;
     const soon = mine.filter(o => o.due && dueIn(o.due) >= 0 && dueIn(o.due) <= 7).length;
     return { base, total: mine.length, mal: mine.filter(o => o.owner === "Mal").length, partner: mine.filter(o => o.owner === "Partner").length, overdue, soon };
   }).filter(r => r.total > 0);
-  const allAlerts = OBLIGATIONS.filter(o => o.due && dueIn(o.due) <= 7).sort((a, b) => dueIn(a.due) - dueIn(b.due));
-  const nameOf = (id) => (agents.find(a => a.base.id === id) || {}).base?.name || id;
+  // All upcoming/overdue — includes Mal regulatory filings
+  const allAlerts = OBLIGATIONS.filter(o => o.due && dueIn(o.due) <= 30).sort((a, b) => dueIn(a.due) - dueIn(b.due));
+  const critAlerts = allAlerts.filter(o => dueIn(o.due) <= 7);
+  const nameOf = (id) => id === "mal" ? "Mal (regulatory)" : (agents.find(a => a.base.id === id) || {}).base?.name || id;
+  const malRegOverdue = MAL_REG.filter(o => o.due && dueIn(o.due) < 0).length;
+  const malRegSoon = MAL_REG.filter(o => o.due && dueIn(o.due) >= 0 && dueIn(o.due) <= 30).length;
   return (
     <>
       <h1 className="h1">Obligations & SLA</h1>
-      <p className="sub">Agreement commitments across every partner, as two-sided alerts and reminders — what Mal owes, and what each partner owes — so service levels are kept on both sides.</p>
+      <p className="sub">Agreement commitments and regulatory filing deadlines — what Mal owes to regulators and banking partners, and what each partner owes to Mal. Two-sided, live SLA alerts.</p>
       <div className="row" style={{ gap: 11, marginBottom: 14, flexWrap: "wrap" }}>
-        <Kpi label="Tracked obligations" value={OBLIGATIONS.length} />
-        <Kpi label="Mal-owed" value={OBLIGATIONS.filter(o => o.owner === "Mal").length} />
-        <Kpi label="Partner-owed" value={OBLIGATIONS.filter(o => o.owner === "Partner").length} />
-        <Kpi label="Overdue" value={OBLIGATIONS.filter(o => o.due && dueIn(o.due) < 0).length} />
-        <Kpi label="Due ≤ 7 days" value={allAlerts.filter(o => dueIn(o.due) >= 0).length} />
+        <Kpi label="Total tracked" value={OBLIGATIONS.length} />
+        <Kpi label="Mal regulatory filings" value={MAL_REG.length} accent="var(--violet)" />
+        <Kpi label="Partner obligations" value={OBLIGATIONS.filter(o => o.partner !== "mal").length} />
+        <Kpi label="Overdue" value={OBLIGATIONS.filter(o => o.due && dueIn(o.due) < 0).length} accent="var(--red)" />
+        <Kpi label="Due ≤ 7 days" value={critAlerts.length} accent={critAlerts.length > 0 ? "var(--amber)" : undefined} />
       </div>
-      <div className="card" style={{ marginBottom: 14 }}><h3>Upcoming & overdue reminders</h3>
-        {allAlerts.length === 0 ? <div className="muted" style={{ fontSize: 13 }}>Nothing due in the next 7 days.</div> :
-          <div className="tablewrap"><table><thead><tr><th>When</th><th>Partner</th><th>Owner</th><th>Obligation</th><th>SLA</th></tr></thead>
+
+      {/* Mal regulatory filing deadlines — always shown at top */}
+      <div className="card" style={{ marginBottom: 14, borderLeft: "3px solid var(--violet)" }}>
+        <div className="row" style={{ justifyContent: "space-between", marginBottom: 12 }}>
+          <h3 style={{ margin: 0 }}>Mal regulatory filing deadlines <span className="chip" style={{ background: "rgba(124,58,237,.12)", color: "var(--violet)", marginLeft: 8 }}>BSA / OFAC / FinCEN</span></h3>
+          <div className="row" style={{ gap: 6 }}>
+            {malRegOverdue > 0 && <span className="chip" style={{ background: "rgba(220,38,38,.14)", color: "var(--red)" }}>{malRegOverdue} overdue</span>}
+            {malRegSoon > 0 && <span className="chip" style={{ background: "rgba(245,158,11,.14)", color: "var(--amber)" }}>{malRegSoon} upcoming</span>}
+          </div>
+        </div>
+        {MAL_REG.map(o => <ObCard key={o.id} ob={o} />)}
+      </div>
+
+      <div className="card" style={{ marginBottom: 14 }}><h3>Upcoming & overdue — all obligations (next 30 days)</h3>
+        {allAlerts.length === 0 ? <div className="muted" style={{ fontSize: 13 }}>Nothing due in the next 30 days.</div> :
+          <div className="tablewrap"><table><thead><tr><th>When</th><th>Area</th><th>Owner</th><th>Obligation</th><th>SLA</th></tr></thead>
             <tbody>{allAlerts.map(o => { const r = obReminder(o); return (
-              <tr key={o.id}><td><span className="chip" style={{ background: r.c + "22", color: r.c, whiteSpace: "nowrap" }}>{r.label}</span></td><td style={{ fontWeight: 600 }}>{nameOf(o.partner)}</td><td><span className="chip" style={{ background: o.owner === "Mal" ? "var(--brand50)" : "rgba(30,99,233,.12)", color: o.owner === "Mal" ? "var(--brand600)" : "var(--info)" }}>{o.owner === "Mal" ? "Mal" : "Partner"}</span></td><td>{o.title}</td><td className="muted" style={{ fontSize: 12 }}>{o.sla}</td></tr>
+              <tr key={o.id}>
+                <td><span className="chip" style={{ background: r.c + "22", color: r.c, whiteSpace: "nowrap" }}>{r.label}</span></td>
+                <td style={{ fontWeight: 600 }}>{nameOf(o.partner)}</td>
+                <td><span className="chip" style={{ background: o.owner === "Mal" ? "var(--brand50)" : "rgba(30,99,233,.12)", color: o.owner === "Mal" ? "var(--brand600)" : "var(--blue)" }}>{o.owner === "Mal" ? "Mal" : "Partner"}</span></td>
+                <td>{o.title}</td>
+                <td className="muted" style={{ fontSize: 12 }}>{o.sla}</td>
+              </tr>
             ); })}</tbody>
           </table></div>}
       </div>
+
       <div className="card"><h3>By partner</h3>
         <div className="tablewrap"><table><thead><tr><th>Partner</th><th>Total</th><th>Mal-owed</th><th>Partner-owed</th><th>Overdue</th><th>Due ≤ 7d</th><th></th></tr></thead>
           <tbody>{rows.map(r => (
@@ -1934,7 +2089,19 @@ function cmSeed() {
   return { cases, alerts, sars, seq: 6 };
 }
 
-const DPL_ACTS = ["Reviewed transaction history", "Requested info (tipping-off-safe)", "Linked typology", "Linked control", "Interim hold applied", "Note"];
+const DPL_ACTS = [
+  "Reviewed transaction history",
+  "Requested info (tipping-off-safe)",
+  "Linked typology",
+  "Linked control",
+  "Interim hold applied",
+  "OFAC block / rejection report initiated (§ 501.604 — 10 bd deadline)",
+  "314(a) information request responded (§ 1010.520)",
+  "Stablecoin issuer / GENIUS Act compliance verified (Pub.L. 119-27)",
+  "Proliferation financing / TBML indicators reviewed (US NRA 2026 / FATF R.9)",
+  "FinCEN advisory typology matched (FIN-2021-A001 / CVCKIOSK / FIN-A003)",
+  "Note",
+];
 
 function CaseManagement() {
   const [data, setData] = useState(null);
@@ -2647,11 +2814,12 @@ export default function App() {
   const [modal, setModal] = useState(null);
   const [toast, setToast] = useState(null);
   const [live, setLive] = useState({ items: [], at: null, status: "idle" }); // idle|loading|ok|error
+  const [fcie, setFcie] = useState({ items: [], at: null, status: "idle" }); // Financial Crime Intelligence Engine
   const [obCategory, setObCategory] = useState(null);
   const [screeningLoading, setScreeningLoading] = useState({});
   const [intake, setIntake] = useState(null);
 
-  useEffect(() => { (async () => { const s = await loadStore(); setStore(s && s.v === SEED_VERSION ? s : seed()); const c = await loadLive(); if (c && c.items?.length) setLive({ ...c, status: "ok" }); })(); }, []);
+  useEffect(() => { (async () => { const s = await loadStore(); setStore(s && s.v === SEED_VERSION ? s : seed()); const c = await loadLive(); if (c && c.items?.length) setLive({ ...c, status: "ok" }); const f = await loadFcie(); if (f && f.items?.length) setFcie({ ...f, status: "ok" }); })(); }, []);
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 30000); return () => clearInterval(t); }, []);
   useEffect(() => { try { const m = (window.location.hash || "").match(/intake=([^&]+)/); if (m) { const c = decodeURIComponent(m[1]); setIntake({ category: CATEGORIES.find(x => x.id === c) ? c : null }); } } catch (e) {} }, []);
   useEffect(() => { setTab(role === "supervisor" ? "oversight" : "profile"); setProfileId(null); }, [role]);
@@ -2720,6 +2888,47 @@ export default function App() {
     } catch (e) {
       setLive(l => ({ ...l, status: "error" }));
       flash("Could not reach the live news source");
+    }
+  }, []);
+
+  const fetchFCIE = useCallback(async () => {
+    setFcie(f => ({ ...f, status: "loading" }));
+    // 1 — Try the NestJS backend (Google News RSS, server-side, no CORS)
+    try {
+      const res = await fetch("http://localhost:3001/api/intelligence/feed?limit=200", { signal: AbortSignal.timeout ? AbortSignal.timeout(5000) : undefined });
+      if (res.ok) {
+        const data = await res.json();
+        const items = (data.items || []).filter(i => FCIE_JURISDICTIONS.includes(i.country));
+        const next = { items, at: new Date().toISOString(), status: "ok" };
+        setFcie(next); saveFcie(next); return;
+      }
+    } catch (_) {}
+    // 2 — Fall back to Claude API web search
+    const jurs = FCIE_JURISDICTIONS.join(", ");
+    const prompt = `Search the web for the most recent (last 30 days) financial crime and regulatory intelligence for these jurisdictions only: ${jurs}. Prioritise official regulators, central banks, FIUs, and trusted AML publications. Cover: AML/CFT regulatory updates, enforcement actions (fines/penalties/prosecutions), sanctions designations, money laundering / terrorist financing news, FATF developments, and financial crime typologies.\n\nReturn ONLY a JSON array (no prose, no markdown fences) of up to 40 objects:\n[{"country":"one of the 9 jurisdictions listed above","category":"regulatory|enforcement|financial-crime|sanctions|fatf|fiu|central-bank","severity":"critical|high|medium|low","title":"headline up to 140 chars","summary":"2-3 sentence summary","source":"publication or regulator name","publishedAt":"YYYY-MM-DD","url":"source url or empty string","authority":"issuing authority name or empty string","tags":["tag1","tag2"]}]\n\nOrder by severity (critical first), then by most recent date. Only include items from the 9 specified jurisdictions — ignore all other countries.`;
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 3000, messages: [{ role: "user", content: prompt }], tools: [{ type: "web_search_20250305", name: "web_search" }] }),
+      });
+      const data = await res.json();
+      const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+      let arr = [];
+      const a = text.indexOf("["), b = text.lastIndexOf("]");
+      if (a !== -1 && b !== -1) arr = JSON.parse(text.slice(a, b + 1));
+      const items = (Array.isArray(arr) ? arr : []).filter(x => x && x.title && FCIE_JURISDICTIONS.includes(x.country)).map((x, i) => ({
+        id: "fcie" + Date.now() + i, country: x.country, category: x.category || "regulatory",
+        severity: ["critical", "high", "medium", "low"].includes(x.severity) ? x.severity : "medium",
+        title: String(x.title).slice(0, 180), summary: x.summary || "", source: x.source || "web",
+        publishedAt: x.publishedAt || "", url: x.url || "", authority: x.authority || "",
+        tags: Array.isArray(x.tags) ? x.tags : [], confidenceScore: 80, ingested: new Date().toISOString(),
+      }));
+      const next = { items, at: new Date().toISOString(), status: "ok" };
+      setFcie(next); saveFcie(next);
+      flash(items.length ? `FCIE updated · ${items.length} items across ${FCIE_JURISDICTIONS.length} jurisdictions` : "No FCIE items returned");
+    } catch (e) {
+      setFcie(f => ({ ...f, status: "error" }));
+      flash("Could not reach intelligence sources");
     }
   }, []);
 
@@ -2826,10 +3035,17 @@ export default function App() {
     const jurs = (v.jurisdictions || "").split(",").map(x => x.trim()).filter(Boolean);
     const jur = jurs[0] || v.country || "Global";
     const riskTier = suggestTier(category, jur);
+    const no = (x) => String(x).toUpperCase() === "N";
+    const baseRisk = riskTier.startsWith("Tier 3") ? 52 : riskTier.startsWith("Tier 2") ? 66 : 80;
+    // Regulatory adjustments: FATF corridor −16, PEP customers −8, no prohibited attest −25, no sanctions attest −20
+    const regulatoryRiskAdj = (yes(v.fatfStatus) ? -16 : 0) + (yes(v.pepCustomers) ? -8 : 0)
+      + (no(v.prohibitedAttest) ? -25 : 0) + (no(v.sanctionsAttest) ? -20 : 0);
     const s2 = {
-      reporting: 65, responsiveness: 70, training: 55, audit: 60, findings: 72, timeliness: 70,
-      quality: yes(v.amlAttest) ? 72 : 60, cooperation: yes(v.consent) ? 80 : 65,
-      risk: riskTier.startsWith("Tier 3") ? 52 : riskTier.startsWith("Tier 2") ? 66 : 80,
+      reporting: 65, responsiveness: 70, training: 55, audit: 60, findings: 72,
+      timeliness: yes(v.travelRuleAttest) ? 70 : 56, // Travel Rule capability affects timeliness score
+      quality: yes(v.amlAttest) ? 72 : 60,
+      cooperation: yes(v.consent) ? 80 : 65,
+      risk: Math.max(0, baseRisk + regulatoryRiskAdj),
     };
     const partner = {
       id, name: v.entityName, category, relationship: v.products || (CATEGORIES.find(c => c.id === category)?.note || ""),
@@ -2843,7 +3059,7 @@ export default function App() {
     const ddmap = {}; DD_ITEMS.forEach(d => ddmap[d.id] = "Outstanding"); ddmap.onboarding = "Complete";
     const slice = {
       feed: [{ id: "f" + Date.now(), kind: "Risk assessment", at: new Date().toISOString(), text: "Light intake received — Mal deep due diligence & screening started.", actor: "Supervisor (Mal)" }],
-      registers: { sar: [], str: [], fatca: [], crs: [], questionnaire: [], cert: [], audit: [], correspondence: [], corrective: [] },
+      registers: { sar: [], str: [], fatca: [], crs: [], ofac_block: [], arbp: [], a314: [], cbddq: [], questionnaire: [], cert: [], audit: [], correspondence: [], corrective: [] },
       training: COURSES.map(c => ({ ...c, status: "Not started", score: null })),
       dd: ddmap, acks: [], onboarding: { ...v, category, onboardedAt: partner.onboardedAt }, screening: null,
     };
@@ -2854,24 +3070,36 @@ export default function App() {
   }
 
   const SUP_NAV = [
+    { type: "group", label: "Command Center", noline: true },
     { id: "oversight", label: "Oversight dashboard", icon: LayoutDashboard },
-    { id: "agents", label: "Partners", icon: Users },
+    { id: "exec", label: "Executive dashboard", icon: BarChart3 },
+
+    { type: "group", label: "Mission I · Who Enters?" },
+    { id: "onboarding", label: "Onboarding & DD", icon: UserPlus },
+    { id: "agents", label: "Partners directory", icon: Users },
     { id: "lifecycle", label: "Product lifecycle", icon: Film },
-    { id: "onboarding", label: "Onboarding & forms", icon: UserPlus },
-    { id: "examiner", label: "AML/CFT Policy Examiner", icon: ShieldAlert },
-    { id: "atlas", label: "Threat Atlas", icon: Globe },
-    { id: "controls", label: "Control Register & Evidence", icon: ShieldCheck },
-    { id: "casemgmt", label: "Case Management", icon: FolderOpen },
-    { id: "regchange", label: "Regulatory Change & Impact", icon: Megaphone },
-    { id: "crosswalk", label: "Framework Crosswalk", icon: BookOpen },
-    { id: "examinerroom", label: "Examiner Room & Board Pack", icon: FileSignature },
-    { id: "reviews", label: "Program reviews & SLA", icon: ClipboardCheck, badge: Object.values(store.reviews).filter(r => r.status !== "Closed" && slaStatus(r.foDue).cd < 0).length || null },
+
+    { type: "group", label: "Mission II · Defend" },
+    { id: "reviews", label: "Programme reviews", icon: ClipboardCheck, badge: Object.values(store.reviews).filter(r => r.status !== "Closed" && slaStatus(r.foDue).cd < 0).length || null },
+    { id: "controls", label: "Control register", icon: ShieldCheck },
+    { id: "casemgmt", label: "Case management", icon: FolderOpen },
     { id: "obligations", label: "Obligations & SLA", icon: Clock, badge: OBLIGATIONS.filter(o => o.due && dueIn(o.due) < 0).length || null },
+
+    { type: "group", label: "Mission III · Intelligence" },
     { id: "reporting", label: "Reporting hub", icon: FileText },
     { id: "intel", label: "Intelligence library", icon: Radio },
-    { id: "training", label: "Knowledge & training", icon: GraduationCap },
-    { id: "comms", label: "Communications", icon: Megaphone },
-    { id: "exec", label: "Executive dashboard", icon: BarChart3 },
+    { id: "fcie", label: "Crime Intelligence Engine", icon: Flame, badge: fcie.items.filter(i => i.severity === "critical").length || null },
+    { id: "atlas", label: "Threat Atlas", icon: Globe },
+    { id: "examiner", label: "Policy examiner", icon: ShieldAlert },
+    { id: "regchange", label: "Regulatory change", icon: Megaphone },
+    { id: "crosswalk", label: "Framework crosswalk", icon: BookOpen },
+    { id: "examinerroom", label: "Examiner room", icon: FileSignature },
+
+    { type: "group", label: "Training" },
+    { id: "training", label: "Knowledge center", icon: GraduationCap },
+
+    { type: "group", label: "Governance" },
+    { id: "comms", label: "Communications", icon: MessageSquare },
     { id: "audit", label: "Audit trail", icon: Database },
   ];
   const AG_NAV = [
@@ -2899,7 +3127,7 @@ export default function App() {
       <style>{CSS}</style>
 
       <div className="topbar">
-        <div className="brand"><span className="brandmark"><MalEmblem size={20} /></span> <b>Mal</b> · Third-Party Risk & Oversight Platform</div>
+        <div className="brand"><span className="brandmark"><MalEmblem size={20} /></span> <b>Mal</b> <span style={{ color: "var(--muted)", fontWeight: 400, fontSize: 12.5, marginLeft: 2 }}>· Partner Defense Command</span></div>
         <div className="seg">
           <button className={role === "supervisor" ? "on" : ""} onClick={() => setRole("supervisor")}>Supervisor</button>
           <button className={role === "partner" ? "on" : ""} onClick={() => setRole("partner")}>Partner</button>
@@ -2935,14 +3163,16 @@ export default function App() {
 
       <div className="shell">
         <nav className="rail">
-          <div className="railhead">{role === "supervisor" ? "SUPERVISION" : "PARTNER WORKSPACE"}</div>
-          {nav.map(n => (
-            <div key={n.id} className={"navbtn" + (tab === n.id ? " active" : "")} onClick={() => { setTab(n.id); setProfileId(null); }} role="button" tabIndex={0} onKeyDown={e => e.key === "Enter" && setTab(n.id)}>
-              <n.icon size={16} /> {n.label}{n.badge ? <span className="badge">{n.badge}</span> : null}
-            </div>
+          {role === "partner" && <div className="railhead noline">Partner Workspace</div>}
+          {nav.map((n, i) => (
+            n.type === "group"
+              ? <div key={"g" + i} className={"railhead" + (n.noline ? " noline" : "")}>{n.label}</div>
+              : <div key={n.id} className={"navbtn" + (tab === n.id ? " active" : "")} onClick={() => { setTab(n.id); setProfileId(null); }} role="button" tabIndex={0} onKeyDown={e => e.key === "Enter" && setTab(n.id)}>
+                  <n.icon size={16} /> {n.label}{n.badge ? <span className="badge">{n.badge}</span> : null}
+                </div>
           ))}
           <div style={{ flex: 1 }} />
-          <div className="navbtn" onClick={() => setModal({ t: "speakup" })}><MessageSquare size={16} /> Speak-up channel</div>
+          <div className="navbtn" onClick={() => setModal({ t: "speakup" })} style={{ borderTop: "1px solid var(--line)", paddingTop: 10, marginTop: 4 }}><MessageSquare size={16} /> Speak-up channel</div>
         </nav>
 
         <main className="main">
@@ -2955,7 +3185,8 @@ export default function App() {
           {role === "supervisor" && !profileId && tab === "reporting" && <ReportingHub {...{ store, agents, supervisor: true }} />}
           {role === "supervisor" && !profileId && tab === "intel" && <Intel {...{ store, supervisor: true, setModal, live, onRefresh: () => fetchLive([...coveredJurs, "United States"]), jurs: [...coveredJurs, "United States"] }} />}
           {role === "supervisor" && !profileId && tab === "training" && <TrainingCenter {...{ store, agents, supervisor: true }} />}
-          {role === "supervisor" && !profileId && tab === "comms" && <Comms {...{ store, agents, supervisor: true, setModal }} />}
+          {role === "supervisor" && !profileId && tab === "fcie" && <FinancialCrimeIntelligence {...{ fcie, onRefresh: fetchFCIE, store, setStore, flash: (m) => { setToast(m); setTimeout(() => setToast(null), 2200); } }} />}
+          {role === "supervisor" && !profileId && tab === "comms" && <Comms {...{ store, agents, supervisor: true, setModal, fcie }} />}
           {role === "supervisor" && !profileId && tab === "exec" && <Exec {...{ agents, store }} />}
           {role === "supervisor" && !profileId && tab === "audit" && <AuditTrail store={store} />}
           {role === "supervisor" && !profileId && tab === "obligations" && <ObligationsRollup {...{ store, agents, viewProfile: (id) => setProfileId(id) }} />}
@@ -2978,7 +3209,7 @@ export default function App() {
           {role === "partner" && tab === "ddA" && <DDFile {...{ slice: store.agents[actingPartner], base: baseAll().find(a => a.id === actingPartner), screening: store.agents[actingPartner]?.screening, onScreen: () => fetchScreening(actingPartner), screenLoading: !!screeningLoading[actingPartner] }} />}
           {role === "partner" && tab === "slaA" && <ObligationsView partnerId={actingPartner} base={baseAll().find(a => a.id === actingPartner)} supervisor={false} />}
           {role === "partner" && tab === "reviewsA" && <Reviews {...{ store, partnerName, updateReview, supervisor: false, agentId: actingPartner, setModal }} />}
-          {role === "partner" && tab === "commsA" && <Comms {...{ store, agents, supervisor: false, agentId: actingPartner, onAck: ackBroadcast, setModal }} />}
+          {role === "partner" && tab === "commsA" && <Comms {...{ store, agents, supervisor: false, agentId: actingPartner, onAck: ackBroadcast, setModal, fcie }} />}
         </main>
       </div>
 
@@ -3028,7 +3259,8 @@ function Oversight({ agents, store, openProfile }) {
     const qOverdue = qRevs.filter(rv => rv.status !== "Closed" && rv.foDue && slaStatus(rv.foDue).cd < 0).length;
     const ew = earlyWarnings(base, slice, store.reviews);
     const cram = JUR_CRAM[base.jur] || { cram: "Medium", fatf: "—", supervisor: "—", freq: "Annual" };
-    return { base, slice, sc, r, tr, dd, training, findings, openRevs, qRevs, qDone, qOverdue, ew, cram };
+    const gs = gateStatus(base);
+    return { base, slice, sc, r, tr, dd, training, findings, openRevs, qRevs, qDone, qOverdue, ew, cram, gs };
   });
 
   const avgScore = Math.round(rows.reduce((s, x) => s + x.sc, 0) / rows.length);
@@ -3114,6 +3346,70 @@ function Oversight({ agents, store, openProfile }) {
           <span className="muted mono" style={{ fontSize: 11 }}>{today.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })} · {qLabel}</span>
         </div>
       </div>
+
+      {/* ── MLRO Accountability Panel ──────────────────────────────── */}
+      {(() => {
+        const blocked    = rows.filter(x => x.gs.status === "blocked");
+        const needConc   = rows.filter(x => x.gs.status !== "blocked" && !x.base.gates?.approvedBy && x.base.live);
+        const gateOpen   = rows.filter(x => x.gs.status === "review" && !blocked.includes(x) && !needConc.includes(x));
+        if (blocked.length === 0 && needConc.length === 0 && gateOpen.length === 0) return null;
+        return (
+          <div style={{ marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <ShieldCheck size={15} color="var(--red)" />
+              <span style={{ fontWeight: 700, fontSize: 13, color: "var(--text)" }}>MLRO Accountability — action required</span>
+              <span className="muted" style={{ fontSize: 11 }}>Ultimate accountability for every item below remains with the MLRO regardless of delegation.</span>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+              {blocked.length > 0 && (
+                <div style={{ background: "#ef444410", border: "1.5px solid #ef4444", borderRadius: 8, padding: "10px 14px" }}>
+                  <div style={{ fontWeight: 700, fontSize: 12, color: "#ef4444", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    Blocking — do not use for CDD ({blocked.length})
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {blocked.map(x => (
+                      <div key={x.base.id} style={{ background: "#fff", border: "1px solid #ef4444", borderRadius: 6, padding: "4px 10px", fontSize: 12 }}>
+                        <span style={{ fontWeight: 700 }}>{x.base.name}</span>
+                        <span style={{ color: "#ef4444", marginLeft: 6, fontSize: 11 }}>{x.gs.blockingNote}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {needConc.length > 0 && (
+                <div style={{ background: "#f59e0b10", border: "1.5px solid #f59e0b", borderRadius: 8, padding: "10px 14px" }}>
+                  <div style={{ fontWeight: 700, fontSize: 12, color: "#b45309", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    MLRO concurrence required — live, no approval on record ({needConc.length})
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {needConc.map(x => (
+                      <div key={x.base.id} style={{ background: "#fff", border: "1px solid #f59e0b", borderRadius: 6, padding: "4px 10px", fontSize: 12 }}>
+                        <span style={{ fontWeight: 700 }}>{x.base.name}</span>
+                        <span className="muted" style={{ marginLeft: 6, fontSize: 11 }}>{x.base.relType} · {x.base.tier}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {gateOpen.length > 0 && (
+                <div style={{ background: "#1e63e910", border: "1.5px solid #1e63e9", borderRadius: 8, padding: "10px 14px" }}>
+                  <div style={{ fontWeight: 700, fontSize: 12, color: "#1e63e9", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    Gate items open — resolve before approval ({gateOpen.length})
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {gateOpen.map(x => (
+                      <div key={x.base.id} style={{ background: "#fff", border: "1px solid #1e63e9", borderRadius: 6, padding: "4px 10px", fontSize: 12 }}>
+                        <span style={{ fontWeight: 700 }}>{x.base.name}</span>
+                        <span className="muted" style={{ marginLeft: 6, fontSize: 11 }}>{x.gs.openCount} open gate{x.gs.openCount !== 1 ? "s" : ""}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ── KPI Row ────────────────────────────────────────────────── */}
       <div className="grid" style={{ gridTemplateColumns: "repeat(6,1fr)" }}>
@@ -3247,7 +3543,7 @@ function Oversight({ agents, store, openProfile }) {
         <div className="tablewrap">
           <table>
             <thead>
-              <tr><th>Partner</th><th>Category</th><th>Jurisdiction</th><th>Score</th><th>Risk</th><th>Trend</th><th>Training</th><th>DD</th><th>Open findings</th><th>Reviews</th><th></th></tr>
+              <tr><th>Partner</th><th>Type</th><th>Category</th><th>Jurisdiction</th><th>Score</th><th>Risk</th><th>Trend</th><th>Training</th><th>DD</th><th>Gate</th><th>Open findings</th><th>Reviews</th><th></th></tr>
             </thead>
             <tbody>
               {rows.slice().sort((a, b) => CATEGORIES.findIndex(c => c.id === a.base.category) - CATEGORIES.findIndex(c => c.id === b.base.category)).map(x => {
@@ -3257,6 +3553,11 @@ function Oversight({ agents, store, openProfile }) {
                     <td style={{ fontWeight: 700 }}>
                       <span style={{ width: 7, height: 7, borderRadius: "50%", background: catColor, display: "inline-block", marginRight: 7, verticalAlign: "middle" }} />
                       {x.base.name}
+                    </td>
+                    <td>
+                      <span className="chip" style={{ background: x.base.relType === "System" ? "#8b5cf622" : x.base.relType === "Outsourcing" ? "#1e63e922" : "#88888822", color: x.base.relType === "System" ? "#8b5cf6" : x.base.relType === "Outsourcing" ? "#1e63e9" : "#888", fontSize: 10 }}>
+                        {x.base.relType || "—"}
+                      </span>
                     </td>
                     <td><span className="chip" style={{ background: catColor + "22", color: catColor, fontSize: 10 }}>{x.base.category}</span></td>
                     <td className="muted" style={{ fontSize: 12 }}>{x.base.jur}</td>
@@ -3272,6 +3573,14 @@ function Oversight({ agents, store, openProfile }) {
                       </div>
                     </td>
                     <td className="mono" style={{ fontSize: 12, color: x.dd.done === x.dd.total ? "var(--green)" : "var(--amber)" }}>{x.dd.done}/{x.dd.total}</td>
+                    <td>
+                      {x.gs.status === "blocked"
+                        ? <span className="chip" style={{ background: "#ef444422", color: "#ef4444", fontSize: 10, cursor: "default" }} title={x.gs.blockingNote}>Blocked</span>
+                        : x.gs.status === "clear"
+                          ? <span className="chip" style={{ background: "#17a34a22", color: "#17a34a", fontSize: 10 }}>Clear</span>
+                          : <span className="chip" style={{ background: "#f59e0b22", color: "#b45309", fontSize: 10 }} title={x.gs.openItems?.map(k => k).join(", ")}>{x.gs.openCount} open</span>
+                      }
+                    </td>
                     <td className="mono" style={{ color: x.findings > 0 ? "var(--red)" : "var(--muted)", fontWeight: x.findings > 0 ? 700 : 400 }}>{x.findings || "—"}</td>
                     <td className="mono">{x.openRevs.length > 0 ? <span style={{ color: "var(--amber)" }}>{x.openRevs.length} open</span> : <span className="muted">—</span>}</td>
                     <td><button className="btn ghost" onClick={() => openProfile(x.base.id)}>Open <ChevronRight size={13} /></button></td>
@@ -3280,6 +3589,103 @@ function Oversight({ agents, store, openProfile }) {
               })}
             </tbody>
           </table>
+        </div>
+      </div>
+
+      {/* ── Gate clearance breakdown ───────────────────────────────── */}
+      <div className="card" style={{ marginTop: 13 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+          <ShieldCheck size={15} color="var(--purple)" />
+          <h3 style={{ margin: 0 }}>Gate clearance — Systems &amp; Partners</h3>
+          <span className="muted" style={{ fontSize: 11, marginLeft: 4 }}>Pre-adoption / pre-engagement requirements per CBUAE framework</span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Systems */}
+          {(() => {
+            const systems = rows.filter(x => x.base.relType === "System");
+            if (!systems.length) return null;
+            const SYSTEM_GATES = [
+              { key: "assuranceAssessed", label: "Assurance-level assessment", ref: "CBUAE §5" },
+              { key: "appropriatenessAssessed", label: "Appropriateness assessment", ref: "CBUAE §5" },
+              { key: "dataLocalisation", label: "Data localisation (PDPL Arts 22–23)", ref: "UAE PDPL" },
+              { key: "authControlsChecked", label: "Authentication controls reviewed", ref: "CBUAE §5" },
+            ];
+            return (
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 12, color: "#8b5cf6", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Digital ID / Verification Systems ({systems.length})</div>
+                <div className="tablewrap">
+                  <table>
+                    <thead><tr><th style={{ minWidth: 160 }}>System</th>{SYSTEM_GATES.map(g => <th key={g.key} style={{ fontSize: 11, minWidth: 130 }}>{g.label}<span className="muted" style={{ display: "block", fontWeight: 400, fontSize: 10 }}>{g.ref}</span></th>)}<th>Approved by</th><th>Re-DD due</th><th>Notes</th></tr></thead>
+                    <tbody>
+                      {systems.map(x => {
+                        const g = x.base.gates || {};
+                        return (
+                          <tr key={x.base.id}>
+                            <td style={{ fontWeight: 700, fontSize: 13 }}>{x.base.name}</td>
+                            {SYSTEM_GATES.map(gd => (
+                              <td key={gd.key} style={{ textAlign: "center" }}>
+                                {g[gd.key]
+                                  ? <span style={{ color: "#17a34a", fontWeight: 700, fontSize: 15 }}>✓</span>
+                                  : <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 15 }}>✗</span>}
+                              </td>
+                            ))}
+                            <td style={{ fontSize: 12 }}>{g.approvedBy || <span className="muted">—</span>}</td>
+                            <td style={{ fontSize: 12 }}>{g.reDDDue ? fmtDate(g.reDDDue) : <span className="muted">—</span>}</td>
+                            <td style={{ fontSize: 11, color: g.blockingNote ? "#ef4444" : "var(--muted)", maxWidth: 260 }}>{g.blockingNote || "—"}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Outsourcing / Reliance partners */}
+          {(() => {
+            const partners = rows.filter(x => x.base.relType !== "System");
+            if (!partners.length) return null;
+            const PARTNER_GATES = [
+              { key: "s24DD", label: "§24 Due diligence", ref: "CBUAE §24" },
+              { key: "amlContract", label: "AML contract obligations", ref: "§24/§19" },
+              { key: "auditRights", label: "Audit rights", ref: "Outsourcing" },
+              { key: "dataProtection", label: "Data protection clause", ref: "UAE PDPL" },
+              { key: "ongoingMonitoring", label: "Ongoing monitoring", ref: "CBUAE §24" },
+              { key: "terminationRights", label: "Termination rights", ref: "Outsourcing" },
+            ];
+            return (
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 12, color: "#1e63e9", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.04em" }}>Outsourcing Partners ({partners.length})</div>
+                <div className="tablewrap">
+                  <table>
+                    <thead><tr><th style={{ minWidth: 160 }}>Partner</th><th style={{ fontSize: 11 }}>Type</th>{PARTNER_GATES.map(g => <th key={g.key} style={{ fontSize: 11, minWidth: 90 }}>{g.label}<span className="muted" style={{ display: "block", fontWeight: 400, fontSize: 10 }}>{g.ref}</span></th>)}<th>Approved by</th><th>Re-DD due</th><th>Notes</th></tr></thead>
+                    <tbody>
+                      {partners.map(x => {
+                        const g = x.base.gates || {};
+                        return (
+                          <tr key={x.base.id}>
+                            <td style={{ fontWeight: 700, fontSize: 13 }}>{x.base.name}</td>
+                            <td><span className="chip" style={{ background: "#1e63e922", color: "#1e63e9", fontSize: 10 }}>{x.base.relType}</span></td>
+                            {PARTNER_GATES.map(gd => (
+                              <td key={gd.key} style={{ textAlign: "center" }}>
+                                {g[gd.key]
+                                  ? <span style={{ color: "#17a34a", fontWeight: 700, fontSize: 15 }}>✓</span>
+                                  : <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 15 }}>✗</span>}
+                              </td>
+                            ))}
+                            <td style={{ fontSize: 12 }}>{g.approvedBy || <span className="muted">—</span>}</td>
+                            <td style={{ fontSize: 12 }}>{g.reDDDue ? fmtDate(g.reDDDue) : <span className="muted">—</span>}</td>
+                            <td style={{ fontSize: 11, color: g.blockingNote ? "#ef4444" : "var(--muted)", maxWidth: 240 }}>{g.blockingNote || "—"}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
@@ -3482,7 +3888,7 @@ function ScoreBar({ label, v }) { const c = v >= 80 ? "var(--green)" : v >= 60 ?
 function Spark({ data }) {
   const w = 220, h = 50, max = Math.max(...data), min = Math.min(...data), rng = max - min || 1;
   const pts = data.map((d, i) => `${(i / (data.length - 1)) * w},${h - ((d - min) / rng) * (h - 8) - 4}`).join(" ");
-  return <svg viewBox={`0 0 ${w} ${h}`} width="100%" height="56"><polyline fill="none" stroke="var(--gold)" strokeWidth="2.5" points={pts} /></svg>;
+  return <svg viewBox={`0 0 ${w} ${h}`} width="100%" height="56"><polyline fill="none" stroke="var(--brand)" strokeWidth="2.5" points={pts} /></svg>;
 }
 const kindIcon = (k) => { const m = { SAR: "🚩", STR: "🚩", Filing: "📄", Certification: "✔️", Audit: "🔍", Correspondence: "✉️", "Policy update": "📕", "Risk assessment": "📊", Training: "🎓", "Corrective action": "🛠️" }; return <span style={{ fontSize: 15 }}>{m[k] || "•"}</span>; };
 const feedColor = (k) => ({ SAR: "var(--red)", STR: "var(--red)", Audit: "var(--violet)", Training: "var(--green)", "Policy update": "var(--blue)" }[k] || "var(--gold2)");
@@ -3492,7 +3898,9 @@ const feedColor = (k) => ({ SAR: "var(--red)", STR: "var(--red)", Audit: "var(--
 ============================================================================ */
 const REG_DEF = [
   { k: "sar", t: "SAR register" }, { k: "str", t: "STR register" }, { k: "fatca", t: "FATCA register" },
-  { k: "crs", t: "CRS register" }, { k: "cert", t: "Certifications" }, { k: "audit", t: "Audit findings" },
+  { k: "crs", t: "CRS register" }, { k: "ofac_block", t: "OFAC blocking reports" }, { k: "arbp", t: "ARBP register" },
+  { k: "a314", t: "314(a) responses" }, { k: "cbddq", t: "CBDDQ submissions" },
+  { k: "cert", t: "Certifications" }, { k: "audit", t: "Audit findings" },
   { k: "correspondence", t: "Regulatory correspondence" }, { k: "corrective", t: "Corrective actions" },
 ];
 function AgentRegisters({ slice }) {
@@ -3708,20 +4116,390 @@ function Intel({ store, supervisor, jur, setModal, agentId, live, onRefresh, jur
 /* ============================================================================
    Knowledge & training
 ============================================================================ */
+const ZENUS_REG_LIBRARY = {
+  regulators: [
+    { id: "ocif",        name: "OCIF — Puerto Rico",              role: "Zenus Bank's primary prudential supervisor",               note: "IFE-061 licence; Act 273/2012 — Banking Partner's regulator" },
+    { id: "fincen",      name: "FinCEN",                          role: "Primary AML / BSA / CTF regulator — Mal & Zenus",          note: "BSA examination authority; MSB registration authority (§1022.380)" },
+    { id: "irs",         name: "IRS",                             role: "BSA examination support",                                  note: "Co-examines MSBs alongside FinCEN" },
+    { id: "ofac",        name: "OFAC",                            role: "Sanctions enforcement — Mal & Zenus",                      note: "SDN + comprehensive programme lists; ARBP enforcement" },
+    { id: "cfpb",        name: "CFPB",                            role: "Consumer protection oversight",                            note: "Reg E / UDAAP / Reg P enforcement" },
+    { id: "interagency", name: "OCC / FDIC / FRB (Interagency)", role: "Banking Partner prudential supervisors; TPR guidance issuers", note: "Interagency Third-Party Risk Guidance June 2023; FDIC FIL-29-2023" },
+  ],
+  laws: [
+    // ── Mal direct MSB obligations ───────────────────────────────────────────────────────────────────────────
+    { id: "BSA",        name: "Bank Secrecy Act",                        citation: "31 U.S.C. §§5311–5336",                       scope: "AML programme, SAR / CTR filing, recordkeeping, Travel Rule — primary statute for all Mal compliance obligations",                                                                               tier: "mal-core" },
+    { id: "MSB_AML",    name: "MSB AML Programme (Four Pillars)",        citation: "31 C.F.R. § 1022.210",                        scope: "Internal controls, designated Compliance Officer, employee training, independent testing — Mal's own AML programme statutory basis. MSB status conditional (COND) pending perimeter determination",  tier: "mal-core" },
+    { id: "SAR_MSB",    name: "SAR Filing — MSBs",                      citation: "31 C.F.R. § 1022.320",                        scope: "Suspicious activity reports: $2,000 threshold; 30-day filing window. Path A: Mal files direct. Path B: Mal prepares escalation package to Zenus ≤ 20 business days",                              tier: "mal-core" },
+    { id: "CTR",        name: "Currency Transaction Report (CTR)",       citation: "31 C.F.R. § 1010.311",                        scope: "CTR for cash transactions > $10,000; 15 calendar-day deadline. Path A: Mal files. Path B: Zenus files (Mal triggers ≤ 5 business days). Status: COND",                                           tier: "mal-core" },
+    { id: "MSB_REG",    name: "MSB Registration — FinCEN",              citation: "31 C.F.R. § 1022.380",                        scope: "FinCEN registration as money transmitter — conditional on final regulatory-perimeter determination (status: COND). Must be resolved before Path A filing activates. See Gap G8",                   tier: "mal-core" },
+    { id: "AML_ACT",    name: "AML Act of 2020 / Corporate Transparency Act", citation: "Pub. L. 116-283 Div. F (AML Act); Title LXIV (CTA)", scope: "BSA modernisation, FinCEN beneficial ownership registry — Mal Money Inc. must have filed its own BOI report. Whistleblower enhancements, updated risk-assessment obligations, expanded definition of financial institution for BSA purposes.", tier: "mal-core" },
+    { id: "GENIUS",     name: "GENIUS Act — Payment Stablecoin Regulation", citation: "Pub. L. 119-27 (July 18, 2025)",             scope: "Federal stablecoin framework: only permitted issuers (1:1 reserve-backed, AML/KYC compliant) may issue payment stablecoins. Mal as stablecoin transmitter must ensure USDT/USDC used in corridors comes from GENIUS Act-compliant issuers. Critical for all stablecoin-to-fiat corridor operations.", tier: "mal-core" },
+    // ── Shared core obligations ──────────────────────────────────────────────────────────────────────────────
+    { id: "PATRIOT",    name: "USA PATRIOT Act (Title III)",             citation: "31 U.S.C. §5318",                             scope: "CIP, correspondent banking prohibitions, Section 311 designations, enhanced due diligence for high-risk accounts",                                                                                  tier: "core" },
+    { id: "OFAC_REGS",  name: "OFAC Regulations",                       citation: "31 CFR Parts 500–598",                        scope: "Sanctions compliance — five-component framework: risk assessment, internal controls, testing, training, OFAC liaison; blocking and rejecting prohibited transactions",                              tier: "core" },
+    { id: "FATF_R16",   name: "FATF Rec. 16 / BSA Travel Rule",         citation: "31 CFR 1010.410(f); FinCEN 2013 guidance",    scope: "Originator + beneficiary info required on funds transfers ≥ $3,000; Wolfsberg Payment Transparency Standards alignment required (Gap G7)",                                                       tier: "core" },
+    { id: "BO_RULE",    name: "Beneficial Ownership Rule",              citation: "31 C.F.R. § 1010.230",                        scope: "UBO verification: 25% threshold for Tier 1/2 customers; 10% EDD threshold for Tier 3; full ownership chain required; re-verified on trigger events",                                             tier: "core" },
+    { id: "ARBP",       name: "Annual Blocked Property Report",         citation: "31 C.F.R. § 501.603",                         scope: "OFAC: annual report of blocked/rejected property held as of June 30; filing due September 30. First Mal deadline: Sep 30, 2026. See Gap G9",                                                     tier: "core" },
+    { id: "INFO_314A",  name: "314(a) Mandatory Information Sharing",   citation: "31 C.F.R. § 1010.520",                        scope: "FinCEN-directed information requests on named subjects; Mal must search records and respond within FinCEN-specified window (~14 days). 314(b) voluntary sharing (§1010.540) also operational",     tier: "core" },
+    { id: "FATCA",      name: "FATCA / FBAR — Foreign Account Reporting", citation: "Pub. L. 111-147; 31 U.S.C. §5314; 31 CFR §1010.350", scope: "FATCA: US-persons foreign account due diligence and IRS reporting. FBAR (FinCEN Form 114): Mal must file if it holds foreign financial accounts > $10,000. Corridor partner diligence: non-US financial institutions receiving transfers must be FATCA-compliant. See also Course c4 (FATCA/CRS).", tier: "core" },
+    // ── Consumer protection obligations (gaps) ───────────────────────────────────────────────────────────────
+    { id: "REG_E",      name: "Regulation E (EFTA)",                    citation: "12 CFR Part 1005 / 15 U.S.C. §1693",          scope: "EFT consumer protections: error resolution, unauthorised-tx liability, disclosures. Referenced in SOP 3 via Banking Partner agreement — standalone Mal policy pending (Gap G1)",                  tier: "consumer" },
+    { id: "REG_P",      name: "Gramm-Leach-Bliley / Reg P",            citation: "15 U.S.C. §6801 / 12 CFR Part 1016",          scope: "Annual privacy notices, data-sharing limitations, GLBA Safeguards Rule. Not yet in Mal's Standards Hierarchy — standalone policy required (Gap G2)",                                           tier: "consumer" },
+    { id: "UDAAP",      name: "Dodd-Frank UDAAP",                      citation: "12 U.S.C. §5531",                              scope: "Prohibition on unfair, deceptive, or abusive acts or practices (CFPB). CO appointment letter references Dodd-Frank — standalone UDAAP review process required (Gap G3)",                       tier: "consumer" },
+    // ── Anti-bribery & corruption (gap) ─────────────────────────────────────────────────────────────────────
+    { id: "FCPA",       name: "Foreign Corrupt Practices Act",          citation: "15 U.S.C. §§78dd-1 et seq.",                  scope: "Anti-bribery, books & records, public officials, JVs + third parties. Not in Mal's AML programme (correctly — separate policy domain). Standalone ABC policy + EWRA required (Gap G4)",          tier: "abc" },
+    // ── Banking Partner regulatory context (Zenus-specific) ─────────────────────────────────────────────────
+    { id: "ACT_273",    name: "Puerto Rico Act 273 (2012, as amended 2026)", citation: "P.R. Laws Ann. tit. 7 (as amended)",          scope: "Zenus Bank's own IFE licensing statute — full-reserve requirement, OCIF oversight, segregated funds. Mal's obligation is contractual: must not cause Zenus to breach. Not Mal's direct regulatory obligation", tier: "banking-partner" },
+    { id: "VISA_RULES", name: "Visa Core Rules & Product and Service Rules", citation: "Visa Inc. (current edition)",                scope: "Network rules governing Mal and Zenus as programme participants: AML/sanctions compliance for card transactions, prohibited merchant categories, KYC standards for cardholders, programme manager obligations and liability allocation.", tier: "banking-partner" },
+    // ── Guidance & standards ─────────────────────────────────────────────────────────────────────────────────
+    { id: "FATF_FULL",  name: "FATF Recommendations — full suite (Feb 2025)", citation: "FATF, 40 Recommendations, updated February 2025", scope: "Global AML/CFT/PF standard. R.1 (risk-based approach — updated Feb 2025 proportionality guidance), R.10 (CDD), R.12 (PEPs), R.16 (Travel Rule — cited separately above), R.22 (DNFBPs). Benchmark for Mal's entire AML/CFT framework design.",                                       tier: "guidance" },
+    { id: "US_NRA",     name: "US National Risk Assessments 2026 — ML / TF / PF", citation: "US Treasury, 2026 editions",         scope: "National Money Laundering, Terrorist Financing, and Proliferation Financing risk assessments. Mal must consult when calibrating its own EWRA, corridor risk ratings (Pakistan/Bangladesh/Egypt/UAE/Turkey), and customer/product risk scoring.",                    tier: "guidance" },
+    { id: "BCBS_D505",  name: "Basel Committee BCBS d505 — ML/FT Risk Management", citation: "BCBS, January 2014; revised July 2020", scope: "Sound management of risks related to ML and FT. Four-dimension CRA framework: (i) customer base, (ii) products/services, (iii) delivery channels, (iv) jurisdictions. Essential for Mal's CRA methodology and defensible customer risk scoring design.",         tier: "guidance" },
+    { id: "WBERG_RBA",  name: "Wolfsberg Statement on Risk-Based Approach (2025)", citation: "Wolfsberg Group, 2025",              scope: "Proportionality-based financial crime risk management: programme size, scale, footprint and risk appetite. Focus on effective outcomes not mechanical compliance. Timed to coincide with FATF R.1 February 2025 revision.",                                                   tier: "guidance" },
+    { id: "WBERG_PEP",  name: "Wolfsberg PEP Guidance (2017)",          citation: "Wolfsberg Group, 2017",                       scope: "PEP framework inside the RBA: concentrate EDD on grand-corruption positions; risk-based declassification (reject 'once a PEP, always a PEP'); family members and close associates assessed by closeness and seniority of post. Senior-management approval required for high-risk PEP relationships.", tier: "guidance" },
+    { id: "WBERG_DCL",  name: "Wolfsberg Digital Customer Lifecycle (2023)", citation: "Wolfsberg Group, 2023",                   scope: "Non-face-to-face onboarding as standard/lower risk when properly calibrated. Three controls: strong digital ID&V at onboarding; multi-dimensional continuously re-assessed CRA; trigger-based ongoing due diligence. Directly applicable to Mal's fully digital onboarding model.",   tier: "guidance" },
+    { id: "FFIEC",      name: "FFIEC BSA/AML Examination Manual",       citation: "FFIEC (current edition)",                     scope: "Supervisory expectations for all BSA/AML programme elements — used as examination yardstick by FinCEN and IRS examiners",                                                                           tier: "guidance" },
+    { id: "WOLFSBERG",  name: "Wolfsberg CBDDQ V1.4 / CB Principles",  citation: "Wolfsberg Group 2022–2023",                   scope: "Correspondent banking DD, payment transparency, FATF R.16 alignment. Mal has completed its own Wolfsberg-aligned DDQ (signed Mar 31 & Apr 20, 2026)",                                            tier: "guidance" },
+    { id: "ISO27001",   name: "ISO/IEC 27001 (Information Security)",   citation: "ISO 27001:2022",                              scope: "Information security management — Zenus is certified (ISO 27001:2022). Mal programme must benchmark and align against this standard. Formal Mal certification aspirational (Gap G6)",              tier: "guidance" },
+    { id: "TPR_2023",   name: "Interagency Third-Party Risk Guidance",  citation: "OCC/FDIC/FRB June 2023; FDIC FIL-29-2023",   scope: "BaaS programme manager lifecycle obligations — Banking Partner due diligence, contracting, ongoing monitoring, exit planning. Explicitly cited in Mal's Standards Hierarchy #5",                  tier: "guidance" },
+    { id: "FIN_2021",   name: "FinCEN CVC / Stablecoin Guidance",       citation: "FinCEN FIN-2021-G001",                        scope: "AML programme and SAR requirements for convertible virtual currency businesses. Basis for Mal's stablecoin-to-fiat corridor perimeter analysis (Governance Memo Part A)",                         tier: "guidance" },
+    { id: "FIN_KIOSK",  name: "FinCEN Advisory — CVC Kiosk Fraud",     citation: "FIN-2025-CVCKIOSK (Aug 4, 2025)",             scope: "Live TM scenario: CVC kiosk fraud typologies, structuring, and account-takeover indicators. Incorporated within 30 days per Mal Standards Hierarchy §6",                                         tier: "guidance" },
+    { id: "FIN_A003",   name: "FinCEN Advisory — Chinese ML Networks",  citation: "FIN-2025-A003 (Aug 28, 2025)",               scope: "Live TM scenario: Chinese money-laundering network typologies, TBML indicators across remittance corridors. Incorporated within 30 days per Mal Standards Hierarchy §6",                        tier: "guidance" },
+  ],
+  prohibitedCategories: [
+    // ── Absolute AML/CFT + Sanctions prohibitions ─────────────────────────────────────────────
+    { cat: "Money laundering, fraud and predicate offences",                level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Terrorism financing",                                            level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Proliferation financing / WMD facilitation",                    level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Sanctions evasion",                                              level: "Prohibited",   basis: "Sanctions" },
+    { cat: "Sanctioned persons, entities, vessels or aircraft",             level: "Prohibited",   basis: "Sanctions" },
+    { cat: "Entities owned or controlled by sanctioned persons",            level: "Prohibited",   basis: "Sanctions" },
+    { cat: "Sanctioned or prohibited jurisdictions",                         level: "Prohibited",   basis: "Sanctions" },
+    { cat: "Human trafficking, forced labour and sexual exploitation",       level: "Prohibited",   basis: "AML/CFT" },
+    // ── High-risk products and industries ─────────────────────────────────────────────────────
+    { cat: "Arms, defence, weapons and military equipment",                  level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "WMD and proliferation-sensitive goods / technology",             level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Dual-use and controlled goods (unlicensed / unverified)",        level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Illegal narcotics, controlled drugs and drug trafficking",       level: "Prohibited",   basis: "AML/CFT" },
+    { cat: "Counterfeit, stolen and contraband goods",                       level: "Prohibited",   basis: "AML/CFT" },
+    { cat: "Illegal wildlife, endangered species and environmental crime",   level: "Prohibited",   basis: "AML/CFT" },
+    { cat: "Gambling, gaming, betting and casinos",                          level: "Prohibited",   basis: "AML/CFT + Shari'ah" },
+    { cat: "Adult entertainment, prostitution and sexual exploitation",      level: "Prohibited",   basis: "AML/CFT + Shari'ah" },
+    { cat: "Alcohol — production, distribution and retail",                 level: "Prohibited",   basis: "Shari'ah" },
+    { cat: "Pork and non-halal products",                                    level: "Prohibited",   basis: "Shari'ah" },
+    { cat: "Tobacco — manufacturing, trading and distribution",              level: "Prohibited",   basis: "Shari'ah / AML/CFT" },
+    { cat: "Interest-based financial services (Riba)",                       level: "Prohibited",   basis: "Shari'ah" },
+    { cat: "Conventional insurance (non-Shari'ah-compliant)",               level: "Prohibited",   basis: "Shari'ah" },
+    { cat: "Non-Shari'ah-approved securities and stock-broking",            level: "Prohibited",   basis: "Shari'ah" },
+    { cat: "Hotels and hospitality — Shari'ah non-compliant",               level: "Prohibited",   basis: "Shari'ah" },
+    { cat: "Entertainment and media with prohibited or immoral content",    level: "Prohibited",   basis: "Shari'ah / AML/CFT" },
+    { cat: "Human cloning, gene mutation and ISSC-prohibited activity",     level: "Prohibited",   basis: "Shari'ah / AML/CFT" },
+    { cat: "Nuclear power",                                                   level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "Extractive industries",                                           level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "Precious metals and stones",                                      level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "Used car dealers",                                                level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "General trading companies",                                       level: "Prohibited",   basis: "CBDDQ" },
+    // ── High-risk customer and entity types ───────────────────────────────────────────────────
+    { cat: "Shell banks and brass-plate / pure offshore entities",           level: "Prohibited",   basis: "AML/CFT + CBDDQ" },
+    { cat: "Unlicensed MSBs, hawala operators and MVTS providers",          level: "Prohibited",   basis: "AML/CFT + CBDDQ" },
+    { cat: "Anonymous, fictitious, nominee and bearer-share structures",    level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Respondent / correspondent banks (nested / payable-through)",   level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "Embassies and consulates",                                        level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "Non-account customers",                                           level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "Payment Service Providers (PSPs)",                                level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "VASPs — unlicensed or non-compliant",                            level: "Prohibited",   basis: "AML/CFT + CBDDQ" },
+    { cat: "Charities, NPOs and foundations — opaque governance or purpose", level: "Prohibited",  basis: "AML/CFT + Sanctions" },
+    { cat: "PEP close associates",                                            level: "Prohibited",   basis: "CBDDQ" },
+    { cat: "PEP-related entities",                                            level: "Prohibited",   basis: "CBDDQ" },
+    // ── High-risk transaction and structure types ─────────────────────────────────────────────
+    { cat: "Payable-through, pooled and nested arrangements (opaque)",       level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Concealment services — ownership, SOF/SOW or purpose",           level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Unknown, unverifiable or suspicious source of funds",            level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    { cat: "Forged, false or misleading documentation",                       level: "Prohibited",   basis: "AML/CFT" },
+    { cat: "Unclear or unlawful transaction purpose",                         level: "Prohibited",   basis: "AML/CFT" },
+    { cat: "Trade-based money laundering / TBML / transshipment risk",       level: "Prohibited",   basis: "AML/CFT" },
+    { cat: "Incomplete mandatory CDD / EDD — no activation or transaction",  level: "Prohibited",   basis: "AML/CFT" },
+    { cat: "High-risk relationships that cannot be mitigated",               level: "Prohibited",   basis: "AML/CFT + Sanctions" },
+    // ── EDD required — higher-risk, not automatically rejected ───────────────────────────────
+    { cat: "Politically Exposed Persons (PEPs)",                             level: "EDD required", basis: "AML/CFT" },
+    { cat: "Non-resident customers",                                          level: "EDD required", basis: "CBDDQ" },
+    { cat: "Licensed VASPs and regulated Fintechs (Mal programme partners)", level: "EDD required", basis: "AML/CFT" },
+  ],
+  sanctionsLists: [
+    "UN Security Council Consolidated List",
+    "OFAC SDN & Sectoral Sanctions List",
+    "OFSI — UK HM Treasury",
+    "EU Consolidated Sanctions List",
+    "G7 member-country lists",
+  ],
+  tmTools: ["NICE Actimize (sanctions + TM)", "Chainalysis (crypto analytics)", "Exiger 3PM (third-party risk)"],
+  gaps: [
+    { id: "G8", area: "MSB registration — status COND (§1022.380)",       desc: "Mal's FinCEN MSB registration is conditional pending final regulatory-perimeter determination. Path A direct filing (SAR/CTR) cannot activate until confirmed. MLRO must obtain definitive perimeter ruling and update registration.",                                                  priority: "Critical" },
+    { id: "G9", area: "ARBP annual filing — first deadline Sep 30, 2026", desc: "Annual Blocked Property Report (31 C.F.R. § 501.603) due September 30, 2026 for property held as of June 30. Mal must determine whether any blocked property is held and file or certify nil-return before deadline.",                                                                    priority: "Critical" },
+    { id: "G1", area: "Regulation E (EFTA)",                              desc: "Mal must maintain consumer error-resolution procedures and Reg E disclosures for end-users. Referenced in SOP 3 via Banking Partner agreement but not yet a standalone Mal policy document.",                                                                                               priority: "High" },
+    { id: "G2", area: "GLBA / Reg P privacy notices",                     desc: "Annual privacy notice delivery to end-users and documented data-sharing limitations required. Not currently cited in Mal's Standards Hierarchy — standalone policy required.",                                                                                                             priority: "High" },
+    { id: "G5", area: "Section 311 designated entity procedure",          desc: "Written procedure to prohibit opening/maintaining accounts for Section 311-designated foreign financial institutions required under 31 U.S.C. §5318A. Not yet a standalone operational procedure.",                                                                                         priority: "High" },
+    { id: "G7", area: "Wolfsberg Payment Transparency (FATF R.16)",       desc: "Zenus has adopted Wolfsberg Payment Transparency Standards. Mal must ensure its own Travel Rule implementation and originator/beneficiary data fields meet these standards end-to-end.",                                                                                                  priority: "High" },
+    { id: "G3", area: "UDAAP policy",                                     desc: "Mal must have a documented UDAAP review process for products and customer-facing communications. CO appointment letter explicitly references Dodd-Frank — formal UDAAP programme required.",                                                                                               priority: "Medium" },
+    { id: "G4", area: "Anti-Bribery & Corruption (FCPA / ABC)",           desc: "FCPA and broader ABC obligations are not in Mal's AML programme (correctly — separate policy domain). A standalone Mal ABC policy, EWRA, and third-party ABC screening process is required.",                                                                                            priority: "Medium" },
+    { id: "G6", area: "ISO 27001 / GLBA Safeguards Rule alignment",       desc: "Zenus is ISO 27001 certified. Mal's information-security programme should be formally benchmarked and documented against ISO 27001:2022 and the GLBA Safeguards Rule.",                                                                                                                  priority: "Low" },
+  ],
+};
+
+const ZENUS_PROG_OBLIGATIONS = [
+  { title: "Report suspicious activity to Zenus",      sla: "Immediately on detection",        sev: "crit" },
+  { title: "Legal actions / subpoenas received",       sla: "≤ 10 business days of receipt",   sev: "high" },
+  { title: "Network / third-party notices",            sla: "≤ 20 business days of receipt",   sev: "med"  },
+  { title: "Quarterly complaint trend analysis",       sla: "Each quarter",                    sev: "med"  },
+  { title: "New / terminated service-providers list",  sla: "Quarterly",                       sev: "low"  },
+  { title: "Annual policy review + compliance test",   sla: "Every 12 months",                 sev: "high" },
+  { title: "Independent AML / BSA audit",              sla: "Within 12 months of launch",      sev: "high" },
+  { title: "Audited financial statements",             sla: "≤ 180 days after FY-end",         sev: "med"  },
+  { title: "OFAC SDN screening list updates",          sla: "< 3 business days of publication", sev: "crit" },
+  { title: "Fund FBO account (maintain min balance)",  sla: "Daily — cure within 3 business days", sev: "crit" },
+];
+
+const MAL_FILING_DEADLINES = [
+  { title: "SAR filing — Mal as direct filer (Path A)",    sla: "30 calendar days from initial detection",                   citation: "31 C.F.R. § 1022.320",                sev: "crit" },
+  { title: "SAR escalation package to Zenus (Path B)",     sla: "≤ 20 business days from detection",                        citation: "SOP 4 §5b; Governance Memo",          sev: "high" },
+  { title: "CTR filing — Mal as direct filer (Path A)",    sla: "15 calendar days of transaction date",                     citation: "31 C.F.R. § 1010.311",                sev: "crit" },
+  { title: "CTR trigger notice to Zenus (Path B)",         sla: "≤ 5 business days of transaction date",                    citation: "SOP 4 §7",                            sev: "high" },
+  { title: "OFAC blocking / rejection report",             sla: "10 business days of blocking event",                       citation: "31 C.F.R. § 501.604",                 sev: "crit" },
+  { title: "Annual Blocked Property Report (ARBP)",        sla: "September 30 each year (property as of June 30) — first: Sep 30, 2026", citation: "31 C.F.R. § 501.603",  sev: "crit" },
+  { title: "314(a) information request — FinCEN directed", sla: "~14 days (FinCEN-specified window)",                        citation: "31 C.F.R. § 1010.520",               sev: "high" },
+  { title: "OFAC SDN list screening update",               sla: "< 3 business days after list publication",                 citation: "OFAC guidance; Zenus SLA",            sev: "crit" },
+  { title: "FinCEN advisory — TM rule incorporation",      sla: "Within 30 days of publication",                            citation: "Mal Standards Hierarchy §6",          sev: "med"  },
+  { title: "Independent AML / BSA audit",                  sla: "Within 12 months of commercial launch",                    citation: "31 C.F.R. § 1022.210; Board Res. §4.4", sev: "high" },
+  { title: "Training records retention",                   sla: "5 years minimum",                                          citation: "31 C.F.R. Chapter X",                 sev: "med"  },
+];
+
 function TrainingCenter({ store, agents }) {
+  const [tab, setTab] = useState("courses");
   const rows = agents.map(({ base, slice }) => ({ name: base.name, rate: trainingRate(slice) }));
+  const SEV_C = { crit: "var(--red)", high: "var(--amber)", med: "var(--blue)", low: "var(--muted)" };
+  const SEV_T = { crit: "Critical", high: "High", med: "Medium", low: "Low" };
+
   return (
     <>
       <h1 className="h1">Knowledge & training center</h1>
-      <p className="sub">Central library of AML/CFT, sanctions, FATCA/CRS, typologies and policy material. Completion is tracked and scored — but completion is evidence, not the goal: pair it with the behaviour it should change.</p>
-      <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
-        <div className="card"><h3>Course catalogue</h3>
-          {COURSES.map(c => <div key={c.id} className="row" style={{ justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid #e7e9f2" }}><span style={{ fontSize: 13 }}><BookOpen size={13} style={{ verticalAlign: "-2px", marginRight: 6 }} />{c.title}</span><span className="muted mono" style={{ fontSize: 11 }}>{c.cat} · {c.mins}m</span></div>)}
-        </div>
-        <div className="card"><h3>Completion by partner</h3>
-          {rows.map((r, i) => <div key={i} style={{ margin: "8px 0" }}><div className="row" style={{ justifyContent: "space-between", marginBottom: 4 }}><span style={{ fontSize: 13 }}>{r.name}</span><span className="mono muted">{r.rate}%</span></div><div className="bar"><span style={{ width: r.rate + "%", background: r.rate >= 80 ? "var(--green)" : r.rate >= 60 ? "var(--gold)" : "var(--red)" }} /></div></div>)}
-        </div>
+      <p className="sub">Regulatory library, course catalogue, and compliance gap tracker — sourced from Mal's own AML/BSA Compliance Programme (v1.0, March 31 2026), Zenus Bank's regulatory framework (IFE-061, CBDDQ V1.4), BSA/FinCEN, OFAC, and applicable US law.</p>
+
+      <div className="tabs2" style={{ marginBottom: 16 }}>
+        {[["courses","Courses & completion"],["library","Regulatory library"],["prohibited","Prohibited categories"],["gaps","BaaS obligations & gaps"]].map(([id, label]) => (
+          <button key={id} className={tab === id ? "on" : ""} onClick={() => setTab(id)}>{label}</button>
+        ))}
       </div>
+
+      {tab === "courses" && (
+        <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
+          <div className="card"><h3>Course catalogue ({COURSES.length} courses)</h3>
+            {COURSES.map(c => (
+              <div key={c.id} className="row" style={{ justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid var(--line)" }}>
+                <span style={{ fontSize: 13 }}><BookOpen size={13} style={{ verticalAlign: "-2px", marginRight: 6 }} />{c.title}</span>
+                <span className="muted mono" style={{ fontSize: 11 }}>{c.cat} · {c.mins}m</span>
+              </div>
+            ))}
+          </div>
+          <div className="card"><h3>Completion by partner</h3>
+            {rows.map((r, i) => (
+              <div key={i} style={{ margin: "8px 0" }}>
+                <div className="row" style={{ justifyContent: "space-between", marginBottom: 4 }}>
+                  <span style={{ fontSize: 13 }}>{r.name}</span>
+                  <span className="mono muted">{r.rate}%</span>
+                </div>
+                <div className="bar"><span style={{ width: r.rate + "%", background: r.rate >= 80 ? "var(--green)" : r.rate >= 60 ? "var(--brand)" : "var(--red)" }} /></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tab === "library" && (
+        <>
+          <div className="card" style={{ marginBottom: 13 }}>
+            <h3>Zenus Bank International, Inc. — licence & regulatory profile</h3>
+            <div className="row" style={{ gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+              <span className="chip" style={{ background: "var(--brand50)", color: "var(--brand600)" }}>IFE-061</span>
+              <span className="chip" style={{ background: "rgba(22,163,74,.1)", color: "var(--green)" }}>Programme live — executed May 2026</span>
+              <span className="chip" style={{ background: "rgba(220,38,38,.1)", color: "var(--red)" }}>Not FDIC-insured</span>
+              <span className="chip" style={{ background: "rgba(37,99,235,.1)", color: "var(--blue)" }}>ISO 27001</span>
+              <span className="chip" style={{ background: "rgba(107,114,128,.1)", color: "var(--muted)" }}>Full-reserve bank</span>
+            </div>
+            <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))", gap: 11 }}>
+              {[
+                ["Licence type",      "International Financial Entity (IFE)"],
+                ["Licence number",    "IFE-061"],
+                ["Issuing authority", "OCIF — Puerto Rico"],
+                ["Legal basis",       "Act 273 of September 25, 2012"],
+                ["Incorporated",      "March 13, 2019"],
+                ["UBO (≥10%)",        "Mushegh Tovmasyan"],
+                ["Total assets",      "USD 92M (Dec 31, 2025)"],
+                ["Employees",         "51–200 (compliance: 22 FTEs)"],
+                ["Wolfsberg CBDDQ",   "V1.4 — signed April 6, 2026"],
+                ["Record retention",  "5 years (BSA-aligned)"],
+                ["KYC review cycle",  "1–2 years; trigger-based"],
+                ["Sanctions SLA",     "< 3 business days after list update"],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <div style={{ fontSize: 10, color: "var(--muted)", fontWeight: 700, letterSpacing: ".5px", textTransform: "uppercase", marginBottom: 2 }}>{label}</div>
+                  <b style={{ fontSize: 13 }}>{value}</b>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="card" style={{ marginBottom: 13 }}>
+            <h3>Regulators</h3>
+            <div className="tablewrap">
+              <table>
+                <thead><tr><th>Regulator</th><th>Role</th><th>Note</th></tr></thead>
+                <tbody>
+                  {ZENUS_REG_LIBRARY.regulators.map(r => (
+                    <tr key={r.id}><td><b>{r.name}</b></td><td style={{ fontSize: 13 }}>{r.role}</td><td className="muted" style={{ fontSize: 12 }}>{r.note}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="card" style={{ marginBottom: 13 }}>
+            <h3>Applicable laws & regulatory citations</h3>
+            <div className="tablewrap">
+              <table>
+                <thead><tr><th>Law / framework</th><th>Citation</th><th>Scope for Mal</th><th>Category</th></tr></thead>
+                <tbody>
+                  {ZENUS_REG_LIBRARY.laws.map(l => {
+                    const TIER_LABEL = { "mal-core": "Mal direct", core: "Shared core", consumer: "Consumer law", abc: "Anti-bribery", "banking-partner": "Partner context", guidance: "Guidance" };
+                    const tc = l.tier === "mal-core" ? ["rgba(124,58,237,.12)","var(--violet)"] : l.tier === "core" ? ["var(--brand50)","var(--brand600)"] : l.tier === "consumer" ? ["rgba(37,99,235,.1)","var(--blue)"] : l.tier === "abc" ? ["rgba(220,38,38,.1)","var(--red)"] : l.tier === "banking-partner" ? ["rgba(217,119,6,.12)","var(--amber)"] : ["rgba(107,114,128,.1)","var(--muted)"];
+                    return (
+                      <tr key={l.id}>
+                        <td><b style={{ fontSize: 13 }}>{l.name}</b></td>
+                        <td><span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--muted)" }}>{l.citation}</span></td>
+                        <td style={{ fontSize: 12 }}>{l.scope}</td>
+                        <td><span className="chip" style={{ fontSize: 10, background: tc[0], color: tc[1] }}>{TIER_LABEL[l.tier] || l.tier}</span></td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: 13 }}>
+            <div className="card">
+              <h3>Sanctions lists screened</h3>
+              {ZENUS_REG_LIBRARY.sanctionsLists.map((s, i) => (
+                <div key={i} className="row" style={{ gap: 8, padding: "6px 0", borderBottom: "1px solid var(--line)", fontSize: 13 }}>
+                  <ShieldCheck size={13} color="var(--brand)" style={{ flexShrink: 0 }} />{s}
+                </div>
+              ))}
+              <div style={{ marginTop: 10, fontSize: 12 }}>
+                <span className="muted">Update SLA: </span><b style={{ color: "var(--brand600)" }}>&lt; 3 business days after regulatory update</b>
+              </div>
+            </div>
+            <div className="card">
+              <h3>Monitoring & screening tools</h3>
+              {ZENUS_REG_LIBRARY.tmTools.map((t, i) => (
+                <div key={i} className="row" style={{ gap: 8, padding: "6px 0", borderBottom: "1px solid var(--line)", fontSize: 13 }}>
+                  <Radio size={13} color="var(--brand)" style={{ flexShrink: 0 }} />{t}
+                </div>
+              ))}
+              <div style={{ marginTop: 10, fontSize: 12 }}><span className="muted">Last calibrated: </span><b>&lt; 1 year</b></div>
+              <div style={{ fontSize: 12 }}><span className="muted">Adverse media / PEP screening: </span><b>Automated + manual (onboarding, renewal, trigger)</b></div>
+              <div style={{ fontSize: 12 }}><span className="muted">Payment transparency: </span><b>Wolfsberg Standards + FATF R.16 + BSA Travel Rule</b></div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {tab === "prohibited" && (
+        <div className="card">
+          <h3>Prohibited & restricted categories — Mal AML/CFT/CPF Policy (MAL-CMP-AML-01 v1.0) + Zenus CBDDQ V1.4</h3>
+          <p style={{ fontSize: 13, color: "var(--muted)", margin: "4px 0 6px" }}>Merged from Mal's own AML/CFT/CPF Compliance Policy §8.1 (June 2026) and Zenus Bank's Wolfsberg CBDDQ V1.4. Prohibition grounds: <b>AML/CFT</b> = regulatory/financial-crime basis · <b>Sanctions</b> = TFS/OFAC/UN designation · <b>Shari'ah</b> = Islamic finance requirements · <b>CBDDQ</b> = Zenus correspondent-banking policy.</p>
+          <p style={{ fontSize: 12, color: "var(--muted)", margin: "0 0 14px" }}>Where more than one ground applies, the strictest requirement prevails. <b>Prohibited</b> = reject at intake, no exceptions. <b>EDD required</b> = MLRO approval + enhanced DD + senior management sign-off required before admission.</p>
+          <div className="tablewrap">
+            <table>
+              <thead><tr><th>Category</th><th>Level</th><th>Basis</th><th>Required action</th></tr></thead>
+              <tbody>
+                {ZENUS_REG_LIBRARY.prohibitedCategories.map(p => {
+                  const lc = p.level === "Prohibited" ? ["rgba(220,38,38,.1)","var(--red)"] : ["rgba(245,158,11,.1)","var(--amber)"];
+                  const bc = p.basis?.includes("Sanctions") ? ["rgba(220,38,38,.12)","var(--red)"] : p.basis?.includes("Shari'ah") ? ["var(--brand50)","var(--brand600)"] : p.basis === "CBDDQ" || p.basis === "AML/CFT + CBDDQ" ? ["rgba(37,99,235,.1)","var(--blue)"] : ["rgba(245,158,11,.12)","var(--amber)"];
+                  return (
+                    <tr key={p.cat}>
+                      <td><b style={{ fontSize: 13 }}>{p.cat}</b></td>
+                      <td><span className="chip" style={{ fontSize: 10, background: lc[0], color: lc[1] }}>{p.level}</span></td>
+                      <td><span className="chip" style={{ fontSize: 10, background: bc[0], color: bc[1] }}>{p.basis}</span></td>
+                      <td style={{ fontSize: 12, color: "var(--muted)" }}>
+                        {p.level === "Prohibited" ? "Reject at intake — do not onboard" : "MLRO approval + EDD + senior management sign-off + enhanced monitoring"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {tab === "gaps" && (
+        <>
+          <div className="card" style={{ marginBottom: 13 }}>
+            <h3>BaaS programme reporting obligations to Zenus</h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", margin: "4px 0 12px" }}>Every commitment that Mal (as programme manager) owes to Zenus Bank under the executed Programme Services Agreement (FBO). These mirror the obligations tracked in the Obligations & SLA module.</p>
+            <div className="tablewrap">
+              <table>
+                <thead><tr><th>Obligation</th><th>SLA</th><th>Severity</th></tr></thead>
+                <tbody>
+                  {ZENUS_PROG_OBLIGATIONS.map((o, i) => (
+                    <tr key={i}>
+                      <td><b style={{ fontSize: 13 }}>{o.title}</b></td>
+                      <td style={{ fontSize: 13 }}>{o.sla}</td>
+                      <td><span className="chip" style={{ fontSize: 10, background: SEV_C[o.sev] + "22", color: SEV_C[o.sev] }}>{SEV_T[o.sev]}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="card" style={{ marginBottom: 13 }}>
+            <h3>Mal → Regulatory filing deadlines</h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", margin: "4px 0 12px" }}>Mal Money Inc.'s own statutory and programme-defined filing deadlines — drawn from AML/BSA Compliance Programme Annex 5 (effective March 31, 2026) and the Governance Memorandum. Path A = Mal files direct; Path B = Zenus files, Mal prepares escalation package.</p>
+            <div className="tablewrap">
+              <table>
+                <thead><tr><th>Obligation</th><th>SLA</th><th>Citation</th><th>Severity</th></tr></thead>
+                <tbody>
+                  {MAL_FILING_DEADLINES.map((o, i) => (
+                    <tr key={i}>
+                      <td><b style={{ fontSize: 13 }}>{o.title}</b></td>
+                      <td style={{ fontSize: 13 }}>{o.sla}</td>
+                      <td><span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--muted)" }}>{o.citation}</span></td>
+                      <td><span className="chip" style={{ fontSize: 10, background: SEV_C[o.sev] + "22", color: SEV_C[o.sev] }}>{SEV_T[o.sev]}</span></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="card">
+            <h3>Compliance gaps — open items requiring MLRO action</h3>
+            <p style={{ fontSize: 13, color: "var(--muted)", margin: "4px 0 14px" }}>Areas where Mal's programme is incomplete against its own regulatory obligations and Zenus's requirements. Sorted by priority. MLRO action required on each.</p>
+            {ZENUS_REG_LIBRARY.gaps.map(g => {
+              const pc = g.priority === "Critical" ? ["rgba(220,38,38,.1)","var(--red)"] : g.priority === "High" ? ["rgba(245,158,11,.1)","var(--amber)"] : g.priority === "Medium" ? ["rgba(37,99,235,.1)","var(--blue)"] : ["rgba(107,114,128,.1)","var(--muted)"];
+              return (
+                <div key={g.id} style={{ padding: "11px 0", borderBottom: "1px solid var(--line)" }}>
+                  <div className="row" style={{ justifyContent: "space-between", marginBottom: 4 }}>
+                    <b style={{ fontSize: 13 }}>{g.area}</b>
+                    <span className="chip" style={{ fontSize: 10, background: pc[0], color: pc[1] }}>{g.priority} priority</span>
+                  </div>
+                  <div style={{ fontSize: 12.5, color: "var(--muted)" }}>{g.desc}</div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
     </>
   );
 }
@@ -3757,9 +4535,316 @@ function DDFile({ slice, base, screening, onScreen, screenLoading }) {
 }
 
 /* ============================================================================
+   Financial Crime Intelligence Engine (FCIE)
+============================================================================ */
+function FinancialCrimeIntelligence({ fcie, onRefresh, store, setStore, flash }) {
+  const [sub, setSub] = useState("feed");
+  const [fCountry, setFCountry] = useState("All");
+  const [fCat, setFCat] = useState("All");
+  const [fSev, setFSev] = useState("All");
+  const [search, setSearch] = useState("");
+  const [expandedId, setExpandedId] = useState(null);
+  const [analysisCache, setAnalysisCache] = useState({});
+  const [analyzingId, setAnalyzingId] = useState(null);
+  const [bookmarks, setBookmarks] = useState(() => { try { return new Set(JSON.parse(localStorage.getItem("fcie_bk") || "[]")); } catch { return new Set(); } });
+
+  const SEVS = ["All", "critical", "high", "medium", "low"];
+  const catLabel = (id) => FCIE_CATEGORIES.find(c => c.id === id)?.label || id;
+  const catColor = (id) => FCIE_CATEGORIES.find(c => c.id === id)?.color || "#6b7280";
+
+  let items = fcie.items || [];
+  if (fCountry !== "All") items = items.filter(i => i.country === fCountry);
+  if (fCat !== "All") items = items.filter(i => i.category === fCat);
+  if (fSev !== "All") items = items.filter(i => i.severity === fSev);
+  if (search) items = items.filter(i => (i.title + " " + (i.summary || "")).toLowerCase().includes(search.toLowerCase()));
+
+  const critHighItems = (fcie.items || []).filter(i => i.severity === "critical" || i.severity === "high");
+  const byCountry = FCIE_JURISDICTIONS.map(c => ({ country: c, count: (fcie.items || []).filter(i => i.country === c).length }));
+  const byCat = FCIE_CATEGORIES.map(c => ({ ...c, count: (fcie.items || []).filter(i => i.category === c.id).length }));
+  const maxCountry = Math.max(...byCountry.map(x => x.count), 1);
+  const maxCat = Math.max(...byCat.map(x => x.count), 1);
+
+  const toggleBookmark = (id) => {
+    const next = new Set(bookmarks); next.has(id) ? next.delete(id) : next.add(id);
+    setBookmarks(next); localStorage.setItem("fcie_bk", JSON.stringify([...next]));
+  };
+
+  const analyzeItem = async (item) => {
+    if (analysisCache[item.id] || analyzingId) return;
+    setAnalyzingId(item.id);
+    const prompt = `You are a financial crime intelligence analyst for Mal Money Inc. (US MSB, programme manager, active corridors: Pakistan · Bangladesh · Egypt · Turkey · UAE · Indonesia · Philippines · Malaysia). A new intelligence item was detected:\n\nTitle: ${item.title}\nSource: ${item.source || ""}\nCountry: ${item.country}\nCategory: ${item.category}\nSummary: ${item.summary || item.title}\n\nReturn ONLY a JSON object (no prose, no markdown fences):\n{"executiveSummary":"2-3 sentences for the MLRO","businessImpact":"impact on Mal operations","complianceImpact":"impact on AML/CFT programme (controls, filings, monitoring)","recommendedActions":["action1","action2","action3"],"affectedRegulations":["reg1","reg2"],"urgency":"immediate|high|medium|low","draftTitle":"short bulletin title (max 80 chars)","draftBody":"2-paragraph compliance bulletin for partners","draftBehavior":"required behaviour for partners (one sentence)"}`;
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-6", max_tokens: 1000, messages: [{ role: "user", content: prompt }] }),
+      });
+      const data = await res.json();
+      const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+      const a = text.indexOf("{"), b2 = text.lastIndexOf("}");
+      if (a !== -1 && b2 !== -1) setAnalysisCache(prev => ({ ...prev, [item.id]: JSON.parse(text.slice(a, b2 + 1)) }));
+      else flash("Analysis returned unexpected format");
+    } catch { flash("AI analysis failed — check API connection"); }
+    setAnalyzingId(null);
+  };
+
+  const publishDraft = (item, ai) => {
+    const b = { id: "b" + Date.now(), at: new Date().toISOString(), title: ai.draftTitle || item.title.slice(0, 80), body: ai.draftBody || item.summary || item.title, behavior: ai.draftBehavior || "Review and update controls as required.", sev: item.severity === "critical" ? "crit" : item.severity === "high" ? "high" : "med", jur: item.country || "All" };
+    setStore(prev => { const next = { ...prev, broadcasts: [b, ...prev.broadcasts] }; saveStore(next); return next; });
+    flash("Bulletin published to Communications");
+  };
+
+  return (
+    <>
+      <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+        <div>
+          <h1 className="h1">Financial Crime Intelligence Engine</h1>
+          <p className="sub">Real-time AML/CFT, sanctions, enforcement and regulatory intelligence for 9 Mal operating jurisdictions — powered by Google News and AI analysis.</p>
+        </div>
+        <div className="row" style={{ gap: 8 }}>
+          {fcie.at && <span className="muted mono" style={{ fontSize: 11 }}>updated {fmtDT(fcie.at)}</span>}
+          <button className="btn gold" onClick={onRefresh} disabled={fcie.status === "loading"}><Radio size={14} /> {fcie.status === "loading" ? "Fetching…" : "Refresh feed"}</button>
+        </div>
+      </div>
+
+      <div className="tabs2">
+        {[["feed","Live feed"],["dashboard","Dashboard"],["drafts","Comms drafts"],["settings","Configuration"]].map(([k, lab]) => (
+          <button key={k} className={sub === k ? "on" : ""} onClick={() => setSub(k)}>
+            {lab}{k === "drafts" && critHighItems.length ? <span className="badge" style={{ marginLeft: 5 }}>{critHighItems.length}</span> : null}
+          </button>
+        ))}
+      </div>
+
+      {/* ── LIVE FEED ── */}
+      {sub === "feed" && (<>
+        <div className="row" style={{ gap: 8, flexWrap: "wrap", margin: "0 0 12px" }}>
+          <div style={{ position: "relative", flex: "1 1 200px" }}>
+            <Search size={13} style={{ position: "absolute", left: 9, top: "50%", transform: "translateY(-50%)", color: "var(--muted)", pointerEvents: "none" }} />
+            <input className="input" placeholder="Search intelligence…" value={search} onChange={e => setSearch(e.target.value)} style={{ paddingLeft: 30, width: "100%", boxSizing: "border-box" }} />
+          </div>
+          <select className="input" value={fCountry} onChange={e => setFCountry(e.target.value)} style={{ minWidth: 150 }}>
+            <option value="All">All jurisdictions</option>
+            {FCIE_JURISDICTIONS.map(c => <option key={c}>{c}</option>)}
+          </select>
+          <select className="input" value={fCat} onChange={e => setFCat(e.target.value)} style={{ minWidth: 165 }}>
+            <option value="All">All categories</option>
+            {FCIE_CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
+          </select>
+          <select className="input" value={fSev} onChange={e => setFSev(e.target.value)} style={{ minWidth: 130 }}>
+            {SEVS.map(s => <option key={s} value={s}>{s === "All" ? "All severities" : s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
+          </select>
+        </div>
+
+        {fcie.status === "idle" && <div className="card"><div className="muted" style={{ fontSize: 13 }}>Click <b>Refresh feed</b> to pull the latest financial crime intelligence across all 9 jurisdictions.</div></div>}
+        {fcie.status === "loading" && <div className="card"><div className="muted" style={{ fontSize: 13 }}>Fetching intelligence from Google News and AI sources — this may take a few seconds…</div></div>}
+        {fcie.status === "error" && <div className="card"><div style={{ color: "var(--red)", fontSize: 13 }}>Could not reach intelligence sources. Check your connection and try Refresh.</div></div>}
+
+        {(fcie.status === "ok") && <>
+          <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}>{items.length} item{items.length !== 1 ? "s" : ""} {fCountry !== "All" || fCat !== "All" || fSev !== "All" || search ? "(filtered)" : "across " + FCIE_JURISDICTIONS.length + " jurisdictions"}</div>
+          {items.length === 0 && <div className="card"><div className="muted">No items match the current filters.</div></div>}
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {items.map(item => {
+              const ai = analysisCache[item.id];
+              const isExp = expandedId === item.id;
+              const isBk = bookmarks.has(item.id);
+              const sc = FCIE_SEV_COLOR[item.severity] || "#6b7280";
+              const cc = catColor(item.category);
+              return (
+                <div className="card" key={item.id} style={{ borderLeft: `3px solid ${sc}` }}>
+                  <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 7 }}>
+                    <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
+                      <span className="chip" style={{ background: sc + "22", color: sc, textTransform: "capitalize" }}>{item.severity}</span>
+                      <span className="chip" style={{ background: cc + "22", color: cc }}>{catLabel(item.category)}</span>
+                      <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)" }}>{item.country}</span>
+                      {item.authority && item.authority !== item.country + " Authority" && <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)" }}>{item.authority}</span>}
+                    </div>
+                    <div className="row" style={{ gap: 6 }}>
+                      {item.publishedAt && <span className="muted mono" style={{ fontSize: 11 }}>{String(item.publishedAt).slice(0, 10)}</span>}
+                      <button className="btn ghost" style={{ padding: "3px 7px" }} title={isBk ? "Remove bookmark" : "Bookmark"} onClick={() => toggleBookmark(item.id)}>
+                        <Bookmark size={13} style={{ fill: isBk ? "var(--gold)" : "none", color: isBk ? "var(--gold)" : "var(--muted)" }} />
+                      </button>
+                    </div>
+                  </div>
+                  <div style={{ fontWeight: 600, fontSize: 14, margin: "8px 0 4px", lineHeight: 1.4 }}>
+                    {item.url ? <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ color: "var(--text)", textDecoration: "none" }}>{item.title}</a> : item.title}
+                  </div>
+                  {item.summary && <div className="muted" style={{ fontSize: 12.5, lineHeight: 1.55, marginBottom: 8 }}>{item.summary.slice(0, 240)}{item.summary.length > 240 ? "…" : ""}</div>}
+                  {item.tags?.length > 0 && <div className="row" style={{ gap: 5, flexWrap: "wrap", marginBottom: 8 }}>{item.tags.slice(0, 5).map(t => <span key={t} className="chip" style={{ background: "#f5f6fb", color: "var(--muted)", fontSize: 11 }}>{t}</span>)}</div>}
+                  <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+                    <span className="muted" style={{ fontSize: 11 }}>{item.source}</span>
+                    <div style={{ flex: 1 }} />
+                    <button className="btn ghost" style={{ fontSize: 12, padding: "3px 9px" }} onClick={() => setExpandedId(isExp ? null : item.id)}>
+                      {isExp ? "Collapse" : ai ? "View analysis" : "Expand"} <ChevronRight size={12} style={{ transform: isExp ? "rotate(90deg)" : "none", transition: ".15s" }} />
+                    </button>
+                    {!ai ? (
+                      <button className="btn" style={{ fontSize: 12, padding: "3px 10px" }} onClick={() => { setExpandedId(item.id); analyzeItem(item); }} disabled={!!analyzingId}>
+                        <ShieldCheck size={12} /> {analyzingId === item.id ? "Analysing…" : "AI analysis"}
+                      </button>
+                    ) : (
+                      <button className="btn gold" style={{ fontSize: 12, padding: "3px 10px" }} onClick={() => publishDraft(item, ai)}>
+                        <Megaphone size={12} /> Create bulletin
+                      </button>
+                    )}
+                  </div>
+                  {isExp && (
+                    <div style={{ marginTop: 12, padding: "12px 14px", background: "var(--elevated)", borderRadius: 8 }}>
+                      {!ai && analyzingId !== item.id && <div className="muted" style={{ fontSize: 12.5 }}>Click <b>AI analysis</b> to generate an executive summary, compliance impact, and recommended actions.</div>}
+                      {analyzingId === item.id && <div className="muted" style={{ fontSize: 12.5 }}>Analysing with AI — please wait…</div>}
+                      {ai && (<div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                        {[["Executive Summary", ai.executiveSummary], ["Compliance Impact", ai.complianceImpact], ["Business Impact", ai.businessImpact]].map(([label, val]) => val ? (
+                          <div key={label}><div style={{ fontSize: 11, fontWeight: 700, color: "var(--brand600)", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 3 }}>{label}</div><div style={{ fontSize: 13, lineHeight: 1.55 }}>{val}</div></div>
+                        ) : null)}
+                        {ai.recommendedActions?.length > 0 && <div><div style={{ fontSize: 11, fontWeight: 700, color: "var(--brand600)", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 4 }}>Recommended Actions</div><ul style={{ margin: 0, paddingLeft: 18 }}>{ai.recommendedActions.map((a, i) => <li key={i} style={{ fontSize: 13, marginBottom: 3 }}>{a}</li>)}</ul></div>}
+                        {ai.affectedRegulations?.length > 0 && <div className="row" style={{ gap: 6, flexWrap: "wrap" }}><span style={{ fontSize: 12, fontWeight: 600, color: "var(--muted)" }}>Affected regulations:</span>{ai.affectedRegulations.map(r => <span key={r} className="chip" style={{ background: "var(--brand50)", color: "var(--brand600)", fontSize: 11 }}>{r}</span>)}</div>}
+                        <div className="row" style={{ gap: 6 }}><span className="chip" style={{ background: "rgba(245,158,11,.1)", color: "var(--amber)", fontSize: 11 }}>Urgency: {ai.urgency}</span></div>
+                      </div>)}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </>}
+      </>)}
+
+      {/* ── DASHBOARD ── */}
+      {sub === "dashboard" && (<>
+        <div className="grid" style={{ gridTemplateColumns: "repeat(4,1fr)" }}>
+          <Kpi label="Intelligence items" value={(fcie.items || []).length} />
+          <Kpi label="Critical alerts" value={(fcie.items || []).filter(i => i.severity === "critical").length} accent={FCIE_SEV_COLOR.critical} />
+          <Kpi label="High priority" value={(fcie.items || []).filter(i => i.severity === "high").length} accent={FCIE_SEV_COLOR.high} />
+          <Kpi label="Jurisdictions" value={FCIE_JURISDICTIONS.length} accent="var(--brand)" />
+        </div>
+        <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", marginTop: 12 }}>
+          <div className="card"><h3>By jurisdiction</h3>
+            {byCountry.map(c => (
+              <div key={c.country} className="row" style={{ justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid var(--line)" }}>
+                <span style={{ fontSize: 13 }}>{c.country}</span>
+                <div className="row" style={{ gap: 8 }}>
+                  <div style={{ width: 120, height: 6, background: "var(--line)", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ width: (c.count / maxCountry * 100) + "%", height: "100%", background: "var(--brand)", borderRadius: 3, transition: ".3s" }} />
+                  </div>
+                  <span className="muted mono" style={{ fontSize: 12, minWidth: 18, textAlign: "right" }}>{c.count}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="card"><h3>By category</h3>
+            {byCat.map(c => (
+              <div key={c.id} className="row" style={{ justifyContent: "space-between", padding: "6px 0", borderBottom: "1px solid var(--line)" }}>
+                <span style={{ fontSize: 13 }}>{c.label}</span>
+                <div className="row" style={{ gap: 8 }}>
+                  <div style={{ width: 120, height: 6, background: "var(--line)", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{ width: (c.count / maxCat * 100) + "%", height: "100%", background: c.color, borderRadius: 3, transition: ".3s" }} />
+                  </div>
+                  <span className="muted mono" style={{ fontSize: 12, minWidth: 18, textAlign: "right" }}>{c.count}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{ marginTop: 12 }}><h3>Recent critical & high alerts</h3>
+          {critHighItems.length === 0 && <div className="muted" style={{ fontSize: 12.5 }}>No critical or high items yet. Refresh the feed to pull the latest intelligence.</div>}
+          {critHighItems.slice(0, 15).map(item => (
+            <div key={item.id} className="row" style={{ justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--line)", flexWrap: "wrap", gap: 6 }}>
+              <span style={{ fontSize: 13, fontWeight: 500, flex: "1 1 220px" }}>{item.title.slice(0, 110)}{item.title.length > 110 ? "…" : ""}</span>
+              <div className="row" style={{ gap: 6 }}>
+                <span className="chip" style={{ background: FCIE_SEV_COLOR[item.severity] + "22", color: FCIE_SEV_COLOR[item.severity], textTransform: "capitalize", fontSize: 11 }}>{item.severity}</span>
+                <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)", fontSize: 11 }}>{item.country}</span>
+                {item.publishedAt && <span className="muted mono" style={{ fontSize: 11 }}>{String(item.publishedAt).slice(0, 10)}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </>)}
+
+      {/* ── COMMS DRAFTS ── */}
+      {sub === "drafts" && (<>
+        <div className="card" style={{ marginBottom: 12 }}>
+          <h3>Auto-generated compliance bulletins</h3>
+          <p className="muted" style={{ fontSize: 12.5, marginTop: 4 }}>Critical and high-severity intelligence items. Run AI analysis on any item from the Live feed, then publish the generated bulletin directly to Communications — the CO only needs to review and confirm.</p>
+        </div>
+        {critHighItems.length === 0 && <div className="card"><div className="muted">No critical or high items yet. Refresh the feed first.</div></div>}
+        {critHighItems.slice(0, 20).map(item => {
+          const ai = analysisCache[item.id];
+          const sc = FCIE_SEV_COLOR[item.severity] || "#6b7280";
+          return (
+            <div className="card" key={item.id} style={{ borderLeft: `3px solid ${sc}`, marginBottom: 10 }}>
+              <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                <div className="row" style={{ gap: 6 }}>
+                  <span className="chip" style={{ background: sc + "22", color: sc, textTransform: "capitalize" }}>{item.severity}</span>
+                  <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)" }}>{item.country}</span>
+                  <span className="chip" style={{ background: catColor(item.category) + "22", color: catColor(item.category) }}>{catLabel(item.category)}</span>
+                </div>
+                {item.publishedAt && <span className="muted mono" style={{ fontSize: 11 }}>{String(item.publishedAt).slice(0, 10)}</span>}
+              </div>
+              <div style={{ fontWeight: 600, fontSize: 14, margin: "8px 0 4px", lineHeight: 1.4 }}>{item.title.slice(0, 130)}{item.title.length > 130 ? "…" : ""}</div>
+              {ai ? (<>
+                <div style={{ fontSize: 13, lineHeight: 1.55, margin: "6px 0 10px", padding: "10px 12px", background: "var(--elevated)", borderRadius: 7 }}>{ai.executiveSummary}</div>
+                <div className="muted" style={{ fontSize: 12, marginBottom: 10 }}><b>Required partner behaviour:</b> {ai.draftBehavior}</div>
+                <button className="btn gold" onClick={() => publishDraft(item, ai)}><Megaphone size={13} /> Publish bulletin to Communications</button>
+              </>) : (<div className="row" style={{ gap: 8, marginTop: 8 }}>
+                <div className="muted" style={{ fontSize: 12.5, flex: 1 }}>Run AI analysis on this item from the Live feed tab to generate a draft bulletin.</div>
+                <button className="btn" onClick={() => setSub("feed")} style={{ whiteSpace: "nowrap" }}>Go to feed <ChevronRight size={13} /></button>
+              </div>)}
+            </div>
+          );
+        })}
+      </>)}
+
+      {/* ── SETTINGS ── */}
+      {sub === "settings" && (<>
+        <div className="card"><h3>Monitored jurisdictions</h3>
+          <p className="muted" style={{ fontSize: 12.5, marginTop: 4, marginBottom: 12 }}>The FCIE monitors these 9 jurisdictions continuously. All other countries are excluded from the feed per current configuration.</p>
+          <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: 8 }}>
+            {FCIE_JURISDICTIONS.map(j => (<div key={j} className="row" style={{ gap: 8, padding: "8px 12px", background: "var(--elevated)", borderRadius: 8 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--green)", flexShrink: 0 }} /><span style={{ fontSize: 13, fontWeight: 500 }}>{j}</span>
+            </div>))}
+          </div>
+        </div>
+        <div className="card" style={{ marginTop: 11 }}><h3>Intelligence categories</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
+            {FCIE_CATEGORIES.map(c => (<div key={c.id} className="row" style={{ gap: 10, padding: "7px 0", borderBottom: "1px solid var(--line)" }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: c.color, flexShrink: 0 }} />
+              <span style={{ fontSize: 13, fontWeight: 500, flex: 1 }}>{c.label}</span>
+              <span className="chip" style={{ background: "rgba(52,211,153,.15)", color: "var(--green)", fontSize: 11 }}>Active</span>
+            </div>))}
+          </div>
+        </div>
+        <div className="card" style={{ marginTop: 11 }}><h3>Refresh schedule</h3>
+          <div className="muted" style={{ fontSize: 12.5, marginTop: 6, marginBottom: 12 }}>The NestJS backend intelligence service refreshes automatically every hour via scheduled job, fetching from Google News RSS for all 9 jurisdictions. Manual refresh is always available.</div>
+          <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+            {[["Every hour", true], ["Every 6 hours", false], ["Daily", false], ["Weekly", false]].map(([s, active]) => (
+              <span key={s} className="chip" style={{ background: active ? "var(--brand50)" : "#f5f6fb", color: active ? "var(--brand600)" : "var(--muted)" }}>{s}</span>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{ marginTop: 11 }}><h3>Alert thresholds & escalation</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
+            {[["Critical", FCIE_SEV_COLOR.critical, "Immediate dashboard badge · auto-draft bulletin · notify MLRO"], ["High", FCIE_SEV_COLOR.high, "Dashboard badge · draft available within 24 hours"], ["Medium", FCIE_SEV_COLOR.medium, "Feed only — no dashboard badge"], ["Low", "#6b7280", "Feed only"]].map(([sev, col, desc]) => (
+              <div key={sev} className="row" style={{ gap: 10, padding: "8px 0", borderBottom: "1px solid var(--line)" }}>
+                <span className="chip" style={{ background: col + "22", color: col, textTransform: "capitalize", minWidth: 70, textAlign: "center" }}>{sev}</span>
+                <span className="muted" style={{ fontSize: 12.5 }}>{desc}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="card" style={{ marginTop: 11 }}><h3>Sources</h3>
+          <div className="muted" style={{ fontSize: 12.5, lineHeight: 1.6, marginTop: 6 }}>
+            <b>Primary (backend):</b> Google News RSS — targeted queries per jurisdiction and category, aggregated and deduplicated server-side. No API key required.<br />
+            <b>Fallback (browser):</b> Claude web search — on-demand intelligence pull using Anthropic API with web_search capability.<br />
+            <b>AI analysis:</b> Anthropic claude-sonnet-4-6 — executive summary, compliance impact, recommended actions, draft bulletin generation per item.
+          </div>
+        </div>
+      </>)}
+    </>
+  );
+}
+
+/* ============================================================================
    Communications & collaboration
 ============================================================================ */
-function Comms({ store, agents, supervisor, agentId, onAck, setModal }) {
+function Comms({ store, agents, supervisor, agentId, onAck, setModal, fcie }) {
+  const recentIntel = (fcie?.items || []).filter(i => i.severity === "critical" || i.severity === "high").slice(0, 5);
   return (
     <>
       <div className="row" style={{ justifyContent: "space-between" }}>
@@ -3767,6 +4852,32 @@ function Comms({ store, agents, supervisor, agentId, onAck, setModal }) {
           <p className="sub">{supervisor ? "Broadcast regulatory updates and see who acknowledged and confirmed they applied them — acknowledgement is evidence, the behaviour confirmation is the point." : "Regulatory notices from Mal. Acknowledge each, and confirm you have applied it — not just read it."}</p></div>
         {supervisor && <button className="btn gold" onClick={() => setModal({ t: "broadcast" })}><Megaphone size={14} /> New broadcast</button>}
       </div>
+
+      {/* Live Financial Crime Intelligence panel */}
+      <div className="card" style={{ marginBottom: 16, borderColor: recentIntel.length ? "var(--gold)" : "var(--line)" }}>
+        <div className="row" style={{ justifyContent: "space-between", marginBottom: recentIntel.length ? 10 : 0 }}>
+          <h3 style={{ margin: 0, color: "var(--gold)" }}><Radio size={13} style={{ verticalAlign: "-2px", marginRight: 6 }} />Live Financial Crime Intelligence</h3>
+          {recentIntel.length > 0 && <span className="chip" style={{ background: "rgba(220,38,38,.12)", color: "var(--red)", fontSize: 11 }}>{recentIntel.length} critical / high</span>}
+        </div>
+        {recentIntel.length === 0
+          ? <div className="muted" style={{ fontSize: 12.5 }}>No critical or high intelligence yet — visit <b>Crime Intelligence Engine</b> to refresh the live feed for all 9 jurisdictions.</div>
+          : recentIntel.map(item => {
+            const sc = FCIE_SEV_COLOR[item.severity] || "#6b7280";
+            return (
+              <div key={item.id} style={{ padding: "8px 0", borderBottom: "1px solid var(--line)" }}>
+                <div className="row" style={{ gap: 6, marginBottom: 3 }}>
+                  <span className="chip" style={{ background: sc + "22", color: sc, fontSize: 11, textTransform: "capitalize" }}>{item.severity}</span>
+                  <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)", fontSize: 11 }}>{item.country}</span>
+                  {item.publishedAt && <span className="muted mono" style={{ fontSize: 11 }}>{String(item.publishedAt).slice(0, 10)}</span>}
+                </div>
+                <div style={{ fontSize: 13 }}>{item.url ? <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ color: "var(--text)", textDecoration: "none" }}>{item.title.slice(0, 130)}{item.title.length > 130 ? "…" : ""}</a> : item.title.slice(0, 130)}</div>
+              </div>
+            );
+          })
+        }
+        {recentIntel.length > 0 && <div className="muted" style={{ fontSize: 11.5, marginTop: 8 }}>Full intelligence feed and AI analysis available in the <b>Crime Intelligence Engine</b>.</div>}
+      </div>
+
       <div className="grid" style={{ gap: 11 }}>
         {store.broadcasts.map(b => {
           const acked = !supervisor && store.agents[agentId].acks.find(x => x.id === b.id);

@@ -9,6 +9,7 @@ import { CrosswalkModule } from './modules/crosswalk/crosswalk.module';
 import { TypologiesModule } from './modules/typologies/typologies.module';
 import { ReportsModule } from './modules/reports/reports.module';
 import { AuditControllerModule } from './modules/audit/audit-controller.module';
+import { IntelligenceModule } from './modules/intelligence/intelligence.module';
 
 @Controller()
 class HealthController {
@@ -27,6 +28,7 @@ class HealthController {
     TypologiesModule,
     ReportsModule,
     AuditControllerModule,
+    IntelligenceModule,
   ],
   controllers: [HealthController],
 })
