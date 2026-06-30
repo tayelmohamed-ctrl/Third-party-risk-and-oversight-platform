@@ -8,6 +8,7 @@ import {
 } from "../config/reportingCatalogue";
 import templateData from "../data/reporting_templates.json";
 import { FIU_ROUTING } from "../config/partnerIntegration";
+import { CBUAE_STR_GUIDANCE, STR_FILING_SLA, GOAML_REPORT_TYPES } from "../config/cbuaeReportingGuidance";
 
 interface ReportTemplate {
   id: string;
@@ -76,8 +77,8 @@ export default function Reporting() {
   return (
     <div>
       <AgentBanner agent="jana" title="Jana — Reporting Centre">
-        Professional templates for every regulatory, FIU, management, and operational report — UAE (goAML / CBUAE)
-        and US BaaS (FinCEN). Jana drafts from Mohsen&apos;s evidence; the MLRO approves and files. Nothing is submitted autonomously.
+        Professional templates aligned to CBUAE Notice 3354/2022 STR/SAR guidance and the Jan 2023 Thematic Review —
+        UAE (goAML) and US BaaS (FinCEN). Jana drafts from Mohsen&apos;s evidence; the MLRO approves and files. Nothing is submitted autonomously.
       </AgentBanner>
 
       <div className="grid grid-cols-4 gap-3 mt-4 mb-4 max-md:grid-cols-2">
@@ -91,6 +92,9 @@ export default function Reporting() {
         <span><b className="text-ink">UAE FIU:</b> {FIU_ROUTING.UAE.system} · {FIU_ROUTING.UAE.regulator}</span>
         <span><b className="text-ink">US BaaS:</b> {FIU_ROUTING.US.system} · {FIU_ROUTING.US.regulator}</span>
         <span><b className="text-ink">Methodology:</b> {templateData.methodology}</span>
+        <span><b className="text-ink">STR SLA:</b> {STR_FILING_SLA.standardBusinessDaysFromAlert} business days · {STR_FILING_SLA.expeditedHoursFromDecision}h expedited</span>
+        <span><b className="text-ink">Guidance:</b> {CBUAE_STR_GUIDANCE.notice} · {CBUAE_STR_GUIDANCE.thematicReview}</span>
+        <span><b className="text-ink">goAML types:</b> {GOAML_REPORT_TYPES.map((t) => t.code).join(", ")}</span>
       </Card>
 
       <div className="flex gap-2 flex-wrap mb-4">

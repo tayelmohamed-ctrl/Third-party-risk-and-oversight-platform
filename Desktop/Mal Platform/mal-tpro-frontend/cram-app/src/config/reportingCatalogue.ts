@@ -1,6 +1,7 @@
 /**
  * Jana Reporting Centre — template catalogue structure.
- * Aligned to Mal CRAM methodology, CBUAE/FATF, FinCEN BSA (US BaaS), and dual FIU routing.
+ * Aligned to Mal CRAM methodology, CBUAE Notice 3354/2022 STR/SAR guidance,
+ * Thematic Review STR Framework (Jan 2023), FATF, FinCEN BSA (US BaaS), and dual FIU routing.
  */
 import type { LicenseRegion } from "./partnerIntegration";
 
@@ -35,12 +36,12 @@ export const REPORTING_AREAS: { id: ReportingArea; label: string; description: s
   {
     id: "regulatory",
     label: "Regulatory reporting",
-    description: "STR/SAR, terrorist property, sanctions, threshold and cross-border reports to FIU and competent authorities.",
+    description: "STR/SAR (goAML), supplementary AIF/RFI/HRC reports, attempted transactions, terrorist property, sanctions, and threshold reports — per CBUAE Notice 3354/2022.",
   },
   {
     id: "fiu",
     label: "FIU communication",
-    description: "Drafts, submitted filings, requests for information, FIU feedback, and status tracking.",
+    description: "goAML draft workspace, maker-checker sign-off, FIU RFI responses, post-STR actions, alert disposition, and filing status tracking.",
   },
   {
     id: "management",
