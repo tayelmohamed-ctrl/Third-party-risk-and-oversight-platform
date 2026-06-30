@@ -1,25 +1,18 @@
-import { useMemo, useState, Fragment } from "react";
+import { useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "../components/ui";
 import AgentBanner from "../components/agents/AgentBanner";
 import DriveLink from "../components/cram/DriveLink";
 import EwraRegulatoryPack from "../components/cram/EwraRegulatoryPack";
+import RegulatoryLineageFlow from "../components/cram/RegulatoryLineageFlow";
 import { heatCellColor } from "../config/ewraRegulatoryPack";
 import {
   CRAM_CATALOGUE, DRIVE_FOLDER_ORDER, DRIVE_FOLDERS,
-  lineageBreadcrumb, lineageForRegulation,
   STATUS_STYLE,
 } from "../config/cramDriveCatalogue";
 
-const EFFECT_COLOR: Record<string, string> = {
-  strong: "#2FD8A6",
-  partial: "#F6A623",
-  weak: "#FF5C77",
-};
-
 export default function CramWorkspace() {
   const [selReg, setSelReg] = useState<string>("REG-CBUAE-AML");
-  const chain = useMemo(() => lineageForRegulation(selReg), [selReg]);
   const { coverage, heatMap } = CRAM_CATALOGUE;
   const covPct = Math.round((coverage.covered / coverage.obligations) * 100);
 
@@ -69,84 +62,7 @@ export default function CramWorkspace() {
       </AgentBanner>
 
       {/* Lineage graph */}
-      <div className="flex items-center gap-2 px-4 py-3 border border-line rounded-t-2xl bg-panel flex-wrap">
-        <h3 className="m-0 text-sm font-display">Regulatory lineage — Regulation → Control → Workflow → Evidence</h3>
-        <span className="ml-auto text-faint text-[11px]">{lineageBreadcrumb(selReg)}</span>
-      </div>
-      <Card className="p-4 rounded-t-none border-t-0">
-        <div className="grid grid-cols-4 gap-0 items-start max-md:grid-cols-2">
-          {/* Regulation column */}
-          <LineageColumn title="Regulation">
-            {CRAM_CATALOGUE.regulations.map((r) => (
-              <LineageNode
-                key={r.id}
-                active={selReg === r.id}
-                onClick={() => setSelReg(r.id)}
-                title={r.name}
-                subtitle={r.ref}
-                badge={r.status}
-                footer={<DriveLink folderKey={r.driveFolder} docPath={r.driveDoc} compact label="Drive" />}
-              />
-            ))}
-          </LineageColumn>
-
-          {/* Control column */}
-          <LineageColumn title="Control">
-            {(chain?.controls ?? []).map((c) => (
-              <LineageNode
-                key={c.id}
-                active={false}
-                dotColor={EFFECT_COLOR[c.effectiveness]}
-                title={`${c.id} · ${c.name}`}
-                subtitle={c.tests}
-                badge={c.status}
-                footer={
-                  <div className="flex flex-wrap gap-2">
-                    <DriveLink folderKey={c.driveFolder} docPath={c.driveDoc} compact label="Drive" />
-                    <Link to={c.moduleRoute} className="text-[10px] text-ai hover:underline">Module →</Link>
-                  </div>
-                }
-              />
-            ))}
-            {!chain?.controls.length && <EmptyCol hint="Select a regulation" />}
-          </LineageColumn>
-
-          {/* Workflow column */}
-          <LineageColumn title="Workflow / Module">
-            {(chain?.workflows ?? []).map((w) => (
-              <LineageNode
-                key={w.id}
-                active={false}
-                title={w.module}
-                subtitle={w.name}
-                badge={w.status}
-                footer={
-                  <div className="flex flex-wrap gap-2">
-                    <DriveLink folderKey={w.driveFolder} docPath={w.driveDoc} compact label="SOP" />
-                    <Link to={w.route} className="text-[10px] text-ai hover:underline">Open →</Link>
-                  </div>
-                }
-              />
-            ))}
-            {!chain?.workflows.length && <EmptyCol hint="No workflows mapped" />}
-          </LineageColumn>
-
-          {/* Evidence column */}
-          <LineageColumn title="Evidence">
-            {(chain?.evidence ?? []).map((e) => (
-              <LineageNode
-                key={e.id}
-                active={false}
-                title={e.name}
-                subtitle={`${e.type} · ${e.freshness}`}
-                badge={e.status}
-                footer={<DriveLink folderKey={e.driveFolder} docPath={e.driveDoc} compact label="Evidence" />}
-              />
-            ))}
-            {!chain?.evidence.length && <EmptyCol hint="No evidence linked yet" />}
-          </LineageColumn>
-        </div>
-      </Card>
+      <RegulatoryLineageFlow selReg={selReg} onSelectReg={setSelReg} />
 
       {/* Heat map + Control register */}
       <div className="grid grid-cols-2 gap-4 mt-4 max-md:grid-cols-1">
@@ -256,46 +172,6 @@ export default function CramWorkspace() {
       </Card>
     </div>
   );
-}
-
-function LineageColumn({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="px-2">
-      <h4 className="text-[10px] tracking-[0.1em] uppercase text-faint m-0 mb-2.5 text-center">{title}</h4>
-      {children}
-    </div>
-  );
-}
-
-function LineageNode({
-  active, onClick, title, subtitle, badge, footer, dotColor,
-}: {
-  active?: boolean;
-  onClick?: () => void;
-  title: string;
-  subtitle?: string;
-  badge?: string;
-  footer?: React.ReactNode;
-  dotColor?: string;
-}) {
-  return (
-    <div
-      onClick={onClick}
-      className={`bg-panel2 border rounded-xl px-3 py-2.5 mb-2.5 text-[12px] relative transition hover:border-ai hover:bg-panel3 ${onClick ? "cursor-pointer" : ""} ${active ? "border-ai shadow-[0_0_0_1px_#A953DF]" : "border-line"}`}
-    >
-      {dotColor && <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full" style={{ background: dotColor }} />}
-      {badge && (
-        <span className={`pill text-[9px] mb-1 inline-block ${STATUS_STYLE[badge] ?? "bg-panel2 text-muted"}`}>{badge}</span>
-      )}
-      <div className="font-semibold pr-4">{title}</div>
-      {subtitle && <div className="text-muted text-[10.5px] mt-0.5">{subtitle}</div>}
-      {footer && <div className="mt-1.5">{footer}</div>}
-    </div>
-  );
-}
-
-function EmptyCol({ hint }: { hint: string }) {
-  return <div className="text-center text-faint text-[11px] py-6 px-2">{hint}</div>;
 }
 
 const HL = ({ children }: { children: React.ReactNode }) => (
