@@ -20,7 +20,7 @@ Bahamas,1,2,1,1,1.35,Medium,1.35
 Bahrain,1,2,1,1,1.35,Medium,1.35
 Bangladesh,1,2,1,1,1.35,Medium,1.35
 Barbados,1,2,1,1,1.35,Medium,1.35
-Belarus,1,2,2,1,1.65,Medium,1.65
+Belarus,1,2,3,1,1.65,High,3
 Belgium,1,2,1,1,1.35,Medium,1.35
 Belize,1,1,1,1,1.0,Low,1
 Benin,1,2,1,1,1.35,Medium,1.35
@@ -55,7 +55,7 @@ Cook Islands,1,1,1,1,1.0,Low,1
 Costa Rica,1,2,1,1,1.35,Medium,1.35
 Cote Dâivoire,2,2,1,1,1.65,Medium,3
 Croatia,1,2,2,1,1.65,Medium,1.65
-Cuba,1,2,3,1,1.95,Medium,1.95
+Cuba,1,2,3,1,1.95,High,3
 Curacao,1,1,1,1,1.0,Low,1
 Cyprus,1,2,1,1,1.35,Medium,1.35
 Czech Republic,1,1,1,1,1.0,Low,1
@@ -184,7 +184,7 @@ Republic of Congo,1,3,1,1,1.7,Medium,1.7
 Republic of Kiribati,1,1,1,1,1.0,Low,1
 Reunion,1,1,1,1,1.0,Low,1
 Romania,1,2,2,1,1.65,Medium,1.65
-Russia,1,2,2,1,1.65,Medium,3
+Russia,1,2,3,1,1.65,High,3
 Rwanda,1,2,1,1,1.35,Medium,1.35
 Saint Barthelemy,1,1,1,1,1.0,Low,1
 Saint Helena,1,1,1,1,1.0,Low,1
@@ -212,13 +212,13 @@ Sri Lanka,1,2,1,1,1.35,Medium,1.35
 St. Kitts and Nevis,1,2,1,1,1.35,Medium,1.35
 St. Lucia,1,2,1,1,1.35,Medium,1.35
 St. Vincent And The Grenadines,1,2,1,1,1.35,Medium,1.35
-Sudan,1,2,2,3,1.75,Medium,1.75
+Sudan,1,2,3,3,1.75,High,3
 Suriname,1,2,1,1,1.35,Medium,1.35
 Svalbard,1,1,1,1,1.0,Low,1
 Swaziland,1,2,1,1,1.35,Medium,1.35
 Sweden,1,1,1,1,1.0,Low,1
 Switzerland,1,2,1,1,1.35,Medium,1.35
-Syria,2,2,3,1,2.25,High,3
+Syria,2,2,3,1,2.25,Prohibited,4
 Taiwan,1,2,1,1,1.35,Medium,1.35
 Tajikistan,1,2,1,1,1.35,Medium,1.35
 Tanzania,1,2,1,1,1.35,Medium,1.35

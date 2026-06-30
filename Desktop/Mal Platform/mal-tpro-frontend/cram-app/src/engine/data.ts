@@ -7,15 +7,36 @@ import isic from "../data/isic.json";
 import products from "../data/products.json";
 import overrides from "../data/override_rules.json";
 import ruleLib from "../data/isic_rule_library.json";
+import {
+  applySanctionsCountryFloor,
+  firmScoreToBand,
+  normalizeCountryName,
+  SANCTIONS_COUNTRY_FLOORS,
+  sanctionsFloorForCountry,
+} from "../config/sanctionsCountryRegistry";
+
+export { SANCTIONS_COUNTRY_FLOORS, sanctionsFloorForCountry, firmScoreToBand } from "../config/sanctionsCountryRegistry";
 
 export interface Country { country: string; firm: number; band: string; fatf: number; basel: number; sanctions: number; }
+
+function enrichCountry(raw: Country): Country {
+  const firm = applySanctionsCountryFloor(raw.country, raw.firm);
+  const floor = sanctionsFloorForCountry(raw.country);
+  return {
+    ...raw,
+    firm,
+    band: firmScoreToBand(firm),
+    sanctions: floor ? Math.max(raw.sanctions, 3) : raw.sanctions,
+  };
+}
+
 export interface Profession { name: string; score: number; }
 export interface Activity { activity: string; score: number; }
 export interface Isic { code: string; level: string; title: string; rating: string; score: number; theme: string; }
 export interface Product { name: string; baseline: string; }
 export interface OverrideRule { id: string; trigger: string; outcome: string; priority: string; }
 
-export const COUNTRIES = countries as Country[];
+export const COUNTRIES = (countries as Country[]).map(enrichCountry);
 export const PROFESSIONS = professions as Profession[];
 export const NATURE_OF_BUSINESS = nob as Activity[];
 export const ISIC = isic as Isic[];
@@ -29,7 +50,8 @@ export const SANCTIONS_A = ["Iran", "Iran, Islamic Republic of", "North Korea", 
 const cMap = new Map(COUNTRIES.map((c) => [c.country.toLowerCase(), c]));
 export function lookupCountry(name: string): Country | undefined {
   if (!name) return undefined;
-  return cMap.get(name.toLowerCase());
+  const canonical = normalizeCountryName(name);
+  return cMap.get(canonical.toLowerCase()) ?? cMap.get(name.toLowerCase());
 }
 
 export function lookupProfession(name: string): number {

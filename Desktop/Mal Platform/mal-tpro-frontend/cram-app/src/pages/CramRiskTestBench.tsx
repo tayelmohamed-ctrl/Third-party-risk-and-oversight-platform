@@ -474,7 +474,7 @@ export default function CramRiskTestBench() {
               <CorporateStructureDiagram input={entityStructureInput} />
             )}
 
-            <Sec title="02 · Geography" hint={mode === "entity" ? "Worst of opco · incorp · UBO · SoW · SoF" : "Residence · birth · nationality · SoW · SoF"}>
+            <Sec title="02 · Geography" hint={mode === "entity" ? "Worst of opco · incorp · UBO · SoW · SoF · UN/US/UAE sanctions floors" : "Residence · birth · nationality · SoW · SoF · UN/US/UAE sanctions floors"}>
               <Row3>
                 <Sel label={mode === "entity" ? "Operating country" : "Country of residence"} v={mode === "entity" ? f.opco : f.cres} set={(v) => set(mode === "entity" ? "opco" : "cres", v)} opts={COUNTRIES.map((x) => x.country)} />
                 <Sel label={mode === "entity" ? "Incorporation country" : "Country of birth"} v={mode === "entity" ? f.incco : f.cbirth} set={(v) => set(mode === "entity" ? "incco" : "cbirth", v)} opts={COUNTRIES.map((x) => x.country)} />

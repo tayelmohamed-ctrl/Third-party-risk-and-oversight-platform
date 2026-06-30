@@ -7,6 +7,7 @@ import { FACTOR_WEIGHTS } from "./cram";
 import { matchProfessionTypology, professionTriggersEdd } from "./professionRiskIntelligence";
 import { entityLegalTypeSummary, entityTypeProhibited, entityTypeRequiresEdd } from "../config/entityLegalTypes";
 import type { CustomerMode } from "./cramSuiteConfig";
+import { sanctionsFloorForCountry } from "../config/sanctionsCountryRegistry";
 
 export type RiskImpact = "increase" | "decrease" | "neutral" | "floor";
 
@@ -227,12 +228,21 @@ function buildRiskDrivers(
   }
 
   const geoScore = result.factors.find((f) => f.key === "geography")?.score ?? 1;
+  const geoNames = mode === "entity"
+    ? [input.residenceName, input.incorpName, input.nationalityName, input.sowName, input.sofName]
+    : [input.residenceName, input.nationalityName, input.birthName, input.sowName, input.sofName];
+  const sanctionsNexus = geoNames
+    .filter(Boolean)
+    .map((n) => sanctionsFloorForCountry(String(n)))
+    .find(Boolean);
   d.push({
     id: "geo", label: "Country / geography risk",
-    detail: `Worst-of geography firm score → internal band ${geoScore}/3`,
+    detail: sanctionsNexus
+      ? `Worst-of geography · UN/US/UAE sanctions floor (${sanctionsNexus.sources.join(", ")}) → band ${geoScore}/3`
+      : `Worst-of geography firm score → internal band ${geoScore}/3`,
     impact: geoScore >= 3 ? "increase" : geoScore === 1 ? "decrease" : "neutral",
     score: geoScore,
-    policyRef: "Country risk library · Category-A prohibition separate",
+    policyRef: "Country risk library · UN · OFAC · UAE TFS floors",
   });
 
   if (input.pep !== "None") {
