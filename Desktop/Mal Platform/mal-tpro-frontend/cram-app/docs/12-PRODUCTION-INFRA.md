@@ -48,9 +48,12 @@ npm run dev            # Vite + API
 
 | User | Token |
 |------|-------|
+| Tayel Mohamed (Head of Financial Crimes) | `Bearer dev:tayel.mohamed@mal.ae:MLRO,Reviewer` |
+| Walid Elsheikha (Head of Compliance) | `Bearer dev:walid.elsheikha@mal.ae:MLRO,ConfigChecker` |
+| David Henry (Chief of Product) | `Bearer dev:david.henry@mal.ae:Reviewer,ConfigMaker` |
 | Feed service | `Bearer dev:feeds@mal.ae:ServiceAccount` |
-| MLRO | `Bearer dev:mlro@mal.ae:MLRO` |
-| Analyst | `Bearer dev:analyst@mal.ae:Analyst` |
+
+See **docs/24-PLATFORM-USER-ACCESS.md** for full access profiles and production IdP setup.
 
 ## Example: vendor webhook (async queue)
 

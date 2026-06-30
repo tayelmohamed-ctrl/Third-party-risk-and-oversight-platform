@@ -30,8 +30,8 @@ export const AGENTS: Record<AgentId, AgentProfile> = {
     glow: "rgba(57,185,237,.35)",
     to: "/cram",
     desc: "Reads every regulation, the AML/CFT policy and all risk-scoring inputs — and keeps the CRAM and scoring libraries continuously updated so no guideline is ever missed.",
-    stat: "Syncing CBUAE 2026/14 · 251 countries · 736 professions",
-    capabilities: ["CRAM mapping", "Risk scoring", "Regulatory impact", "Library sync"],
+    stat: "Weekly CBUAE · FinCEN · FATF · Zenus source monitor",
+    capabilities: ["CRAM mapping", "Risk scoring", "Regulatory impact", "Library sync", "Weekly source watch"],
   },
   mohsen: {
     id: "mohsen",

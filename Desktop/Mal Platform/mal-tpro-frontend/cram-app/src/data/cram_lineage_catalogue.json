@@ -1,7 +1,7 @@
 {
-  "version": "1.0.0",
-  "updated": "2026-06-29",
-  "source": "Mal FinCrime OS · CRAM lineage catalogue · Google Drive master repository",
+  "version": "1.1.0",
+  "updated": "2026-06-30",
+  "source": "Mal FinCrime OS · CRAM lineage catalogue · Google Drive · Sayed weekly source monitor",
   "driveFolders": {
     "regulations": {
       "id": "0ABopRvbIQ6pFUk9PVA",
@@ -28,6 +28,7 @@
       "name": "CBUAE AML/CFT Rules",
       "ref": "Art. 4 — CDD · Art. 5 — EDD · Art. 14 — STR",
       "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK", "GROUP"],
       "driveFolder": "regulations",
       "driveDoc": "CBUAE/AML-CFT-Rules",
       "status": "mapped",
@@ -88,10 +89,143 @@
       "name": "Mal AML/CFT Policy",
       "ref": "§12.6 TM · RBA · EDD · behaviour gate",
       "jurisdiction": "Group",
+      "licenseProfiles": ["GROUP", "UAE_COMMUNITY_BANK", "US_MSB_BAAS_ZENUS"],
       "driveFolder": "regulations",
       "driveDoc": "Internal/MAL-AML-CFT-Policy-v2026",
       "status": "mapped",
       "controls": ["C-104", "C-122", "C-TM-001", "C-130"]
+    },
+    {
+      "id": "REG-UAE-AML-LAW",
+      "name": "UAE Federal AML-CFT Law (Decree-Law 20/2018)",
+      "ref": "Art. 15 STR · Art. 16 TFS · Cabinet Decision 10/2019",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK", "GROUP"],
+      "driveFolder": "regulations",
+      "driveDoc": "UAE/Federal-AML-CFT-Law-20-2018",
+      "status": "mapped",
+      "controls": ["C-104", "C-101", "C-130"]
+    },
+    {
+      "id": "REG-CBUAE-STR-3354",
+      "name": "CBUAE Notice 3354/2022 — STR/SAR Guidance",
+      "ref": "goAML · 35 business days · Who/What/When/Where/Why/How",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK"],
+      "driveFolder": "regulations",
+      "driveDoc": "CBUAE/Notices/3354-2022-STR-SAR-Guidance",
+      "status": "mapped",
+      "controls": ["C-130"]
+    },
+    {
+      "id": "REG-CBUAE-TM",
+      "name": "CBUAE Transaction Monitoring expectations",
+      "ref": "Thematic review · scenario calibration · alert disposition",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK"],
+      "driveFolder": "regulations",
+      "driveDoc": "CBUAE/TM-Thematic-Review-Framework",
+      "status": "mapped",
+      "controls": ["C-TM-001", "C-130"]
+    },
+    {
+      "id": "REG-UAE-TFS",
+      "name": "UAE Targeted Financial Sanctions",
+      "ref": "Cabinet Decision 74/2020 · Local terrorist lists",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK"],
+      "driveFolder": "regulations",
+      "driveDoc": "UAE/TFS-Executive-Office-lists",
+      "status": "mapped",
+      "controls": ["C-101"]
+    },
+    {
+      "id": "REG-FATF-R20",
+      "name": "FATF Recommendation 20",
+      "ref": "Reporting of suspicious transactions",
+      "jurisdiction": "International",
+      "licenseProfiles": ["GROUP", "UAE_COMMUNITY_BANK", "US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "FATF/Rec-20-STR",
+      "status": "mapped",
+      "controls": ["C-130"]
+    },
+    {
+      "id": "REG-US-MSB",
+      "name": "FinCEN MSB Registration (31 CFR 1022)",
+      "ref": "MSB definition · registration · renewal · agent list",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/FinCEN-MSB-Registration",
+      "status": "mapped",
+      "controls": ["C-140"]
+    },
+    {
+      "id": "REG-US-BSA-PROGRAM",
+      "name": "US BSA AML Program (sponsor bank)",
+      "ref": "Four pillars · independent audit · BaaS oversight",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/BSA-AML-Program-Zenus-BaaS",
+      "status": "mapped",
+      "controls": ["C-140", "C-104"]
+    },
+    {
+      "id": "REG-US-SAR",
+      "name": "FinCEN SAR (Form 111)",
+      "ref": "31 CFR 1022.320 · 30-day filing",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/FinCEN-SAR-Form-111",
+      "status": "mapped",
+      "controls": ["C-140"]
+    },
+    {
+      "id": "REG-US-CTR",
+      "name": "FinCEN CTR (Form 104)",
+      "ref": "31 USC 5313 · USD 10k cash threshold",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/FinCEN-CTR-Form-104",
+      "status": "mapped",
+      "controls": ["C-140"]
+    },
+    {
+      "id": "REG-US-CDD",
+      "name": "FinCEN CDD Rule · Beneficial Ownership",
+      "ref": "31 CFR 1010.230 · BOI · CIP",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/FinCEN-CDD-BO-Rule",
+      "status": "mapped",
+      "controls": ["C-104", "C-140"]
+    },
+    {
+      "id": "REG-US-OFAC",
+      "name": "OFAC Sanctions Regulations",
+      "ref": "31 CFR Chapter V · SDN · sectoral programs",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS", "GROUP"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/OFAC-Sanctions-Program",
+      "status": "mapped",
+      "controls": ["C-101", "C-140"]
+    },
+    {
+      "id": "REG-ZENUS-BAAS",
+      "name": "Zenus Bank BaaS Partner Compliance Addendum",
+      "ref": "Sponsor oversight · US MSB · Puerto Rico OCIF",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "Partners/Zenus/BaaS-Compliance-Addendum",
+      "status": "mapped",
+      "controls": ["C-140", "C-104"]
     }
   ],
   "controls": [
@@ -446,6 +580,9 @@
     "uncovered": 8,
     "controlsTotal": 142,
     "controlsEffective": 134,
-    "controlsGap": 8
+    "controlsGap": 8,
+    "regulationsCatalogued": 19,
+    "licenseProfiles": ["UAE_COMMUNITY_BANK", "US_MSB_BAAS_ZENUS", "GROUP"],
+    "sayedMonitorCadence": "weekly"
   }
 }

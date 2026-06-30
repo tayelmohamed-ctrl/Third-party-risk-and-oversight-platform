@@ -380,3 +380,44 @@ export async function apiSimulateOscilarAlert(body: {
     headers: getAuthHeaders(),
   });
 }
+
+export interface RegulatoryMonitorSource {
+  id: string;
+  name: string;
+  publisher: string;
+  url: string;
+  licenseProfiles: string[];
+  regulationIds: string[];
+}
+
+export interface RegulatoryMonitorStatus {
+  agent: string;
+  cadence: string;
+  cronUtc: string;
+  lastRunAt: string | null;
+  lastRunId: string | null;
+  sourcesTotal: number;
+  pendingChanges: number;
+  lastErrors: number;
+  notifyTo?: string;
+  channels?: { primary: string[]; backup: string[]; notify: string[] };
+  sources: RegulatoryMonitorSource[];
+  lastRun?: {
+    id: string;
+    at: string;
+    changed: number;
+    errors: number;
+    results: { sourceId: string; name: string; status: string; error?: string }[];
+  } | null;
+}
+
+export async function apiRegulatoryMonitor(): Promise<RegulatoryMonitorStatus> {
+  return req("/regulatory/monitor", { headers: getAuthHeaders() });
+}
+
+export async function apiRunRegulatoryMonitor(): Promise<{ id: string; changed: number; errors: number }> {
+  return req("/regulatory/monitor/run", {
+    method: "POST",
+    headers: getAuthHeaders(),
+  });
+}

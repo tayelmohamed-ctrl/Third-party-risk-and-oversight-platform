@@ -1,12 +1,16 @@
-import { useMemo, useState, Fragment } from "react";
+import { useMemo, useState, useEffect, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "../components/ui";
 import AgentBanner from "../components/agents/AgentBanner";
+import AgentAiTag from "../components/agents/AgentAiTag";
+import EwraRegulatoryPack from "../components/cram/EwraRegulatoryPack";
 import DriveLink from "../components/cram/DriveLink";
 import {
   CRAM_CATALOGUE, DRIVE_FOLDER_ORDER, DRIVE_FOLDERS,
   STATUS_STYLE, type DriveFolderKey,
 } from "../config/cramDriveCatalogue";
+import { LICENSE_PROFILES } from "../config/licenseProfiles";
+import { apiRegulatoryMonitor, apiRunRegulatoryMonitor, type RegulatoryMonitorStatus } from "../lib/api";
 
 type TabId = "regulations" | "controls" | "workflows" | "evidence" | "heatmap";
 
@@ -23,11 +27,35 @@ const KANBAN = ["Identified", "Mapped", "Implemented", "Tested", "Evidenced"] as
 export default function RegulatoryManagement() {
   const [tab, setTab] = useState<TabId>("regulations");
   const [jurisdiction, setJurisdiction] = useState<string>("all");
+  const [licenseFilter, setLicenseFilter] = useState<string>("all");
+  const [monitor, setMonitor] = useState<RegulatoryMonitorStatus | null>(null);
+  const [monitorBusy, setMonitorBusy] = useState(false);
+
+  useEffect(() => {
+    void apiRegulatoryMonitor().then(setMonitor).catch(() => setMonitor(null));
+  }, []);
+
+  async function runSayedCheck() {
+    setMonitorBusy(true);
+    try {
+      await apiRunRegulatoryMonitor();
+      setMonitor(await apiRegulatoryMonitor());
+    } finally {
+      setMonitorBusy(false);
+    }
+  }
 
   const regulations = useMemo(() => {
-    if (jurisdiction === "all") return CRAM_CATALOGUE.regulations;
-    return CRAM_CATALOGUE.regulations.filter((r) => r.jurisdiction === jurisdiction);
-  }, [jurisdiction]);
+    let list = CRAM_CATALOGUE.regulations;
+    if (jurisdiction !== "all") list = list.filter((r) => r.jurisdiction === jurisdiction);
+    if (licenseFilter !== "all") {
+      list = list.filter((r) => {
+        const profiles = (r as { licenseProfiles?: string[] }).licenseProfiles;
+        return profiles?.includes(licenseFilter) ?? false;
+      });
+    }
+    return list;
+  }, [jurisdiction, licenseFilter]);
 
   const jurisdictions = useMemo(
     () => [...new Set(CRAM_CATALOGUE.regulations.map((r) => r.jurisdiction))],
@@ -39,10 +67,69 @@ export default function RegulatoryManagement() {
   return (
     <div>
       <AgentBanner agent="sayed" title="Regulatory Management — browse · track · impact · remediation">
-        Every regulation, control, workflow SOP, and evidence artefact is indexed against the{" "}
-        <b>Mal Google Drive master repository</b>. Three folders cover the full CRAM lineage —
-        click any row to open the authoritative document set.
+        Sayed monitors <b>12 authoritative sources weekly</b> (CBUAE, UAE FIU, FATF, FinCEN, OFAC, FFIEC, Zenus BaaS)
+        for both license paths — UAE community bank and US MSB BaaS under Zenus. Changes feed Signal Feeds and the obligation register.
       </AgentBanner>
+
+      {/* Sayed weekly monitor */}
+      <Card className="p-4 mt-4 mb-4 border-ai/30">
+        <div className="flex flex-wrap gap-3 items-start justify-between mb-3">
+          <div>
+            <AgentAiTag agent="sayed">Sayed — weekly regulatory source watch</AgentAiTag>
+            <p className="text-[12px] text-muted mt-2 m-0 max-w-2xl">
+              Automated check every Monday 09:00 UAE (05:00 UTC). Demo mode: every 6 hours.
+              <b> Primary:</b> CBUAE &amp; FinCEN RSS, Zenus BaaS addendum version (Drive).
+              <b> Backup:</b> HTTP content hash on rulebooks and guidance pages.
+              When changes are detected, Walid is notified via Slack and email.
+            </p>
+          </div>
+          <button type="button" className="btn text-[11px]" disabled={monitorBusy} onClick={() => void runSayedCheck()}>
+            {monitorBusy ? "Checking sources…" : "Run check now"}
+          </button>
+        </div>
+        <div className="grid grid-cols-4 gap-3 max-md:grid-cols-2 text-[11px]">
+          <div className="p-2.5 rounded-lg bg-panel2 border border-lineSoft">
+            <div className="text-faint text-[10px] uppercase">Sources</div>
+            <div className="font-display text-lg font-bold">{monitor?.sourcesTotal ?? 12}</div>
+          </div>
+          <div className="p-2.5 rounded-lg bg-panel2 border border-lineSoft">
+            <div className="text-faint text-[10px] uppercase">Last check</div>
+            <div className="font-semibold">{monitor?.lastRunAt ? new Date(monitor.lastRunAt).toLocaleString() : "Pending"}</div>
+          </div>
+          <div className="p-2.5 rounded-lg bg-panel2 border border-lineSoft">
+            <div className="text-faint text-[10px] uppercase">Changes detected</div>
+            <div className={`font-display text-lg font-bold ${(monitor?.pendingChanges ?? 0) > 0 ? "text-hi" : "text-low"}`}>
+              {monitor?.pendingChanges ?? 0}
+            </div>
+          </div>
+          <div className="p-2.5 rounded-lg bg-panel2 border border-lineSoft">
+            <div className="text-faint text-[10px] uppercase">Catalogue</div>
+            <div className="font-semibold">{CRAM_CATALOGUE.regulations.length} regulations · {CRAM_CATALOGUE.coverage.obligations} obligations</div>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-2 mt-3">
+          {LICENSE_PROFILES.map((p) => (
+            <span key={p.id} className="pill text-[10px] bg-panel2 text-muted">{p.label} · {p.regulator}</span>
+          ))}
+        </div>
+        {monitor?.channels && (
+          <div className="text-[10.5px] text-muted mt-2">
+            <b className="text-ink">Production channels:</b> Primary — {monitor.channels.primary.join(", ")} ·
+            Backup — {monitor.channels.backup.join(", ")} · Notify — {monitor.notifyTo} via {monitor.channels.notify.join(", ")}
+          </div>
+        )}
+        {monitor?.lastRun?.results?.some((r) => r.status === "changed" || r.status === "error") && (
+          <div className="mt-3 pt-3 border-t border-lineSoft space-y-1">
+            {monitor.lastRun.results.filter((r) => r.status === "changed" || r.status === "error").map((r) => (
+              <div key={r.sourceId} className={`text-[11px] ${r.status === "changed" ? "text-hi" : "text-med"}`}>
+                {r.status === "changed" ? "● Changed" : "● Error"} — {r.name}
+                {r.error ? ` (${r.error})` : ""}
+              </div>
+            ))}
+            <Link to="/feeds" className="text-[11px] text-ai hover:underline block mt-1">View in Signal Feeds →</Link>
+          </div>
+        )}
+      </Card>
 
       {/* Drive folders overview */}
       <div className="grid grid-cols-3 gap-3 mt-4 mb-4 max-lg:grid-cols-1">
@@ -113,6 +200,10 @@ export default function RegulatoryManagement() {
             <select className="input ml-auto text-[12px] max-w-[160px]" value={jurisdiction} onChange={(e) => setJurisdiction(e.target.value)}>
               <option value="all">All jurisdictions</option>
               {jurisdictions.map((j) => <option key={j} value={j}>{j}</option>)}
+            </select>
+            <select className="input text-[12px] max-w-[180px]" value={licenseFilter} onChange={(e) => setLicenseFilter(e.target.value)}>
+              <option value="all">All license paths</option>
+              {LICENSE_PROFILES.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
             </select>
             <DriveLink folderKey="regulations" docPath="Obligation-register-master" label="Full register (Drive)" />
           </div>
@@ -253,45 +344,9 @@ export default function RegulatoryManagement() {
       )}
 
       {tab === "heatmap" && (
-        <Card className="p-4">
-          <div className="text-sm font-display font-semibold mb-1">Risk heat map</div>
-          <div className="text-[10.5px] text-faint mb-3">Inherent risk × control strength</div>
-          <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
-              <div>
-                <div className="grid gap-1 text-[11px] max-w-sm" style={{ gridTemplateColumns: "80px repeat(3,1fr)" }}>
-                  <div />
-                  {CRAM_CATALOGUE.heatMap.matrix.cols.map((c) => (
-                    <div key={c} className="text-center text-muted text-[10px]">{c.replace(" control", "")}</div>
-                  ))}
-                  {CRAM_CATALOGUE.heatMap.matrix.rows.map((row, ri) => (
-                    <Fragment key={row}>
-                      <div className="text-muted text-[10px] flex items-center">{row.replace(" inherent", "")}</div>
-                      {CRAM_CATALOGUE.heatMap.matrix.cells[ri].map((val, ci) => (
-                        <div key={`${ri}-${ci}`} className="rounded-lg py-3 text-center font-semibold text-[#020A18] text-[11px]"
-                          style={{ background: ri === 0 && ci === 0 ? "#FF5C77" : ri === 0 && ci === 1 ? "#F6A623" : val >= 20 ? "#2FD8A6" : "#F6A623" }}>
-                          {val}
-                        </div>
-                      ))}
-                    </Fragment>
-                  ))}
-                </div>
-                <p className="text-[11px] text-muted mt-3">{CRAM_CATALOGUE.heatMap.matrix.interpretation}</p>
-              </div>
-              <div className="space-y-3">
-                <div className="p-3 rounded-xl border border-line bg-panel2">
-                  <div className="text-[12px] font-semibold">Methodology document</div>
-                  <p className="text-[11px] text-muted mt-1">How inherent risk and control strength are scored for the enterprise matrix.</p>
-                  <DriveLink folderKey={CRAM_CATALOGUE.heatMap.methodologyDriveFolder} docPath={CRAM_CATALOGUE.heatMap.methodologyDriveDoc} label="Open methodology (Drive)" className="mt-2" />
-                </div>
-                <div className="p-3 rounded-xl border border-line bg-panel2">
-                  <div className="text-[12px] font-semibold">Latest approved snapshot</div>
-                  <p className="text-[11px] text-muted mt-1">Q2 2026 EWRA heat map — board-approved, stored in evidence folder.</p>
-                  <DriveLink folderKey={CRAM_CATALOGUE.heatMap.snapshotDriveFolder} docPath={CRAM_CATALOGUE.heatMap.snapshotDriveDoc} label="Open snapshot (Drive)" className="mt-2" />
-                </div>
-                <Link to="/cram" className="text-[12px] text-ai hover:underline block">View interactive heat map in CRAM Workspace →</Link>
-              </div>
-          </div>
-        </Card>
+        <div className="space-y-4">
+          <EwraRegulatoryPack defaultTab="snapshot" />
+        </div>
       )}
 
       <Card className="mt-4 p-4 text-[11px] text-muted">

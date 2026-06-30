@@ -3,7 +3,6 @@ import { buildAssessment, type Assessment, type Trigger } from "../src/engine/re
 import type { ScoreInput, Score } from "../src/engine/types";
 import { appendAssessment, storeEmpty } from "./db/auditStore";
 import { seedVendorMappings } from "./identity/resolver";
-import { prisma } from "./db/client";
 
 function makeInput(p: Partial<ScoreInput>): ScoreInput {
   return {
@@ -87,19 +86,8 @@ export async function seedIfEmpty() {
 
   await seedVendorMappings();
 
-  // Seed app users for RBAC reference
-  const users = [
-    { id: "u_mlro", email: "mlro@mal.ae", name: "MLRO", roles: ["MLRO"] },
-    { id: "u_analyst", email: "analyst@mal.ae", name: "Analyst", roles: ["Analyst"] },
-    { id: "u_service", email: "feeds@mal.ae", name: "Feed Service", roles: ["ServiceAccount"] },
-  ];
-  for (const u of users) {
-    await prisma.appUser.upsert({
-      where: { email: u.email },
-      create: u,
-      update: { roles: u.roles, name: u.name },
-    });
-  }
+  const { seedPlatformUsers } = await import("./auth/seedPlatformUsers");
+  await seedPlatformUsers();
 
   return true;
 }

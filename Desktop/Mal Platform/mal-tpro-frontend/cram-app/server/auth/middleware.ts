@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import type { AuthUser, Role, Capability } from "./rbac";
 import { requireCapability } from "./rbac";
+import { PLATFORM_USERS } from "../../src/config/platformUsers";
 
 const VALID_ROLES: Role[] = ["Analyst", "Reviewer", "MLRO", "ConfigMaker", "ConfigChecker", "ServiceAccount"];
 
@@ -110,7 +111,11 @@ export function rbacMiddleware(req: Request, res: Response, next: NextFunction) 
 }
 
 export const DEV_USERS: AuthUser[] = [
-  { id: "u_mlro", email: "mlro@mal.ae", name: "MLRO", roles: ["MLRO"] },
-  { id: "u_analyst", email: "analyst@mal.ae", name: "Analyst", roles: ["Analyst"] },
+  ...PLATFORM_USERS.map((u) => ({
+    id: u.id,
+    email: u.email,
+    name: u.name,
+    roles: u.roles as Role[],
+  })),
   { id: "u_service", email: "feeds@mal.ae", name: "Feed Service", roles: ["ServiceAccount"] },
 ];

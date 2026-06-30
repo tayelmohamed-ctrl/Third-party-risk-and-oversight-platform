@@ -10,8 +10,9 @@ import { ingestFeedEvent, resolveInboundEvent, type InboundFeedEvent } from "./p
 import { runPeriodicReviews, schedulerStatus, startScheduler } from "./scheduler";
 import { seedIfEmpty } from "./seed";
 import { authMiddleware, rbacMiddleware } from "./auth/middleware";
-import { requireCapability } from "./auth/rbac";
+import { requireCapability, hasCapability } from "./auth/rbac";
 import { governAssessmentSubmission } from "./overrideGovernance";
+import { seedPlatformUsers } from "./auth/seedPlatformUsers";
 import { validateDataQuality, type AssessmentCapture, type KycQualityContext } from "../src/engine/dataQualityGate";
 import { allVendorMappings, upsertVendorMapping } from "./identity/resolver";
 import { getFeedQueue, startQueueWorker } from "./queue";
@@ -21,6 +22,7 @@ import {
 import { registerWebhookRoutes, registerScreeningRoutes } from "./routes/screening";
 import { registerOnboardingWebhookRoutes, registerOnboardingRoutes } from "./routes/onboarding";
 import { registerOscilarWebhookRoutes, registerTmRoutes } from "./routes/tm";
+import { registerRegulatoryRoutes } from "./routes/regulatory";
 import type { FeedSource } from "../src/pipeline/feeds";
 
 const PORT = Number(process.env.PORT ?? 3010);
@@ -81,9 +83,13 @@ app.get("/api/v1/crr/auth/me", (req, res) => {
     name: req.user.name,
     roles: req.user.roles,
     capabilities: {
-      override: req.user.roles.includes("MLRO"),
-      score: true,
-      readAudit: req.user.roles.includes("MLRO") || req.user.roles.includes("Reviewer"),
+      override: hasCapability(req.user.roles, "override"),
+      score: hasCapability(req.user.roles, "score"),
+      review: hasCapability(req.user.roles, "review"),
+      readAudit: hasCapability(req.user.roles, "read_audit"),
+      readMi: hasCapability(req.user.roles, "read_mi"),
+      configPropose: hasCapability(req.user.roles, "config_propose"),
+      configApprove: hasCapability(req.user.roles, "config_approve"),
     },
   });
 });
@@ -229,9 +235,11 @@ app.post("/api/v1/crr/validation/promote", rbacMiddleware, async (req, res) => {
 registerScreeningRoutes(app);
 registerOnboardingRoutes(app);
 registerTmRoutes(app);
+registerRegulatoryRoutes(app);
 
 async function bootstrap() {
   await connectDb();
+  await seedPlatformUsers();
   await seedModelGovernanceIfEmpty();
   await seedIfEmpty();
   startScheduler();

@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { Card } from "../components/ui";
 import AgentBanner from "../components/agents/AgentBanner";
 import DriveLink from "../components/cram/DriveLink";
+import EwraRegulatoryPack from "../components/cram/EwraRegulatoryPack";
+import { heatCellColor } from "../config/ewraRegulatoryPack";
 import {
   CRAM_CATALOGUE, DRIVE_FOLDER_ORDER, DRIVE_FOLDERS,
-  heatCellColor, lineageBreadcrumb, lineageForRegulation,
+  lineageBreadcrumb, lineageForRegulation,
   STATUS_STYLE,
 } from "../config/cramDriveCatalogue";
 
@@ -168,16 +170,7 @@ export default function CramWorkspace() {
             </div>
             <div className="text-[11px] text-muted mt-3">{heatMap.matrix.interpretation}</div>
             <div className="flex flex-wrap gap-3 mt-3 pt-3 border-t border-lineSoft">
-              <DriveLink
-                folderKey={heatMap.methodologyDriveFolder}
-                docPath={heatMap.methodologyDriveDoc}
-                label="Methodology (Drive)"
-              />
-              <DriveLink
-                folderKey={heatMap.snapshotDriveFolder}
-                docPath={heatMap.snapshotDriveDoc}
-                label="Q2 2026 snapshot (Drive)"
-              />
+              <Link to="/regulatory" className="text-[11px] text-ai hover:underline">Full EWRA pack (methodology + snapshot) →</Link>
             </div>
           </div>
         </Card>
@@ -227,6 +220,8 @@ export default function CramWorkspace() {
           </div>
         </Card>
       </div>
+
+      <EwraRegulatoryPack defaultTab="methodology" />
 
       {/* All workflows index */}
       <Card className="mt-4 p-4">

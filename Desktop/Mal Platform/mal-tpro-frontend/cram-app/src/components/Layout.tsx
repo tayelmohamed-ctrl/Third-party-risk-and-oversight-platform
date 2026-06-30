@@ -3,6 +3,7 @@ import { LayoutDashboard, Network, Scale, ScrollText, Crosshair, Flag, FileText,
 import MalLogo from "./MalLogo";
 import AgentChip from "./agents/AgentChip";
 import AgentAvatar from "./agents/AgentAvatar";
+import UserAccessSwitcher from "./UserAccessSwitcher";
 import { agentForRoute } from "../config/agents";
 
 const NAV = [
@@ -111,8 +112,7 @@ export default function Layout() {
             <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-line bg-panel2 text-muted">
               <span className="w-1.5 h-1.5 rounded-full bg-low motion-safe:animate-pulse2" aria-hidden /> CRAM health <b className="text-low ml-0.5">92%</b>
             </span>
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#2a2350] to-[#16203e] border border-line grid place-items-center font-bold text-xs text-[#cfc8ff]" aria-hidden>MO</div>
-            <div className="text-[12px] max-md:hidden"><b>MLRO</b><div className="text-muted text-[10.5px]">Owner · Mal Compliance</div></div>
+            <UserAccessSwitcher />
           </div>
         </header>
         <main className="p-6 pb-16 max-w-[1340px] w-full">

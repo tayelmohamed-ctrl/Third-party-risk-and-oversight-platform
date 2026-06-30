@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, Sec } from "./ui";
 import { apiAuditLog, apiAuthMe, isApiAvailable, type AuthMe } from "../lib/api";
-import { getPersona, hasOverrideCapability } from "../lib/authSession";
+import { getPlatformUser, hasOverrideCapability } from "../lib/authSession";
 
 type ItemStatus = "strong" | "partial" | "gap";
 
@@ -44,7 +44,7 @@ export default function Theme3Status() {
     return () => { cancelled = true; clearInterval(id); };
   }, []);
 
-  const persona = getPersona();
+  const user = getPlatformUser();
   const canOverride = hasOverrideCapability();
 
   const items: ThemeItem[] = [
@@ -63,7 +63,7 @@ export default function Theme3Status() {
       label: "Auth / RBAC (MLRO-only override)",
       detail: "override capability on MLRO role · Analyst blocked at API (403)",
       status: auth?.capabilities.override !== undefined ? "strong" : online === false ? "partial" : "strong",
-      live: auth ? `session: ${persona} (${auth.email})` : `UI persona: ${persona}`,
+      live: auth ? `session: ${user.name} (${auth.email})` : `UI user: ${user.name}`,
     },
     {
       label: "Mandatory MLRO justification",
@@ -80,7 +80,7 @@ export default function Theme3Status() {
       label: "UI governance (Test Bench)",
       detail: "Persona switch · justification box · server error surfacing",
       status: canOverride ? "strong" : "strong",
-      live: canOverride ? "MLRO persona active" : "Analyst persona — override disabled",
+      live: canOverride ? `${user.name} — MLRO override enabled` : `${user.name} — override disabled`,
     },
   ];
 

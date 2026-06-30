@@ -9,7 +9,8 @@ import { COUNTRIES, NATURE_OF_BUSINESS, PRODUCTS } from "../engine/data";
 import { ACTIVITY_DROPDOWN_GROUPS, professionGroupsForEmployment } from "../config/activityRegisterOptions";
 import { buildAssessment } from "../engine/rerating";
 import { addAssessment } from "../store/assessmentStore";
-import { getPersona, hasOverrideCapability, setPersona, type DevPersona } from "../lib/authSession";
+import { getPlatformUser, getPlatformUserId, hasOverrideCapability, setPlatformUser } from "../lib/authSession";
+import { PLATFORM_USERS, type PlatformUserId } from "../config/platformUsers";
 import { apiPartnerSync, apiStartOnboarding, apiSimulateOscilarAlert, isApiAvailable } from "../lib/api";
 import {
   CFG, CONTROL_LABELS, CONTROL_OPTIONS, SEGMENT_OPTIONS, OWNERSHIP_LAYERS,
@@ -79,7 +80,7 @@ export default function CramRiskTestBench() {
   const setKycField = <K extends keyof KycQualityContext>(k: K, v: KycQualityContext[K]) =>
     setKyc((s) => ({ ...s, [k]: v }));
 
-  const [persona, setPersonaState] = useState<DevPersona>(() => getPersona());
+  const [persona, setPersonaState] = useState<PlatformUserId>(() => getPlatformUserId());
   const set = (k: string, v: string) => setF((s) => ({ ...s, [k]: v }));
   const setCtrl = (k: ControlKey, v: number) => setControls((c) => ({ ...c, [k]: v as ControlInputs[ControlKey] }));
 
@@ -333,7 +334,7 @@ export default function CramRiskTestBench() {
       setSaveErr(true);
       return;
     }
-    if (f.mo && !hasOverrideCapability()) { setSaved("Blocked: MLRO persona required for override."); setSaveErr(true); return; }
+    if (f.mo && !hasOverrideCapability()) { setSaved("Blocked: MLRO access required for override (Tayel or Walid)."); setSaveErr(true); return; }
     if (f.mo && f.moJust.trim().length < 20) { setSaved("Blocked: justification required (min 20 chars)."); setSaveErr(true); return; }
     const gate = computeGoldenThread(mode, input, result, controls, labels);
     if (gate.eddRequired && !ops.approved && gate.approval.cls !== "LOW") {
@@ -596,7 +597,7 @@ export default function CramRiskTestBench() {
 
           <Card className="p-4">
             <div className="sec mb-2">Override & submit</div>
-            <Sel label="Persona (RBAC)" v={persona} set={(v) => { setPersona(v as DevPersona); setPersonaState(v as DevPersona); }} opts={["Analyst", "MLRO"]} />
+            <Sel label="Signed-in user (RBAC)" v={persona} set={(v) => { setPlatformUser(v as PlatformUserId); setPersonaState(v as PlatformUserId); window.location.reload(); }} optsV={PLATFORM_USERS.map((u) => [u.id, `${u.name} — ${u.title}`])} />
             <Sel label="Manual override" v={f.mo} set={(v) => set("mo", v)} opts={["", "Low", "Medium", "High"]} disabled={!hasOverrideCapability() || !gated.ready} />
             {f.mo && (
               <Fld label="Justification">
