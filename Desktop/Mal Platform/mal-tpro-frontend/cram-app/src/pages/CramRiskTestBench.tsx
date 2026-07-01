@@ -27,6 +27,10 @@ import {
 import HandoffPanel, { type HandoffOps } from "../components/cramSuite/HandoffPanel";
 import RiskSummaryPanel from "../components/cramSuite/RiskSummaryPanel";
 import CorporateStructureDiagram from "../components/cramSuite/CorporateStructureDiagram";
+import {
+  CramGamifiedShell, GamifiedSec, DriverChip, ControlStars,
+  sectionScoreBadge, controlsScoreBadge,
+} from "../components/cramSuite/CramGamifiedLayout";
 import type { EntityStructureInput } from "../engine/corporateStructureGraph";
 
 const EMP_IND = [["Salaried employee", 1], ["Pensioner", 1], ["Student", 1], ["Self-employed", 2], ["Freelancer / consultant", 2], ["Business owner", 2], ["Unemployed (with activity)", 3]] as const;
@@ -366,14 +370,14 @@ export default function CramRiskTestBench() {
   }
 
   return (
-    <div>
+    <div className="cram-bench-page">
       <div className="flex items-center gap-3 mb-4 flex-wrap">
-        <div className="flex rounded-xl border border-line overflow-hidden">
+        <div className="cram-bench-mode-toggle">
           {(["individual", "entity"] as CustomerMode[]).map((m) => (
             <button key={m} type="button"
-              className={`px-4 py-2 text-[12px] font-semibold capitalize ${mode === m ? "bg-ai/20 text-ink" : "text-muted hover:bg-panel2"}`}
+              className={mode === m ? "cram-bench-mode-toggle--active" : ""}
               onClick={() => switchMode(m)}>
-              {m === "individual" ? "Individual" : "Entity"}
+              {m === "individual" ? "Individual CRAM Card" : "Entity CRAM Card"}
             </button>
           ))}
         </div>
@@ -382,9 +386,23 @@ export default function CramRiskTestBench() {
       </div>
 
       <div className="grid grid-cols-[1fr_480px] gap-5 items-start max-lg:grid-cols-1">
-        <div className="space-y-4">
-          <Card className="p-4">
-            <Sec title="00 · KYC data quality" hint="FR-007 · completeness · verification · freshness">
+        <div>
+          <CramGamifiedShell
+            mode={mode}
+            name={f.name}
+            customerId={f.id}
+            segment={f.seg}
+            relationship={f.rel}
+            dq={dq}
+            kyc={kyc}
+            result={result}
+            gt={gt}
+            riskSummary={riskSummary}
+            screeningSanctions={f.scrS}
+            screeningWatchlist={f.scrW}
+            partnerMsg={partnerMsg}
+          >
+            <GamifiedSec section="kyc" title="KYC data quality" hint="FR-007 · completeness · verification · freshness">
               <Row3>
                 <Sel label="Identity source" v={kyc.identitySource} set={(v) => setKycField("identitySource", v as KycQualityContext["identitySource"])}
                   opts={["uae_pass", "emirates_id", "idsp", "document", "branch"]} />
@@ -428,9 +446,14 @@ export default function CramRiskTestBench() {
                   {partnerMsg && <div className="text-[11px] text-muted">{partnerMsg}</div>}
                 </div>
               )}
-            </Sec>
+            </GamifiedSec>
 
-            <Sec title="01 · Identity & relationship" hint={mode === "entity" ? "Legal person" : "Natural person"}>
+            <GamifiedSec
+              section="identity"
+              title="Identity & relationship"
+              hint={mode === "entity" ? "Legal person" : "Natural person"}
+              scoreBadge={sectionScoreBadge(result, "customerType")}
+            >
               <Row3>
                 <Fld label="Customer name"><input className="input" value={f.name} onChange={(e) => set("name", e.target.value)} /></Fld>
                 <Fld label="Customer ID"><input className="input" value={f.id} onChange={(e) => set("id", e.target.value)} /></Fld>
@@ -468,13 +491,18 @@ export default function CramRiskTestBench() {
                     : "Gate drives review / override · transaction factor uses light uplift only"}
                 </div>
               </Row2>
-            </Sec>
+            </GamifiedSec>
 
             {mode === "entity" && entityStructureInput && (
               <CorporateStructureDiagram input={entityStructureInput} />
             )}
 
-            <Sec title="02 · Geography" hint={mode === "entity" ? "Worst of opco · incorp · UBO · SoW · SoF · UN/US/UAE sanctions floors" : "Residence · birth · nationality · SoW · SoF · UN/US/UAE sanctions floors"}>
+            <GamifiedSec
+              section="geography"
+              title="Geography"
+              hint={mode === "entity" ? "Worst of opco · incorp · UBO · SoW · SoF · UN/US/UAE sanctions floors" : "Residence · birth · nationality · SoW · SoF · UN/US/UAE sanctions floors"}
+              scoreBadge={sectionScoreBadge(result, "geography", 20)}
+            >
               <Row3>
                 <Sel label={mode === "entity" ? "Operating country" : "Country of residence"} v={mode === "entity" ? f.opco : f.cres} set={(v) => set(mode === "entity" ? "opco" : "cres", v)} opts={COUNTRIES.map((x) => x.country)} />
                 <Sel label={mode === "entity" ? "Incorporation country" : "Country of birth"} v={mode === "entity" ? f.incco : f.cbirth} set={(v) => set(mode === "entity" ? "incco" : "cbirth", v)} opts={COUNTRIES.map((x) => x.country)} />
@@ -484,9 +512,24 @@ export default function CramRiskTestBench() {
                 <Sel label="Source-of-wealth country" v={f.sow} set={(v) => set("sow", v)} opts={COUNTRIES.map((x) => x.country)} />
                 <Sel label="Source-of-funds country" v={f.sof} set={(v) => set("sof", v)} opts={COUNTRIES.map((x) => x.country)} />
               </Row2>
-            </Sec>
+            </GamifiedSec>
 
-            <Sec title="03 · Risk drivers" hint="Screening · PEP · ISIC activity">
+            <GamifiedSec
+              section="drivers"
+              title="Risk drivers"
+              hint="Screening · PEP · ISIC activity"
+              scoreBadge={sectionScoreBadge(result, "transaction")}
+            >
+              <div className="cram-driver-grid">
+                <DriverChip icon="🏛️" label="PEP" value={f.pep} hot={f.pep !== "None"} />
+                <DriverChip icon="🚫" label="Sanctions" value={f.scrS} hot={f.scrS !== "Clear"} />
+                <DriverChip icon="📋" label="Watchlist" value={f.scrW} hot={f.scrW !== "Clear"} />
+                <DriverChip icon="📰" label="Adverse" value={f.scrA} hot={f.scrA !== "None"} />
+                <DriverChip icon="🔍" label="Investigations" value={INV_STR.find((s) => String(s[1]) === f.inv)?.[0] ?? f.inv} hot={+f.inv >= 2} />
+                <DriverChip icon="📄" label="STR / SAR" value={INV_STR.find((s) => String(s[1]) === f.str)?.[0] ?? f.str} hot={+f.str >= 2} />
+                <DriverChip icon="💼" label="Employment" value={empOpts.find((e) => String(e[1]) === f.emp)?.[0] ?? f.emp} />
+                <DriverChip icon="🏭" label="ISIC activity" value={f.activity.slice(0, 28) + (f.activity.length > 28 ? "…" : "")} />
+              </div>
               <Row3>
                 <Sel label="PEP status" v={f.pep} set={(v) => set("pep", v)} opts={["None", "Domestic", "Foreign", "IO"]} />
                 <Sel label="Sanctions / TFS" v={f.scrS} set={(v) => set("scrS", v)} opts={["Clear", "Potential Match", "True Match"]} />
@@ -533,21 +576,37 @@ export default function CramRiskTestBench() {
                 <Sel label="Delivery channel" v={f.delChan} set={(v) => set("delChan", v)} optsV={DELIVERY_CHANNELS.map((c) => [String(c.score), c.label])} />
                 <div className="text-[11px] text-muted self-end pb-2">Channel pillar uses max(initiation, delivery) × 10% — sub-scores shown for audit</div>
               </Row2>
-            </Sec>
+              <div className="cram-driver-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+                <DriverChip icon="📦" label="Product" value={f.prod.length > 22 ? f.prod.slice(0, 22) + "…" : f.prod} />
+                <DriverChip icon="🔄" label="Service" value={SVC.find((s) => String(s[1]) === f.svc)?.[0] ?? f.svc} />
+                <DriverChip icon="📱" label="Channel" value={DELIVERY_CHANNELS.find((c) => String(c.score) === f.delChan)?.label ?? f.delChan} />
+              </div>
+            </GamifiedSec>
 
-            <Sec title="04 · Control effectiveness" hint="Drives residual · never cures gates">
+            <GamifiedSec
+              section="controls"
+              title="Control effectiveness"
+              hint="Drives residual · never cures gates"
+              scoreBadge={controlsScoreBadge(controls)}
+            >
               <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
                 {(Object.keys(CONTROL_LABELS) as ControlKey[]).map((k) => (
-                  <Sel key={k} label={`${labels[k]} · ${CFG.controlWeights[k]}%`}
-                    v={String(controls[k])} set={(v) => setCtrl(k, +v)}
-                    optsV={CONTROL_OPTIONS.map((o) => [String(o.v), o.label])} />
+                  <div key={k} className="cram-control-row">
+                    <div className="cram-control-row__head">
+                      <label className="field-label">{labels[k]} · {CFG.controlWeights[k]}%</label>
+                      <ControlStars value={controls[k]} />
+                    </div>
+                    <select className="input" value={String(controls[k])} onChange={(e) => setCtrl(k, +e.target.value)}>
+                      {CONTROL_OPTIONS.map((o) => <option key={o.v} value={o.v}>{o.label}</option>)}
+                    </select>
+                  </div>
                 ))}
               </div>
-            </Sec>
-          </Card>
+            </GamifiedSec>
+          </CramGamifiedShell>
         </div>
 
-        <div className="sticky top-[84px] space-y-3.5 max-lg:static">
+        <div className="cram-bench-sidebar sticky top-[84px] space-y-3.5 max-lg:static">
           {!gated.ready ? (
             <Card className="p-4 border border-hi/30 bg-hi/5">
               <div className="text-[10px] uppercase tracking-wide text-hi font-semibold">Assessment blocked</div>
@@ -630,17 +689,6 @@ export default function CramRiskTestBench() {
   );
 }
 
-function Sec({ title, hint, children }: { title: string; hint?: string; children: ReactNode }) {
-  return (
-    <div className="mb-4 pb-4 border-b border-lineSoft last:border-0 last:mb-0 last:pb-0">
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-[13px] font-semibold">{title}</span>
-        {hint && <span className="text-[10px] text-faint ml-auto">{hint}</span>}
-      </div>
-      <div className="space-y-2.5">{children}</div>
-    </div>
-  );
-}
 const Row2 = ({ children }: { children: ReactNode }) => <div className="grid grid-cols-2 gap-2.5">{children}</div>;
 const Row3 = ({ children }: { children: ReactNode }) => <div className="grid grid-cols-3 gap-2.5 max-md:grid-cols-1">{children}</div>;
 function Fld({ label, children }: { label: string; children: ReactNode }) { return <div><label className="field-label">{label}</label>{children}</div>; }

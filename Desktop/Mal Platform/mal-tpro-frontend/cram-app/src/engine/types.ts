@@ -105,7 +105,12 @@ export interface ScoreInput {
   sowFirm: number;
   sofFirm: number;
   residenceName: string;
+  nationalityName?: string;
+  birthName?: string;
+  sowName?: string;
   sofName: string;
+  incorpName?: string;
+  uboName?: string;
   // product/service/channel
   productScore: Score;
   serviceScore: Score;

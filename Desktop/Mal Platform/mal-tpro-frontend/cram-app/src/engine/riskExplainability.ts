@@ -229,7 +229,7 @@ function buildRiskDrivers(
 
   const geoScore = result.factors.find((f) => f.key === "geography")?.score ?? 1;
   const geoNames = mode === "entity"
-    ? [input.residenceName, input.incorpName, input.nationalityName, input.sowName, input.sofName]
+    ? [input.residenceName, input.incorpName, input.uboName, input.sowName, input.sofName]
     : [input.residenceName, input.nationalityName, input.birthName, input.sowName, input.sofName];
   const sanctionsNexus = geoNames
     .filter(Boolean)
