@@ -1,0 +1,13 @@
+risk_theme_activity_cluster,indicative_isic_section_s,indicative_isic_codes_prefixes,indicative_aml_risk,primary_risk_rationale,cdd_edd_focus
+Financial institutions / banking / credit,L,"64, 641, 6419, 649",High,Financial intermediation and third-party funds movement,"Licensing/regulatory status, source of funds, expected flows, correspondent/third-party payment exposure"
+"Securities, funds, trusts and investment vehicles",L,"661, 663, 643, 6499",High,Complex ownership and rapid asset movement,"UBO/control, source of wealth/funds, investment purpose, adverse media"
+Real estate and property activities,M,"68, 681, 682",High,High-value assets and BO opacity,"Property documents, SoF/SoW, purchaser/seller/agent verification"
+Dealers in precious metals/stones and jewelry,G/C,"3211, 4649, 4773",High,Portable high-value goods and gold/precious commodity risk,"Provenance, supplier/customer due diligence, import/export checks"
+"Casinos, gambling and betting",S,"92, 920, 9200",High,Cash-intensive and established ML typologies,"Senior approval, licensing, SoF/SoW, cash monitoring"
+Legal/accounting/company service providers,N,"691, 692, 7020",High,Professional gatekeeper and legal-person formation risk,"Client-money, UBO, nominee/trust/company formation controls"
+"NPOs, charities, religious/social advocacy",T,"9491, 9492, 9499",High,TF/sanctions abuse potential depending on geography and beneficiaries,"Donor/beneficiary checks, program verification, sanctions screening"
+"Freight, logistics and trade intermediaries",H/G,"49, 50, 51, 52, 5229, 46",Medium,TBML and sanctions exposure,"Counterparty/country screening, invoice/shipping document review"
+Cash-intensive hospitality/services,I/T,"55, 56, 96",Medium,Cash handling and commingling risk,"Expected cash profile, POS/bank statement reasonableness, monitoring thresholds"
+"Oil, gas, mining and strategic commodities",B/C/G,"05, 06, 07, 09, 19, 46",High,"Sanctions, corruption, commodities and cross-border flows","Origin/destination, BO, SoF, sanctions and trade controls"
+"Arms, ammunition, explosives and defense-sensitive goods",C/G,"2520, 3040, 4669",High,PF/export-control/sanctions exposure,"End-use/end-user checks, export licenses, restricted appetite review"
+Technology platforms / telecom / hosting,K/J,"58, 61, 62, 63",Medium,"Digital payments, platform misuse and virtual-asset adjacency","Payment-flow analysis, jurisdiction/user base review, VA/payment service trigger checks"

@@ -1,0 +1,300 @@
+[
+ {
+  "id": "RC-01",
+  "source": "OFAC",
+  "type": "Rule",
+  "jurisdiction": "United States",
+  "date": "Standing",
+  "publishedDaysAgo": 8,
+  "impact": "high",
+  "slaDays": 30,
+  "title": "50% Rule — entities owned 50%+ by SDNs are themselves blocked",
+  "summary": "Aggregate ownership across blocked persons must be computed; an entity need not be listed to be blocked. Confirm beneficial-ownership resolution feeds screening.",
+  "action": "Verify 50%-rule aggregation logic and BO-to-screening linkage; run a seeded ownership test.",
+  "owner": "US BSA CO (Jason Mullen)",
+  "controls": [
+   "SANC-1",
+   "SANC-3",
+   "CDD-2"
+  ],
+  "typologies": [
+   "52",
+   "54"
+  ]
+ },
+ {
+  "id": "RC-02",
+  "source": "FATF",
+  "type": "Guidance",
+  "jurisdiction": "Global",
+  "date": "R.16 revised",
+  "publishedDaysAgo": 20,
+  "impact": "high",
+  "slaDays": 30,
+  "title": "Travel Rule (Rec. 16) — originator/beneficiary data on transmittals",
+  "summary": "Required originator and beneficiary information must travel with transmittals to the receiving institution; sunrise gaps across corridors remain a control risk.",
+  "action": "Confirm Travel Rule payload completeness on SwiftX/Thunes legs at the $3,000 threshold.",
+  "owner": "FinCrime Ops",
+  "controls": [
+   "REP-2",
+   "SANC-1"
+  ],
+  "typologies": [
+   "3",
+   "34"
+  ]
+ },
+ {
+  "id": "RC-03",
+  "source": "FinCEN",
+  "type": "Advisory",
+  "jurisdiction": "United States",
+  "date": "FIN-2023-Alert [VERIFY]",
+  "publishedDaysAgo": 12,
+  "impact": "high",
+  "slaDays": 30,
+  "title": "Pig-butchering / SE-Asia investment-scam money mules",
+  "summary": "Advisory on virtual-currency investment scams run from SE-Asia scam centres; victim funds move through US mule accounts and MSB rails.",
+  "action": "Tune mule typology rules (rapid in-out, unrelated payers); incorporate advisory into training within 30 days.",
+  "owner": "FinCrime Ops",
+  "controls": [
+   "TM-1",
+   "DOB-3",
+   "TRN-3"
+  ],
+  "typologies": [
+   "14",
+   "35"
+  ]
+ },
+ {
+  "id": "RC-04",
+  "source": "Treasury",
+  "type": "Risk assessment",
+  "jurisdiction": "United States",
+  "date": "2026 NMLRA (Mar 2026) [VERIFY]",
+  "publishedDaysAgo": 40,
+  "impact": "high",
+  "slaDays": 30,
+  "title": "2026 National ML Risk Assessment — MSBs, mules & funnel accounts Critical",
+  "summary": "Fraud, money mules, MSBs and funnel accounts rated top ML threats (per the register incorporated in this workbook). Reassess inherent risk and monitoring coverage.",
+  "action": "Refresh enterprise risk assessment against the 2026 NMLRA threat areas; map each to a control.",
+  "owner": "MLRO (Tayel Mohamed)",
+  "controls": [
+   "RA-1",
+   "RA-2",
+   "TM-1"
+  ],
+  "typologies": [
+   "4",
+   "32"
+  ]
+ },
+ {
+  "id": "RC-05",
+  "source": "Treasury",
+  "type": "Risk assessment",
+  "jurisdiction": "United States",
+  "date": "2026 NPFRA (Mar 2026) [VERIFY]",
+  "publishedDaysAgo": 38,
+  "impact": "high",
+  "slaDays": 30,
+  "title": "2026 Proliferation-Financing RA — DPRK/Iran via DASPs & shells",
+  "summary": "DPRK rated top PF threat (digital-asset heists); Iran shadow-banking shells. Sanctioned-nexus and dual-use trade exposure for the settlement leg.",
+  "action": "Confirm crypto/wallet OFAC screening on the USDC settlement leg; dual-use & front-company red flags in TM.",
+  "owner": "US BSA CO (Jason Mullen)",
+  "controls": [
+   "SANC-1",
+   "SANC-2",
+   "TM-1"
+  ],
+  "typologies": [
+   "54",
+   "47"
+  ]
+ },
+ {
+  "id": "RC-06",
+  "source": "OFAC",
+  "type": "Deadline",
+  "jurisdiction": "United States",
+  "date": "Annual — 30 Sep",
+  "publishedDaysAgo": 3,
+  "impact": "high",
+  "slaDays": 30,
+  "title": "Annual Report of Blocked Property (ARBP) — due 30 September",
+  "summary": "ARBP filed by 30 September for property held as of 30 June (31 CFR 501.603). Reconcile blocked property to the segregated account and ledger.",
+  "action": "Prepare and file ARBP; reconcile to SaaScada ledger; CO sign-off.",
+  "owner": "US BSA CO (Jason Mullen)",
+  "controls": [
+   "SANC-3"
+  ],
+  "typologies": []
+ },
+ {
+  "id": "RC-07",
+  "source": "FinCEN",
+  "type": "Guidance",
+  "jurisdiction": "United States",
+  "date": "Biweekly",
+  "publishedDaysAgo": 6,
+  "impact": "med",
+  "slaDays": 60,
+  "title": "Section 314(a) information requests — biweekly cadence",
+  "summary": "314(a) lists are issued on a recurring cadence; required records must be searched within the mandated period and kept confidential.",
+  "action": "Confirm 314(a) search workflow runs each cycle within SLA; positive-match escalation to CO.",
+  "owner": "US BSA CO (Jason Mullen)",
+  "controls": [
+   "SAR-4"
+  ],
+  "typologies": [
+   "13"
+  ]
+ },
+ {
+  "id": "RC-08",
+  "source": "Interagency",
+  "type": "Guidance",
+  "jurisdiction": "United States",
+  "date": "FIL-29-2023",
+  "publishedDaysAgo": 28,
+  "impact": "med",
+  "slaDays": 60,
+  "title": "2023 Interagency Guidance on Third-Party Relationships",
+  "summary": "Full vendor lifecycle (planning, DD, contracting, ongoing monitoring, termination) expected for all partners touching funds/data. Processor non-reliance.",
+  "action": "Confirm quarterly partner scorecards and non-discretionary termination triggers are operating.",
+  "owner": "Back-Office Ops + MLRO",
+  "controls": [
+   "TPO-1",
+   "TPO-2",
+   "TPO-3"
+  ],
+  "typologies": []
+ },
+ {
+  "id": "RC-09",
+  "source": "SBP",
+  "type": "Rule",
+  "jurisdiction": "Pakistan",
+  "date": "AML/CFT/CPF Regs [VERIFY]",
+  "publishedDaysAgo": 18,
+  "impact": "high",
+  "slaDays": 30,
+  "title": "SBP AML/CFT regulations & PKR 2,000,000 CTR threshold",
+  "summary": "State Bank of Pakistan rules govern the live corridor; agent-network controls, no hawala/hundi settlement, Travel-Rule data quality on payout.",
+  "action": "Re-confirm SwiftX agent OFAC/background checks (≤3y) and no-IVTS-settlement attestation.",
+  "owner": "FinCrime Ops",
+  "controls": [
+   "TPO-4",
+   "REP-1"
+  ],
+  "typologies": [
+   "28",
+   "34"
+  ]
+ },
+ {
+  "id": "RC-10",
+  "source": "FATF",
+  "type": "Guidance",
+  "jurisdiction": "Pakistan",
+  "date": "APG MER follow-up [VERIFY]",
+  "publishedDaysAgo": 45,
+  "impact": "med",
+  "slaDays": 60,
+  "title": "FATF/APG — Pakistan corridor risk (post grey-list)",
+  "summary": "Corridor risk is classified on internal assessment independent of FATF list status; TF and hawala prevalence keep Pakistan Very High internally.",
+  "action": "Revalidate the Pakistan corridor addendum and province-level weighting.",
+  "owner": "MLRO (Tayel Mohamed)",
+  "controls": [
+   "RA-3",
+   "TPO-4"
+  ],
+  "typologies": [
+   "28",
+   "29"
+  ]
+ },
+ {
+  "id": "RC-11",
+  "source": "Congress",
+  "type": "Rule",
+  "jurisdiction": "United States",
+  "date": "GENIUS Act 2025 [VERIFY]",
+  "publishedDaysAgo": 33,
+  "impact": "med",
+  "slaDays": 60,
+  "title": "GENIUS Act 2025 — stablecoin / USDC settlement leg",
+  "summary": "Permitted-issuer stablecoins, lawful-order freeze/seize capability, no yield to customers. Governs the internal USDC settlement/treasury leg via Rain.",
+  "action": "Confirm permitted-issuer status, freeze/seize capability, and perimeter position with counsel.",
+  "owner": "MLRO (Tayel Mohamed)",
+  "controls": [
+   "TPO-2",
+   "SANC-1"
+  ],
+  "typologies": [
+   "47"
+  ]
+ },
+ {
+  "id": "RC-12",
+  "source": "FinCEN",
+  "type": "Rule",
+  "jurisdiction": "United States",
+  "date": "Every 2 years",
+  "publishedDaysAgo": 5,
+  "impact": "low",
+  "slaDays": 90,
+  "title": "MSB registration renewal & 30-day advisory incorporation",
+  "summary": "FinCEN MSB registration renews on a 2-year cycle; advisories must be incorporated into rules and training within 30 days of material publication.",
+  "action": "Confirm registration currency; verify the 30-day advisory-incorporation control operates.",
+  "owner": "MLRO + Legal",
+  "controls": [
+   "REG-1",
+   "TRN-3"
+  ],
+  "typologies": []
+ },
+ {
+  "id": "RC-13",
+  "source": "Visa",
+  "type": "Rule",
+  "jurisdiction": "Global",
+  "date": "Core Rules [VERIFY]",
+  "publishedDaysAgo": 22,
+  "impact": "low",
+  "slaDays": 90,
+  "title": "Visa Core Rules — issuer fraud & dispute monitoring thresholds",
+  "summary": "Issuer fraud-rate and dispute-rate programme thresholds; breaches escalate to the partner governance forum (Rain).",
+  "action": "Confirm card-monitoring thresholds and Rain scorecard cover Visa programme limits.",
+  "owner": "FinCrime Ops + Engineering",
+  "controls": [
+   "TM-1",
+   "TPO-3"
+  ],
+  "typologies": [
+   "36"
+  ]
+ },
+ {
+  "id": "RC-14",
+  "source": "OFAC",
+  "type": "Designation",
+  "jurisdiction": "United States",
+  "date": "Rolling SDN updates",
+  "publishedDaysAgo": 1,
+  "impact": "high",
+  "slaDays": 30,
+  "title": "SDN list updates — Russia / DPRK / Iran designations (rolling)",
+  "summary": "OFAC adds SDN entries on a rolling basis; deltas must be live in screening within 24h (others 48h) with full-base batch re-screen.",
+  "action": "Confirm 24h SDN load SLA and automatic batch re-screen on the latest update.",
+  "owner": "US BSA CO (Jason Mullen)",
+  "controls": [
+   "SANC-1",
+   "SANC-2"
+  ],
+  "typologies": [
+   "54"
+  ]
+ }
+]

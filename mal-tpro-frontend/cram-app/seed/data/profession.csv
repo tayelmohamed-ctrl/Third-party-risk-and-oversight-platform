@@ -1,0 +1,737 @@
+profession,score
+Accountant,3
+Accounting Clerk,1
+Accounting Manager,3
+Actor,2
+Administration Manager,1
+Administrative Officer,1
+Advertising Designer,1
+Advertising Representative,1
+Aged Care Services Manager,1
+Agricultural Manager,1
+Agricultural Mechanic,1
+Agricultural Technician,1
+Agriculture Engineer,2
+Agriculture Labourer,1
+Air Conditioning Assistant,1
+Air Conditioning Mechanic,1
+Air Freight Clerk,1
+Air Traffic Controller,1
+Aircarft Deport Operator,1
+Aircraft Electrician,1
+Aircraft Engine Mechanic,1
+Aircraft Fuelling Operator,1
+Airframe Mechanic,1
+Airport Check-in Agent,3
+Airport Director,3
+All Vehicles Driver,1
+Aluminium Fabricator,1
+Anaesthetist,1
+Aquaculture Production Manager,1
+Aquaculture Rearing Technician,1
+Arabic Coffee Maker,1
+Arabic Food Cook,2
+Architecture Draftsperson,1
+Archivist,1
+Area Manager,1
+Artificial Flower Maker,1
+Artist / Painters,3
+Asphalt Roofer,1
+Asphalt Spreader Driver,1
+Assistant Midwife,1
+Assistant Professor,1
+Auditing Clerk,1
+Auditor,3
+Auto Body Repairer,1
+Auto Electrician,1
+Automotive Sales Representative,1
+Babysitter,1
+Baker,1
+Bakery Sales Assistant,1
+Bank Notes Counting Clerk,1
+Bank Officer,2
+Bank Teller,3
+Banker,2
+Banking Operations Manager,2
+Barber,1
+Bartender,1
+Beautician,2
+Beekeeper,1
+Beverage Maker,1
+Bicycle Assembler,1
+Bicycle Mechanic,1
+Biochemist,1
+Biologist,1
+Bird Breeder,1
+Blacksmith,1
+Blaster,1
+Boatmaster,2
+Boiler Operator,1
+Bookbinder,1
+Bookkeeper,3
+Botanist,1
+Brick Kiln Operator,1
+Bricklayer,1
+Bricklayer Assistant,1
+Broadcasting Director,3
+Broker,3
+Brokerage Clerk,1
+Building Caretaker,1
+Building Labourer,1
+Building Services Engineer,2
+Building Surveyor,1
+Bulldozer Driver,1
+Bus Supervisor,1
+Business Consultants,3
+Business Service Manager,1
+Business(Owner),3
+Butcher,1
+Cable and Rope Splicing Machine Operator,1
+Cane Furniture Maker,1
+Cantilever Crane Operator,1
+Cardiologist,1
+Cargo Supervisor,1
+Carpenter,1
+Carpentry Work Supervisor,1
+Carpet Layer,1
+Cartoonist,3
+Cashier,3
+Casting Machine Operator,1
+Catering Manager,1
+Ceiling Fixer,1
+CEO,3
+Chairman,3
+Chairman of the Board,3
+Chartered Accountant,3
+Chemical Analyst,1
+Chemical Engineer,2
+Chemical Engineering Technician,1
+Chemical Processing Plant Controller,1
+Chemical Products Machine Operator,1
+Chemical Technician,1
+Chief Cashier,3
+Chief Executive,3
+Chief Financial Officer,3
+Chief Fire Officer,1
+Chief Operating Officer,3
+Chief Technical In Charge,3
+Chief Technology Officer,3
+Child Care Services Manager,1
+Chimney Sweeper,1
+Chiropractor,1
+Choreographer,2
+Cinema Manager,1
+Cinematographer,1
+Circus Performer,3
+Civil Engineer,2
+Civil Engineer Labourer,1
+Civil Registrar,2
+Cleaners,1
+Cleaning Supervisor,1
+Clerks,1
+Clinic Manager,1
+Clown,3
+Club Director,3
+Coffee Shop Manager,1
+College Dean,3
+Commercial Sales Representative,1
+Commodity Broker,3
+Complementary Medicine Associate,1
+Composer,2
+Computer Engineer,2
+Computer Network Analyst,1
+Computer Network and Systems Technician,1
+Computer Programmer,1
+Computer Systems Manager,1
+Concrete Machine Operator,1
+Confectioner,1
+Conference Supervisor,1
+Construction Manager,1
+Construction Safety Officer,1
+Construction Supervisor,1
+Consultant,3
+Contracts Manager,1
+Controller /Dept Head,3
+Cook,1
+Coppersmith,1
+Corpse Washer,1
+Court Clerk,1
+Craftsmen,1
+Crane Operator,1
+Crane Operator Assistant,1
+Credit Analyst,1
+Credit Manager,2
+Credit Officer,2
+Critic,1
+Curtain Fitter,1
+Custom and Border Inspector,3
+Customer Service Clerk,1
+Customer Service Manager,1
+Customs Clearance Agent,3
+Cytologist,1
+Dairy Products Maker,1
+Dancer,1
+Data Entry Clerk,1
+Data Processing Supervisor,1
+Database Designer,1
+DCEO,3
+Debt Collector,3
+Deck Officer,2
+Deckhand,1
+Decorative Painter,3
+Decorator,2
+Defence Officer,3
+Demolition Labourer,1
+Dental Assistant,1
+Dental Surgeon,1
+Dental Technician,1
+Dentist,1
+Dermatologist,1
+Die Maker,1
+Dietician,1
+Digger,1
+Diplomat,3
+Director,3
+Disabled Care Specialist,3
+Diver,1
+Doctors,1
+Domestic Helper,1
+Domestic Housekeeper,1
+Doorman,1
+Dredger Driver,1
+Dressmaker,1
+Drill Operator,1
+Drilling Supervisor,1
+Driver,1
+Driving Examiner,2
+Driving Instructor,2
+Economist,1
+Editor in Chief,2
+Education Affairs Director,3
+Education Expert,1
+Education Methods Specialist,1
+Electrical Draftsperson,1
+Electrical Engineer,2
+Electrical Engineer Technician,1
+Electrical Equipment Assembler,1
+Electrical Mechanic,1
+Electrical Powerline Installer,1
+Electrician,1
+Electrician Assistant,1
+Electronic Draftsperson,1
+Electronic Engineer,1
+Electronic Equipment Assembler,1
+Electronics Engineering Technician,1
+Electronics Mechanic,1
+Elevator Operator,1
+Embroider,1
+Emergency Ambulance Driver,1
+Employment Agent,3
+Engineers / Architects,2
+Engraver,1
+Environment Engineer,2
+Environmental Protection Officer,1
+Event Planner,1
+Executive Secretary,2
+Executive Vice President,3
+Exhibition Designer,2
+Factory Hand,1
+Farm Labourer,1
+Farm Manager,1
+Farmer / Agriculturists,1
+Fashion Designer,2
+Fashion Model,2
+Fast Food Maker,1
+Fibre Winding Machine Operator,1
+Fibreglass Machine Operator,1
+Field Crop and Vegetable Grower,1
+Filing Clerk,1
+Finance Controller,3
+Financial Accounting Affairs Director,3
+Financial Advisor,3
+Financial Analyst,1
+Financial Auditor,3
+Financial Officer,3
+Finance Manager,3
+Fire Fighter,1
+Fire Fighter Instructor,1
+Fire Investigator,1
+Fish Cook,2
+Fish Filleter,1
+Fishermen,2
+Fishmonger,1
+Flight Attendant,1
+Flight Instructor,1
+Florist,1
+Follow Up Clerk,1
+Follow Up Manager,1
+Food and Beverage Manager,1
+Food Processing Machine Operator,1
+Food Service Counter Attendant,1
+Food Service Supervisor,1
+Footwear Machine Operator,1
+Foreign Currency Trader,3
+Foreign Food Cook,2
+Foreman,1
+Forestry Labourer,1
+Forestry Technician,1
+Forklift Driver,1
+Freight Forwarder,1
+Freight Handler,1
+Fruit and Vegetable Preserver,1
+Fumigator,1
+Furniture Upholsterer,1
+Garbage Truck Driver,1
+Garden Labourer,1
+Garment and Pattern Cutter,1
+Gas Fitter,1
+Gas Station Attendant,1
+General Medical Practitioner,1
+Geographer,1
+Geologist,1
+Geology Technician,1
+Glass and Ceramic Plant Operator,1
+Glass Finisher,1
+Glass Maker,1
+Glazier,1
+Goldsmiths,3
+Government Licensing Official,2
+Government Minister,3
+Government Tax Official,2
+Graphic and Multimedia Designer,2
+Grave Digger,1
+Grocer,2
+Gunsmith,1
+Gynaecologist,1
+Hairdresser,2
+Hairstylist,2
+Hand Presser,1
+Handicraft Knitter,1
+Harvesting Machine Driver,1
+Head Chef,2
+Head Waiter,1
+Health Affairs Director,3
+Health and Safety Engineer,2
+Health Care Assistant,1
+Health Services Manager,1
+Heavy Transportation Worker,2
+Heavy Truck Driver,1
+Henna Applicator,3
+Holly Quran Reader,3
+Horse Trainer,1
+Horticulturist,1
+Hospital Admissions Clerk,1
+Hospital Director,3
+Hospital Porter,1
+Hotel Concierge,1
+Hotel Manager,1
+Hotel Receptionist,1
+House Builder,1
+Housekeeping Supervisor,1
+Housewife,1
+HR Director,2
+Hunter,1
+Hunting Dogs Trainer,1
+Hunting Eagles Trainer,1
+ICT Operations Technician,1
+ICT Sales Representative,1
+ICT Security Specialist,1
+ICT Service Manager,1
+ICT Trainer,1
+ICT User Support Technician,1
+Industrial Electrician,1
+Industrial Engineer,2
+Industrial Maintenance Mechanic,1
+Industrial Maintenance Supervisor,1
+Industrial Relations Manager,2
+Information Clerk,1
+Instrumentalist,2
+Insulation Worker,1
+Insurance Agent,3
+Insurance Manager,1
+Interior Designer,2
+Internal Auditing Manager,1
+Interpreter,1
+Investment Manager,1
+Iron Smiths,1
+IT Manager,1
+Jeweller,3
+Jockey,3
+Joiner,1
+Journalist,1
+Judge,3
+Kindergarten Director,1
+Kitchen Helper,1
+Knitting Machine Operator,1
+Laborer,1
+Land Surveyor,1
+Launderer,1
+Laundry Machine Operator,1
+Lawyer / Advocate,3
+Leather Preparing Machine,1
+Lecturer,1
+Legal Advisor,3
+Legal Assistant,3
+Legal Consultants /Advisors,3
+Legal Director,3
+Legal Secretary,3
+Lens Maker,1
+Librarian,1
+Library Clerk,1
+Library Director,1
+Life Guard,1
+Life Science Technician,1
+Light Vehicle Driver,1
+Linguist,1
+Literary Writer,1
+Livestock Farm Labourer,1
+Livestock Farm Manager,1
+Locksmith,1
+Loom Machine Operator,1
+Luggage Machine Operator,1
+Machine Assembler,1
+Machine Tool Operator,1
+Mailing Clerk,1
+Make Up Artist,2
+Manager,1
+Managing Director,3
+Manicurist,2
+Manufacturing Manager,1
+Manufacturing Supervisor,1
+Marina Attendant,1
+Marine Engineer,2
+Marine Traffic Controller,2
+Marketing Manager,1
+Marketing Specialist,1
+Masons,1
+Masseur,1
+Material Engineer,2
+Mathematician,1
+Mechanic,1
+Mechanic Assistant,1
+Mechanical Draftsperson,1
+Mechanical Engineer,2
+Mechanical Engineering Technician,1
+Media Presenter,1
+Medical Assistant,1
+Medical Imaging Technician,1
+Medical Laboratory Assistant,1
+Medical Laboratory Technician,1
+Medical Records Clerk,1
+Medical Sales Representative,1
+Medical Secretary,2
+Merchants,3
+Messenger,3
+Metal Furnace Operator,1
+Metal Machine Processing Operator,1
+Metal Plating Operator,1
+Meter Reader,1
+Midwife,1
+Miner,1
+Mining Engineer,2
+Mining Labourer,1
+Mining Technician,1
+Mixed Crop Grower,1
+Model Maker,2
+Money Changers,3
+Mosque Imam,1
+Motorcyclist,3
+Moulder and Coremaker,1
+Movie Producer,3
+Multimedia Developer,1
+Museum Curator,1
+Museum Director,3
+Music Instructor,2
+Musical Instrument Maker,1
+Musician,2
+Neurologist,1
+Notary,3
+Nuclear Physicist,1
+Nuclear Power Engineer,2
+Nuclear Reactor Operator,1
+Nuclear Technician,1
+Nurse,1
+Nurse Assistant,1
+Nursemaid,1
+Nursery Supervisor,1
+Occupational Health and Safety Inspector,1
+Occupational Health and Safety Advisor,1
+Office Clerk,1
+Office Manager,1
+Oil and Gas Production Manager,1
+Operating Theatre Technician,1
+Operations Manager,1
+Optician,1
+Optometrist,1
+Others,3
+Packaging Machine Operator,1
+Packer,1
+Painter,3
+Painter Assistant,3
+Paper Products Machine Operator,1
+Paper Pulp Machine Operator,1
+Paramedical Practitioner,1
+Partner,3
+Pastry Maker,1
+Pathologist,1
+Personal Companion,1
+Personnel Manager,1
+Personnel Officer,1
+Pesticides Controller,1
+Petroleum and Natural Gas Refining Plant Operator,1
+Petroleum Engineer,2
+Pharmacist /Chemist,1
+Pharmacist Assistant,1
+Pharmacist Technician,1
+Pharmacologist,1
+Photographer,1
+Photographic Product Machine Operator,1
+Physicist,1
+Physics Technician,1
+Physiotherapist,1
+Pilots,1
+Pipe Fitter,1
+Pisciculture Specialist,1
+Plant Manager,1
+Plasterer,1
+Plastic Products Machine Operator,1
+Plastic Surgeon,1
+Plate Printing Maker,1
+Plumber,1
+Plumber Assistant,1
+Police Detective,2
+Police Officer,2
+Policy and Planning Manager,1
+Political Advisor,3
+Political Scientist,3
+Porter,1
+Postal Clek,1
+Postman,1
+Potter,1
+Poultry Farm Manager,1
+Poultry Producer,1
+Power Production Plant Operator,1
+Precision Instrument Maker,1
+President,3
+Priest,3
+Printer,1
+Printing Press Machine Operator,1
+Prison Guard,2
+Private Car Driver,1
+Private Coach,3
+Private Nurse,1
+Private Representative,1
+Private Tutor,1
+Procurement Specialist,1
+Product Quality Controller,1
+Production Clerk,1
+Production Engineer,2
+Production Manager,1
+Programmer,1
+Project Engineer,2
+Project Manager,1
+Projectionist,1
+Promoter,3
+Promotion Manager,1
+Property Appraiser,2
+Prosthesis Technician,1
+Psychoanalyst,1
+Psychologist,1
+Public Relations Worker,2
+Publication Designer,2
+Puppet Artist,3
+Purchasing Manager,1
+Purchasing Representative,1
+Purchasing Supervisor,1
+Quality Engineer,2
+Quality Service Manager,1
+Quantity Surveyor,1
+Quarry Supervisor,1
+Radiation Protection Technician,1
+Radiologist,1
+Railway Station Manager,1
+Real Estate Agent,3
+Real Estate Property Manager,3
+Refrigeration Mechanic,1
+Refuse Collector,1
+Research and Development Manager,1
+Research Studies Manager,1
+Restaurant Assistant,1
+Restaurant Manager,1
+Retail Category Manager,1
+Retail Operations Manager,1
+Retail Sales Assistant,1
+Retail Store Manager,1
+Rigger,1
+Road Maintenance Labourer,1
+Rubber Machine Operator,1
+Saddler,1
+Sailor,1
+Sales Demonstrator,1
+Sales Manager,1
+Salesman,1
+Scaffolder,1
+Scaffolder Supervisor,1
+Scholars,1
+School Attendance Clerk,1
+School Department Head,1
+School Deputy Principal,1
+School Health Nurse,1
+School Principal,1
+Scrap Merchant,3
+Sculptor,1
+Seamstress,1
+Secretary,2
+Security Guard,1
+Senior Government Official,2
+Service Station Cashier,3
+Service Station Manager,1
+Servicemen,1
+Sewing Machine Operator,1
+Sheet Metal Worker,1
+Ship Captain,2
+Ship Electrician,1
+Ship Engineer,2
+Shipping Agent,3
+Shipping Services Clerk,1
+Shoe Polisher,1
+Shoemaker,1
+Shop Supervisor,1
+Shovel Operation Driver,1
+Signal Operator,1
+Skilled Forester,1
+Slaughterer,1
+Social Services Specialist,1
+Social Welfare Manager,1
+Social Worker,1
+Sociologist,1
+Software Developer,1
+Soldiers,3
+Sound Technician,1
+Sous Chef,2
+Specialist Physician,1
+Speech Therapist,1
+Sports Coach,1
+Sports Referee,3
+Sports Trainer,3
+Sportsman,3
+Spray Painter,3
+Stable Groom,1
+Staff Clerk,1
+Stall and Market Assistant,1
+Stall and Market Salesperson,1
+Statistical Assistant,1
+Statistician,1
+Steam Roller Driver,1
+Steel Fixer,1
+Stevedore,1
+Steward/Stewardess,1
+Stock Broker,3
+Stock Clerk,1
+Stock Filler,1
+Stone Carver,1
+Stone Polisher,1
+Stone Processing Plant Operator,1
+Store Keeper,1
+Storekeeper,1
+Stream Press Machine Operator,1
+Street Sweeper,1
+Street Vendor,1
+Student Affairs Supervisor,1
+Supermarket Supervisor,1
+Supervisor,1
+Supply and Distribution Manager,1
+Supply Chain Analyst,1
+Supply Chain Manager,1
+Surgeon,1
+Survey and Market Research Interviewer,2
+Survey Engineer,2
+System Administrator,1
+Systems Analyst,1
+Tabacco Products Maker,1
+Tailor,1
+Tanner,1
+Tax Advisor,3
+Taxi Driver,1
+Teachers,1
+Technical Manager,1
+Technicians,1
+Telecommunication Assistant,1
+Telecommunication Engineer,2
+Telecommunication Line Installer,1
+Telecommunications Engineering Technicia,1
+Telecommunications Equipment Repairer,1
+Telephone Operator,1
+Telephone Switchboard Operator,1
+Television Director,3
+Textile Machine Operator,1
+Theatre Director,3
+Ticket Coductor,1
+Ticket Collector,1
+Tile Layer,1
+Tile Layer Assistant,1
+Tile Polisher,1
+Tool Sharpener,1
+Tour Guide,2
+Tourist Information Clerk,1
+Tourist Information Manager,1
+Tractor Driver,1
+Traffic Planner,2
+Train Driver,1
+Train Fitter,1
+Trainers,1
+Training Manager,1
+Translator,1
+Transport Clerk,2
+Transportation Manager,1
+Travel Agency Manager,3
+Travel Agent,3
+Travel Services Clerk,1
+Travel Tickets Clerk,1
+Treasurer,3
+Tree and Shrub Crop Grower,1
+Trench Digger Operator,1
+Turbine Mechanic,1
+Turbine Operation Supervisor,1
+Turbine Operator,1
+Turner,1
+Typist,1
+Tyre Repairer,1
+Underwater Diver,1
+University President,3
+University Professor,1
+University Vice-President,3
+Upholsterer Assistant,1
+Urban Planner,2
+Vehicle Assembler,1
+Vehicle Maintenance Supervisor,1
+Vehicle Mechanic,1
+Vehicle Rental Agent,3
+Vehicle Upholsterer,1
+Vehicles Mechanic Assistant,1
+Venereologist,1
+Veterinarian,1
+Veterinary Technician,1
+Vice President,3
+Visitors Guide,2
+Wages Clerk,1
+Waiter,1
+Warehouse Manager,1
+Watchmaker,1
+Water Treatment Plant Operator,1
+Weather Forecaster,1
+Weaver,1
+Web Developer,1
+Web Technician,1
+Weighting Clerk,1
+Welder,1
+Welder Assistant,1
+Welding Supervisor,1
+Wholesale Manager,1
+Wood Processing Plant Operator,1
+Wood Treater,1
+Wood Turner,1
+Writers,1
+Yarn Dyeing Machine Operator,1
+Youth Sport Director,3
+Zoologist,1

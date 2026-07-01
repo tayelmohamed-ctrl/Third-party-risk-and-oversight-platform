@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Corridor EWRA intake — single corridor block",
+  "description": "Fill one block per corridor and paste into Cursor chat or merge into corridor_ewra_themes.json",
+  "type": "object",
+  "required": ["complianceCountryModule", "corridorTheme"],
+  "properties": {
+    "complianceCountryModule": {
+      "type": "object",
+      "required": [
+        "countryCode", "countryName", "localRegulator", "fatfStatus",
+        "craFirmScore", "craBand", "overrideRationale", "eddMandatory"
+      ],
+      "properties": {
+        "countryCode": { "type": "string", "minLength": 2, "maxLength": 2 },
+        "countryName": { "type": "string" },
+        "iso3": { "type": "string" },
+        "localRegulator": { "type": "string" },
+        "fatfStatus": { "enum": ["member", "grey_list", "black_list", "observer"] },
+        "sanctionsLists": { "type": "array", "items": { "type": "string" } },
+        "craFirmScore": { "type": "number" },
+        "craBand": { "enum": ["Low", "Medium", "High", "Prohibited"] },
+        "ewraFirmScoreOverride": { "type": ["number", "null"] },
+        "ewraBandOverride": { "enum": ["Low", "Medium", "High", "Prohibited", null] },
+        "overrideRationale": { "type": "string" },
+        "eddMandatory": { "type": "boolean" },
+        "enhancedMonitoring": { "type": "boolean" },
+        "localReportingNotes": { "type": "string" },
+        "reviewCadence": { "enum": ["quarterly", "semi_annual", "annual"] },
+        "driveDoc": { "type": "string" }
+      }
+    },
+    "corridorTheme": {
+      "type": "object",
+      "required": [
+        "id", "label", "originCountryCode", "destinationCountryCode",
+        "inherentRisk", "controlRating", "workflowStage", "corridorRisks"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^COR-" },
+        "label": { "type": "string" },
+        "originCountryCode": { "type": "string" },
+        "destinationCountryCode": { "type": "string" },
+        "productScope": { "type": "array", "items": { "type": "string" } },
+        "licensePaths": { "type": "array", "items": { "type": "string" } },
+        "workflowStage": {
+          "enum": [
+            "identified", "country_module", "inherent_scored", "controls_mapped",
+            "tm_live", "mlro_approved", "board_notified", "live", "review_due"
+          ]
+        },
+        "status": { "enum": ["planned", "pilot", "live", "suspended"] },
+        "inherentRisk": { "enum": ["Low", "Medium", "High"] },
+        "controlRating": { "enum": ["Strong", "Partial", "Weak"] },
+        "residualRisk": { "type": "string" },
+        "corridorRisks": {
+          "type": "object",
+          "properties": {
+            "mlTypologies": { "type": "array", "items": { "type": "string" } },
+            "tfTypologies": { "type": "array", "items": { "type": "string" } },
+            "illicitFinanceTypologies": { "type": "array", "items": { "type": "string" } },
+            "islamicSpecific": { "type": "array", "items": { "type": "string" } },
+            "sanctionsNotes": { "type": ["string", "null"] }
+          }
+        },
+        "controls": { "type": "array", "items": { "type": "string" } },
+        "workflows": { "type": "array", "items": { "type": "string" } },
+        "oscilarRules": { "type": "array", "items": { "type": "string" } },
+        "targetGoLive": { "type": "string" },
+        "driveDoc": { "type": "string" }
+      }
+    }
+  }
+}

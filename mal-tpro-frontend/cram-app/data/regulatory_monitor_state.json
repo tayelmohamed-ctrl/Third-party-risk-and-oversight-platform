@@ -1,0 +1,4805 @@
+{
+  "version": 1,
+  "lastRunAt": "2026-07-01T14:00:01.001Z",
+  "lastRunId": "REG-MON-2026-07-01-1782914401001",
+  "nextScheduledAt": null,
+  "sourceHashes": {
+    "SRC-FATF-UAE-MER": {
+      "hash": "5e8531d56bb4cb0f",
+      "checkedAt": "2026-06-30T14:50:45.635Z"
+    },
+    "SRC-FINCEN-MSB": {
+      "hash": "48ebf86d30cad42f",
+      "checkedAt": "2026-07-01T14:00:01.001Z"
+    },
+    "SRC-OFAC-SDN": {
+      "hash": "d3be6d326df5fb0f",
+      "checkedAt": "2026-07-01T14:00:01.001Z"
+    },
+    "SRC-ZENUS-PARTNER": {
+      "hash": "27badc983df1780b",
+      "checkedAt": "2026-06-30T14:50:45.635Z"
+    },
+    "SRC-WOLFSBERG": {
+      "hash": "5f62e37330d33c0d",
+      "checkedAt": "2026-07-01T10:29:02.683Z"
+    },
+    "SRC-UAE-TFS": {
+      "hash": "edf65b998322249f",
+      "checkedAt": "2026-07-01T14:00:01.001Z"
+    },
+    "drive:zenus-addendum": {
+      "hash": "06d982ccf2eac8b8",
+      "checkedAt": "2026-07-01T10:29:19.348Z"
+    }
+  },
+  "runs": [
+    {
+      "id": "REG-MON-2026-07-01-1782914401001",
+      "at": "2026-07-01T14:00:01.001Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 10,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "contentHash": "48ebf86d30cad42f",
+          "previousHash": "6697da5f90242800",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "contentHash": "d3be6d326df5fb0f",
+          "previousHash": "3bc1c92c58c7ff97",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "error",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "previousHash": "5f62e37330d33c0d",
+          "error": "fetch failed",
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T14:00:01.001Z",
+          "channel": "http-backup",
+          "contentHash": "edf65b998322249f",
+          "previousHash": "fd0a62f5ad7d3419",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782904855967",
+      "at": "2026-07-01T11:20:55.967Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "contentHash": "6697da5f90242800",
+          "previousHash": "21f6fed716392a4c",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "contentHash": "3bc1c92c58c7ff97",
+          "previousHash": "496b371d9f942ddb",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T11:20:55.967Z",
+          "channel": "http-backup",
+          "contentHash": "fd0a62f5ad7d3419",
+          "previousHash": "bd05165f3f0faeea",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782902390697",
+      "at": "2026-07-01T10:39:50.697Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "contentHash": "21f6fed716392a4c",
+          "previousHash": "164bdd1d40f8b9aa",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "contentHash": "496b371d9f942ddb",
+          "previousHash": "511f68df911d4e59",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:39:50.697Z",
+          "channel": "http-backup",
+          "contentHash": "bd05165f3f0faeea",
+          "previousHash": "c0eb9b7d7b1936d3",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782901762390",
+      "at": "2026-07-01T10:29:22.390Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "contentHash": "164bdd1d40f8b9aa",
+          "previousHash": "8b5076481220ba48",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "contentHash": "511f68df911d4e59",
+          "previousHash": "b2fc75f4daa0bc76",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:29:22.390Z",
+          "channel": "http-backup",
+          "contentHash": "c0eb9b7d7b1936d3",
+          "previousHash": "4daa95c36825df0b",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782901742683",
+      "at": "2026-07-01T10:29:02.683Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 4,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "contentHash": "8b5076481220ba48",
+          "previousHash": "d046a2c260bd88cc",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "contentHash": "b2fc75f4daa0bc76",
+          "previousHash": "81a9a63f37f47543",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "85a095afc0aa5c05",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:29:02.683Z",
+          "channel": "http-backup",
+          "contentHash": "4daa95c36825df0b",
+          "previousHash": "428e0a8546af7ebb",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782901453416",
+      "at": "2026-07-01T10:24:13.416Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 4,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "contentHash": "d046a2c260bd88cc",
+          "previousHash": "9f5f945dcdb49a92",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "contentHash": "81a9a63f37f47543",
+          "previousHash": "359b52bbd77812c5",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "contentHash": "85a095afc0aa5c05",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T10:24:13.416Z",
+          "channel": "http-backup",
+          "contentHash": "428e0a8546af7ebb",
+          "previousHash": "9fe789b3c5f5843a",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782899551311",
+      "at": "2026-07-01T09:52:31.311Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "contentHash": "9f5f945dcdb49a92",
+          "previousHash": "28a5e605ce7e5ba2",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "contentHash": "359b52bbd77812c5",
+          "previousHash": "95d362f1cbac9229",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T09:52:31.311Z",
+          "channel": "http-backup",
+          "contentHash": "9fe789b3c5f5843a",
+          "previousHash": "48d629922fd13acb",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782891792346",
+      "at": "2026-07-01T07:43:12.345Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "contentHash": "28a5e605ce7e5ba2",
+          "previousHash": "9b20f073bbf9c310",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "contentHash": "95d362f1cbac9229",
+          "previousHash": "5068349bd6d3f68f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:43:12.345Z",
+          "channel": "http-backup",
+          "contentHash": "48d629922fd13acb",
+          "previousHash": "14e1ed090a1ddd5d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782890418103",
+      "at": "2026-07-01T07:20:18.101Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "contentHash": "9b20f073bbf9c310",
+          "previousHash": "6e57f98d1a80a8a3",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "contentHash": "5068349bd6d3f68f",
+          "previousHash": "1c67953f909f25c9",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:20:18.101Z",
+          "channel": "http-backup",
+          "contentHash": "14e1ed090a1ddd5d",
+          "previousHash": "aa5d3e46c7e79038",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782890399852",
+      "at": "2026-07-01T07:19:59.850Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "contentHash": "6e57f98d1a80a8a3",
+          "previousHash": "c4150f81efba6808",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "contentHash": "1c67953f909f25c9",
+          "previousHash": "39c8ed750657bb68",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:19:59.850Z",
+          "channel": "http-backup",
+          "contentHash": "aa5d3e46c7e79038",
+          "previousHash": "5a640d6daeaced52",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782890374447",
+      "at": "2026-07-01T07:19:34.446Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "contentHash": "c4150f81efba6808",
+          "previousHash": "4b5082d953eaeb57",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "contentHash": "39c8ed750657bb68",
+          "previousHash": "bbd72df2c984cfdc",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:19:34.446Z",
+          "channel": "http-backup",
+          "contentHash": "5a640d6daeaced52",
+          "previousHash": "056071756e855221",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782889876406",
+      "at": "2026-07-01T07:11:16.405Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "contentHash": "4b5082d953eaeb57",
+          "previousHash": "4bc73c505940aeba",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "contentHash": "bbd72df2c984cfdc",
+          "previousHash": "320d081be01a5158",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "error",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "previousHash": "5f62e37330d33c0d",
+          "error": "This operation was aborted",
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T07:11:16.405Z",
+          "channel": "http-backup",
+          "contentHash": "056071756e855221",
+          "previousHash": "70b2a373a23828a7",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782888913873",
+      "at": "2026-07-01T06:55:13.872Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "contentHash": "4bc73c505940aeba",
+          "previousHash": "be8a16709d154376",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "contentHash": "320d081be01a5158",
+          "previousHash": "3033b08c3b43bc7e",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:55:13.872Z",
+          "channel": "http-backup",
+          "contentHash": "70b2a373a23828a7",
+          "previousHash": "da25235b843869d7",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782888475617",
+      "at": "2026-07-01T06:47:55.617Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "contentHash": "be8a16709d154376",
+          "previousHash": "5eb1e1c4c96e7e41",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "contentHash": "3033b08c3b43bc7e",
+          "previousHash": "7e4ef8dfe3fbe6cd",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:47:55.617Z",
+          "channel": "http-backup",
+          "contentHash": "da25235b843869d7",
+          "previousHash": "4d4377ca9bdedf6e",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782888190973",
+      "at": "2026-07-01T06:43:10.970Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "contentHash": "5eb1e1c4c96e7e41",
+          "previousHash": "e753e4ae8411fb9d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "contentHash": "7e4ef8dfe3fbe6cd",
+          "previousHash": "05924652ea1a17ac",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "previousHash": "5f62e37330d33c0d",
+          "error": "This operation was aborted",
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:43:10.970Z",
+          "channel": "http-backup",
+          "contentHash": "4d4377ca9bdedf6e",
+          "previousHash": "a28ab1278d0a80a2",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782888083754",
+      "at": "2026-07-01T06:41:23.747Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "contentHash": "e753e4ae8411fb9d",
+          "previousHash": "7ce480671bc6401a",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "contentHash": "05924652ea1a17ac",
+          "previousHash": "ad9e78948c0b1647",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T06:41:23.747Z",
+          "channel": "http-backup",
+          "contentHash": "a28ab1278d0a80a2",
+          "previousHash": "331173c78d71158e",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-07-01-1782880507159",
+      "at": "2026-07-01T04:35:07.154Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 9,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "contentHash": "7ce480671bc6401a",
+          "previousHash": "830879146ec673fe",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "contentHash": "ad9e78948c0b1647",
+          "previousHash": "5577b321ee7f171f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-07-01T04:35:07.154Z",
+          "channel": "http-backup",
+          "contentHash": "331173c78d71158e",
+          "previousHash": "33e5f36ea55bef87",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-06-30-1782842907075",
+      "at": "2026-06-30T18:08:27.074Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "contentHash": "830879146ec673fe",
+          "previousHash": "1a5d3a6d9028d7fe",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "contentHash": "5577b321ee7f171f",
+          "previousHash": "6bf542fc41c151d4",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:08:27.074Z",
+          "channel": "http-backup",
+          "contentHash": "33e5f36ea55bef87",
+          "previousHash": "87158beff5d306e7",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-06-30-1782842850364",
+      "at": "2026-06-30T18:07:30.361Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "contentHash": "1a5d3a6d9028d7fe",
+          "previousHash": "fe08050ab351bfec",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "contentHash": "6bf542fc41c151d4",
+          "previousHash": "36dd44315d804899",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:07:30.361Z",
+          "channel": "http-backup",
+          "contentHash": "87158beff5d306e7",
+          "previousHash": "ef2b4f3a29246d57",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-06-30-1782842838898",
+      "at": "2026-06-30T18:07:18.896Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "contentHash": "fe08050ab351bfec",
+          "previousHash": "0399513790fec87c",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "contentHash": "36dd44315d804899",
+          "previousHash": "2dc21d55b71374b7",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-06-30T18:07:18.896Z",
+          "channel": "http-backup",
+          "contentHash": "ef2b4f3a29246d57",
+          "previousHash": "f4615aaa38e005b7",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-06-30-1782831584204",
+      "at": "2026-06-30T14:59:44.202Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 14,
+      "changed": 3,
+      "errors": 8,
+      "results": [
+        {
+          "sourceId": "RSS-CBUAE",
+          "name": "CBUAE — Circulars & notices (RSS)",
+          "url": "https://www.centralbank.ae/en/rss-feeds/rss.ashx?type=circulars",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "RSS-FINCEN",
+          "name": "FinCEN — News & updates (RSS)",
+          "url": "https://www.fincen.gov/news/rss.xml",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "rss-primary",
+          "error": "RSS HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "Partners/Zenus/BaaS-Compliance-Addendum",
+          "status": "ok",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "drive-version",
+          "contentHash": "06d982ccf2eac8b8",
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ],
+          "detail": "Version 2026-Q2-v1.3"
+        },
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "ok",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "contentHash": "5e8531d56bb4cb0f",
+          "previousHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "changed",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "contentHash": "0399513790fec87c",
+          "previousHash": "ef0f20e141efb1d6",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "changed",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "contentHash": "2dc21d55b71374b7",
+          "previousHash": "0c15a8c2d4e4278e",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "ok",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "contentHash": "5f62e37330d33c0d",
+          "previousHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "changed",
+          "checkedAt": "2026-06-30T14:59:44.202Z",
+          "channel": "http-backup",
+          "contentHash": "f4615aaa38e005b7",
+          "previousHash": "afa113581350f4f7",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REG-MON-2026-06-30-1782831045636",
+      "at": "2026-06-30T14:50:45.635Z",
+      "agent": "sayed",
+      "trigger": "scheduled",
+      "sourcesChecked": 12,
+      "changed": 0,
+      "errors": 6,
+      "results": [
+        {
+          "sourceId": "SRC-CBUAE-RULEBOOK-AML",
+          "name": "CBUAE AML/CFT Rulebook",
+          "url": "https://rulebook.centralbank.ae/en/rulebook/anti-money-laundering-and-combating-financing-terrorism-0",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-UAE-AML-LAW"
+          ]
+        },
+        {
+          "sourceId": "SRC-CBUAE-CIRCULARS",
+          "name": "CBUAE Circulars & Notices",
+          "url": "https://centralbank.ae/en/circulars-and-notices",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-CBUAE-AML",
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-2026-14",
+            "REG-CBUAE-TM"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-FIU-GOAML",
+          "name": "UAE FIU · goAML guidance",
+          "url": "https://www.uaefiu.gov.ae/en/goaml",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-CBUAE-STR-3354",
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-RECOMMENDATIONS",
+          "name": "FATF Recommendations & guidance",
+          "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Fatf-recommendations.html",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-FATF-R10",
+            "REG-FATF-R6",
+            "REG-FATF-R20"
+          ]
+        },
+        {
+          "sourceId": "SRC-FATF-UAE-MER",
+          "name": "FATF UAE mutual evaluation follow-up",
+          "url": "https://www.fatf-gafi.org/en/countries/detail/United-Arab-Emirates.html",
+          "status": "baseline",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "contentHash": "5e8531d56bb4cb0f",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-CBUAE-AML"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-MSB",
+          "name": "FinCEN MSB registration & BSA program",
+          "url": "https://www.fincen.gov/money-services-business-msb-registration",
+          "status": "baseline",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "contentHash": "ef0f20e141efb1d6",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-MSB",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-FINCEN-REGS",
+          "name": "FinCEN statutes & regulations (31 CFR)",
+          "url": "https://www.fincen.gov/resources/statutes-and-regulations",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "httpStatus": 404,
+          "error": "HTTP 404",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-SAR",
+            "REG-US-CTR",
+            "REG-US-CDD"
+          ]
+        },
+        {
+          "sourceId": "SRC-OFAC-SDN",
+          "name": "OFAC sanctions programs & SDN",
+          "url": "https://ofac.treasury.gov/sanctions-programs-and-country-information",
+          "status": "baseline",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "contentHash": "0c15a8c2d4e4278e",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-US-OFAC",
+            "REG-FATF-R6"
+          ]
+        },
+        {
+          "sourceId": "SRC-FFIEC-BSA",
+          "name": "FFIEC BSA/AML examination manual",
+          "url": "https://bsaaml.ffiec.gov/manual",
+          "status": "error",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "httpStatus": 403,
+          "error": "HTTP 403",
+          "regulationIds": [
+            "REG-US-BSA",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-ZENUS-PARTNER",
+          "name": "Zenus Bank BaaS compliance addendum",
+          "url": "https://drive.google.com/drive/folders/0ABopRvbIQ6pFUk9PVA",
+          "status": "baseline",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "contentHash": "27badc983df1780b",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-ZENUS-BAAS",
+            "REG-US-BSA-PROGRAM"
+          ]
+        },
+        {
+          "sourceId": "SRC-WOLFSBERG",
+          "name": "Wolfsberg Group correspondence banking principles",
+          "url": "https://www.wolfsberg-principles.com/",
+          "status": "baseline",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "contentHash": "5f62e37330d33c0d",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-WOLFSBERG"
+          ]
+        },
+        {
+          "sourceId": "SRC-UAE-TFS",
+          "name": "UAE Executive Office · Targeted financial sanctions",
+          "url": "https://www.uaeiec.gov.ae/en-us",
+          "status": "baseline",
+          "checkedAt": "2026-06-30T14:50:45.635Z",
+          "contentHash": "afa113581350f4f7",
+          "httpStatus": 200,
+          "regulationIds": [
+            "REG-UAE-TFS",
+            "REG-FATF-R6"
+          ]
+        }
+      ]
+    }
+  ]
+}

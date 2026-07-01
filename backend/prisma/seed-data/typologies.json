@@ -1,0 +1,1065 @@
+[
+ {
+  "id": "1",
+  "jur": "Bangladesh",
+  "name": "Hawala / hundi informal remittance",
+  "category": "ML/TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Value moved outside the formal banking channel via informal brokers; major risk given large diaspora.",
+  "redFlags": "Inbound/outbound flows with no corresponding bank settlement; customer references 'agent' for delivery; mismatched sender/receiver relationship; round-amount FX.",
+  "crossBorder": true,
+  "defence": [
+   "OM-3",
+   "TM-1",
+   "TPO-4"
+  ]
+ },
+ {
+  "id": "2",
+  "jur": "Bangladesh",
+  "name": "Trade-based ML (over/under-invoicing)",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Mis-priced or phantom RMG/import-export trade used to move value.",
+  "redFlags": "Invoice value inconsistent with goods/market price; payments to third-party not on invoice; goods routed via high-risk transit.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "3",
+  "jur": "Bangladesh",
+  "name": "Inbound remittance layering",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Legitimate migrant-worker remittance corridors abused to inject illicit funds.",
+  "redFlags": "Remittance volume inconsistent with stated occupation; many senders to one beneficiary; rapid cash-out.",
+  "crossBorder": true,
+  "defence": [
+   "CDD-2",
+   "EDD-1",
+   "OM-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "4",
+  "jur": "Bangladesh",
+  "name": "Mobile financial services structuring",
+  "category": "ML",
+  "type": "Emerging/Fintech",
+  "description": "bKash/Nagad-type wallets & agent networks used for smurfing.",
+  "redFlags": "Many small loads just under reporting/KYC tiers; rapid wallet-to-wallet hops; agent self-dealing.",
+  "crossBorder": true,
+  "defence": [
+   "REP-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "5",
+  "jur": "Bangladesh",
+  "name": "NPO / charity abuse for TF",
+  "category": "TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Charitable conduits used to raise/move funds for terrorism.",
+  "redFlags": "Donations routed to conflict regions; opaque beneficiaries; cash-intensive collections.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "6",
+  "jur": "Bangladesh",
+  "name": "PEP / corruption proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Embezzlement and bribery proceeds laundered domestically and offshore.",
+  "redFlags": "Government-linked customer; wealth inconsistent with role; use of family nominees.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "PEP-2"
+  ]
+ },
+ {
+  "id": "7",
+  "jur": "Egypt",
+  "name": "Parallel-market FX / currency smuggling",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Black-market currency dealing and cross-border cash given FX controls.",
+  "redFlags": "Demand for large cash FX; rates off official; structuring around FX limits.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "8",
+  "jur": "Egypt",
+  "name": "Hawala informal transfer",
+  "category": "ML/TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Informal value transfer bypassing banks.",
+  "redFlags": "No bank settlement leg; 'agent' delivery references.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TPO-4"
+  ]
+ },
+ {
+  "id": "9",
+  "jur": "Egypt",
+  "name": "Trade-based ML",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Mis-invoiced imports/exports.",
+  "redFlags": "Price/quantity mismatch; third-party payers; transit via high-risk ports.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "10",
+  "jur": "Egypt",
+  "name": "Remittance-corridor abuse",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Large worker-remittance inflows used to layer funds.",
+  "redFlags": "Sender/beneficiary mismatch; many-to-one patterns.",
+  "crossBorder": true,
+  "defence": [
+   "OM-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "11",
+  "jur": "Egypt",
+  "name": "Antiquities / cultural-property proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Smuggled antiquities monetised through the system.",
+  "redFlags": "Dealings in cultural goods; cash settlement; vague provenance.",
+  "crossBorder": false,
+  "defence": [
+   "EDD-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "12",
+  "jur": "Egypt",
+  "name": "Regional terrorist financing",
+  "category": "TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Funds raised/moved for regional terrorist activity.",
+  "redFlags": "Transfers to conflict-adjacent areas; cash collection networks.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "13",
+  "jur": "Egypt",
+  "name": "Corruption / PEP proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Public-sector embezzlement laundered via nominees.",
+  "redFlags": "State-linked customers; unexplained wealth.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "PEP-2"
+  ]
+ },
+ {
+  "id": "14",
+  "jur": "Malaysia",
+  "name": "Cyber-enabled fraud & investment scams",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Scam proceeds funnelled through mule accounts/wallets.",
+  "redFlags": "Rapid in-out; many unrelated payers; accounts opened then immediately funded & drained; device/IP anomalies.",
+  "crossBorder": true,
+  "defence": [
+   "DOB-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "15",
+  "jur": "Malaysia",
+  "name": "Illegal online gambling proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Unlicensed gambling settled through MSBs and e-wallets.",
+  "redFlags": "Frequent small credits from gaming-linked sources; payouts to many beneficiaries.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TM-4"
+  ]
+ },
+ {
+  "id": "16",
+  "jur": "Malaysia",
+  "name": "Grand corruption (1MDB-type) layering",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Misappropriated public funds layered via shells & offshore.",
+  "redFlags": "Complex layering; offshore SPVs; high-value assets.",
+  "crossBorder": true,
+  "defence": [
+   "CDD-2",
+   "EDD-1",
+   "EDD-2",
+   "PEP-2"
+  ]
+ },
+ {
+  "id": "17",
+  "jur": "Malaysia",
+  "name": "Trade-based ML / free-zone abuse",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Mis-invoicing and free-zone transit.",
+  "redFlags": "Price mismatch; circular trade; FTZ re-routing.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "18",
+  "jur": "Malaysia",
+  "name": "Drug-trafficking proceeds (regional transit)",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Narcotics proceeds via cash & MSBs.",
+  "redFlags": "Cash-heavy; border-region nexus.",
+  "crossBorder": false,
+  "defence": [
+   "SAR-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "19",
+  "jur": "Malaysia",
+  "name": "Real estate & luxury-goods laundering",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Proceeds parked in property/luxury assets.",
+  "redFlags": "Third-party funding; rapid resale; under/over-valuation.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "20",
+  "jur": "Malaysia",
+  "name": "Cross-border worker remittance abuse",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Migrant corridors used for layering.",
+  "redFlags": "Sender/beneficiary mismatch; many-to-one.",
+  "crossBorder": true,
+  "defence": [
+   "OM-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "21",
+  "jur": "Morocco",
+  "name": "Cash economy & structuring",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Large informal cash economy enables smurfing.",
+  "redFlags": "Repeated sub-threshold cash; layered deposits.",
+  "crossBorder": true,
+  "defence": [
+   "REP-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "22",
+  "jur": "Morocco",
+  "name": "Hawala-type informal transfer",
+  "category": "ML/TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Informal value transfer networks.",
+  "redFlags": "No bank settlement; 'agent' delivery.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TPO-4"
+  ]
+ },
+ {
+  "id": "23",
+  "jur": "Morocco",
+  "name": "Drug-trafficking (cannabis) proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Cannabis cultivation/export proceeds laundered.",
+  "redFlags": "Cash-heavy; northern-region nexus; rapid asset purchase.",
+  "crossBorder": false,
+  "defence": [
+   "SAR-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "24",
+  "jur": "Morocco",
+  "name": "Smuggling / enclave-border trade",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Contraband proceeds via border trade.",
+  "redFlags": "Goods/cash inconsistent with declared trade.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "25",
+  "jur": "Morocco",
+  "name": "Real estate & tourism laundering",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Proceeds invested in property/tourism developments.",
+  "redFlags": "Third-party funding; valuation anomalies.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "26",
+  "jur": "Morocco",
+  "name": "Regional / Sahel terrorist financing",
+  "category": "TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Funds for regional terrorist activity.",
+  "redFlags": "Transfers toward Sahel; cash collection.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "27",
+  "jur": "Morocco",
+  "name": "Remittance-corridor abuse",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Diaspora remittances used to layer funds.",
+  "redFlags": "Sender/beneficiary mismatch.",
+  "crossBorder": true,
+  "defence": [
+   "OM-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "28",
+  "jur": "Pakistan",
+  "name": "Hawala / hundi",
+  "category": "ML/TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Dominant informal value-transfer system.",
+  "redFlags": "No bank leg; 'agent' settlement; FX-rate arbitrage.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TPO-4"
+  ]
+ },
+ {
+  "id": "29",
+  "jur": "Pakistan",
+  "name": "Terrorist financing",
+  "category": "TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Heightened TF risk and supervisory focus.",
+  "redFlags": "Transfers to listed/conflict areas; charity conduits; cash collection.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "30",
+  "jur": "Pakistan",
+  "name": "Proliferation financing",
+  "category": "PF",
+  "type": "Jurisdiction-recognised",
+  "description": "Sanctions/PF-evasion exposure.",
+  "redFlags": "Dual-use goods trade; front companies; sanctioned-nexus counterparties.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "SANC-2"
+  ]
+ },
+ {
+  "id": "31",
+  "jur": "Pakistan",
+  "name": "Trade-based ML / mis-invoicing",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Mis-priced trade to move value.",
+  "redFlags": "Price/quantity mismatch; third-party payers.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "32",
+  "jur": "Pakistan",
+  "name": "Cash economy & structuring",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Large undocumented cash economy.",
+  "redFlags": "Sub-threshold cash patterns.",
+  "crossBorder": true,
+  "defence": [
+   "REP-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "33",
+  "jur": "Pakistan",
+  "name": "NPO / charity misuse",
+  "category": "TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Charity conduits for TF.",
+  "redFlags": "Opaque beneficiaries; conflict-region disbursement.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "34",
+  "jur": "Pakistan",
+  "name": "Remittance-corridor abuse",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Large worker-remittance inflows layered.",
+  "redFlags": "Sender/beneficiary mismatch; many-to-one.",
+  "crossBorder": true,
+  "defence": [
+   "OM-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "35",
+  "jur": "Philippines",
+  "name": "Cyber fraud, romance & investment scams",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Scam proceeds laundered via mules, wallets & remittance.",
+  "redFlags": "Rapid in-out; many unrelated payers; new account quickly drained.",
+  "crossBorder": true,
+  "defence": [
+   "DOB-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "36",
+  "jur": "Philippines",
+  "name": "Offshore/online gaming (POGO-type) proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Online-gaming operations used to launder & move value.",
+  "redFlags": "Gaming-linked counterparties; bulk payouts; foreign-worker payroll anomalies.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TM-4"
+  ]
+ },
+ {
+  "id": "37",
+  "jur": "Philippines",
+  "name": "Casino-related laundering",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Junket/casino channels layer funds.",
+  "redFlags": "Chip purchases with minimal play; third-party cash-out.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TM-4"
+  ]
+ },
+ {
+  "id": "38",
+  "jur": "Philippines",
+  "name": "Drug-trafficking proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Narcotics proceeds via cash & MSBs.",
+  "redFlags": "Cash-heavy; structuring.",
+  "crossBorder": false,
+  "defence": [
+   "SAR-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "39",
+  "jur": "Philippines",
+  "name": "OFW remittance abuse",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Overseas-worker remittance corridors layered.",
+  "redFlags": "Sender/beneficiary mismatch; many-to-one; rapid cash-out.",
+  "crossBorder": true,
+  "defence": [
+   "OM-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "40",
+  "jur": "Philippines",
+  "name": "Corruption / plunder proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Public-fund misuse laundered via nominees.",
+  "redFlags": "State-linked customers; unexplained wealth.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "PEP-2"
+  ]
+ },
+ {
+  "id": "41",
+  "jur": "Philippines",
+  "name": "Human-trafficking proceeds",
+  "category": "ML/Predicate",
+  "type": "Jurisdiction-recognised",
+  "description": "Trafficking & exploitation proceeds.",
+  "redFlags": "Payments tied to recruitment fees; victim-linked accounts.",
+  "crossBorder": false,
+  "defence": [
+   "SAR-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "42",
+  "jur": "Singapore",
+  "name": "Layering of foreign criminal proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Hub status exploited to layer offshore proceeds.",
+  "redFlags": "Foreign-sourced funds with weak economic rationale; rapid pass-through.",
+  "crossBorder": true,
+  "defence": [
+   "CDD-2",
+   "EDD-1"
+  ]
+ },
+ {
+  "id": "43",
+  "jur": "Singapore",
+  "name": "Complex structures / shell & nominee arrangements",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Opaque corporate layers obscure beneficial ownership.",
+  "redFlags": "Multiple SPVs; nominee directors; circular ownership.",
+  "crossBorder": true,
+  "defence": [
+   "CDD-2",
+   "EDD-1"
+  ]
+ },
+ {
+  "id": "44",
+  "jur": "Singapore",
+  "name": "Foreign PEP & high-net-worth flows",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Foreign PEP wealth routed through private banking/family offices.",
+  "redFlags": "PEP nexus; large unexplained inflows; reluctance to evidence source of wealth.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "PEP-2"
+  ]
+ },
+ {
+  "id": "45",
+  "jur": "Singapore",
+  "name": "Real estate & luxury-asset laundering",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "High-value property/assets (cf. 2023 case).",
+  "redFlags": "Third-party/foreign funding; cash component; rapid purchase.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "46",
+  "jur": "Singapore",
+  "name": "Trade-based ML / trade finance",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Mis-invoicing through trade-finance hub.",
+  "redFlags": "Document/price mismatch; circular trade; round-tripping.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "47",
+  "jur": "Singapore",
+  "name": "Digital-payment-token / crypto flows",
+  "category": "ML",
+  "type": "Emerging/Fintech",
+  "description": "DPT/crypto used to move/layer value.",
+  "redFlags": "On/off-ramp bursts; unhosted-wallet exposure; chain-hopping.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "48",
+  "jur": "Singapore",
+  "name": "Correspondent banking & sanctions evasion",
+  "category": "ML/PF",
+  "type": "Jurisdiction-recognised",
+  "description": "Cross-border nested relationships & evasion.",
+  "redFlags": "Nested/ shell correspondents; sanctioned-nexus routing.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "SANC-2"
+  ]
+ },
+ {
+  "id": "49",
+  "jur": "United Arab Emirates",
+  "name": "Trade-based ML (re-export hub)",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Mis-invoicing & re-export trade move value.",
+  "redFlags": "Price/quantity mismatch; third-party payers; circular/transit trade.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "50",
+  "jur": "United Arab Emirates",
+  "name": "Gold & precious-metals value transfer",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Gold/DPMS used to store & move value.",
+  "redFlags": "Bullion settlement; cash-for-gold; weight/value mismatch.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "51",
+  "jur": "United Arab Emirates",
+  "name": "Real estate laundering",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Property used to park proceeds.",
+  "redFlags": "Cash/third-party funding; rapid flip; under/over-valuation.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "52",
+  "jur": "United Arab Emirates",
+  "name": "Free-zone & shell-company misuse",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Free-zone entities obscure ownership/flows.",
+  "redFlags": "Opaque BO; no real substance; circular invoicing.",
+  "crossBorder": true,
+  "defence": [
+   "CDD-2",
+   "EDD-1",
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "53",
+  "jur": "United Arab Emirates",
+  "name": "Hawala & cash couriering",
+  "category": "ML/TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Informal transfer & bulk-cash movement.",
+  "redFlags": "No bank leg; bulk cash; 'agent' settlement.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TPO-4"
+  ]
+ },
+ {
+  "id": "54",
+  "jur": "United Arab Emirates",
+  "name": "Sanctions & proliferation-financing evasion",
+  "category": "PF",
+  "type": "Jurisdiction-recognised",
+  "description": "Front companies & dual-use trade evade sanctions.",
+  "redFlags": "Sanctioned-nexus counterparties; dual-use goods; rerouting.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "SANC-2"
+  ]
+ },
+ {
+  "id": "55",
+  "jur": "United Arab Emirates",
+  "name": "Foreign PEP / illicit foreign proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Foreign PEP wealth routed in.",
+  "redFlags": "PEP nexus; unexplained foreign inflows.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "PEP-2"
+  ]
+ },
+ {
+  "id": "56",
+  "jur": "Turkey",
+  "name": "Sanctions evasion — Russia / Iran nexus",
+  "category": "PF",
+  "type": "Jurisdiction-recognised",
+  "description": "Turkey's geographic and trade position exploited for Russia and Iran sanctions evasion; dual-use goods and parallel-import schemes routed via Turkish intermediaries.",
+  "redFlags": "Dual-use goods routing; third-country re-export; front/shell companies; sanctioned-counterparty nexus; post-2022 volume spikes.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "SANC-2"
+  ]
+ },
+ {
+  "id": "57",
+  "jur": "Turkey",
+  "name": "Trade-based ML (Istanbul transit hub)",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Istanbul's position as a major trade-transit hub used for mis-invoiced trade — gold, textiles and electronics predominate.",
+  "redFlags": "Price/quantity mismatch; circular trade; third-party payers; gold-settlement anomalies; high-risk counterparties.",
+  "crossBorder": true,
+  "defence": [
+   "REP-2",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "58",
+  "jur": "Turkey",
+  "name": "Hawala / informal exchange-office network",
+  "category": "ML/TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Exchange houses and informal hawala networks used for value transfer, especially in diaspora and cross-border trade corridors.",
+  "redFlags": "No bank settlement leg; 'agent' delivery references; FX-rate arbitrage; customer references exchange-office settlement.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TPO-4"
+  ]
+ },
+ {
+  "id": "59",
+  "jur": "Turkey",
+  "name": "Remittance-corridor abuse",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Diaspora remittance corridors (to/from Europe, Gulf, Central Asia) abused to layer funds.",
+  "redFlags": "Sender/beneficiary mismatch; many-to-one patterns; volume inconsistent with stated occupation; rapid cash-out.",
+  "crossBorder": true,
+  "defence": [
+   "OM-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "60",
+  "jur": "Turkey",
+  "name": "Crypto / virtual-asset layering",
+  "category": "ML",
+  "type": "Emerging/Fintech",
+  "description": "High crypto adoption used for layering; on/off-ramp through Turkish exchanges and P2P markets.",
+  "redFlags": "Bursty on/off-ramp; chain-hopping; unhosted-wallet exposure; mismatch with customer profile.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "61",
+  "jur": "Turkey",
+  "name": "Corruption / PEP proceeds",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Public-sector embezzlement and bribery proceeds laundered through nominee structures and real estate.",
+  "redFlags": "State/government-linked customer; wealth inconsistent with public role; nominee structures; real-estate purchase anomalies.",
+  "crossBorder": true,
+  "defence": [
+   "EDD-2",
+   "PEP-2"
+  ]
+ },
+ {
+  "id": "62",
+  "jur": "Turkey",
+  "name": "NPO / charity misuse for TF",
+  "category": "TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Non-profit organisations used as conduits for terrorist financing, particularly toward regional conflict zones.",
+  "redFlags": "Donations routed to conflict regions; opaque beneficiaries; cash-intensive collections; nexus to designated organisations.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "63",
+  "jur": "Indonesia",
+  "name": "Hawala / underground banking (fei-ch'ien)",
+  "category": "ML/TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Underground banking and informal value-transfer networks serve the large unbanked population and diaspora corridors.",
+  "redFlags": "No bank settlement leg; 'agent' delivery; FX-rate arbitrage; customer references agent settlement.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "TPO-4"
+  ]
+ },
+ {
+  "id": "64",
+  "jur": "Indonesia",
+  "name": "Predicate crime proceeds (narcotics / illegal logging)",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Proceeds from narcotics trafficking and illegal logging/mining laundered through cash-intensive businesses.",
+  "redFlags": "Cash-heavy deposits; business income inconsistent with declared activity; border/remote-region nexus; rapid asset acquisition.",
+  "crossBorder": false,
+  "defence": [
+   "SAR-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "65",
+  "jur": "Indonesia",
+  "name": "E-wallet / digital-payment fraud proceeds",
+  "category": "ML",
+  "type": "Emerging/Fintech",
+  "description": "Scam and fraud proceeds funnelled through the highly-penetrated e-wallet ecosystem (GoPay, OVO, Dana).",
+  "redFlags": "Rapid in-out; many unrelated payers; newly opened account quickly drained; device/IP anomalies; velocity inconsistent with profile.",
+  "crossBorder": true,
+  "defence": [
+   "DOB-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "66",
+  "jur": "Indonesia",
+  "name": "TF / regional extremist financing (JI / IS-linked)",
+  "category": "TF",
+  "type": "Jurisdiction-recognised",
+  "description": "Elevated TF risk from domestic extremist networks with regional affiliations (JI, IS-aligned groups).",
+  "redFlags": "Transfers to conflict-adjacent regions; charity conduits; small structured collections; nexus to designated groups.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "67",
+  "jur": "Indonesia",
+  "name": "Crypto / virtual-asset layering",
+  "category": "ML",
+  "type": "Emerging/Fintech",
+  "description": "Growing crypto market used for layering; on/off-ramp through Indonesian exchanges and P2P platforms.",
+  "redFlags": "Bursty on/off-ramp; chain-hopping; unhosted-wallet exposure; profile mismatch.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "68",
+  "jur": "Indonesia",
+  "name": "OFW remittance-corridor abuse",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Overseas-worker remittance corridors (to/from Malaysia, Middle East, East Asia) abused to layer funds.",
+  "redFlags": "Sender/beneficiary mismatch; many-to-one patterns; inconsistent with stated occupation; rapid cash-out.",
+  "crossBorder": true,
+  "defence": [
+   "OM-3",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "69",
+  "jur": "United States",
+  "name": "Funnel accounts & structuring",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Multiple individuals deposit cash into accounts controlled by one person to aggregate and transfer funds while evading CTR thresholds.",
+  "redFlags": "Many unrelated depositors to one account; sub-$10,000 cash structuring; rapid aggregation then wire; round-number deposits.",
+  "crossBorder": true,
+  "defence": [
+   "REP-1",
+   "TM-1"
+  ]
+ },
+ {
+  "id": "70",
+  "jur": "United States",
+  "name": "Romance / pig-butchering scam proceeds",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "Investment and romance scam proceeds laundered through MSBs, P2P payments, crypto and funnel accounts.",
+  "redFlags": "Inbound from many unrelated payers; account opened then quickly drained; victim-pattern flows; crypto bridging; inconsistent with customer profile.",
+  "crossBorder": true,
+  "defence": [
+   "DOB-3",
+   "TM-1",
+   "SAR-1"
+  ]
+ },
+ {
+  "id": "71",
+  "jur": "United States",
+  "name": "Business email compromise (BEC) wire fraud",
+  "category": "ML",
+  "type": "MSB-specific",
+  "description": "BEC proceeds wired through domestic accounts and converted via MSBs, crypto or international transfers.",
+  "redFlags": "Sudden large wire from new counterparty; account recently opened; inconsistent with business pattern; multiple hop accounts.",
+  "crossBorder": true,
+  "defence": [
+   "TM-1",
+   "SAR-1"
+  ]
+ },
+ {
+  "id": "72",
+  "jur": "United States",
+  "name": "Digital asset / crypto layering & VASP exposure",
+  "category": "ML",
+  "type": "Emerging/Fintech",
+  "description": "Illicit funds layered via VASPs, mixers, chain-hopping and on/off-ramp services; DPRK, ransomware and scam-linked wallet exposure.",
+  "redFlags": "Frequent fiat↔crypto conversion; mixer/sanctioned-wallet exposure; chain-hopping; structuring around VASP limits; unhosted-wallet activity.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "TM-1",
+   "SAR-1"
+  ]
+ },
+ {
+  "id": "73",
+  "jur": "United States",
+  "name": "Money mule networks",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Recruited or complicit individuals receive and forward criminal proceeds, obscuring the trail across accounts.",
+  "redFlags": "Account funded by many unrelated parties then forwarded; profile inconsistent with volume; reluctance to explain; rapid in-out; job-offer linked.",
+  "crossBorder": true,
+  "defence": [
+   "DOB-3",
+   "TM-1",
+   "SAR-1"
+  ]
+ },
+ {
+  "id": "74",
+  "jur": "United States",
+  "name": "Professional money laundering / CMLN",
+  "category": "ML",
+  "type": "Jurisdiction-recognised",
+  "description": "Criminal Money Laundering Networks (CMLNs) provide fee-based laundering services to multiple criminal organisations via complex account webs.",
+  "redFlags": "Rapid pass-through across entities; no business rationale; multiple industries; professional enablers; circular fund movement.",
+  "crossBorder": true,
+  "defence": [
+   "CDD-2",
+   "EDD-1",
+   "TM-1",
+   "SAR-1"
+  ]
+ },
+ {
+  "id": "75",
+  "jur": "United States",
+  "name": "Sanctions & proliferation-financing evasion (DPRK / Iran / Russia)",
+  "category": "PF",
+  "type": "Jurisdiction-recognised",
+  "description": "DPRK cyber-theft proceeds, Iranian shadow banking, and Russia export-control evasion routed through US financial system via front companies and nested correspondents.",
+  "redFlags": "Sanctioned-nexus counterparties; dual-use goods routing; complex nested account chains; stated purpose inconsistent with counterparty profile.",
+  "crossBorder": true,
+  "defence": [
+   "SANC-1",
+   "SANC-2",
+   "SAR-1"
+  ]
+ }
+]

@@ -1,0 +1,7 @@
+factor,np_new,np_existing,lp_mer_new,lp_mer_existing
+Customer / Entity Profile Risk,25%,20%,25%,20%
+Geography / Sanctions Nexus Risk,20%,15%,20%,15%
+Product / Service Risk,20%,15%,20%,15%
+Digital Onboarding / Channel Assurance,25%,20%,20%,15%
+Expected Activity / Behaviour / Funding,10%,30%,15%,35%
+TOTAL,100%,100%,100%,100%

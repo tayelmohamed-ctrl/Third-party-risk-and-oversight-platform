@@ -1,0 +1,166 @@
+{
+  "rules": [
+    {
+      "rule_id": "VH01",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Gambling / betting / casino",
+      "keyword_regex": "\\b(casino|gambling|betting|bookmaking|lottery|gaming machine|other gambling)\\b",
+      "risk_driver": "Cash-intensive and high velocity funds movement; established global ML typologies for gambling and betting.",
+      "suggested_controls": "EDD, gaming license verification, source of funds/wealth, senior approval, cash controls, and enhanced transaction monitoring."
+    },
+    {
+      "rule_id": "VH02",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Arms / ammunition / explosives / defense-sensitive goods",
+      "keyword_regex": "\\b(firearm|ammunition|weapon|explosive|ordnance|missile|tank|military fighting vehicle|defence|defense|nuclear fuel)\\b",
+      "risk_driver": "Potential PF, sanctions, export-control and dual-use exposure.",
+      "suggested_controls": "EDD, sanctions/export-control screening, end-use/end-user checks, license verification, and restricted appetite review."
+    },
+    {
+      "rule_id": "H01",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Banking / credit / financial intermediation",
+      "keyword_regex": "\\b(bank|banking|central bank|depository|credit intermediation|lending|loan|mortgage|consumer lending|sales financing|credit card|financial transaction|clearinghouse|payment|money transmission|monetary|currency exchange)\\b",
+      "risk_driver": "Large transaction volumes, third-party funds movement, and cross-border financial flows.",
+      "suggested_controls": "EDD, licensing/regulatory status validation, correspondent/third-party payment assessment, AML control assessment, and enhanced monitoring."
+    },
+    {
+      "rule_id": "H02",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Securities / commodities / funds / trusts",
+      "keyword_regex": "\\b(securities|commodity contracts|brokerage|investment banking|portfolio management|investment advice|funds|trusts|financial vehicle|pension fund|mutual fund|other investment pools|exchange traded fund|hedge fund|private equity)\\b",
+      "risk_driver": "Complex ownership, rapid asset movement, high-value instruments, and layering potential.",
+      "suggested_controls": "EDD, beneficial ownership and control review, source of wealth/funds, investment mandate validation, and transaction monitoring."
+    },
+    {
+      "rule_id": "H03",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Real estate / property",
+      "keyword_regex": "\\b(real estate|property manager|lessors of real estate|land subdivision|real estate agent|real estate broker|appraisal|property developer|property)\\b",
+      "risk_driver": "High-value assets, beneficial ownership opacity, third-party payments, and placement/layering typologies.",
+      "suggested_controls": "EDD, property ownership checks, source of funds/wealth, purchaser/seller/agent verification, and transaction purpose review."
+    },
+    {
+      "rule_id": "H04",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Precious metals / stones / jewelry / watches",
+      "keyword_regex": "\\b(precious metal|precious stone|jewel|jewelry|diamond|gem|gold|silver|platinum|watch|clock)\\b",
+      "risk_driver": "Portable high-value goods, cash exposure, smuggling, sanctions/PF exposure for gold and precious commodities.",
+      "suggested_controls": "EDD, supplier/customer due diligence, provenance checks, import/export documentation, sanctions/PF screening, and cash controls."
+    },
+    {
+      "rule_id": "H05",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Professional gatekeepers",
+      "keyword_regex": "\\b(legal services|offices of lawyers|lawyers|notary|notarial|accounting|bookkeeping|tax preparation|auditing|trust company|company formation|corporate services|management of companies|holding compan)\\b",
+      "risk_driver": "Potential formation/management of legal persons, client money handling, opacity and nominee structures.",
+      "suggested_controls": "EDD where services include company/trust formation or client money; UBO verification; source of funds; adverse media."
+    },
+    {
+      "rule_id": "H06",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Pawnbroking / used goods / art / antiques / auctions",
+      "keyword_regex": "\\b(pawn|pawnbroker|used merchandise|second-hand|auction|art dealer|antiques|art goods|artwork|collectible)\\b",
+      "risk_driver": "Cash transactions, hard-to-value goods, stolen goods exposure, and value transfer through collectibles.",
+      "suggested_controls": "EDD for high-value items, provenance checks, cash thresholds, adverse media, and transaction monitoring."
+    },
+    {
+      "rule_id": "H07",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "High-value vehicles / vessels / aircraft",
+      "keyword_regex": "\\b(automobile dealer|motor vehicle dealer|recreational vehicle dealer|boat dealer|aircraft dealer|motorcycle dealer|vehicle dealer|motor vehicle merchant wholesaler|aircraft parts|ship building|shipbuilding|boat building)\\b",
+      "risk_driver": "High-value movable assets, trade and cross-border resale exposure.",
+      "suggested_controls": "EDD for high-value/cross-border purchases, source of funds, ownership and export documentation review."
+    },
+    {
+      "rule_id": "H08",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "Oil, gas and strategic commodities",
+      "keyword_regex": "\\b(oil and gas extraction|crude petroleum|natural gas extraction|petroleum refinery|petroleum products|fuel dealer|pipeline transportation of crude oil|pipeline transportation of natural gas|coal mining|metal ore mining|mining support)\\b",
+      "risk_driver": "Commodity trade, sanctions, corruption, and cross-border payment exposure.",
+      "suggested_controls": "EDD, sanctions screening, origin/destination checks, commodity documentation, and beneficial ownership review."
+    },
+    {
+      "rule_id": "H09",
+      "risk_rating": "High",
+      "risk_score": "3",
+      "risk_theme": "NPO / charity / religious / advocacy",
+      "keyword_regex": "\\b(religious|grantmaking|giving services|social advocacy|human rights|environmental advocacy|civic and social organizations|business associations|professional organizations|labor unions|political organizations|charitable|charity|ngo|nonprofit|non-profit)\\b",
+      "risk_driver": "Potential abuse for TF or sanctions evasion depending on geography, beneficiaries, funding sources and delivery channels.",
+      "suggested_controls": "EDD for cross-border/high-risk geographies, donor/beneficiary checks, purpose and program validation, and sanctions screening."
+    },
+    {
+      "rule_id": "MH01",
+      "risk_rating": "Medium",
+      "risk_score": "2",
+      "risk_theme": "Trade, logistics and TBML exposure",
+      "keyword_regex": "\\b(freight|forwarding|customs broker|shipping|port|warehousing|storage|courier|postal|air transportation|water transportation|truck transportation|rail transportation|pipeline|logistics|wholesale trade|merchant wholesaler|import|export)\\b",
+      "risk_driver": "Trade-based ML, sanctions, dual-use goods, and cross-border counterparties.",
+      "suggested_controls": "Additional trade due diligence, country/counterparty screening, invoice and shipping document review for risk-based samples."
+    },
+    {
+      "rule_id": "MH02",
+      "risk_rating": "Medium",
+      "risk_score": "2",
+      "risk_theme": "Cash-intensive retail / hospitality / services",
+      "keyword_regex": "\\b(restaurant|bar|drinking place|food service|caterer|hotel|motel|accommodation|laundry|drycleaning|beauty salon|barber|nail salon|car wash|parking lot|taxi|limousine|vending machine|gasoline station|convenience store|tobacco|liquor store|beer|wine|night club|nightclub)\\b",
+      "risk_driver": "Cash handling, commingling of funds, and high-frequency low-value transactions.",
+      "suggested_controls": "Validate expected cash profile, POS/bank statement reasonableness, source of funds, and transaction monitoring thresholds."
+    },
+    {
+      "rule_id": "MH03",
+      "risk_rating": "Medium",
+      "risk_score": "2",
+      "risk_theme": "Security / investigation / private protection",
+      "keyword_regex": "\\b(security services|security guard|investigation|armored car|locksmith|protective service|security systems services)\\b",
+      "risk_driver": "Cash logistics, sensitive clients, use of subcontractors, and possible links to high-risk sectors.",
+      "suggested_controls": "License verification, ownership and adverse media checks, customer/counterparty review, and cash-handling controls."
+    },
+    {
+      "rule_id": "MH04",
+      "risk_rating": "Medium",
+      "risk_score": "2",
+      "risk_theme": "Waste, scrap, recycling and recoverable materials",
+      "keyword_regex": "\\b(waste|scrap|recycling|recoverable materials|remediation|sewerage|hazardous waste|solid waste|materials recovery)\\b",
+      "risk_driver": "Cash purchases, commodity resale, environmental crime and informal supplier networks.",
+      "suggested_controls": "Supplier/customer checks, permits, transaction monitoring, and review of unusual cash/commodity flows."
+    },
+    {
+      "rule_id": "MH05",
+      "risk_rating": "Medium",
+      "risk_score": "2",
+      "risk_theme": "Construction and development",
+      "keyword_regex": "\\b(construction|contractor|building construction|civil engineering|specialty trade contractors|heavy construction|developer)\\b",
+      "risk_driver": "Large project payments, subcontracting, cash labor, procurement fraud, corruption and invoice manipulation exposure.",
+      "suggested_controls": "License verification, beneficial ownership, project rationale, counterparties/subcontractors, and payment purpose review."
+    },
+    {
+      "rule_id": "MH06",
+      "risk_rating": "Medium",
+      "risk_score": "2",
+      "risk_theme": "Telecom, digital platforms, IT infrastructure",
+      "keyword_regex": "\\b(telecommunications|data processing|hosting|internet service|software publisher|computer systems design|computing infrastructure|web search portals|electronic shopping|marketplaces|platforms)\\b",
+      "risk_driver": "Cross-border digital services, online payments, platform misuse and potential virtual-asset adjacency.",
+      "suggested_controls": "Standard CDD plus assessment of payment flows, user base, jurisdictions, and whether virtual assets/payment services are involved."
+    },
+    {
+      "rule_id": "MH07",
+      "risk_rating": "Medium",
+      "risk_score": "2",
+      "risk_theme": "Travel and employment intermediaries",
+      "keyword_regex": "\\b(travel agency|tour operator|employment placement|temporary help services|labor contractor|labour contractor|human resources consulting)\\b",
+      "risk_driver": "Cross-border payments, migrant labor, third-party flows and potential human trafficking/labor exploitation indicators.",
+      "suggested_controls": "License verification, counterparties/beneficiaries, country risk and payroll/payment behavior review."
+    }
+  ]
+}

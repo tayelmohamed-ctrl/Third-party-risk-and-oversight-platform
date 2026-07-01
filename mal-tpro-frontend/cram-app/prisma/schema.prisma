@@ -1,0 +1,551 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Assessment {
+  id           String   @id
+  customerId   String   @map("customer_id")
+  customerName String   @map("customer_name")
+  at           DateTime
+  trigger      String
+  triggerNote  String?  @map("trigger_note")
+  rating       String
+  prevRating   String?  @map("prev_rating")
+  composite    Float
+  mathBand     String   @map("math_band")
+  boundary     String
+  overrides    Json
+  reviewDue    DateTime @map("review_due")
+  actor        String
+  input        Json
+  governance   Json?
+  handoff       Json?
+  overrideJustification String? @map("override_justification")
+  modelVersionId   String?  @map("model_version_id")
+  boundarySetUsed  String?  @map("boundary_set_used")
+  libraryVersions  Json?    @map("library_versions")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([customerId, at])
+  @@map("assessments")
+}
+
+model FeedEvent {
+  id           String   @id
+  source       String
+  kind         String
+  customerId   String   @map("customer_id")
+  customerName String?  @map("customer_name")
+  at           DateTime
+  severity     String?
+  payload      Json
+  headline     String
+  outcome      String
+  detail       String
+  prevRating   String?  @map("prev_rating")
+  newRating    String?  @map("new_rating")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("feed_events")
+}
+
+model AuditLog {
+  id        String   @id
+  at        DateTime
+  actor     String
+  action    String
+  entity    String
+  entityId  String   @map("entity_id")
+  detail    String
+  before    String?
+  after     String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([at])
+  @@map("audit_log")
+}
+
+model MlroAlert {
+  id           String   @id
+  at           DateTime
+  customerId   String   @map("customer_id")
+  customerName String   @map("customer_name")
+  prevRating   String   @map("prev_rating")
+  newRating    String   @map("new_rating")
+  trigger      String
+  headline     String
+  source       String
+  status       String   @default("open")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("mlro_alerts")
+}
+
+model VendorIdentity {
+  vendorId     String   @map("vendor_id")
+  source       String
+  customerId   String   @map("customer_id")
+  customerName String   @map("customer_name")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@id([vendorId, source])
+  @@map("vendor_identity")
+}
+
+model FeedQueueMessage {
+  id          String    @id @default(uuid())
+  eventId     String    @unique @map("event_id")
+  payload     Json
+  status      String    @default("pending")
+  attempts    Int       @default(0)
+  lastError   String?   @map("last_error")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  processedAt DateTime? @map("processed_at")
+
+  @@index([status, createdAt])
+  @@map("feed_queue")
+}
+
+model AppUser {
+  id        String   @id
+  email     String   @unique
+  name      String?
+  roles     String[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("app_users")
+}
+
+model ModelGovernance {
+  id             String    @id
+  modelVersionId String    @map("model_version_id")
+  status         String    @default("draft")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  promotedAt     DateTime? @map("promoted_at")
+  promotedBy     String?   @map("promoted_by")
+
+  @@map("model_governance")
+}
+
+model ValidationRun {
+  id              String   @id
+  at              DateTime
+  actor           String
+  runType         String   @map("run_type")
+  modelVersionId  String   @map("model_version_id")
+  verdict         String
+  goldenSummary   Json     @map("golden_summary")
+  backtestSummary Json?    @map("backtest_summary")
+  gates           Json
+  report          Json
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([at])
+  @@map("validation_runs")
+}
+
+model OpenItem {
+  id                String    @id
+  title             String
+  whereField        String    @map("where_field")
+  impact            String
+  dispositionNeeded String    @map("disposition_needed")
+  buildHandling     String    @map("build_handling")
+  status            String    @default("open")
+  decision          String?
+  dispositionedBy   String?   @map("dispositioned_by")
+  dispositionedAt   DateTime? @map("dispositioned_at")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@map("open_items")
+}
+
+model ConfigProposal {
+  id             String    @id
+  tableName      String    @map("table_name")
+  payload        Json
+  status         String    @default("pending")
+  proposedBy     String    @map("proposed_by")
+  proposedAt     DateTime  @default(now()) @map("proposed_at")
+  approvalRef    String?   @map("approval_ref")
+  approvedBy     String?   @map("approved_by")
+  approvedAt     DateTime? @map("approved_at")
+  rejectedReason String?   @map("rejected_reason")
+
+  @@index([tableName, status])
+  @@map("config_proposals")
+}
+
+model ConfigVersion {
+  id             String    @id
+  tableName      String    @map("table_name")
+  version        Int
+  payload        Json
+  modelVersionId String    @map("model_version_id")
+  effectiveFrom  DateTime  @map("effective_from")
+  effectiveTo    DateTime? @map("effective_to")
+  approvedBy     String    @map("approved_by")
+  approvedAt     DateTime  @map("approved_at")
+  proposedBy     String    @map("proposed_by")
+  approvalRef    String?   @map("approval_ref")
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  @@unique([tableName, version])
+  @@index([tableName, effectiveFrom])
+  @@map("config_versions")
+}
+
+model ScreeningCase {
+  id               String    @id
+  customerId       String    @map("customer_id")
+  customerName     String    @map("customer_name")
+  vendor           String    @default("vital4")
+  vendorCaseId     String    @map("vendor_case_id")
+  screeningType    String    @default("bundle") @map("screening_type")
+  status           String    @default("pending")
+  licenseRegion    String    @default("UAE") @map("license_region")
+  sanctions        String?
+  pep              String?
+  adverse          String?
+  watchlist        String?
+  disposition      String    @default("pending")
+  dispositionNotes String?   @map("disposition_notes")
+  disposedBy       String?   @map("disposed_by")
+  disposedAt       DateTime? @map("disposed_at")
+  slaDueAt         DateTime? @map("sla_due_at")
+  mirrorSource     String?   @map("mirror_source")
+  oscilarAlertId   String?   @map("oscilar_alert_id")
+  rawPayload       Json?     @map("raw_payload")
+  snapshot         Json?
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@unique([vendor, vendorCaseId])
+  @@index([customerId, createdAt])
+  @@map("screening_cases")
+}
+
+model CaseLink {
+  id              String   @id
+  customerId      String   @map("customer_id")
+  cramScreeningId String   @map("cram_screening_id")
+  vital4CaseId    String   @map("vital4_case_id")
+  oscilarAlertId  String?  @map("oscilar_alert_id")
+  oscilarCaseId   String?  @map("oscilar_case_id")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@unique([vital4CaseId])
+  @@index([customerId])
+  @@map("case_links")
+}
+
+model WebhookLog {
+  id         String   @id
+  vendor     String
+  eventId    String   @map("event_id")
+  payload    Json
+  outcome    String
+  detail     String?
+  receivedAt DateTime @default(now()) @map("received_at")
+
+  @@unique([vendor, eventId])
+  @@map("webhook_log")
+}
+
+model OnboardingCase {
+  id              String   @id
+  customerId      String   @map("customer_id")
+  customerName    String   @map("customer_name")
+  licenseRegion   String   @default("UAE") @map("license_region")
+  mode            String   @default("individual")
+  state           String   @default("INITIATED")
+  shuftiReference String?  @map("shufti_reference")
+  shuftiStatus    String?  @map("shufti_status")
+  screeningCaseId String?  @map("screening_case_id")
+  vital4CaseId    String?  @map("vital4_case_id")
+  kycContext      Json?    @map("kyc_context")
+  capture         Json?
+  subject         Json
+  blockReason     String?  @map("block_reason")
+  scoreResult     Json?    @map("score_result")
+  finalRating     String?  @map("final_rating")
+  composite       Float?
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([customerId, createdAt])
+  @@index([state])
+  @@map("onboarding_cases")
+}
+
+model TmAlert {
+  id              String   @id
+  oscilarAlertId  String   @unique @map("oscilar_alert_id")
+  oscilarCaseId   String?  @map("oscilar_case_id")
+  customerId      String   @map("customer_id")
+  customerName    String   @map("customer_name")
+  alertType       String   @default("transaction_monitoring") @map("alert_type")
+  severity        String   @default("medium")
+  ruleId          String?  @map("rule_id")
+  ruleName        String?  @map("rule_name")
+  channel         String?
+  amount          Float?
+  currency        String?
+  licenseRegion   String   @default("UAE") @map("license_region")
+  status          String   @default("open")
+  listHit         Boolean  @default(false) @map("list_hit")
+  vital4CaseId    String?  @map("vital4_case_id")
+  cramScreeningId String?  @map("cram_screening_id")
+  feedEventId     String?  @map("feed_event_id")
+  feedOutcome     String?  @map("feed_outcome")
+  paymentRef      String?  @map("payment_ref")
+  rawPayload      Json?    @map("raw_payload")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([customerId, createdAt])
+  @@index([status, severity])
+  @@map("tm_alerts")
+}
+
+model InvestigationCase {
+  id               String    @id
+  caseNumber       String    @unique @map("case_number")
+  title            String
+  customerId       String    @map("customer_id")
+  customerName     String    @map("customer_name")
+  status           String    @default("open")
+  priority         String    @default("medium")
+  severity         String    @default("medium")
+  source           String
+  tmAlertId        String?   @unique @map("tm_alert_id")
+  screeningCaseId  String?   @map("screening_case_id")
+  onboardingCaseId String?  @map("onboarding_case_id")
+  assignedTo       String?   @map("assigned_to")
+  typologyId       String?   @map("typology_id")
+  ruleId           String?   @map("rule_id")
+  ruleName         String?   @map("rule_name")
+  craRating        String?   @map("cra_rating")
+  slaDueAt         DateTime? @map("sla_due_at")
+  disposition      String?
+  dispositionNotes String?   @map("disposition_notes")
+  disposedBy       String?   @map("disposed_by")
+  disposedAt       DateTime? @map("disposed_at")
+  pipelineStep     Int       @default(0) @map("pipeline_step")
+  summary          String?
+  metadata         Json?
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  evidence CaseEvidence[]
+  filings  FilingDraft[]
+
+  @@index([customerId, createdAt])
+  @@index([status, severity])
+  @@map("investigation_cases")
+}
+
+model CaseEvidence {
+  id        String   @id
+  caseId    String   @map("case_id")
+  kind      String
+  label     String
+  detail    String?
+  payload   Json?
+  createdBy String   @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  case InvestigationCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+  @@index([caseId])
+  @@map("case_evidence")
+}
+
+model FilingDraft {
+  id           String   @id
+  caseId       String?  @map("case_id")
+  filingType   String   @map("filing_type")
+  templateId   String?  @map("template_id")
+  status       String   @default("draft")
+  customerId   String   @map("customer_id")
+  customerName String   @map("customer_name")
+  title        String?
+  body         Json?
+  createdBy    String   @map("created_by")
+  checkerBy    String?  @map("checker_by")
+  mlroBy       String?  @map("mlro_by")
+  submittedAt  DateTime? @map("submitted_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  case InvestigationCase? @relation(fields: [caseId], references: [id], onDelete: SetNull)
+  submissions FilingSubmission[]
+
+  @@index([caseId])
+  @@index([status, filingType])
+  @@map("filing_drafts")
+}
+
+model CtrObligation {
+  id              String    @id
+  customerId      String    @map("customer_id")
+  customerName    String    @map("customer_name")
+  transactionDate DateTime  @map("transaction_date")
+  cashIn          Float?    @map("cash_in")
+  cashOut         Float?    @map("cash_out")
+  aggregateUsd    Float     @map("aggregate_usd")
+  currency        String    @default("USD")
+  channel         String?
+  accountNumber   String?   @map("account_number")
+  tin             String?
+  branchLocation  String?   @map("branch_location")
+  aggregated      Boolean   @default(false)
+  aggregationNote String?   @map("aggregation_note")
+  status          String    @default("pending")
+  filingDraftId   String?   @map("filing_draft_id")
+  tmAlertId       String?   @map("tm_alert_id")
+  licenseRegion   String    @default("US") @map("license_region")
+  dueAt           DateTime  @map("due_at")
+  filedAt         DateTime? @map("filed_at")
+  metadata        Json?
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@index([customerId, transactionDate])
+  @@index([status, dueAt])
+  @@map("ctr_obligations")
+}
+
+model FilingSubmission {
+  id            String   @id
+  filingDraftId String   @map("filing_draft_id")
+  fiuSystem     String   @map("fiu_system")
+  fiuReference  String?  @map("fiu_reference")
+  status        String   @default("accepted")
+  payload       Json?
+  response      Json?
+  submittedBy   String   @map("submitted_by")
+  submittedAt   DateTime @default(now()) @map("submitted_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  draft FilingDraft @relation(fields: [filingDraftId], references: [id], onDelete: Cascade)
+
+  @@index([filingDraftId])
+  @@index([fiuReference])
+  @@map("filing_submissions")
+}
+
+model ExamPackRun {
+  id           String   @id
+  examRef      String   @map("exam_ref")
+  sampleSize   Int      @map("sample_size")
+  customerIds  Json     @map("customer_ids")
+  pack         Json
+  generatedBy  String   @map("generated_by")
+  durationMs   Int      @map("duration_ms")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("exam_pack_runs")
+}
+
+model TrainingRecord {
+  id          String    @id
+  userEmail   String    @map("user_email")
+  userName    String?   @map("user_name")
+  courseId    String    @map("course_id")
+  courseName  String    @map("course_name")
+  status      String    @default("assigned")
+  dueAt       DateTime? @map("due_at")
+  completedAt DateTime? @map("completed_at")
+  attestedBy  String?   @map("attested_by")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([userEmail, status])
+  @@map("training_records")
+}
+
+model ExaminationItem {
+  id             String    @id
+  domainId       String    @map("domain_id")
+  domainName     String    @map("domain_name")
+  procedure      String
+  ffiecRef       String    @map("ffiec_ref")
+  status         String    @default("not_started")
+  owner          String?
+  evidenceRoute  String?   @map("evidence_route")
+  evidenceType   String?   @map("evidence_type")
+  notes          String?
+  autoScore      Int?      @map("auto_score")
+  lastReviewedAt DateTime? @map("last_reviewed_at")
+  updatedBy      String?   @map("updated_by")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@index([domainId, status])
+  @@map("examination_items")
+}
+
+model LegalHold {
+  id         String    @id
+  scopeType  String    @map("scope_type")
+  scopeId    String?   @map("scope_id")
+  customerId String?   @map("customer_id")
+  reason     String
+  matterRef  String?   @map("matter_ref")
+  placedBy   String    @map("placed_by")
+  placedAt   DateTime  @default(now()) @map("placed_at")
+  releasedBy String?   @map("released_by")
+  releasedAt DateTime? @map("released_at")
+  status     String    @default("active")
+  metadata   Json?
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  @@index([status, customerId])
+  @@index([scopeType, scopeId])
+  @@map("legal_holds")
+}
+
+model EvidenceExportRun {
+  id                 String   @id
+  exportRef          String   @map("export_ref")
+  policyId           String   @map("policy_id")
+  scopeType          String   @map("scope_type")
+  scopeId            String?  @map("scope_id")
+  customerId         String?  @map("customer_id")
+  recordClasses      Json     @map("record_classes")
+  recordCount        Int      @map("record_count")
+  manifest           Json
+  requestedBy        String   @map("requested_by")
+  approvedBy         String?  @map("approved_by")
+  status             String   @default("completed")
+  legalHoldChecked   Boolean  @default(true) @map("legal_hold_checked")
+  holdBlockedCount   Int      @default(0) @map("hold_blocked_count")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@index([customerId, createdAt])
+  @@index([policyId, status])
+  @@map("evidence_export_runs")
+}
+
+model RetentionRun {
+  id                String   @id
+  runAt             DateTime @map("run_at")
+  scanned           Int
+  active            Int
+  approachingExpiry Int      @map("approaching_expiry")
+  eligibleArchive   Int      @map("eligible_archive")
+  onHold            Int      @map("on_hold")
+  byClass           Json     @map("by_class")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@index([runAt])
+  @@map("retention_runs")
+}

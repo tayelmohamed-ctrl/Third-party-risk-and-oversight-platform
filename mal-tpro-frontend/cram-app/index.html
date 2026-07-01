@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mal FinCrime OS — CRAM Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function () {
+        if (window.storage) return;
+        window.storage = {
+          async get(k) { const v = localStorage.getItem(k); return v === null ? null : { key: k, value: v, shared: false }; },
+          async set(k, v) { localStorage.setItem(k, v); return { key: k, value: v, shared: false }; },
+          async delete(k) { localStorage.removeItem(k); return { key: k, deleted: true, shared: false }; },
+          async list(prefix) { prefix = prefix || ""; return { keys: Object.keys(localStorage).filter(function (x) { return x.startsWith(prefix); }), prefix: prefix, shared: false }; },
+        };
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

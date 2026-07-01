@@ -1,0 +1,347 @@
+{
+  "version": "PK-TYPOLIB-2026-Q3",
+  "published": "2026-06-29",
+  "countryCode": "PK",
+  "countryName": "Pakistan",
+  "ownerAgent": "sayed",
+  "typologyAgent": "mohsen",
+  "section": "Regulatory Management · Corridor EWRA · Risk typology library",
+  "classification": "Internal use only",
+  "sources": [
+    {
+      "id": "NRA-2023",
+      "title": "Pakistan National Risk Assessment 2023 — Summarized",
+      "authority": "National FATF Secretariat of Pakistan",
+      "driveDoc": "Risk/Country-modules/Pakistan/NRA-2023-Summary"
+    },
+    {
+      "id": "CCM-PK-v0.1",
+      "title": "Mal Compliance Country Module — Pakistan",
+      "authority": "Mal Group Financial Crime Compliance · MLRO",
+      "status": "Draft v0.1 — verify thresholds before reliance",
+      "driveDoc": "Risk/Country-modules/Pakistan/Mal-CCM-Pakistan"
+    },
+    {
+      "id": "GA-WB-8",
+      "title": "GA Partner Oversight Workbook §8 — Risk Typologies & Red Flags",
+      "authority": "Mal FinCrime · CRAM-01 App. B / Annex B",
+      "driveDoc": "Risk/Typologies/GA-Partner-Oversight-WB-8"
+    }
+  ],
+  "corridorRatings": [
+    {
+      "corridorId": "COR-AE-PK",
+      "label": "UAE → Pakistan",
+      "likelihoodImpactScore": 25,
+      "rating": "Critical",
+      "register": "MSB Compliance Risk Typology Register · 2026 US Treasury NMLRA overlay",
+      "relevance": "Top real-world remittance & hawala corridor; very-high TF/hawala density"
+    },
+    {
+      "corridorId": "COR-US-PK",
+      "label": "US → Pakistan",
+      "likelihoodImpactScore": 20,
+      "rating": "Critical",
+      "register": "Corridor register",
+      "relevance": "Day-1 live corridor; hundi/hawala, TF/PF, charity/NPO abuse, TBML"
+    }
+  ],
+  "nra2023": {
+    "contextFactors": [
+      "Geo-strategic location and porous border with Afghanistan",
+      "Large undocumented cash economy",
+      "FATF enhanced monitoring Jun 2018 – Oct 2022 (exited)",
+      "Economic impact study: ~USD 38bn cumulative GDP decline during grey-list period"
+    ],
+    "predicateOffencesVeryHigh": [
+      "Corruption and bribery",
+      "Illegal MVTS / hawala / hundi",
+      "Tax crimes (direct and indirect)",
+      "Smuggling (including customs duties and taxes)",
+      "Cash smuggling"
+    ],
+    "predicateOffencesHigh": [
+      "Illicit trafficking in narcotic drugs and psychotropic substances",
+      "Trafficking in human beings and migrant smuggling",
+      "Fraud and forgery",
+      "Cyber crime"
+    ],
+    "mlChannels": [
+      "Cash / cash couriers",
+      "Illegal MVTS",
+      "Benami accounts and properties",
+      "Shell companies",
+      "Front import & export companies",
+      "Offshore bank accounts",
+      "Trade-based funds transfers",
+      "Payment through intermediaries / third parties",
+      "Real estate / precious metals / high-value assets",
+      "Stocks / bonds / investment funds",
+      "Cryptocurrency"
+    ],
+    "tfSourcesVeryHigh": ["Donations", "Extortion"],
+    "tfSourcesHigh": ["Narcotics trafficking", "Cash smuggling"],
+    "tfChannelsVeryHigh": ["Cash / cash couriers", "Illegal MVTS"],
+    "tfChannelsHigh": ["Banking", "Branchless banking"],
+    "sectorVulnerabilitiesVeryHigh": [
+      "Banks (SBP)",
+      "Real estate agents (FBR)",
+      "Private limited companies (SECP)",
+      "Foreign companies (SECP)"
+    ],
+    "sectorVulnerabilitiesHigh": [
+      "Microfinance banks",
+      "Exchange companies",
+      "Dealers in precious metals & stones"
+    ],
+    "npoRiskProfile": "6.75% high-risk · 43.64% medium · 49.61% low (NRA 2023 NPO assessment)"
+  },
+  "complianceModule": {
+    "documentId": "Mal-CCM-Pakistan-v0.1",
+    "legalBasis": [
+      "Anti-Money Laundering Act, 2010 (as amended)",
+      "Anti-Terrorism Act, 1997 (as amended)",
+      "State Bank of Pakistan AML/CFT/CPF Regulations"
+    ],
+    "supervisors": [
+      { "code": "SBP", "name": "State Bank of Pakistan", "role": "AML/CFT supervisor for banks, MFBs and EMIs" },
+      { "code": "FMU", "name": "Financial Monitoring Unit", "role": "STR/CTR intake · FIU · Egmont Group" }
+    ],
+    "ctrThreshold": "PKR 2,000,000 single cash transaction [VERIFY]",
+    "recordRetentionYears": 5,
+    "acceptableId": ["CNIC / NICOP", "Valid passport (mandatory for foreign nationals)"],
+    "eddTriggers": [
+      "Politically exposed persons (PEPs)",
+      "High-value or unusual activity",
+      "Complex ownership structures",
+      "Higher-risk countries"
+    ],
+    "mandatoryFields": [
+      "Full name", "Contact number", "Date of birth", "Transaction reference",
+      "Nationality", "ID type/number/place/issue/expiry", "Residential status",
+      "Address (permanent for non-residents)", "Country of birth", "Profession",
+      "Source of funds", "Purpose of transaction"
+    ],
+    "jurisdictionTypologies": [
+      "Hawala / hundi informal value-transfer networks",
+      "Terrorist-financing and proliferation-financing risk",
+      "Trade-based money laundering and mis-invoicing",
+      "Smuggling and narcotics proceeds (regional transit)",
+      "Large undocumented cash economy and structuring",
+      "Misuse of non-profit organisations / charities",
+      "Laundering through real estate"
+    ],
+    "fatfNote": "APG member; exited FATF increased monitoring Oct 2022 — confirm current status before country weighting"
+  },
+  "malTypologyCorpus": [
+    {
+      "id": "TYP-PK-001",
+      "rank": 1,
+      "name": "Hawala / hundi intersection",
+      "category": "ML",
+      "severity": "Critical",
+      "corridorRelevance": "Pakistan corridor",
+      "description": "The account acts as the USD leg of an informal value-transfer book: assorted senders in, fan-out to multiple unrelated beneficiaries out.",
+      "indicators": ["Many-to-one inbound", "Fan-out to unrelated beneficiaries", "Missing authorized settlement leg", "IVTS pattern without economic rationale"],
+      "primaryControls": ["Corridor rules", "Authorized-channel-only payout", "IVTS prohibition (GA-4)"],
+      "oscilarRules": ["OS-TM-031", "OS-TM-016", "OS-TM-017"],
+      "primaryOscilarRule": "OS-TM-031",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-002",
+      "rank": 2,
+      "name": "Money-muling",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "All products",
+      "description": "Fraud/crime proceeds received as 'client payments' or 'salary' and rapidly forwarded.",
+      "indicators": ["Rapid in-out", "Salary label mismatch", "New account high velocity"],
+      "primaryControls": ["Real-time KYT", "Anti-mule onboarding language (Doc 1.5/1.3)"],
+      "oscilarRules": ["OS-TM-004", "OS-TM-019", "OS-TM-026"],
+      "primaryOscilarRule": "OS-TM-004",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-003",
+      "rank": 3,
+      "name": "Fictitious-invoice / fake-service laundering",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "Corridor / SoF",
+      "description": "Self-generated invoices, invoice reuse across payers; intangible-service analogue of trade-based ML.",
+      "indicators": ["Invoice reuse", "Intangible services", "TBML pattern"],
+      "primaryControls": ["Purpose-code integrity", "Source-of-funds (GA-1/GA-4)"],
+      "oscilarRules": ["OS-TM-032"],
+      "primaryOscilarRule": "OS-TM-032",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-004",
+      "rank": 4,
+      "name": "Structuring / smurfing",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "Wallet rails",
+      "description": "Multiple small transactions kept below wallet-tier or reporting thresholds.",
+      "indicators": ["Sub-threshold clustering", "Wallet tier sizing", "Velocity just below CTR"],
+      "primaryControls": ["Threshold & velocity rules", "Structuring SAR (GA-4/TSM/1.7)"],
+      "oscilarRules": ["OS-TM-001", "OS-TM-002"],
+      "primaryOscilarRule": "OS-TM-001",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-005",
+      "rank": 5,
+      "name": "Pass-through with no economic rationale",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "All products",
+      "description": "Funds in and straight out with no business logic.",
+      "indicators": ["Same-day pass-through", "No balance retention", "Profile mismatch"],
+      "primaryControls": ["KYT behavioural rules (GA-4/1.5)"],
+      "oscilarRules": ["OS-TM-004", "OS-TM-003"],
+      "primaryOscilarRule": "OS-TM-004",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-006",
+      "rank": 6,
+      "name": "Sanctions / export-control evasion",
+      "category": "Sanctions",
+      "severity": "Critical",
+      "corridorRelevance": "Corridor / treasury",
+      "description": "Sanctioned end-clients via intermediaries; Pakistani documents + VPN; name-component omission; routing via non-sanctioned intermediary jurisdictions.",
+      "indicators": ["VPN geolocation mismatch", "Name spelling change post-hit", "Intermediary routing"],
+      "primaryControls": ["Geolocation control", "Fuzzy matching", "Free-text remittance screening (GA-4/SCP/TSM)"],
+      "oscilarRules": ["OS-TM-033", "OS-TM-010"],
+      "primaryOscilarRule": "OS-TM-033",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-007",
+      "rank": 7,
+      "name": "Terrorist-financing channel",
+      "category": "TF",
+      "severity": "Critical",
+      "corridorRelevance": "KPK / Balochistan",
+      "description": "Aggregation-then-forwarding; charity/NPO-purpose abuse; small-value patterns linked to high-risk provinces.",
+      "indicators": ["NPO purpose abuse", "Small-value aggregation", "High-risk province linkage"],
+      "primaryControls": ["Enhanced TF screening", "NPO/charity connection = automatic EDD (GA-4)"],
+      "oscilarRules": ["OS-TM-034", "OS-TM-011"],
+      "primaryOscilarRule": "OS-TM-034",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-008",
+      "rank": 8,
+      "name": "Tax evasion / purpose-code mislabelling",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "Pakistan corridor",
+      "description": "Large remittances to tax-unregistered individuals; remittance vs service-export misclassification (FBR/Payoneer pattern).",
+      "indicators": ["Non-filer beneficiary", "PSEB mismatch", "Purpose code vs activity"],
+      "primaryControls": ["Purpose-code integrity", "NTN/filer & PSEB checks", "Corridor trigger event (GA-1/SCP §3.2)"],
+      "oscilarRules": ["OS-TM-035"],
+      "primaryOscilarRule": "OS-TM-035",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-009",
+      "rank": 9,
+      "name": "Fraud-proceeds placement",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "Send & receive sides",
+      "description": "Romance / investment / job / BEC / APP scams — customers double-exposed as unwitting mules and victims.",
+      "indicators": ["Disputed funds", "Scam typology match", "Victim-mule overlap"],
+      "primaryControls": ["Pre-facto RTRA fraud rules", "Fraud/ATO fast path", "Reg E (TSM/1.3/3.2)"],
+      "oscilarRules": ["OS-TM-036", "OS-TM-028"],
+      "primaryOscilarRule": "OS-TM-036",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-010",
+      "rank": 10,
+      "name": "Elderly victimisation / coerced transfers",
+      "category": "ML",
+      "severity": "Medium",
+      "corridorRelevance": "Outward transfer",
+      "description": "Age-gap patterns, surname mismatch, relationship inconsistent with transaction; sender acting on third-party instruction.",
+      "indicators": ["Age gap", "Surname mismatch", "Third-party instruction"],
+      "primaryControls": ["Pre-facto RTRA", "Age/surname/relationship payload fields (TSM §3.4-4.4)"],
+      "oscilarRules": ["OS-TM-037"],
+      "primaryOscilarRule": "OS-TM-037",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-011",
+      "rank": 11,
+      "name": "Crypto layering / sanctioned-wallet exposure",
+      "category": "ML",
+      "severity": "Critical",
+      "corridorRelevance": "USDC treasury leg",
+      "description": "Direct or indirect exposure to terrorism/sanctions-tagged wallet clusters; mixer-routed funds.",
+      "indicators": [">=10% indirect tagged exposure within <=5 hops", "Mixer routing"],
+      "primaryControls": ["Blockchain analytics", "Auto-block sanctioned clusters (GA-5/SCP §3.3)"],
+      "oscilarRules": ["OS-TM-038", "OS-TM-021"],
+      "primaryOscilarRule": "OS-TM-038",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-012",
+      "rank": 12,
+      "name": "Synthetic / stolen-identity accounts",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "Onboarding",
+      "description": "Document-fraud indicators, duplicate/shared identity elements.",
+      "indicators": ["Duplicate CNIC elements", "Shufti discrepancy", "Shared device/IP"],
+      "primaryControls": ["IDV (Shufti Pro)", "Discrepancy handling & re-verification (Doc 1.3)"],
+      "oscilarRules": ["OS-TM-039", "OS-TM-027"],
+      "primaryOscilarRule": "OS-TM-039",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-013",
+      "rank": 13,
+      "name": "Many-to-one networking (iWRA)",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "Inbound corridors",
+      "description": "Many unrelated senders funnel to one beneficiary over a rolling ~30-day window.",
+      "indicators": [">=N unrelated senders → 1 beneficiary", "30-day rolling window"],
+      "primaryControls": ["Post-facto iWRA networking analysis (TSM §3.1)"],
+      "oscilarRules": ["OS-TM-016", "OS-TM-002", "OS-TM-030"],
+      "primaryOscilarRule": "OS-TM-016",
+      "source": "GA-WB-8"
+    },
+    {
+      "id": "TYP-PK-014",
+      "rank": 14,
+      "name": "Wallet-tier structuring",
+      "category": "ML",
+      "severity": "High",
+      "corridorRelevance": "Pakistan wallet payout",
+      "description": "Transactions sized to stay under mobile-wallet (JazzCash/Easypaisa) tier limits.",
+      "indicators": ["Just-below wallet limit", "JazzCash/Easypaisa beneficiary", "Repeated sub-limit"],
+      "primaryControls": ["Monitored typology", "Wallet-tier limits respected (GA-4 §6)"],
+      "oscilarRules": ["OS-TM-040", "OS-TM-001"],
+      "primaryOscilarRule": "OS-TM-040",
+      "source": "GA-WB-8"
+    }
+  ],
+  "redFlags": [
+    "EDD on PK-linked remittances; watch missing bank-settlement legs",
+    "Assorted senders in → fan-out to unrelated PK beneficiaries (hawala leg)",
+    "Remittance purpose inconsistent with declared profession / NTN status",
+    "Charity or NPO beneficiary without enhanced TF screening",
+    "Sub-threshold clustering toward JazzCash / Easypaisa wallets",
+    "Beneficiary in KPK / Balochistan with aggregation-then-forward pattern",
+    "Trade invoice reuse or intangible-service TBML indicators",
+    "VPN or geolocation mismatch on PK-linked onboarding",
+    "Stablecoin / USDC leg with indirect sanctioned-wallet exposure",
+    "Non-resident PK customer without permanent home-country address on file"
+  ],
+  "nonDiscriminationPolicy": "Mal does not de-risk by nationality; controls are behaviour- and corridor-based. Nationality and birthplace are used only for identity disambiguation and list-matching — never as a scored risk factor."
+}

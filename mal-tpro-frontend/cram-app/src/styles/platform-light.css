@@ -1,0 +1,84 @@
+/* FinCrime OS — light palette (shared toggle with Partner Oversight) */
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background: #eef1fa;
+  color: #10103c;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #c4b5fd;
+}
+
+html.light .bg-bg {
+  background-color: #eef1fa !important;
+}
+
+html.light .bg-panel {
+  background-color: #ffffff !important;
+}
+
+html.light .bg-panel2 {
+  background-color: #f4f6fc !important;
+}
+
+html.light .bg-panel3 {
+  background-color: #eef1fa !important;
+}
+
+html.light .border-line,
+html.light .border-lineSoft {
+  border-color: #e2e8f0 !important;
+}
+
+html.light .text-ink {
+  color: #10103c !important;
+}
+
+html.light .text-muted {
+  color: #64748b !important;
+}
+
+html.light .text-faint {
+  color: #94a3b8 !important;
+}
+
+html.light .card {
+  background-color: #ffffff;
+  border-color: #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 4px 16px -6px rgba(0, 0, 0, 0.07);
+}
+
+html.light .btn-ghost {
+  background-color: #f4f6fc;
+  border-color: #e2e8f0;
+  color: #10103c;
+}
+
+html.light .input {
+  background-color: #f4f6fc;
+  border-color: #e2e8f0;
+  color: #10103c;
+}
+
+html.light .lineage-flow {
+  border-color: #e2e8f0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(57, 185, 237, 0.06), transparent 55%),
+    linear-gradient(180deg, #ffffff 0%, #f4f6fc 100%);
+}
+
+html.light .lineage-flow__header {
+  border-bottom-color: #e2e8f0;
+  background: rgba(244, 246, 252, 0.9);
+}
+
+html.light .lineage-flow__crumb {
+  color: #64748b;
+}
