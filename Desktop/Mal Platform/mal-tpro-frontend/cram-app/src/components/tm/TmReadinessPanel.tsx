@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Card, Sec } from "./ui";
+import { Card, Sec } from "../ui";
 import {
   TM_ALERT_BUSINESS_RULES,
   TM_GO_LIVE_GATES,
@@ -7,13 +7,13 @@ import {
   TM_SCREENING_BUSINESS_RULES,
   TM_BRD_META,
   TM_FUNCTIONAL_REQUIREMENTS,
-} from "../config/tmImplementationBrd";
+} from "../../config/tmImplementationBrd";
 import {
   TM_ASSESSMENT_META,
   TM_NO_GO_CONDITIONS,
   type AssessmentResponse,
-} from "../config/tmPreImplementationAssessment";
-import ruleLibrary from "../data/oscilar_rule_library.json";
+} from "../../config/tmPreImplementationAssessment";
+import ruleLibrary from "../../data/oscilar_rule_library.json";
 
 type Tab = "gates" | "alerts" | "screening" | "investigation" | "rules";
 
@@ -55,10 +55,10 @@ export default function TmReadinessPanel({
 
   return (
     <div className={compact ? "mt-3" : "mt-4"}>
-      <Sec
-        title="TM pre-implementation readiness (BRD + questionnaire)"
-        sub={`${TM_BRD_META.title} · v${TM_BRD_META.version} · ${TM_ASSESSMENT_META.title}`}
-      />
+      <Sec>TM pre-implementation readiness (BRD + questionnaire)</Sec>
+      <p className="text-[11px] text-muted -mt-3 mb-3">
+        {TM_BRD_META.title} · v{TM_BRD_META.version} · {TM_ASSESSMENT_META.title}
+      </p>
       <div className="flex gap-2 flex-wrap mb-3">
         {TABS.map((t) => (
           <button

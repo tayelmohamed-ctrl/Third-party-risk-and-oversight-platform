@@ -15,6 +15,7 @@ import {
   type ServiceRiskAssessment,
 } from "../config/malProductServiceRiskLibraries";
 import { getMalLogoPngBuffer } from "./malLogoAsset";
+import { addListValidation } from "./cramWorkbookShared";
 
 const BRAND = {
   navy: "FF0C1233",
@@ -287,7 +288,7 @@ function addAssessmentTable(
   // Score validation 1–3 on all score columns
   drivers.forEach((_, i) => {
     const scoreCol = colLetter(scoreColIndex(i));
-    ws.dataValidations.add(`${scoreCol}${DATA_START_ROW}:${scoreCol}${lastDataRow}`, {
+    addListValidation(ws, `${scoreCol}${DATA_START_ROW}:${scoreCol}${lastDataRow}`, {
       type: "list",
       allowBlank: true,
       formulae: ['"1,2,3"'],
@@ -509,7 +510,7 @@ export async function buildProductRiskWorkbook(): Promise<ExcelJS.Workbook> {
   addAssessmentTable(ws, "product", PRODUCT_RISK_DRIVERS, MAL_SME_PRODUCT_ASSESSMENTS);
   addDriverLibrarySheet(wb, logoBuffer);
   addReadmeSheet(wb, logoBuffer, ["Product Risk (interactive)", "Driver Library §9.1", "Readme"]);
-  wb.views = [{ activeTab: 0, firstSheet: 0, visibility: "visible" }];
+  wb.views = [{ activeTab: 0, firstSheet: 0, visibility: "visible" }] as ExcelJS.WorkbookView[];
   return wb;
 }
 
@@ -527,7 +528,7 @@ export async function buildServiceRiskWorkbook(): Promise<ExcelJS.Workbook> {
   addAssessmentTable(ws, "service", SERVICE_RISK_DRIVERS, MAL_SME_SERVICE_ASSESSMENTS);
   addServiceDriverSheet(wb, logoBuffer);
   addReadmeSheet(wb, logoBuffer, ["Service Risk (interactive)", "Service Drivers", "Readme"]);
-  wb.views = [{ activeTab: 0, firstSheet: 0, visibility: "visible" }];
+  wb.views = [{ activeTab: 0, firstSheet: 0, visibility: "visible" }] as ExcelJS.WorkbookView[];
   return wb;
 }
 
