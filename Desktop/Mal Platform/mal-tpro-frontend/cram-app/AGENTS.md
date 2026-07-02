@@ -15,6 +15,7 @@ coding agent (Cursor, Claude, etc.). Read it first, then `docs/00-PRODUCT-BRIEF.
 - `docs/06-ACTIVITY-RISK-ISIC.md` — how business-activity (LP/MER) & profession (NP) are scored via the official ISIC Rev. 5 AML mapping.
 - `seed/data/` — the real reference data already extracted (251 countries, 736 professions, 169 activities, 20 OVR rules, factor weights, product baselines, sanctions programme, and the **ISIC Rev. 5 AML activity mapping (830 entries) + 18-rule typology library**).
 - `docs/08-PLATFORM-ARCHITECTURE.md` — the full **Mal FinCrime OS** blueprint: CRAM as the brain; three agents **Sayed / Mohsen / Jana**; modules, IA, navigation, user journeys, ER & data-flow diagrams, AI interaction model, the CRAM Risk Test Bench spec.
+- `docs/PARTNER-PORTAL-VISION.md` — **Partner Portal** (`/partner`) product philosophy, UX principles, lifecycle, gamification, and quality bar. Read before any Partner Oversight UI or workflow change.
 - `prototypes/Mal-FinCrimeOS-prototype.html` — clickable visual target for the platform shell.
 - `prototypes/cram-scoring-mock.html` — standalone working scoring-engine mock (visual target for the Risk Test Bench).
 - `docs/09-MAL-DESIGN-SYSTEM.md` — Mal brand-aligned UI tokens (palette, Outfit/Inter, logomark, voice). The UI must match this and the prototypes.

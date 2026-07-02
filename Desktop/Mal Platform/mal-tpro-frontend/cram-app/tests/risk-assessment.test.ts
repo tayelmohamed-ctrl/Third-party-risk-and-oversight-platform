@@ -7,6 +7,7 @@ import {
   professionTriggersEdd,
 } from "../src/engine/professionRiskIntelligence";
 import { baseInput, ALL_LOW } from "../src/validation/fixtures";
+import { entityTypeScore } from "../src/config/entityLegalTypes";
 import { CONTROL_LABELS, type ControlInputs } from "../src/engine/cramSuiteConfig";
 import type { Score, ScoreInput } from "../src/engine/types";
 
@@ -243,12 +244,16 @@ describe("Entity legal type register", () => {
     expect(result.overrides.some((o) => o.id === "OVR-006")).toBe(true);
   });
 
-  it("LLC scores 3 and contributes to customer-type factor", () => {
-    const low = baseInput({ ...ALL_LOW, customerMode: "entity", legalForm: "legal", uboStatus: "verified", declaredEntityType: "Public Joint Stock Company (PJSC)", entityTypeScore: 1 });
-    const high = baseInput({ ...ALL_LOW, customerMode: "entity", legalForm: "legal", uboStatus: "verified", declaredEntityType: "Limited Liability Company (LLC)", entityTypeScore: 3 });
-    const rLow = scoreCustomer(low, "calculator");
-    const rHigh = scoreCustomer(high, "calculator");
-    expect(rHigh.composite).toBeGreaterThan(rLow.composite);
+  it("LLC scores 2 (Medium) per LP/MER legal-form library", () => {
+    expect(entityTypeScore("Limited Liability Company (LLC)")).toBe(2);
+    const pjsc = baseInput({ ...ALL_LOW, customerMode: "entity", legalForm: "legal", uboStatus: "verified", declaredEntityType: "Public Joint Stock Company (PJSC)", entityTypeScore: 1 });
+    const llc = baseInput({ ...ALL_LOW, customerMode: "entity", legalForm: "legal", uboStatus: "verified", declaredEntityType: "Limited Liability Company (LLC)", entityTypeScore: 2 });
+    const spv = baseInput({ ...ALL_LOW, customerMode: "entity", legalForm: "legal", uboStatus: "verified", declaredEntityType: "Special Purpose Vehicle / Entity (SPV)", entityTypeScore: 3 });
+    const rPjsc = scoreCustomer(pjsc, "calculator");
+    const rLlc = scoreCustomer(llc, "calculator");
+    const rSpv = scoreCustomer(spv, "calculator");
+    expect(rLlc.composite).toBeGreaterThan(rPjsc.composite);
+    expect(rSpv.composite).toBeGreaterThan(rLlc.composite);
   });
 
   it("NPO triggers High floor override", () => {

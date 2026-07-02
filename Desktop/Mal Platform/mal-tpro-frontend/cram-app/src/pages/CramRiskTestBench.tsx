@@ -25,8 +25,12 @@ import {
   suggestedActivitiesForProfession,
 } from "../engine/professionRiskIntelligence";
 import HandoffPanel, { type HandoffOps } from "../components/cramSuite/HandoffPanel";
+import KybChecklistPanel, { KybChecklistEmpty } from "../components/cram/KybChecklistPanel";
+import { inferKybProductsFromProductName } from "../config/kybDocumentMatrix";
+import type { KybCaseContext } from "../lib/kybChecklistBuilder";
 import RiskSummaryPanel from "../components/cramSuite/RiskSummaryPanel";
 import CorporateStructureDiagram from "../components/cramSuite/CorporateStructureDiagram";
+import CramMethodologyPanel from "../components/cramSuite/CramMethodologyPanel";
 import {
   CramGamifiedShell, GamifiedSec, DriverChip, ControlStars,
   sectionScoreBadge, controlsScoreBadge,
@@ -38,11 +42,13 @@ const EMP_ENT = [["Director / signatory", 1], ["Authorised manager", 2], ["Contr
 const SVC = [["Standard domestic", 1], ["Cross-border", 2], ["Third-party / beneficiary payments", 2], ["Trade finance", 3], ["Correspondent / nested", 3], ["Crypto / VA off-ramp", 3]] as const;
 const INV_STR = [["None / clear", 1], ["Under review", 2], ["Confirmed / filed", 3]] as const;
 const EVENTS = ["Onboarding", "Periodic review", "Trigger event", "Manual rerating"] as const;
+type BenchView = "workbench" | "methodology";
 
 const DEFAULT_CONTROLS: ControlInputs = { cdd: 2, sow: 2, mon: 2, scr: 2, edd: 1, ovs: 2 };
 
 export default function CramRiskTestBench() {
   const [mode, setMode] = useState<CustomerMode>("individual");
+  const [benchView, setBenchView] = useState<BenchView>("workbench");
   const [boundary, setBoundary] = useState<Boundary>("calculator");
   const [controls, setControls] = useState<ControlInputs>(DEFAULT_CONTROLS);
   const [ops, setOps] = useState<HandoffOps>({ checks: {}, approved: false, approvedBy: "", approvedAt: "", deployed: false, deployedAt: "" });
@@ -220,6 +226,27 @@ export default function CramRiskTestBench() {
     [mode, input, result, gt],
   );
 
+  const kybContext = useMemo<KybCaseContext | null>(() => {
+    if (mode !== "entity" || !gated.ready || !gt || !result) return null;
+    const products = inferKybProductsFromProductName(f.prod);
+    return {
+      caseRef: `ONB-${new Date().getFullYear()}-${f.id.slice(-4)}`,
+      customerName: f.name,
+      customerId: f.id,
+      entityType: f.entityType,
+      segment: f.seg,
+      products: products.length ? products : ["uae_iban"],
+      cramRating: String(result.finalRating),
+      inherentScore: gt.inherentScore,
+      residualScore: gt.residual.residualScore,
+      ddLevel: gt.dueDiligence,
+      reviewMonths: gt.reviewMonths ?? 36,
+      eddRequired: gt.eddRequired,
+      uboLayers: +f.uboLayers,
+      hasFinancingFacility: products.includes("financing"),
+    };
+  }, [mode, gated.ready, gt, result, f]);
+
   const entityStructureInput = useMemo<EntityStructureInput | null>(() => {
     if (mode !== "entity") return null;
     return {
@@ -375,18 +402,50 @@ export default function CramRiskTestBench() {
         <div className="cram-bench-mode-toggle">
           {(["individual", "entity"] as CustomerMode[]).map((m) => (
             <button key={m} type="button"
-              className={mode === m ? "cram-bench-mode-toggle--active" : ""}
-              onClick={() => switchMode(m)}>
+              className={benchView === "workbench" && mode === m ? "cram-bench-mode-toggle--active" : ""}
+              onClick={() => { switchMode(m); setBenchView("workbench"); }}>
               {m === "individual" ? "Individual CRAM Card" : "Entity CRAM Card"}
             </button>
           ))}
+          <button
+            type="button"
+            className={benchView === "methodology" ? "cram-bench-mode-toggle--active cram-bench-mode-toggle--method" : "cram-bench-mode-toggle--method"}
+            onClick={() => setBenchView("methodology")}
+          >
+            CRAM Methodology
+          </button>
         </div>
         <AiTag color="#39B9ED">CBUAE-aligned · golden thread wired</AiTag>
         <span className="text-[11px] text-muted ml-auto">Inherent → obligations → controls → residual → TM deploy</span>
       </div>
 
-      <div className="grid grid-cols-[1fr_480px] gap-5 items-start max-lg:grid-cols-1">
-        <div>
+      <div className={`cram-bench-grid ${benchView === "methodology" ? "cram-bench-grid--methodology" : ""}`}>
+        <div className="cram-bench-main">
+          {benchView === "methodology" ? (
+            <>
+              <div className="cram-method__mode-switch mb-3">
+                <span className="text-[11px] text-muted mr-2">Customer-type lens:</span>
+                {(["individual", "entity"] as CustomerMode[]).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    className={mode === m ? "cram-method__mode-btn cram-method__mode-btn--on" : "cram-method__mode-btn"}
+                    onClick={() => switchMode(m)}
+                  >
+                    {m === "individual" ? "Natural person (NP)" : "Legal person (LP/MER)"}
+                  </button>
+                ))}
+              </div>
+              <CramMethodologyPanel
+                mode={mode}
+                boundary={boundary}
+                dq={dq}
+                result={result}
+                gt={gt}
+                variant="explorer"
+              />
+            </>
+          ) : (
           <CramGamifiedShell
             mode={mode}
             name={f.name}
@@ -604,7 +663,21 @@ export default function CramRiskTestBench() {
               </div>
             </GamifiedSec>
           </CramGamifiedShell>
+          )}
         </div>
+
+        {benchView === "workbench" && (
+          <div className="cram-bench-method-rail max-xl:hidden">
+            <CramMethodologyPanel
+              mode={mode}
+              boundary={boundary}
+              dq={dq}
+              result={result}
+              gt={gt}
+              variant="rail"
+            />
+          </div>
+        )}
 
         <div className="cram-bench-sidebar sticky top-[84px] space-y-3.5 max-lg:static">
           {!gated.ready ? (
@@ -651,6 +724,12 @@ export default function CramRiskTestBench() {
             onDeploy={() => setOps((o) => ({ ...o, deployed: true, deployedAt: new Date().toISOString().slice(0, 16).replace("T", " ") }))}
             onApproverChange={setApproverInput}
           />
+
+          {kybContext ? (
+            <KybChecklistPanel context={kybContext} compact />
+          ) : mode === "entity" ? (
+            <KybChecklistEmpty />
+          ) : null}
             </>
           )}
 

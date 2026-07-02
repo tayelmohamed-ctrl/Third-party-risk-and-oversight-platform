@@ -31,7 +31,7 @@ export const AGENTS: Record<AgentId, AgentProfile> = {
     to: "/cram",
     desc: "Reads every regulation, the AML/CFT policy and all risk-scoring inputs — and keeps the CRAM and scoring libraries continuously updated so no guideline is ever missed.",
     stat: "Weekly CBUAE · FinCEN · FATF · Zenus source monitor",
-    capabilities: ["CRAM mapping", "Risk scoring", "Regulatory impact", "Library sync", "Weekly source watch"],
+    capabilities: ["CRAM mapping", "Risk scoring", "Corridor EWRA themes", "Regulatory impact", "Library sync", "Weekly source watch"],
   },
   mohsen: {
     id: "mohsen",
@@ -44,7 +44,7 @@ export const AGENTS: Record<AgentId, AgentProfile> = {
     glow: "rgba(169,83,223,.35)",
     to: "/transaction-monitoring",
     desc: "Investigates onboarded customers & transactions — does activity make sense vs salary, source of funds & wealth? Monitors Oscilar TM rules for transfers and cards; prepares cases for MLRO decision.",
-    stat: "37 cases prepared · 30 Oscilar TM rules active",
+    stat: "37 cases prepared · 40 Oscilar TM rules active",
     capabilities: ["Evidence collection", "Behaviour analysis", "Oscilar TM rules", "Txn screening workflow", "Case narrative"],
   },
   jana: {
@@ -71,6 +71,7 @@ export const ROUTE_AGENT: Record<string, AgentId | undefined> = {
   "/cram": "sayed",
   "/regulatory": "sayed",
   "/test-bench": "sayed",
+  "/kyb-checklist": "sayed",
   "/activity-register": "sayed",
   "/validation": "sayed",
   "/feeds": "sayed",

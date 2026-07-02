@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { Card, Sec, AiTag } from "../components/ui";
 import AgentBanner from "../components/agents/AgentBanner";
 import AgentAiTag from "../components/agents/AgentAiTag";
@@ -9,6 +10,25 @@ import {
 import templateData from "../data/reporting_templates.json";
 import { FIU_ROUTING } from "../config/partnerIntegration";
 import { CBUAE_STR_GUIDANCE, STR_FILING_SLA, GOAML_REPORT_TYPES } from "../config/cbuaeReportingGuidance";
+import { CTR_FILING_SLA } from "../config/fincenCtrGuidance";
+import {
+  apiFilingStats,
+  apiGetFilingDraft,
+  apiListFilingDrafts,
+  apiMlroApproveFiling,
+  apiSubmitFilingReview,
+  apiSubmitFilingToFiu,
+  apiCtrStats,
+  apiListCtrObligations,
+  apiCreateCtrDraft,
+  type FilingDraftRecord,
+  type CtrObligationRecord,
+} from "../lib/api";
+import { hasOverrideCapability } from "../lib/authSession";
+import { evaluateDraftCompliance } from "../config/filingGuidanceRequirements";
+import { evaluateCtrCompliance } from "../config/ctrGuidanceRequirements";
+import { normalizeDraftBody } from "../lib/filingDraftDocument";
+import FilingDraftEditor from "../components/reporting/FilingDraftEditor";
 
 interface ReportTemplate {
   id: string;
@@ -43,12 +63,95 @@ const JURIS_STYLE: Record<string, string> = {
 };
 
 export default function Reporting() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const templates = templateData.templates as ReportTemplate[];
+  const [view, setView] = useState<"templates" | "drafts" | "ctr">(
+    searchParams.get("draft") ? "drafts" : searchParams.has("ctr") ? "ctr" : "templates",
+  );
   const [area, setArea] = useState<ReportingArea | "all">("all");
   const [jurisdiction, setJurisdiction] = useState<ReportJurisdiction | "all">("all");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<ReportTemplate | null>(templates[0] ?? null);
+  const [drafts, setDrafts] = useState<FilingDraftRecord[]>([]);
+  const [selectedDraft, setSelectedDraft] = useState<FilingDraftRecord | null>(null);
+  const [draftStats, setDraftStats] = useState({ total: 0, draft: 0, pendingReview: 0 });
+  const [ctrObligations, setCtrObligations] = useState<CtrObligationRecord[]>([]);
+  const [ctrStats, setCtrStats] = useState({ total: 0, pending: 0, draftCreated: 0, filed: 0, overdue: 0, dueSoon: 0 });
   const [toast, setToast] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [draftLoadError, setDraftLoadError] = useState("");
+  const canMlro = hasOverrideCapability();
+
+  const strSarDrafts = useMemo(
+    () => drafts.filter((d) => d.filingType !== "ctr_us"),
+    [drafts],
+  );
+
+  const strSarDraftStats = useMemo(() => ({
+    total: strSarDrafts.length,
+    draft: strSarDrafts.filter((d) => d.status === "draft").length,
+    pendingReview: strSarDrafts.filter((d) => d.status === "pending_review").length,
+  }), [strSarDrafts]);
+
+  /** Include active CTR draft when opened from the CTR queue deep-link. */
+  const draftSidebarItems = useMemo(() => {
+    if (
+      selectedDraft?.filingType === "ctr_us"
+      && !strSarDrafts.some((d) => d.id === selectedDraft.id)
+    ) {
+      return [selectedDraft, ...strSarDrafts];
+    }
+    return strSarDrafts;
+  }, [strSarDrafts, selectedDraft]);
+
+  const refreshDrafts = useCallback(async () => {
+    try {
+      setDraftLoadError("");
+      const [{ drafts: list }, stats] = await Promise.all([
+        apiListFilingDrafts(),
+        apiFilingStats(),
+      ]);
+      setDrafts(list);
+      setDraftStats(stats);
+      const strSar = list.filter((d) => d.filingType !== "ctr_us");
+      const draftId = searchParams.get("draft");
+      if (draftId) {
+        const found = list.find((d) => d.id === draftId);
+        if (found) setSelectedDraft(found);
+        else setSelectedDraft(await apiGetFilingDraft(draftId));
+      } else if (strSar.length) {
+        setSelectedDraft((prev) => {
+          if (prev && strSar.some((d) => d.id === prev.id)) return prev;
+          return strSar[0];
+        });
+      } else if (list.length) {
+        setSelectedDraft((prev) => prev ?? list[0]);
+      } else {
+        setSelectedDraft(null);
+      }
+    } catch (e) {
+      setDrafts([]);
+      setSelectedDraft(null);
+      setDraftLoadError((e as Error).message || "Could not load filing drafts");
+    }
+  }, [searchParams]);
+
+  const refreshCtr = useCallback(async () => {
+    try {
+      const [list, stats] = await Promise.all([apiListCtrObligations(), apiCtrStats()]);
+      setCtrObligations(list.obligations);
+      setCtrStats(stats);
+    } catch {
+      setCtrObligations([]);
+    }
+  }, []);
+
+  useEffect(() => { void refreshDrafts(); }, [refreshDrafts]);
+  useEffect(() => { if (view === "ctr") void refreshCtr(); }, [view, refreshCtr]);
+
+  useEffect(() => {
+    if (searchParams.get("draft")) setView("drafts");
+  }, [searchParams]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -74,6 +177,113 @@ export default function Reporting() {
     setTimeout(() => setToast(""), 3000);
   }
 
+  function copyDraft() {
+    if (!selectedDraft) return;
+    const doc = normalizeDraftBody(selectedDraft.body);
+    const text = doc?.renderedText ?? (selectedDraft.body && "renderedText" in selectedDraft.body ? selectedDraft.body.renderedText : "");
+    if (!text) return;
+    void navigator.clipboard.writeText(text);
+    setToast("Copied full filing draft to clipboard");
+    setTimeout(() => setToast(""), 3000);
+  }
+
+  const draftCompliance = useMemo(() => {
+    if (!selectedDraft?.body) return null;
+    const doc = normalizeDraftBody(selectedDraft.body);
+    if (!doc) return null;
+    if (doc.reportType === "CTR_US") {
+      return evaluateCtrCompliance(doc.sections);
+    }
+    return evaluateDraftCompliance({
+      sections: doc.sections,
+      reportType: doc.reportType,
+      fiuId: doc.fiu.id,
+      defensiveFilingDenied: doc.defensiveFilingDenied,
+    });
+  }, [selectedDraft?.body, selectedDraft?.id]);
+
+  async function handleCreateCtrDraft(obligationId: string) {
+    setBusy(true);
+    try {
+      const { draftId } = await apiCreateCtrDraft(obligationId);
+      setView("drafts");
+      setSearchParams({ draft: draftId });
+      await refreshDrafts();
+      await refreshCtr();
+      setToast("CTR Form 104 draft created — complete TIN/account fields before review");
+    } catch (e) {
+      setToast((e as Error).message);
+    } finally {
+      setBusy(false);
+      setTimeout(() => setToast(""), 4000);
+    }
+  }
+
+  async function handleSubmitReview() {
+    if (!selectedDraft) return;
+    if (draftCompliance?.blockers.length) {
+      setToast(`Complete required fields before review: ${draftCompliance.blockers.slice(0, 2).join("; ")}${draftCompliance.blockers.length > 2 ? "…" : ""}`);
+      setTimeout(() => setToast(""), 5000);
+      return;
+    }
+    setBusy(true);
+    try {
+      const updated = await apiSubmitFilingReview(selectedDraft.id);
+      setSelectedDraft(updated);
+      await refreshDrafts();
+      setToast("Draft submitted for maker-checker review");
+    } catch (e) {
+      setToast((e as Error).message);
+    } finally {
+      setBusy(false);
+      setTimeout(() => setToast(""), 3500);
+    }
+  }
+
+  async function handleSubmitFiu() {
+    if (!selectedDraft) return;
+    setBusy(true);
+    try {
+      const result = await apiSubmitFilingToFiu(selectedDraft.id);
+      setSelectedDraft(result.draft);
+      await refreshDrafts();
+      setToast(`Submitted to ${result.submission.fiuSystem} · ref ${result.submission.fiuReference}`);
+    } catch (e) {
+      setToast((e as Error).message);
+    } finally {
+      setBusy(false);
+      setTimeout(() => setToast(""), 5000);
+    }
+  }
+
+  async function handleMlroApprove() {
+    if (!selectedDraft) return;
+    setBusy(true);
+    try {
+      const updated = await apiMlroApproveFiling(selectedDraft.id);
+      setSelectedDraft(updated);
+      await refreshDrafts();
+      setToast("MLRO approved — ready for FIU submission (manual goAML step)");
+    } catch (e) {
+      setToast((e as Error).message);
+    } finally {
+      setBusy(false);
+      setTimeout(() => setToast(""), 3500);
+    }
+  }
+
+  function selectDraft(d: FilingDraftRecord) {
+    setSelectedDraft(d);
+    setSearchParams({ draft: d.id });
+  }
+
+  const STATUS_STYLE: Record<string, string> = {
+    draft: "bg-med/15 text-med",
+    pending_review: "bg-ai/15 text-ai",
+    mlro_approved: "bg-low/15 text-low",
+    submitted: "bg-panel2 text-muted",
+  };
+
   return (
     <div>
       <AgentBanner agent="jana" title="Jana — Reporting Centre">
@@ -85,18 +295,167 @@ export default function Reporting() {
         <Stat n={String(stats.total)} l="Templates" />
         <Stat n={String(stats.uae)} l="UAE / goAML" c="text-low" />
         <Stat n={String(stats.us)} l="US / FinCEN" c="text-med" />
-        <Stat n={String(stats.email)} l="Email / letter drafts" />
+        <Stat n={String(draftStats.total)} l="Live filing drafts" c="text-ai" />
+      </div>
+
+      <div className="flex gap-2 mb-4">
+        <button type="button" onClick={() => setView("templates")}
+          className={`px-4 py-2 rounded-lg text-[12px] font-semibold border ${view === "templates" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
+          Template library
+        </button>
+        <button type="button" onClick={() => { setView("drafts"); void refreshDrafts(); }}
+          className={`px-4 py-2 rounded-lg text-[12px] font-semibold border ${view === "drafts" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
+          STR/SAR drafts ({strSarDraftStats.total})
+        </button>
+        <button type="button" onClick={() => { setView("ctr"); void refreshCtr(); }}
+          className={`px-4 py-2 rounded-lg text-[12px] font-semibold border ${view === "ctr" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
+          US CTR queue ({ctrStats.pending + ctrStats.draftCreated})
+        </button>
       </div>
 
       <Card className="p-3 mb-4 text-[11px] text-muted flex flex-wrap gap-4">
         <span><b className="text-ink">UAE FIU:</b> {FIU_ROUTING.UAE.system} · {FIU_ROUTING.UAE.regulator}</span>
-        <span><b className="text-ink">US BaaS:</b> {FIU_ROUTING.US.system} · {FIU_ROUTING.US.regulator}</span>
-        <span><b className="text-ink">Methodology:</b> {templateData.methodology}</span>
-        <span><b className="text-ink">STR SLA:</b> {STR_FILING_SLA.standardBusinessDaysFromAlert} business days · {STR_FILING_SLA.expeditedHoursFromDecision}h expedited</span>
+        <span><b className="text-ink">US BaaS:</b> {FIU_ROUTING.US.system} · SAR + CTR Form 104</span>
+        <span><b className="text-ink">STR SLA:</b> {STR_FILING_SLA.standardBusinessDaysFromAlert} business days</span>
+        <span><b className="text-ink">CTR SLA:</b> {CTR_FILING_SLA.deadlineDays} calendar days · ≥ ${CTR_FILING_SLA.thresholdUsd.toLocaleString()} cash</span>
         <span><b className="text-ink">Guidance:</b> {CBUAE_STR_GUIDANCE.notice} · {CBUAE_STR_GUIDANCE.thematicReview}</span>
         <span><b className="text-ink">goAML types:</b> {GOAML_REPORT_TYPES.map((t) => t.code).join(", ")}</span>
       </Card>
 
+      {view === "ctr" ? (
+        <div className="grid grid-cols-[320px_1fr] gap-4 max-lg:grid-cols-1">
+          <Card className="p-3">
+            <div className="text-[10px] text-faint mb-2">
+              {ctrStats.pending} pending · {ctrStats.draftCreated} draft · {ctrStats.filed} filed
+              {ctrStats.overdue > 0 && <span className="text-hi"> · {ctrStats.overdue} overdue</span>}
+            </div>
+            <div className="space-y-1 max-h-[70vh] overflow-y-auto">
+              {ctrObligations.length === 0 && (
+                <p className="text-[12px] text-muted">No CTR obligations. US cash transactions ≥ $10,000 auto-register from TM.</p>
+              )}
+              {ctrObligations.map((o) => (
+                <div key={o.id} className="p-2.5 rounded-lg border border-lineSoft text-[11px]">
+                  <div className="font-semibold">{o.customerName}</div>
+                  <div className="text-muted">${o.aggregateUsd.toLocaleString()} · {o.transactionDate.slice(0, 10)}</div>
+                  <div className="text-[10px] text-faint">Due {o.dueAt.slice(0, 10)} · {o.status}</div>
+                  {o.filingDraftId ? (
+                    <button type="button" className="btn text-[10px] mt-2" onClick={() => { setView("drafts"); setSearchParams({ draft: o.filingDraftId! }); void refreshDrafts(); }}>
+                      Open draft
+                    </button>
+                  ) : o.status === "pending" ? (
+                    <button type="button" className="btn text-[10px] mt-2" disabled={busy} onClick={() => void handleCreateCtrDraft(o.id)}>
+                      Create Form 104 draft
+                    </button>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </Card>
+          <Card className="p-4">
+            <h3 className="m-0 text-sm font-display">US CTR programme — FinCEN Form 104</h3>
+            <p className="text-[12px] text-muted mt-2">
+              Cash transactions ≥ ${CTR_FILING_SLA.thresholdUsd.toLocaleString()} on US BaaS customers register automatically from TM.
+              Jana creates Form 104 drafts; BSA officer reviews and submits via FinCEN BSA E-File (mock/live).
+            </p>
+            <ul className="text-[11px] text-muted mt-3 space-y-1 list-disc pl-4">
+              <li>Maker-checker: draft → review → MLRO approve → FinCEN submit</li>
+              <li>15-day filing deadline from transaction date (31 CFR 1010.311)</li>
+              <li>Aggregation of multiple same-day cash transactions supported</li>
+            </ul>
+          </Card>
+        </div>
+      ) : view === "drafts" ? (
+        <div className="grid grid-cols-[320px_1fr] gap-4 max-lg:grid-cols-1">
+          <Card className="p-3 max-h-[70vh] overflow-y-auto">
+            <div className="text-[10px] text-faint mb-2">
+              {strSarDraftStats.draft} draft · {strSarDraftStats.pendingReview} in review
+            </div>
+            {draftLoadError && (
+              <p className="text-[12px] text-hi mb-2">{draftLoadError}</p>
+            )}
+            {strSarDrafts.length === 0 && !draftLoadError && (
+              <p className="text-[12px] text-muted">
+                No STR/SAR drafts yet. Escalate a case from{" "}
+                <Link to="/investigation" className="text-ai hover:underline">Investigation Hub</Link>
+                {" "}to auto-create a Jana STR/SAR draft.
+              </p>
+            )}
+            <div className="space-y-1">
+              {draftSidebarItems.map((d) => (
+                <button key={d.id} type="button" onClick={() => selectDraft(d)}
+                  className={`w-full text-left p-2.5 rounded-lg border transition text-[11px] ${
+                    selectedDraft?.id === d.id ? "border-ai bg-ai/10" : "border-lineSoft hover:bg-panel2"
+                  }`}>
+                  <div className="mono text-[9px] text-faint">{d.templateId}</div>
+                  <div className="font-semibold text-[12px] mt-0.5 leading-tight">{d.title ?? d.filingType}</div>
+                  <div className="text-muted text-[10px] mt-0.5">{d.customerName}</div>
+                  <span className={`pill text-[9px] mt-1 inline-block ${STATUS_STYLE[d.status] ?? "bg-panel2"}`}>{d.status}</span>
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          <div>
+            {selectedDraft ? (
+              <>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {selectedDraft.status === "draft" && (
+                    <button
+                      type="button"
+                      className="btn text-[11px]"
+                      disabled={busy || (draftCompliance?.blockers.length ?? 0) > 0}
+                      title={draftCompliance?.blockers.length ? draftCompliance.blockers.slice(0, 3).join("; ") : undefined}
+                      onClick={() => void handleSubmitReview()}
+                    >
+                      Submit for review
+                      {draftCompliance && draftCompliance.blockers.length > 0 && (
+                        <span className="ml-1 text-hi">({draftCompliance.score}/{draftCompliance.total})</span>
+                      )}
+                    </button>
+                  )}
+                  {selectedDraft.status === "pending_review" && canMlro && (
+                    <button type="button" className="btn text-[11px]" disabled={busy} onClick={() => void handleMlroApprove()}>
+                      MLRO approve
+                    </button>
+                  )}
+                  {selectedDraft.status === "mlro_approved" && canMlro && (
+                    <button type="button" className="btn text-[11px]" disabled={busy} onClick={() => void handleSubmitFiu()}>
+                      {selectedDraft.filingType === "ctr_us"
+                        ? "Submit to FinCEN (Form 104 CTR)"
+                        : "Submit to FIU (goAML / FinCEN SAR)"}
+                    </button>
+                  )}
+                  {selectedDraft.status === "submitted" && (
+                    <span className="pill bg-low/15 text-low text-[10px] self-center">Filed with FIU</span>
+                  )}
+                  <Link to="/investigation" className="btn btn-ghost text-[11px]">Investigation →</Link>
+                  <span className={`pill text-[10px] ml-auto self-center ${STATUS_STYLE[selectedDraft.status] ?? ""}`}>
+                    {selectedDraft.status.replace("_", " ")}
+                  </span>
+                </div>
+                <FilingDraftEditor
+                  draft={selectedDraft}
+                  readOnly={selectedDraft.status === "mlro_approved" || selectedDraft.status === "submitted"}
+                  onCopy={copyDraft}
+                  onSaved={(updated) => {
+                    setSelectedDraft(updated);
+                    void refreshDrafts();
+                    setToast("Draft saved");
+                    setTimeout(() => setToast(""), 2500);
+                  }}
+                />
+              </>
+            ) : (
+              <Card className="p-4 text-muted">
+                {strSarDrafts.length === 0
+                  ? "No STR/SAR drafts yet — escalate a case from Investigation Hub."
+                  : "Select a filing draft from the list."}
+              </Card>
+            )}
+          </div>
+        </div>
+      ) : (
+        <>
       <div className="flex gap-2 flex-wrap mb-4">
         <button type="button" onClick={() => setArea("all")}
           className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold border ${area === "all" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
@@ -211,6 +570,8 @@ export default function Reporting() {
           </div>
         </div>
       </div>
+        </>
+      )}
 
       <Card className="p-4 mt-5">
         <AgentAiTag agent="jana">Executive summary (sample draft)</AgentAiTag>

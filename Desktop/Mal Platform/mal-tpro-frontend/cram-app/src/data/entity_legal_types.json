@@ -13,7 +13,7 @@
   { "name": "Holding Company", "score": 3, "rating": "High", "legalForm": "legal", "rationale": "Passive holding — UBO opacity and layered control" },
   { "name": "Joint Liability Company", "score": 3, "rating": "High", "legalForm": "legal", "rationale": "Joint liability partnership — shared control complexity" },
   { "name": "Joint Venture / Joint Participation", "score": 3, "rating": "High", "legalForm": "legal", "rationale": "JV structure — multi-party control and purpose verification" },
-  { "name": "Limited Liability Company (LLC)", "score": 3, "rating": "High", "legalForm": "legal", "rationale": "Standard LLC — verify UBO, licensing and purpose" },
+  { "name": "Limited Liability Company (LLC)", "score": 2, "rating": "Medium", "legalForm": "legal", "rationale": "Standard LLC/SME — ordinary ownership structure; verify UBO, licensing and purpose (CRAM LP/MER parameter library §2)" },
   { "name": "Limited Liability Partnership (LLP)", "score": 2, "rating": "Medium", "legalForm": "legal", "rationale": "LLP — professional partnership with registered partners" },
   { "name": "General Partnership", "score": 2, "rating": "Medium", "legalForm": "legal", "rationale": "General partnership — partner identification required" },
   { "name": "Private Joint Stock Company", "score": 2, "rating": "Medium", "legalForm": "legal", "rationale": "Private JSC — shareholder register verification" },
