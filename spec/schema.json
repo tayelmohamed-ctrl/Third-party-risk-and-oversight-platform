@@ -1,0 +1,205 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tprm.example/spec/schema.json",
+  "title": "Third-Party Risk & Oversight Platform — Data Spec",
+  "description": "Canonical schema for the data files in this directory. These JSON files are the source of truth consumed by the frontend.",
+  "type": "object",
+  "definitions": {
+    "riskTier": {
+      "type": "string",
+      "enum": ["Critical", "High", "Medium", "Low"]
+    },
+    "thirdPartyStatus": {
+      "type": "string",
+      "enum": ["Onboarding", "Active", "Under Review", "Offboarding", "Terminated"]
+    },
+    "dataAccessLevel": {
+      "type": "string",
+      "enum": ["None", "Internal", "Confidential", "Restricted"]
+    },
+    "assessmentType": {
+      "type": "string",
+      "enum": ["Security", "Privacy", "Financial", "Operational", "Compliance"]
+    },
+    "assessmentStatus": {
+      "type": "string",
+      "enum": ["Draft", "In Progress", "Submitted", "Completed", "Overdue"]
+    },
+    "findingStatus": {
+      "type": "string",
+      "enum": ["Open", "In Remediation", "Resolved", "Risk Accepted"]
+    },
+    "controlStatus": {
+      "type": "string",
+      "enum": ["Implemented", "Partially Implemented", "Not Implemented", "Not Applicable"]
+    },
+    "controlEffectiveness": {
+      "type": "string",
+      "enum": ["Effective", "Needs Improvement", "Ineffective", "Not Tested"]
+    },
+    "caseType": {
+      "type": "string",
+      "enum": ["Incident", "Issue", "Investigation", "Exception", "Due Diligence"]
+    },
+    "caseStatus": {
+      "type": "string",
+      "enum": ["Open", "In Progress", "Pending Review", "Closed"]
+    },
+    "regChangeStatus": {
+      "type": "string",
+      "enum": ["Horizon", "Assessing", "Impact Identified", "Implementing", "Complete"]
+    },
+    "control": {
+      "type": "object",
+      "required": ["id", "name", "domain", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^ctrl-[0-9]+$" },
+        "name": { "type": "string" },
+        "domain": { "type": "string" },
+        "framework": { "type": "string" },
+        "description": { "type": "string" },
+        "owner": { "type": "string" },
+        "status": { "$ref": "#/definitions/controlStatus" },
+        "effectiveness": { "$ref": "#/definitions/controlEffectiveness" },
+        "lastTested": { "type": "string", "format": "date" },
+        "nextTest": { "type": "string", "format": "date" }
+      },
+      "additionalProperties": false
+    },
+    "case": {
+      "type": "object",
+      "required": ["id", "title", "type", "severity", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^case-[0-9]+$" },
+        "title": { "type": "string" },
+        "type": { "$ref": "#/definitions/caseType" },
+        "thirdParty": { "type": "string" },
+        "severity": { "$ref": "#/definitions/riskTier" },
+        "status": { "$ref": "#/definitions/caseStatus" },
+        "owner": { "type": "string" },
+        "openedDate": { "type": "string", "format": "date" },
+        "dueDate": { "type": "string", "format": "date" },
+        "summary": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "regChange": {
+      "type": "object",
+      "required": ["id", "title", "status", "impact"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^reg-[0-9]+$" },
+        "title": { "type": "string" },
+        "regulator": { "type": "string" },
+        "jurisdiction": { "type": "string" },
+        "status": { "$ref": "#/definitions/regChangeStatus" },
+        "impact": { "$ref": "#/definitions/riskTier" },
+        "effectiveDate": { "type": "string", "format": "date" },
+        "owner": { "type": "string" },
+        "summary": { "type": "string" },
+        "affectedThirdParties": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "thirdParty": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "category",
+        "status",
+        "criticality",
+        "inherentRiskTier",
+        "residualRiskTier",
+        "dataAccess"
+      ],
+      "properties": {
+        "id": { "type": "string", "pattern": "^tp-[0-9]+$" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "country": { "type": "string" },
+        "contactName": { "type": "string" },
+        "contactEmail": { "type": "string", "format": "email" },
+        "internalOwner": { "type": "string" },
+        "services": { "type": "array", "items": { "type": "string" } },
+        "status": { "$ref": "#/definitions/thirdPartyStatus" },
+        "criticality": { "$ref": "#/definitions/riskTier" },
+        "inherentRiskTier": { "$ref": "#/definitions/riskTier" },
+        "residualRiskTier": { "$ref": "#/definitions/riskTier" },
+        "dataAccess": { "$ref": "#/definitions/dataAccessLevel" },
+        "annualSpendUSD": { "type": "number", "minimum": 0 },
+        "onboardedAt": { "type": "string", "format": "date" },
+        "lastReviewDate": { "type": "string", "format": "date" },
+        "nextReviewDate": { "type": "string", "format": "date" }
+      },
+      "additionalProperties": false
+    },
+    "assessment": {
+      "type": "object",
+      "required": ["id", "thirdPartyId", "type", "status", "riskRating"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^as-[0-9]+$" },
+        "thirdPartyId": { "type": "string", "pattern": "^tp-[0-9]+$" },
+        "type": { "$ref": "#/definitions/assessmentType" },
+        "status": { "$ref": "#/definitions/assessmentStatus" },
+        "score": { "type": "number", "minimum": 0, "maximum": 100 },
+        "riskRating": { "$ref": "#/definitions/riskTier" },
+        "assessor": { "type": "string" },
+        "dueDate": { "type": "string", "format": "date" },
+        "completedDate": {
+          "type": ["string", "null"],
+          "format": "date"
+        },
+        "summary": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "finding": {
+      "type": "object",
+      "required": ["id", "thirdPartyId", "title", "severity", "status"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^fd-[0-9]+$" },
+        "thirdPartyId": { "type": "string", "pattern": "^tp-[0-9]+$" },
+        "assessmentId": {
+          "type": ["string", "null"],
+          "pattern": "^as-[0-9]+$"
+        },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "severity": { "$ref": "#/definitions/riskTier" },
+        "status": { "$ref": "#/definitions/findingStatus" },
+        "owner": { "type": "string" },
+        "identifiedDate": { "type": "string", "format": "date" },
+        "dueDate": { "type": "string", "format": "date" },
+        "remediationPlan": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "properties": {
+    "thirdParties": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/thirdParty" }
+    },
+    "assessments": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/assessment" }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/finding" }
+    },
+    "controls": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/control" }
+    },
+    "cases": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/case" }
+    },
+    "reg-changes": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/regChange" }
+    }
+  }
+}

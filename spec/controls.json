@@ -1,0 +1,74 @@
+[
+  {
+    "id": "ctrl-001",
+    "name": "Vendor security questionnaire on onboarding",
+    "domain": "Vendor Management",
+    "framework": "SOC 2",
+    "description": "All new third parties complete a tiered security questionnaire before contract signature.",
+    "owner": "Security GRC Team",
+    "status": "Implemented",
+    "effectiveness": "Effective",
+    "lastTested": "2026-01-20",
+    "nextTest": "2026-07-20"
+  },
+  {
+    "id": "ctrl-002",
+    "name": "Encryption of data in transit and at rest",
+    "domain": "Data Protection",
+    "framework": "ISO 27001",
+    "description": "Restricted data handled by vendors must be encrypted with approved algorithms.",
+    "owner": "Platform Engineering",
+    "status": "Partially Implemented",
+    "effectiveness": "Needs Improvement",
+    "lastTested": "2026-02-10",
+    "nextTest": "2026-05-10"
+  },
+  {
+    "id": "ctrl-003",
+    "name": "Quarterly third-party access reviews",
+    "domain": "Access Management",
+    "framework": "NIST CSF",
+    "description": "Access granted to vendors is reviewed and recertified every quarter.",
+    "owner": "Identity & Access",
+    "status": "Implemented",
+    "effectiveness": "Effective",
+    "lastTested": "2026-03-31",
+    "nextTest": "2026-06-30"
+  },
+  {
+    "id": "ctrl-004",
+    "name": "Vendor business continuity & DR validation",
+    "domain": "Resilience",
+    "framework": "ISO 22301",
+    "description": "Critical vendors must evidence tested BCP/DR plans annually.",
+    "owner": "Ops Resilience",
+    "status": "Partially Implemented",
+    "effectiveness": "Needs Improvement",
+    "lastTested": "2025-11-15",
+    "nextTest": "2026-11-15"
+  },
+  {
+    "id": "ctrl-005",
+    "name": "Sub-processor change notification clause",
+    "domain": "Privacy",
+    "framework": "GDPR",
+    "description": "Contracts require 30-day prior notice for any sub-processor changes.",
+    "owner": "Privacy Office",
+    "status": "Not Implemented",
+    "effectiveness": "Not Tested",
+    "lastTested": "2025-12-01",
+    "nextTest": "2026-06-01"
+  },
+  {
+    "id": "ctrl-006",
+    "name": "Annual SOC 2 / ISO report collection",
+    "domain": "Vendor Management",
+    "framework": "SOC 2",
+    "description": "Independent assurance reports are collected and reviewed annually for critical vendors.",
+    "owner": "Compliance Office",
+    "status": "Implemented",
+    "effectiveness": "Effective",
+    "lastTested": "2026-02-28",
+    "nextTest": "2027-02-28"
+  }
+]

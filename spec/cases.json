@@ -1,0 +1,74 @@
+[
+  {
+    "id": "case-001",
+    "title": "Northwind Cloud key rotation gap",
+    "type": "Issue",
+    "thirdParty": "Northwind Cloud Services",
+    "severity": "High",
+    "status": "In Progress",
+    "owner": "Priya Raman",
+    "openedDate": "2026-01-16",
+    "dueDate": "2026-07-31",
+    "summary": "Encryption key rotation cadence exceeds policy; contractual addendum in progress."
+  },
+  {
+    "id": "case-002",
+    "title": "Vanta Analytics overdue security re-assessment",
+    "type": "Investigation",
+    "thirdParty": "Vanta Analytics Co.",
+    "severity": "High",
+    "status": "Open",
+    "owner": "Security GRC Team",
+    "openedDate": "2026-04-02",
+    "dueDate": "2026-06-15",
+    "summary": "Vendor unresponsive to annual security questionnaire; escalation underway."
+  },
+  {
+    "id": "case-003",
+    "title": "BrightDesk sub-processor disclosure",
+    "type": "Due Diligence",
+    "thirdParty": "BrightDesk Support Suite",
+    "severity": "Medium",
+    "status": "Pending Review",
+    "owner": "Sara Nguyen",
+    "openedDate": "2026-05-10",
+    "dueDate": "2026-08-10",
+    "summary": "Reviewing newly disclosed sub-processors for PII handling adequacy."
+  },
+  {
+    "id": "case-004",
+    "title": "Ledgerly access-review evidence backfill",
+    "type": "Issue",
+    "thirdParty": "Ledgerly Payments",
+    "severity": "Low",
+    "status": "Closed",
+    "owner": "Tomas Becker",
+    "openedDate": "2026-02-20",
+    "dueDate": "2026-04-20",
+    "summary": "Missing quarterly access review artifacts remediated and closed."
+  },
+  {
+    "id": "case-005",
+    "title": "Crate & Pallet single-region concentration",
+    "type": "Issue",
+    "thirdParty": "Crate & Pallet Logistics",
+    "severity": "Medium",
+    "status": "In Progress",
+    "owner": "Diego Alvarez",
+    "openedDate": "2025-08-10",
+    "dueDate": "2026-09-30",
+    "summary": "Evaluating a secondary fulfilment partner to reduce concentration risk."
+  },
+  {
+    "id": "case-006",
+    "title": "Quill Legal onboarding exception",
+    "type": "Exception",
+    "thirdParty": "Quill Legal Advisors",
+    "severity": "Low",
+    "status": "Open",
+    "owner": "Grace Lim",
+    "openedDate": "2026-05-20",
+    "dueDate": "2026-06-30",
+    "summary": "Temporary exception pending completion of due diligence questionnaire."
+  }
+]
