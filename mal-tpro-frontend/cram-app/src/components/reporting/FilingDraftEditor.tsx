@@ -124,7 +124,22 @@ export default function FilingDraftEditor({ draft, onSaved, onCopy, readOnly }: 
   }
 
   if (!doc) {
-    return <Card className="p-6 text-muted">Loading draft…</Card>;
+    const legacyText = draft.body && "renderedText" in draft.body ? draft.body.renderedText : null;
+    return (
+      <Card className="p-6 text-muted space-y-3">
+        <p className="m-0">Could not open the structured draft editor for this filing.</p>
+        {legacyText ? (
+          <>
+            <p className="text-[11px] m-0">Showing legacy draft text — save once to upgrade to the guidance-aligned editor.</p>
+            <pre className="whitespace-pre-wrap font-body text-[12px] leading-relaxed m-0 p-4 bg-panel2 rounded-xl border border-lineSoft max-h-[65vh] overflow-y-auto">
+              {legacyText}
+            </pre>
+          </>
+        ) : (
+          <p className="text-[11px] m-0">The draft has no body content. Re-escalate the case from Investigation Hub or contact support.</p>
+        )}
+      </Card>
+    );
   }
 
   const pct = compliance ? Math.round((compliance.score / Math.max(compliance.total, 1)) * 100) : 0;
@@ -354,7 +369,9 @@ export default function FilingDraftEditor({ draft, onSaved, onCopy, readOnly }: 
                 <span className={item.pass ? "text-low" : "text-hi"}>{item.pass ? "✓" : "○"}</span>
                 <div>
                   <div className="font-medium">{item.label}</div>
-                  <div className="text-[9px] text-faint">{item.sources.join(" · ")}</div>
+                  {"sources" in item && Array.isArray(item.sources) && item.sources.length > 0 ? (
+                    <div className="text-[9px] text-faint">{item.sources.join(" · ")}</div>
+                  ) : null}
                 </div>
               </div>
             ))}

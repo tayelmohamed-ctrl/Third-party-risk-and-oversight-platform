@@ -71,6 +71,7 @@ export const ROUTE_AGENT: Record<string, AgentId | undefined> = {
   "/cram": "sayed",
   "/regulatory": "sayed",
   "/test-bench": "sayed",
+  "/kyb-checklist": "sayed",
   "/activity-register": "sayed",
   "/validation": "sayed",
   "/feeds": "sayed",

@@ -17,6 +17,7 @@ const NAV = [
   ]},
   { section: "Operate", items: [
     { to: "/test-bench", label: "CRAM Risk Test Bench", icon: Scale, agent: "sayed" as const },
+    { to: "/kyb-checklist", label: "KYB Document Checklists", icon: ClipboardCheck, agent: "sayed" as const },
     { to: "/rerating", label: "Re-rating & Reviews", icon: RefreshCw, agent: "mohsen" as const },
     { to: "/feeds", label: "Signal Feeds", icon: Crosshair, agent: "sayed" as const },
     { to: "/screening", label: "Screening & Monitoring", icon: ShieldCheck, agent: "sayed" as const },

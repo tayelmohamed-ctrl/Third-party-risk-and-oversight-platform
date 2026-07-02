@@ -1,0 +1,241 @@
+{
+  "version": "1.0",
+  "date": "2026-06-22",
+  "title": "Transaction Monitoring System Implementation BRD",
+  "gates": [
+    {
+      "id": "GATE-1",
+      "f1": "Design and regulatory alignment approval",
+      "f2": "All mapped mandatory requirements must be met, evidenced, validated, and approved or formally risk accepted according to the go-live decision matrix.",
+      "f3": "GATE-2"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-A-002",
+      "f2": "CFG-BRD-A-002: Configure customer coverage requirements capability for monitor new, existing, dormant, reactivated, and closed accounts where data retention and activity risk require monitoring",
+      "f3": "FIELD-CUST: Customer ID, segment, nationality/residence, CRR, PEP/TFS status, KYC profile, SOF/SOW, occupation/business activity, expected activity"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-F-003",
+      "f2": "CFG-BRD-F-003: Configure risk-based monitoring requirements capability for apply enhanced monitoring to high-risk customers and high-risk geographies",
+      "f3": "FIELD-CUST: Customer ID, segment, nationality/residence, CRR, PEP/TFS status, KYC profile, SOF/SOW, occupation/business activity, expected activity"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-H-004",
+      "f2": "CFG-BRD-H-004: Configure threshold configuration requirements capability for retain version-controlled threshold rationale and test evidence",
+      "f3": "FIELD-CORE: Customer, account, transaction, risk rating, product, channel, geography, and alert/case identifiers"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-K-004",
+      "f2": "CFG-BRD-K-004: Configure investigation requirements capability for support no tipping-off control prompts and restrictions during investigations",
+      "f3": "FIELD-FRAUD: Device ID, IP, velocity, failed/reversed transactions, linked accounts, fraud flags, mule indicators"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-L-002",
+      "f2": "CFG-BRD-L-002: Configure str / sar escalation requirements capability for document STR/SAR decisions, rationale, supporting evidence, and MLRO approval",
+      "f3": "FIELD-CORE: Customer, account, transaction, risk rating, product, channel, geography, and alert/case identifiers"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-L-003",
+      "f2": "CFG-BRD-L-003: Configure str / sar escalation requirements capability for support goAML or relevant reporting process evidence tracking",
+      "f3": "FIELD-CORE: Customer, account, transaction, risk rating, product, channel, geography, and alert/case identifiers"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-P-001",
+      "f2": "CFG-BRD-P-001: Configure reporting and mi requirements capability for provide dashboards for alert volumes, ageing, backlog, productivity, scenario performance, and high-risk alerts",
+      "f3": "FIELD-CORE: Customer, account, transaction, risk rating, product, channel, geography, and alert/case identifiers"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-P-002",
+      "f2": "CFG-BRD-P-002: Configure reporting and mi requirements capability for report STR/SAR escalations, open/closed cases, overdue cases, QA outcomes, and tuning results",
+      "f3": "FIELD-CORE: Customer, account, transaction, risk rating, product, channel, geography, and alert/case identifiers"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-Q-001",
+      "f2": "CFG-BRD-Q-001: Configure audit trail requirements capability for record user login, rule changes, threshold changes, alert decisions, case notes, escalations, and STR/SAR decisions",
+      "f3": "FIELD-AUDIT: User ID, role, action, timestamp, old/new value, approval ID, case/alert reference"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-Q-004",
+      "f2": "CFG-BRD-Q-004: Configure audit trail requirements capability for support timely retrieval/export for audit and regulatory inspection",
+      "f3": "FIELD-AUDIT: User ID, role, action, timestamp, old/new value, approval ID, case/alert reference"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-R-001",
+      "f2": "CFG-BRD-R-001: Configure user access requirements capability for enforce role-based access and segregation of duties",
+      "f3": "FIELD-AUDIT: User ID, role, action, timestamp, old/new value, approval ID, case/alert reference"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-R-003",
+      "f2": "CFG-BRD-R-003: Configure user access requirements capability for apply maker-checker controls to configuration, threshold, and material workflow changes",
+      "f3": "FIELD-AUDIT: User ID, role, action, timestamp, old/new value, approval ID, case/alert reference"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-T-002",
+      "f2": "CFG-BRD-T-002: Configure system integration requirements capability for support API, batch, file transfer, database view, or approved integration method",
+      "f3": "FIELD-CORE: Customer, account, transaction, risk rating, product, channel, geography, and alert/case identifiers"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "BRD-U-003",
+      "f2": "CFG-BRD-U-003: Configure testing and go-live requirements capability for close critical defects and remediate or formally risk accept high defects with compensating controls",
+      "f3": "FIELD-CORE: Customer, account, transaction, risk rating, product, channel, geography, and alert/case identifiers"
+    },
+    {
+      "id": "GATE-1",
+      "f1": "9. Functional Requirements",
+      "f2": "Functional Req ID",
+      "f3": "Area"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "FR-001",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Scenario configuration"
+    },
+    {
+      "id": "FR-002",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Rule engine"
+    },
+    {
+      "id": "FR-003",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Threshold management"
+    },
+    {
+      "id": "FR-004",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Customer segmentation"
+    },
+    {
+      "id": "FR-005",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Transaction ingestion"
+    },
+    {
+      "id": "FR-006",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Batch and real/near-real-time processing"
+    },
+    {
+      "id": "FR-007",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Alert generation"
+    },
+    {
+      "id": "FR-008",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Alert workflow"
+    },
+    {
+      "id": "FR-009",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Case management"
+    },
+    {
+      "id": "FR-010",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "STR/SAR decisioning"
+    },
+    {
+      "id": "FR-011",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "MI dashboards"
+    },
+    {
+      "id": "FR-012",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "User management"
+    },
+    {
+      "id": "FR-013",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Audit logging"
+    },
+    {
+      "id": "FR-014",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Search/filter/export"
+    },
+    {
+      "id": "FR-015",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Configuration management"
+    },
+    {
+      "id": "NFR-001",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Performance"
+    },
+    {
+      "id": "NFR-002",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Availability"
+    },
+    {
+      "id": "NFR-003",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Scalability"
+    },
+    {
+      "id": "NFR-004",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Reliability"
+    },
+    {
+      "id": "NFR-005",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Security"
+    },
+    {
+      "id": "NFR-006",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Data privacy"
+    },
+    {
+      "id": "NFR-007",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Data retention"
+    },
+    {
+      "id": "NFR-008",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Business continuity"
+    },
+    {
+      "id": "NFR-009",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Maintainability"
+    },
+    {
+      "id": "NFR-010",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Usability"
+    },
+    {
+      "id": "NFR-011",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Reporting performance"
+    },
+    {
+      "id": "NFR-012",
+      "category": "U. Testing and Go-Live Requirements",
+      "description": "Interface monitoring"
+    }
+  ],
+  "sourceParagraphs": 3577
+}

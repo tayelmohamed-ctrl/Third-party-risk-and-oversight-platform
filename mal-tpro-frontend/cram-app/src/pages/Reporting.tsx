@@ -79,26 +79,60 @@ export default function Reporting() {
   const [ctrStats, setCtrStats] = useState({ total: 0, pending: 0, draftCreated: 0, filed: 0, overdue: 0, dueSoon: 0 });
   const [toast, setToast] = useState("");
   const [busy, setBusy] = useState(false);
+  const [draftLoadError, setDraftLoadError] = useState("");
   const canMlro = hasOverrideCapability();
+
+  const strSarDrafts = useMemo(
+    () => drafts.filter((d) => d.filingType !== "ctr_us"),
+    [drafts],
+  );
+
+  const strSarDraftStats = useMemo(() => ({
+    total: strSarDrafts.length,
+    draft: strSarDrafts.filter((d) => d.status === "draft").length,
+    pendingReview: strSarDrafts.filter((d) => d.status === "pending_review").length,
+  }), [strSarDrafts]);
+
+  /** Include active CTR draft when opened from the CTR queue deep-link. */
+  const draftSidebarItems = useMemo(() => {
+    if (
+      selectedDraft?.filingType === "ctr_us"
+      && !strSarDrafts.some((d) => d.id === selectedDraft.id)
+    ) {
+      return [selectedDraft, ...strSarDrafts];
+    }
+    return strSarDrafts;
+  }, [strSarDrafts, selectedDraft]);
 
   const refreshDrafts = useCallback(async () => {
     try {
+      setDraftLoadError("");
       const [{ drafts: list }, stats] = await Promise.all([
         apiListFilingDrafts(),
         apiFilingStats(),
       ]);
       setDrafts(list);
       setDraftStats(stats);
+      const strSar = list.filter((d) => d.filingType !== "ctr_us");
       const draftId = searchParams.get("draft");
       if (draftId) {
         const found = list.find((d) => d.id === draftId);
         if (found) setSelectedDraft(found);
         else setSelectedDraft(await apiGetFilingDraft(draftId));
+      } else if (strSar.length) {
+        setSelectedDraft((prev) => {
+          if (prev && strSar.some((d) => d.id === prev.id)) return prev;
+          return strSar[0];
+        });
       } else if (list.length) {
         setSelectedDraft((prev) => prev ?? list[0]);
+      } else {
+        setSelectedDraft(null);
       }
-    } catch {
+    } catch (e) {
       setDrafts([]);
+      setSelectedDraft(null);
+      setDraftLoadError((e as Error).message || "Could not load filing drafts");
     }
   }, [searchParams]);
 
@@ -271,7 +305,7 @@ export default function Reporting() {
         </button>
         <button type="button" onClick={() => { setView("drafts"); void refreshDrafts(); }}
           className={`px-4 py-2 rounded-lg text-[12px] font-semibold border ${view === "drafts" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
-          STR/SAR drafts ({draftStats.total})
+          STR/SAR drafts ({strSarDraftStats.total})
         </button>
         <button type="button" onClick={() => { setView("ctr"); void refreshCtr(); }}
           className={`px-4 py-2 rounded-lg text-[12px] font-semibold border ${view === "ctr" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
@@ -334,17 +368,20 @@ export default function Reporting() {
         <div className="grid grid-cols-[320px_1fr] gap-4 max-lg:grid-cols-1">
           <Card className="p-3 max-h-[70vh] overflow-y-auto">
             <div className="text-[10px] text-faint mb-2">
-              {draftStats.draft} draft · {draftStats.pendingReview} in review
+              {strSarDraftStats.draft} draft · {strSarDraftStats.pendingReview} in review
             </div>
-            {drafts.length === 0 && (
+            {draftLoadError && (
+              <p className="text-[12px] text-hi mb-2">{draftLoadError}</p>
+            )}
+            {strSarDrafts.length === 0 && !draftLoadError && (
               <p className="text-[12px] text-muted">
-                No drafts yet. Escalate a case from{" "}
+                No STR/SAR drafts yet. Escalate a case from{" "}
                 <Link to="/investigation" className="text-ai hover:underline">Investigation Hub</Link>
                 {" "}to auto-create a Jana STR/SAR draft.
               </p>
             )}
             <div className="space-y-1">
-              {drafts.map((d) => (
+              {draftSidebarItems.map((d) => (
                 <button key={d.id} type="button" onClick={() => selectDraft(d)}
                   className={`w-full text-left p-2.5 rounded-lg border transition text-[11px] ${
                     selectedDraft?.id === d.id ? "border-ai bg-ai/10" : "border-lineSoft hover:bg-panel2"
@@ -409,7 +446,11 @@ export default function Reporting() {
                 />
               </>
             ) : (
-              <Card className="p-4 text-muted">Select a filing draft or escalate a case from Investigation Hub.</Card>
+              <Card className="p-4 text-muted">
+                {strSarDrafts.length === 0
+                  ? "No STR/SAR drafts yet — escalate a case from Investigation Hub."
+                  : "Select a filing draft from the list."}
+              </Card>
             )}
           </div>
         </div>

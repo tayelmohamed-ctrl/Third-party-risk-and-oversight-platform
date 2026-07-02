@@ -11,6 +11,7 @@ import {
   isApiAvailable,
   type InvestigationCaseRecord,
 } from "../lib/api";
+import TmReadinessPanel from "../components/tm/TmReadinessPanel";
 
 const STEPS = [
   ["01", "Evidence Collection", "Gathering data"],
@@ -336,6 +337,10 @@ export default function InvestigationHub() {
           {toast}
         </div>
       )}
+
+      <Card className="mt-8 p-4">
+        <TmReadinessPanel compact defaultTab="investigation" />
+      </Card>
     </div>
   );
 }

@@ -21,6 +21,7 @@ import Retention from "./pages/Retention";
 import Login from "./pages/Login";
 import AuthCallback from "./pages/AuthCallback";
 import PartnerPlatformPage from "./pages/PartnerPlatformPage";
+import KybChecklistCentre from "./pages/KybChecklistCentre";
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
       <Route element={<Layout />}>
         <Route index element={<Dashboard />} />
         <Route path="cram" element={<CramWorkspace />} />
+        <Route path="kyb-checklist" element={<KybChecklistCentre />} />
         <Route path="test-bench" element={<RiskTestBench />} />
         <Route path="investigation" element={<InvestigationHub />} />
         <Route path="transaction-monitoring" element={<TransactionMonitoring />} />

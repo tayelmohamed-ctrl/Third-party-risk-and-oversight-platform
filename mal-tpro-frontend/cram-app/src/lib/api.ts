@@ -583,7 +583,7 @@ export async function apiDisposeCase(
 }
 
 export type FilingStatus = "draft" | "pending_review" | "mlro_approved" | "submitted";
-export type FilingType = "str_uae" | "sar_uae" | "sar_us" | "aif" | "other";
+export type FilingType = "str_uae" | "sar_uae" | "sar_us" | "ctr_us" | "aif" | "other";
 
 export type { FilingDraftDocument, FilingSection } from "../lib/filingDraftDocument";
 

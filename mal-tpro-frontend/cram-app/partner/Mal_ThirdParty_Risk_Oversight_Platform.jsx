@@ -5,18 +5,20 @@ import {
   UploadCloud, Flame, Star, Check, X, AlertTriangle, Globe, ChevronRight, Plus,
   TrendingUp, TrendingDown, Minus, MessageSquare, Paperclip, Bell, Lock, ShieldCheck,
   Send, ClipboardCheck, Building2, Activity, AlertCircle, UserPlus, FileSignature,
-  Play, Pause, ChevronLeft, Film, Bookmark
+  Play, Pause, ChevronLeft, Film, Bookmark, HelpCircle, Target, Sparkles, ListChecks, Eye
 } from "lucide-react";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, RadialBarChart, RadialBar,
   PolarAngleAxis, BarChart, Bar, XAxis, YAxis, LineChart, Line
 } from "recharts";
 import * as XLSX from "xlsx";
+import { AGENTS_BASE, CATEGORIES } from "./partnerRegistry.js";
+import TmSystemAssessment, { requiresTmAssessment } from "./tmSystemAssessment.jsx";
 
 /* ============================================================================
    SEED DATA
 ============================================================================ */
-const SEED_VERSION = 6;
+const SEED_VERSION = 10;
 
 const JUR_NEWS = {
   Pakistan: [
@@ -47,81 +49,125 @@ const SEV = { crit: { c: "#ef4444", t: "Critical" }, high: { c: "#f59e0b", t: "H
 const TYPE_COLOR = { FRAUD: "#ef4444", TYPOLOGY: "#8000ff", SANCTIONS: "#8b5cf6", REG: "#1e63e9" };
 
 // component scores are 0-100, higher = better
-const AGENTS_BASE = [
-  { id: "swiftx", name: "SwiftX DLT Pay", category: "Payout partners", relationship: "Pakistan corridor payout — last-mile disbursement", jur: "Pakistan", juris: ["Pakistan"], license: "FINTRAC MSB · Swiss VQF · SBP authorised-dealer chain", tier: "Critical", live: true,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "MLRO", reDDDue: "2027-05-01", blockingNote: null },
-    contacts: [{ role: "Compliance Officer", name: "Faizan R.", email: "compliance@swiftx.example" }, { role: "Ops lead", name: "S. Ali", email: "ops@swiftx.example" }],
-    scores: { reporting: 78, responsiveness: 72, training: 90, audit: 70, findings: 60, timeliness: 65, quality: 80, cooperation: 85, risk: 55 }, history: [70, 68, 72, 74, 73] },
-  { id: "thunes", name: "Thunes", category: "Payout partners", relationship: "Multi-corridor payout (Bangladesh, Philippines)", jur: "Bangladesh", juris: ["Bangladesh", "Philippines"], license: "Multi-corridor PSP; per-corridor authorisation", tier: "High", live: false,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: false, terminationRights: true, approvedBy: null, reDDDue: null, blockingNote: "Not yet operational — ongoing monitoring not yet active; approval pending" },
-    contacts: [{ role: "Compliance", name: "M. Rahman", email: "compliance@thunes.example" }],
-    scores: { reporting: 84, responsiveness: 80, training: 75, audit: 82, findings: 80, timeliness: 78, quality: 85, cooperation: 80, risk: 70 }, history: [76, 78, 80, 81, 82] },
-  { id: "gulf", name: "Gulf Remit FZ", category: "Payout partners", relationship: "UAE corridor payout", jur: "United Arab Emirates", juris: ["United Arab Emirates"], license: "CBUAE-registered; ADGM contracting", tier: "High", live: false,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: false, dataProtection: true, ongoingMonitoring: false, terminationRights: false, approvedBy: null, reDDDue: null, blockingNote: "Audit rights and termination clause not confirmed in contract; scores declining — MLRO hold" },
-    contacts: [{ role: "MLRO", name: "H. Saeed", email: "mlro@gulfremit.example" }],
-    scores: { reporting: 66, responsiveness: 60, training: 55, audit: 64, findings: 50, timeliness: 58, quality: 62, cooperation: 65, risk: 45 }, history: [64, 62, 60, 58, 57] },
-  { id: "nile", name: "Nile Payments", category: "Payout partners", relationship: "Egypt corridor payout", jur: "Egypt", juris: ["Egypt"], license: "CBE MSB licence", tier: "Medium", live: false,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "Compliance", reDDDue: "2027-12-01", blockingNote: null },
-    contacts: [{ role: "Compliance", name: "A. Mostafa", email: "compliance@nile.example" }],
-    scores: { reporting: 72, responsiveness: 74, training: 80, audit: 70, findings: 75, timeliness: 76, quality: 73, cooperation: 78, risk: 68 }, history: [70, 71, 72, 74, 75] },
-  { id: "pearl", name: "Pearl Payout", category: "Payout partners", relationship: "Philippines corridor payout", jur: "Philippines", juris: ["Philippines"], license: "BSP-registered EMI/RA", tier: "Medium", live: false,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "Compliance", reDDDue: "2028-01-01", blockingNote: null },
-    contacts: [{ role: "Compliance", name: "J. Cruz", email: "compliance@pearl.example" }],
-    scores: { reporting: 88, responsiveness: 86, training: 92, audit: 85, findings: 88, timeliness: 84, quality: 88, cooperation: 90, risk: 80 }, history: [82, 84, 86, 87, 89] },
-  { id: "aktifpay", name: "AktifPay", category: "Payout partners", relationship: "Turkey corridor payout — last-mile disbursement", jur: "Turkey", juris: ["Turkey"], license: "BDDK-licensed payment institution", tier: "High", live: false,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: false, terminationRights: true, approvedBy: null, reDDDue: null, blockingNote: "Ongoing monitoring not yet established; approval pending go-live" },
-    contacts: [{ role: "Compliance", name: "K. Yilmaz", email: "compliance@aktifpay.example" }],
-    scores: { reporting: 72, responsiveness: 70, training: 68, audit: 70, findings: 65, timeliness: 71, quality: 72, cooperation: 74, risk: 58 }, history: [68, 69, 70, 71, 72] },
-  { id: "doku", name: "Doku Wallet", category: "Payout partners", relationship: "Indonesia corridor payout — last-mile disbursement", jur: "Indonesia", juris: ["Indonesia"], license: "OJK-licensed payment service provider", tier: "High", live: false,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: false, terminationRights: true, approvedBy: null, reDDDue: null, blockingNote: "Ongoing monitoring not yet established; approval pending go-live" },
-    contacts: [{ role: "Compliance", name: "R. Santoso", email: "compliance@doku.example" }],
-    scores: { reporting: 74, responsiveness: 72, training: 70, audit: 68, findings: 68, timeliness: 72, quality: 73, cooperation: 72, risk: 60 }, history: [69, 70, 71, 72, 73] },
-  { id: "zenus", name: "Zenus Bank International, Inc.", category: "Banking partner", relationship: "USD banking rails — FBO master account, sub-accounts, ACH, settlement, Visa BIN", jur: "United States", juris: ["United States", "Puerto Rico"], license: "IFE-061 — OCIF Puerto Rico (Act 273/2012) · Full-reserve · Not FDIC-insured", tier: "Critical", live: true,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "MLRO", reDDDue: "2027-05-29", blockingNote: null },
-    contacts: [{ role: "Head of Risk (signatory)", name: "Jorge M. Soltero", email: "risk@zenus.example" }, { role: "BSA/AML", name: "Zenus Compliance", email: "compliance@zenus.example" }],
-    kdp: [{ name: "Jorge M. Soltero", role: "Head of Risk — Zenus signatory" }],
-    agreement: { entity: "Zenus Bank International, Inc.", counterparty: "Mal Money, Inc. (Program Manager)", signedFor: "Mal: Abdallah Abu Sheikh (Sole Director)", effective: "29 May 2026", term: "36-month initial, then 1-year renewals", notice: "90 days non-renewal; settlement-failure cure 5 business days", commercial: "Minimum FBO balance $50,000; fund to greater of min or 5-day trailing average", governingLaw: "Puerto Rico", status: "Executed (DocuSign)", doc: "Program Services Agreement (FBO)" },
-    scores: { reporting: 88, responsiveness: 86, training: 82, audit: 74, findings: 76, timeliness: 84, quality: 84, cooperation: 86, risk: 80 }, history: [86, 86, 85, 84, 82] },
-  { id: "rain", name: "Signify Holdings, Inc. (Rain)", category: "Card & settlement", relationship: "Card issuing sponsorship, program management & settlement (Visa); stablecoin settlement", jur: "United States", juris: ["United States"], license: "Card issuing program (Signify/Rain) — issuing depository unnamed in MSA", tier: "Critical", live: true,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: false, auditRights: false, dataProtection: false, ongoingMonitoring: false, terminationRights: false, approvedBy: null, reDDDue: null, blockingNote: "MSA not executed — Do Not Sign in current form (governing terms unilaterally amendable; MLRO hold)" },
-    contacts: [{ role: "Signify contact", name: "Kay Galarza", email: "kay@rain.xyz" }, { role: "Mal program owner", name: "Loay Osama", email: "loay.malahmeh@mal.ai" }],
-    kdp: [{ name: "Signify Holdings, Inc.", role: "Card issuing entity (brand: Rain)" }, { name: "Kay Galarza", role: "Signify commercial contact" }],
-    agreement: { entity: "Signify Holdings, Inc. (brand: Rain)", counterparty: "Mal Money Inc. (Partner)", signedFor: "Mal: pending signature", effective: "On last signature (proposal issued 18 May 2026)", term: "5-year initial, auto-renew 1-year", notice: "90 days non-renewal", commercial: "Partner bears 100% program losses; reserve 4x largest daily settlement; USDC/USDG free, USDT 10bps", governingLaw: "Per Signify Terms of Service (controls MSA; unilaterally amendable)", status: "MLRO review — Do Not Sign in current form", doc: "Card Issuing & Program Management Agreement (MSA)" },
-    scores: { reporting: 70, responsiveness: 72, training: 70, audit: 68, findings: 42, timeliness: 72, quality: 66, cooperation: 70, risk: 52 }, history: [80, 78, 74, 68, 60] },
-  { id: "saascada", name: "SaaScada", category: "Technology & processors", relationship: "Core ledger / system of record", jur: "Global", juris: ["Global"], license: "Ledger integrity & reconciliation controls", tier: "Critical", live: true,
-    relType: "Outsourcing",
-    gates: { s24DD: true, amlContract: true, auditRights: true, dataProtection: true, ongoingMonitoring: true, terminationRights: true, approvedBy: "MLRO", reDDDue: "2027-01-01", blockingNote: null },
-    contacts: [{ role: "Vendor compliance", name: "SaaScada", email: "compliance@saascada.example" }],
-    scores: { reporting: 80, responsiveness: 82, training: 78, audit: 86, findings: 88, timeliness: 84, quality: 86, cooperation: 84, risk: 82 }, history: [80, 81, 82, 83, 84] },
-  { id: "oscilar", name: "Oscilar", category: "Technology & processors", relationship: "AML transaction monitoring & screening engine (processor — never CDD reliance)", jur: "Global", juris: ["Global"], license: "AML TM rule library (card/ACH/wire/SWIFT) — OFAC & crypto modules absent OOTB", tier: "Critical", live: true,
-    relType: "System",
-    gates: { assuranceAssessed: false, appropriatenessAssessed: false, dataLocalisation: true, authControlsChecked: true, approvedBy: null, reDDDue: null, blockingNote: "Assurance-level assessment not completed — rule-library gap analysis in progress (CBUAE §5)" },
-    contacts: [{ role: "Vendor compliance", name: "Oscilar", email: "compliance@oscilar.example" }],
-    kdp: [{ name: "Oscilar (entity)", role: "TM / screening processor" }],
-    agreement: { entity: "Oscilar", counterparty: "Mal Global Accounts", signedFor: "", effective: "Under review (June 2026)", term: "Pre-contract — rule-library gap analysis", notice: "—", commercial: "—", governingLaw: "—", status: "Gap analysis — competent floor, missing roof", doc: "Standard Rule Library Overview + Mal Gap Analysis" },
-    scores: { reporting: 80, responsiveness: 84, training: 78, audit: 72, findings: 50, timeliness: 86, quality: 74, cooperation: 84, risk: 58 }, history: [84, 84, 83, 82, 80] },
-  { id: "shufti", name: "ShuftiPro", category: "Technology & processors", relationship: "Identity verification (processor — never CDD reliance)", jur: "Global", juris: ["Global"], license: "IDV; model & rule documentation", tier: "High", live: true,
-    relType: "System",
-    gates: { assuranceAssessed: false, appropriatenessAssessed: false, dataLocalisation: true, authControlsChecked: true, approvedBy: "Compliance", reDDDue: "2027-01-01", blockingNote: "Assurance-level and appropriateness assessments not yet documented (CBUAE §5 — required before IDV use in CDD)" },
-    contacts: [{ role: "Vendor compliance", name: "ShuftiPro", email: "compliance@shufti.example" }],
-    scores: { reporting: 76, responsiveness: 78, training: 82, audit: 80, findings: 84, timeliness: 82, quality: 80, cooperation: 80, risk: 80 }, history: [76, 77, 79, 80, 81] },
-];
+// AGENTS_BASE imported from ./partnerRegistry.js (01 Partnerships zip — single source of truth)
 
-const CATEGORIES = [
-  { id: "Payout partners", color: "#8000ff", note: "Disburse funds to beneficiaries" },
-  { id: "Banking partner", color: "#1e63e9", note: "Holds funds & provides USD rails" },
-  { id: "Card & settlement", color: "#0ea5e9", note: "Card issuing & settlement" },
-  { id: "Technology & processors", color: "#7c3aed", note: "Screening, ledger, IDV — never CDD reliance" },
-];
+const PARTNER_PORTAL = {
+  "Payout partners": {
+    homeTitle: "Payout partner workspace",
+    tagline: "Share corridor and payout compliance information with Mal — submit documents, respond to requests, and exchange updates securely.",
+    nav: ["home", "tasksA", "ddA", "commsA", "mysteryA", "reportingA", "slaA", "trainingA"],
+    quickLinks: [
+      { tab: "ddA", label: "Documents & due diligence", desc: "Licences, UBO records, settlement controls, questionnaires", icon: FolderOpen },
+      { tab: "commsA", label: "Messages & information requests", desc: "RFIs, secure threads, and regulatory notices", icon: MessageSquare },
+      { tab: "mysteryA", label: "Mystery shopper exercises", desc: "Scheduled tests, findings responses, and remediation evidence", icon: Eye },
+      { tab: "reportingA", label: "Filings & certifications", desc: "SAR, STR, annual certifications, correspondence", icon: FileText },
+      { tab: "trainingA", label: "Training modules", desc: "Complete assigned regulatory knowledge courses", icon: GraduationCap },
+    ],
+  },
+  "Banking partner": {
+    homeTitle: "Banking partner workspace",
+    tagline: "Provide programme documentation, respond to Mal oversight requests, and maintain banking-rail compliance information.",
+    nav: ["home", "tasksA", "ddA", "commsA", "mysteryA", "reportingA", "slaA", "trainingA"],
+    quickLinks: [
+      { tab: "ddA", label: "Programme documentation", desc: "Licences, FBO controls, governance, audit reports", icon: FolderOpen },
+      { tab: "commsA", label: "Messages & information requests", desc: "RFIs and secure correspondence with Mal", icon: MessageSquare },
+      { tab: "mysteryA", label: "Mystery shopper exercises", desc: "Quarterly programme tests and remediation responses", icon: Eye },
+      { tab: "reportingA", label: "Filings & attestations", desc: "Certifications, regulatory correspondence", icon: FileText },
+      { tab: "slaA", label: "Contractual obligations", desc: "Track and fulfil agreement commitments", icon: Clock },
+    ],
+  },
+  "Card & settlement": {
+    homeTitle: "Card & settlement workspace",
+    tagline: "Share issuing-programme documentation and respond to Mal contract and compliance information requests.",
+    nav: ["home", "tasksA", "ddA", "commsA", "slaA", "trainingA"],
+    quickLinks: [
+      { tab: "ddA", label: "Programme documents", desc: "Formation docs, AML programme, insurance, org chart", icon: FolderOpen },
+      { tab: "commsA", label: "Messages & information requests", desc: "Contract queries, RFIs, secure messaging", icon: MessageSquare },
+      { tab: "slaA", label: "Obligations & SLA", desc: "Reserve, settlement, and programme commitments", icon: Clock },
+      { tab: "trainingA", label: "Training", desc: "Assigned compliance training modules", icon: GraduationCap },
+    ],
+  },
+  "Technology & processors": {
+    homeTitle: "Technology partner workspace",
+    tagline: "Provide assurance and control documentation. Mal validates your controls independently — we never rely on processor output as customer due diligence.",
+    nav: ["home", "tasksA", "commsA", "slaA", "trainingA"],
+    quickLinks: [
+      { tab: "commsA", label: "Messages & information requests", desc: "Assurance queries, gap remediation, secure threads", icon: MessageSquare },
+      { tab: "slaA", label: "Service commitments", desc: "Processor SLAs and contractual obligations", icon: Clock },
+      { tab: "trainingA", label: "Training", desc: "Assigned regulatory and processor-governance courses", icon: GraduationCap },
+    ],
+  },
+  "Virtual accounts": {
+    homeTitle: "Virtual accounts workspace",
+    tagline: "Share virtual-account programme documentation and respond to Mal commercial and compliance requests.",
+    nav: ["home", "tasksA", "ddA", "commsA", "slaA"],
+    quickLinks: [
+      { tab: "ddA", label: "Commercial & CDD documents", desc: "Quotes, due diligence packs, technical specs", icon: FolderOpen },
+      { tab: "commsA", label: "Messages & information requests", desc: "Contract negotiation and RFIs", icon: MessageSquare },
+      { tab: "slaA", label: "Contractual obligations", desc: "Agreement commitments (when executed)", icon: Clock },
+    ],
+  },
+  "KYC & identity": {
+    homeTitle: "KYC & identity workspace",
+    tagline: "Provide assurance and control documentation. Mal validates your controls independently — processor output is never relied on as customer due diligence.",
+    nav: ["home", "tasksA", "commsA", "slaA", "trainingA"],
+    quickLinks: [
+      { tab: "commsA", label: "Messages & information requests", desc: "Assurance queries, gap remediation, secure threads", icon: MessageSquare },
+      { tab: "slaA", label: "Service commitments", desc: "Uptime, support and verification SLAs", icon: Clock },
+      { tab: "trainingA", label: "Training", desc: "Assigned regulatory and processor-governance courses", icon: GraduationCap },
+    ],
+  },
+  "Risk platform": {
+    homeTitle: "Risk platform workspace",
+    tagline: "Share fraud-platform documentation and respond to Mal oversight on device intelligence, case management and AML workflow integrations.",
+    nav: ["home", "tasksA", "ddA", "commsA", "slaA", "trainingA"],
+    quickLinks: [
+      { tab: "ddA", label: "TM pre-implementation assessment", desc: "Mal Bank questionnaire + BRD go-live gates (supervisor co-signs)", icon: FolderOpen },
+      { tab: "commsA", label: "Messages & information requests", desc: "Integration, SLA and order-form queries", icon: MessageSquare },
+      { tab: "slaA", label: "Service commitments", desc: "Platform uptime and support SLAs", icon: Clock },
+      { tab: "trainingA", label: "Training", desc: "Assigned compliance training modules", icon: GraduationCap },
+    ],
+  },
+  "System integrator": {
+    homeTitle: "System integrator workspace",
+    tagline: "Complete TM pre-implementation assessment, share integration evidence, and respond to Mal go-live gate reviews before production traffic.",
+    nav: ["home", "tasksA", "ddA", "commsA", "slaA", "trainingA"],
+    quickLinks: [
+      { tab: "ddA", label: "TM system assessment", desc: "438-question pre-impl questionnaire scoped to your integration", icon: ListChecks },
+      { tab: "commsA", label: "Messages & information requests", desc: "UAT, rule deployment and gate evidence RFIs", icon: MessageSquare },
+      { tab: "slaA", label: "Service commitments", desc: "TM/screening SLAs and hypercare plan", icon: Clock },
+      { tab: "trainingA", label: "Training", desc: "Assigned TM and screening governance courses", icon: GraduationCap },
+    ],
+  },
+  "Lending": {
+    homeTitle: "Lending partner workspace",
+    tagline: "Share programme documentation and respond to Mal lending-oversight and contract requests.",
+    nav: ["home", "tasksA", "commsA", "slaA"],
+    quickLinks: [
+      { tab: "commsA", label: "Messages & information requests", desc: "Proposal, NDA and programme RFIs", icon: MessageSquare },
+      { tab: "slaA", label: "Contractual obligations", desc: "Agreement commitments (when executed)", icon: Clock },
+    ],
+  },
+};
+function partnerPortalConfig(category) {
+  return PARTNER_PORTAL[category] || PARTNER_PORTAL["Payout partners"];
+}
+function buildPartnerNav(store, actingPartner, baseAllFn) {
+  const base = baseAllFn().find(a => a.id === actingPartner);
+  const cfg = partnerPortalConfig(base?.category);
+  const s = store.agents[actingPartner];
+  const defs = {
+    home: { id: "home", label: "Workspace", icon: LayoutDashboard, badge: s && base ? partnerOutstandingActions(base, s, store).length || null : null },
+    tasksA: { id: "tasksA", label: "My tasks", icon: ListChecks, badge: s && base ? buildPartnerLifecycleTasks(base, s, store, true).filter(t => t.status === "overdue").length || null : null },
+    ddA: { id: "ddA", label: "Documents", icon: FolderOpen },
+    commsA: { id: "commsA", label: "Collaboration", icon: Megaphone, badge: base ? partnerCommsBadgeCount(store, actingPartner, base) || null : null },
+    mysteryA: { id: "mysteryA", label: "Mystery shopper", icon: Eye, badge: base ? partnerMysteryBadgeCount(store, base.id) || null : null },
+    reportingA: { id: "reportingA", label: "Filings", icon: FileText },
+    slaA: { id: "slaA", label: "Obligations", icon: Clock, badge: OBLIGATIONS.filter(o => o.partner === actingPartner && o.due && dueIn(o.due) < 0).length || null },
+    trainingA: { id: "trainingA", label: "Training", icon: GraduationCap },
+  };
+  return cfg.nav.map(id => defs[id]).filter(Boolean);
+}
 
 const EMBLEM_PATH = "M948.44,590.83l-45.78-56.62,42.7-54.27c1.24-4.69,2.75-10.24,2.25-15.07-.62-6.07-11.92-31.06-14.99-39.13-6.66-17.55-17.34-50.81-26.04-65.49-2.04-3.45-4.24-6.33-7.76-8.4l-92.43-14.39,13.64-92.54c-.93-3.97-3.03-6.93-5.72-9.9-11.44-12.67-40.05-32.72-54.84-44.28-6.8-5.32-27.32-23.51-32.94-25.91-4.47-1.91-10.22-2.11-15.06-2.31l-68,26.05-38.42-57.38c-4.08-2.63-8.89-5.78-13.64-6.8-5.97-1.28-33.23,1.74-41.85,2.16-18.74.91-53.68.79-70.34,4.53-3.91.88-7.34,2.08-10.38,4.79l-42.25,83.46-83.8-41.57c-4.06-.35-7.52.74-11.18,2.38-15.58,6.97-43.5,27.98-59.06,38.47-7.16,4.83-30.8,18.72-34.82,23.32-3.19,3.66-5.16,9.07-6.86,13.61l3.76,72.72-66.44,18.81c-3.76,3.07-8.24,6.67-10.68,10.87-3.07,5.28-8.61,32.14-10.88,40.47-4.93,18.11-15.84,51.3-17.43,68.29-.37,3.99-.29,7.62,1.34,11.35l66.32,65.97-65.43,66.85c-1.59,3.76-1.62,7.39-1.19,11.37,1.81,16.97,13.17,50.02,18.34,68.05,2.38,8.3,8.28,35.08,11.42,40.32,2.5,4.17,7.03,7.71,10.83,10.73l70.32,18.89-2.64,69c1.76,4.52,3.79,9.9,7.04,13.52,4.07,4.55,27.9,18.12,35.13,22.85,15.7,10.28,43.89,30.92,59.57,37.68,3.68,1.59,7.16,2.63,11.21,2.23l83.24-42.69,43.36,82.89c3.08,2.67,6.52,3.82,10.45,4.65,16.7,3.52,51.64,2.93,70.39,3.59,8.63.3,35.92,2.96,41.87,1.6,4.74-1.08,9.51-4.3,13.55-6.98l39.7-61.04,64.81,23.84c4.84-.27,10.59-.55,15.03-2.52,5.58-2.47,25.86-20.94,32.59-26.35,14.63-11.75,42.97-32.19,54.24-45.01,2.65-3.01,4.71-5.99,5.59-9.98l-14.88-92.35,92.23-15.63c3.49-2.11,5.65-5.02,7.65-8.5,8.51-14.8,18.75-48.2,25.17-65.84,2.95-8.11,13.92-33.25,14.46-39.33.43-4.84-1.15-10.37-2.45-15.04ZM862.03,661.79c-1.75,6.33-19.21,53.12-21.92,54.2-3.64.48-5.87-3.76-8.04-6.05-18.01-18.99-35.46-48.93-53.87-65.73-4.85-4.43-7.2-6.48-14.23-6.16-13.01.61-51.28,6.74-63.55,10.46-.46.14-.89.29-1.31.45-1.82.3-3.26,1.19-4.2,2.75-1.17,1.39-1.56,3.05-1.25,4.86-.02.44-.02.9,0,1.38.43,12.81,6.93,51.02,10.54,63.53,1.95,6.76,4.65,8.32,10.41,11.49,21.83,12.02,55.78,18.91,79.56,29.86,2.87,1.32,7.6,2.07,8.31,5.67-.15,2.92-38.84,34.5-44.27,38.2-12.55,8.54-14.48,6.3-28.08,2.16-20.5-6.24-41.07-14.29-61.66-22.68l-23.84-48.68c-9.66-9.07-12.38-2.16-17.93,5.7-4.72,6.69-9.31,13.58-13.81,20.59-8.97-3.41-17.94-6.62-26.89-9.53-9.16-2.97-15.47-6.88-17.78,6.17l11.03,58.53c-11.31,18.76-22.82,37.25-35.33,54.27-8.42,11.45-8.62,14.41-23.78,15.08-6.57.29-56.45-1.85-58.33-4.1-1.58-3.31,1.76-6.74,3.27-9.52,12.5-23,35.57-48.84,45.86-71.54,2.71-5.98,3.94-8.85,1.46-15.43-4.6-12.19-22.26-46.69-29.58-57.2-.28-.4-.55-.76-.83-1.1-.84-1.64-2.14-2.73-3.91-3.15-1.69-.68-3.38-.54-5.01.31-.43.12-.86.26-1.32.42-12.05,4.36-46.38,22.35-57.17,29.66-5.82,3.94-6.48,7-7.71,13.45-4.69,24.47-.75,58.9-3.81,84.89-.37,3.14.38,7.87-2.82,9.66-2.83.76-44.81-26.27-50.01-30.3-12-9.29-10.46-11.83-10.73-26.04-.4-21.43.9-43.48,2.52-65.65l38.93-37.72c5.64-11.99-1.77-12.44-10.96-15.29-7.82-2.43-15.79-4.65-23.85-6.77.47-9.59.76-19.11.75-28.52,0-9.63,1.76-16.84-11.36-15l-52.25,28.58c-21.34-4.96-42.48-10.2-62.53-16.83-13.49-4.46-16.37-3.75-21.69-17.96-2.3-6.16-15.68-54.26-14.12-56.74,2.66-2.53,6.96-.41,10.06.17,25.74,4.78,57.45,18.74,82.21,21.51,6.53.73,9.64,1.01,15.13-3.38,10.17-8.14,37.52-35.6,45.26-45.81.29-.38.55-.76.79-1.13,1.3-1.31,1.94-2.88,1.79-4.7.13-1.82-.53-3.38-1.85-4.67-.25-.37-.51-.74-.81-1.12-7.87-10.11-35.59-37.2-45.87-45.2-5.55-4.32-8.66-4-15.17-3.18-24.72,3.1-56.24,17.48-81.91,22.61-3.1.62-7.37,2.79-10.06.3-1.59-2.46,11.14-50.74,13.36-56.92,5.13-14.29,8.01-13.61,21.45-18.25,20.25-7,41.63-12.58,63.22-17.89l47.91,25.37c13.14,1.66,11.29-5.53,11.16-15.15-.11-8.19-.45-16.46-.93-24.77,9.26-2.52,18.41-5.19,27.36-8.1,9.16-2.98,16.56-3.53,10.76-15.44l-43.33-40.87c-1.88-21.83-3.43-43.55-3.32-64.67.08-14.21-1.5-16.72,10.38-26.18,5.14-4.09,46.76-31.68,49.6-30.97,3.22,1.75,2.54,6.49,2.95,9.62,3.41,25.95-.07,60.43,4.95,84.83,1.32,6.43,2.01,9.48,7.89,13.34,10.88,7.16,45.45,24.69,57.56,28.89.46.16.89.29,1.32.4,1.65.83,3.34.95,5.02.25,1.77-.44,3.05-1.55,3.87-3.2.27-.35.55-.71.82-1.11,7.18-10.61,24.38-45.35,28.82-57.6,2.39-6.61,1.13-9.47-1.67-15.41-10.59-22.55-34.01-48.09-46.82-70.92-1.55-2.75-4.93-6.14-3.39-9.47,1.84-2.27,51.7-5.08,58.27-4.88,15.17.46,15.42,3.42,23.98,14.76,12.92,17.1,24.83,35.71,36.55,54.59l-9.33,53.4c2.48,13.01,8.74,9.03,17.86,5.93,7.75-2.63,15.51-5.52,23.27-8.54,5.26,8.03,10.62,15.9,16.16,23.52,5.66,7.79,8.47,14.66,18.01,5.46l25.48-53.84c20.18-8.53,40.36-16.72,60.48-23.14,13.54-4.32,15.44-6.59,28.1,1.78,5.48,3.63,44.58,34.68,44.78,37.6-.67,3.61-5.39,4.42-8.24,5.78-23.63,11.26-57.49,18.61-79.15,30.92-5.71,3.24-8.39,4.84-10.25,11.63-3.45,12.56-9.44,50.85-9.69,63.67-.01.48,0,.94.03,1.38-.28,1.82.12,3.47,1.32,4.85.96,1.55,2.42,2.42,4.24,2.69.42.15.85.3,1.31.43,12.31,3.55,50.66,9.18,63.68,9.61,7.03.23,9.35-1.85,14.14-6.35,18.18-17.04,35.23-47.21,52.98-66.44,2.14-2.32,4.32-6.59,7.96-6.16,2.73,1.05,20.81,47.6,22.65,53.91,4.25,14.57,1.52,15.72-6.62,27.37-12.27,17.57-26.29,34.65-40.63,51.64l-53.67,7.63c-11.61,6.38-5.88,11.1-.12,18.82,4.9,6.56,10.04,13.05,15.31,19.5-6.01,7.48-11.84,15.01-17.37,22.63-5.66,7.79-11.32,12.59.37,18.81l59.07,7.59c14.35,16.56,28.37,33.22,40.7,50.37,8.29,11.54,11.04,12.65,6.99,27.28Z";
 function MalEmblem({ size = 22 }) {
@@ -296,6 +342,55 @@ async function fetchCasesFromApi() {
   return { cases, sars: sarsRaw.map(mapSarFromApi), seq };
 }
 
+function seedTmAssessment(partnerId, category) {
+  if (!requiresTmAssessment(category)) return null;
+  const base = {
+    responses: {},
+    updatedAt: new Date().toISOString(),
+    overall: 0,
+    rating: "Not started",
+    decision: "Pending",
+  };
+  if (partnerId === "oscilar") {
+    return {
+      ...base,
+      overall: 0.58,
+      rating: "Not ready",
+      decision: "Deferred pending remediation",
+      responses: {
+        "TMQ-05-001": "Yes",
+        "TMQ-05-002": "Partial",
+        "TMQ-05-003": "Yes",
+        "TMQ-26-001": "Partial",
+        "TMQ-27-001": "No",
+        "TMQ-36-001": "Partial",
+      },
+      updatedAt: new Date(Date.now() - 2 * 864e5).toISOString(),
+    };
+  }
+  if (partnerId === "sardine") {
+    return {
+      ...base,
+      overall: 0.48,
+      rating: "Not ready",
+      decision: "Deferred pending remediation",
+      responses: { "TMQ-05-001": "Partial", "TMQ-05-002": "No", "TMQ-26-001": "Partial" },
+      updatedAt: new Date(Date.now() - 5 * 864e5).toISOString(),
+    };
+  }
+  if (partnerId === "shufti") {
+    return {
+      ...base,
+      overall: 0.35,
+      rating: "Blocked",
+      decision: "No-go",
+      responses: { "TMQ-05-001": "No", "TMQ-08-001": "Partial" },
+      updatedAt: new Date(Date.now() - 1 * 864e5).toISOString(),
+    };
+  }
+  return base;
+}
+
 function seed() {
   const today = new Date();
   const iso = (d) => new Date(d).toISOString();
@@ -304,9 +399,9 @@ function seed() {
   AGENTS_BASE.forEach((a, i) => {
     agents[a.id] = {
       feed: [
-        { id: "f" + a.id + 1, kind: "Training", at: daysFrom(-2 - i), text: `Completed “Sanctions & OFAC screening”.`, actor: a.contacts[0].name },
-        { id: "f" + a.id + 2, kind: "STR", at: daysFrom(-5 - i), text: `STR filed with ${a.jur} FIU re: structuring pattern.`, actor: a.contacts[0].name },
-        { id: "f" + a.id + 3, kind: "Policy update", at: daysFrom(-9 - i), text: `Acknowledged updated sanctions-screening procedure.`, actor: a.contacts[0].name },
+        { id: "f" + a.id + 1, kind: "Training", at: daysFrom(-2 - i), text: `Completed “Sanctions & OFAC screening”.`, actor: (a.contacts[0] && a.contacts[0].name) || a.name },
+        { id: "f" + a.id + 2, kind: "STR", at: daysFrom(-5 - i), text: `STR filed with ${a.jur} FIU re: structuring pattern.`, actor: (a.contacts[0] && a.contacts[0].name) || a.name },
+        { id: "f" + a.id + 3, kind: "Policy update", at: daysFrom(-9 - i), text: `Acknowledged updated sanctions-screening procedure.`, actor: (a.contacts[0] && a.contacts[0].name) || a.name },
       ],
       registers: {
         sar: i % 2 === 0 ? [{ ref: "SAR-" + a.id + "-001", at: daysFrom(-12), status: "Filed", summary: "Rapid pass-through, no economic rationale" }] : [],
@@ -319,6 +414,7 @@ function seed() {
       training: COURSES.map((c, j) => ({ ...c, status: (j + i) % 3 === 0 ? "Not started" : "Completed", score: (j + i) % 3 === 0 ? null : 80 + ((i + j) % 20) })),
       dd: DD_ITEMS.reduce((o, d, j) => { o[d.id] = (j + i) % 4 === 0 ? "Outstanding" : "Complete"; return o; }, {}),
       acks: [],
+      tmAssessment: seedTmAssessment(a.id, a.category),
     };
   });
   // program reviews (case files) — aligned to payout-agent-case-review skill
@@ -329,13 +425,8 @@ function seed() {
       findings: [{ ref: "F-1", desc: "Two payouts without matching authorised-channel settlement leg", sev: "High", standard: "GA-4 §6 / FERA §21", status: "Open" }],
       remediation: [{ action: "Implement settlement-leg match control", owner: "SwiftX", due: daysFrom(10), status: "In progress" }, { action: "Train CO on IVTS prohibition", owner: "SwiftX", due: daysFrom(-2), status: "Done" }],
       cleared: false },
-    "CASE-AE-0007": { id: "CASE-AE-0007", agent: "gulf", reason: "Risk-based onboarding", status: "Working", level: "", foDue: daysFrom(4),
-      start: daysFrom(-6), assignedTo: "Tayel Mohamed", country: "UAE", txStart: "", txEnd: "", txGroup: "", findings: [], remediation: [], cleared: false },
-    "CASE-PH-0012": { id: "CASE-PH-0012", agent: "pearl", reason: "Periodic review", status: "Closed", level: "No findings",
-      start: daysFrom(-60), end: daysFrom(-30), foDue: daysFrom(-35), assignedTo: "Tayel Mohamed", country: "Philippines",
-      txStart: "2026-01-01", txEnd: "2026-03-31", txGroup: "FinCrime Analytics", findings: [], remediation: [], cleared: true },
-    "CASE-BD-0003": { id: "CASE-BD-0003", agent: "thunes", reason: "Periodic review", status: "Assigned", level: "", foDue: daysFrom(12),
-      start: daysFrom(-1), assignedTo: "Tayel Mohamed", country: "Bangladesh", txStart: "", txEnd: "", txGroup: "", findings: [], remediation: [], cleared: false },
+    "CASE-BD-0003": { id: "CASE-BD-0003", agent: "thunes", reason: "Commercial proposal review — no executed agreement", status: "Assigned", level: "", foDue: daysFrom(12),
+      start: daysFrom(-1), assignedTo: "Tayel Mohamed", country: "Global", txStart: "", txEnd: "", txGroup: "", findings: [], remediation: [], cleared: false },
     "CASE-CARD-RAIN-0001": { id: "CASE-CARD-RAIN-0001", agent: "rain", reason: "Risk-based onboarding — MLRO contract review", status: "Working", level: "Significant findings",
       start: daysFrom(-5), foDue: daysFrom(7), assignedTo: "Tayel Mohamed (MLRO)", country: "United States", txStart: "", txEnd: "", txGroup: "",
       findings: [
@@ -344,14 +435,19 @@ function seed() {
         { ref: "R-3", desc: "Partner bears 100% of fraud, chargeback, force-post and under-collateralisation losses — uncapped, no commensurate control", sev: "Critical", standard: "Financial exposure", status: "Open" },
         { ref: "R-4", desc: "Perimeter mismatch — USD Visa card + crypto settlement (incl. B2C) vs board-approved stablecoin off-ramp; re-run MSB perimeter; B2C triggers Reg E/Z/UDAAP", sev: "Critical", standard: "Program §14 governance gate", status: "Open" }],
       remediation: [], cleared: false },
-    "CASE-TECH-OSC-0001": { id: "CASE-TECH-OSC-0001", agent: "oscilar", reason: "Risk-based onboarding — rule-library gap analysis", status: "Working", level: "Significant findings",
-      start: daysFrom(-8), foDue: daysFrom(9), assignedTo: "Tayel Mohamed (MLRO)", country: "Pakistan", txStart: "", txEnd: "", txGroup: "",
+    "CASE-KYC-SHUFTI-0001": { id: "CASE-KYC-SHUFTI-0001", agent: "shufti", reason: "Processor assurance — Sales Order alignment", status: "Working", level: "Findings",
+      start: daysFrom(-4), foDue: daysFrom(10), assignedTo: "Tayel Mohamed (Compliance)", country: "Global", txStart: "", txEnd: "", txGroup: "",
       findings: [
-        { ref: "O-1", desc: "Zero OFAC/sanctions screening rules in the library — largest gap (Payoneer-style OFAC failure modes)", sev: "Critical", standard: "OFAC / 31 CFR 501", status: "Open" },
-        { ref: "O-2", desc: "Zero crypto/USDC monitoring rules — Mal's #1 inherent-risk vector (CVC: wallet adjacency, mixer/tumbler, chain-hopping)", sev: "Critical", standard: "FIN-2025-CVC", status: "Open" },
-        { ref: "O-3", desc: "No real-time preventive holds for the Pakistan corridor — detection only; needs RTRA (dwell time, age-scaled caps)", sev: "Critical", standard: "Corridor controls", status: "Open" },
-        { ref: "O-4", desc: "Corridor-blind / flat geography and hardcoded OOTB defaults — no SBP/provincial weighting; needs MRM tuning + zero-hit KRI", sev: "High", standard: "Model risk management", status: "Open" }],
-      remediation: [], cleared: false },
+        { ref: "SP-1", desc: "Support tier not specified on Sales Order — Schedule 3 SLAs differ by Basic/Priority/Premium", sev: "Medium", standard: "Contract clarity", status: "Open" },
+        { ref: "SP-2", desc: "99% uptime is reasonable endeavours only — not a strict guarantee", sev: "Medium", standard: "Schedule 1 — Availability", status: "Open" },
+      ],
+      remediation: [{ action: "Confirm support tier in writing with Shufti Pro", owner: "Mal Compliance", due: daysFrom(10), status: "In progress" }], cleared: false },
+    "CASE-RISK-SARDINE-0001": { id: "CASE-RISK-SARDINE-0001", agent: "sardine", reason: "Order form completeness — customer legal entity", status: "Working", level: "Significant findings",
+      start: daysFrom(-3), foDue: daysFrom(14), assignedTo: "Tayel Mohamed", country: "United States", txStart: "", txEnd: "", txGroup: "",
+      findings: [
+        { ref: "SA-1", desc: "Customer Legal Entity and contact fields blank on order form", sev: "High", standard: "Order form execution", status: "Open" },
+      ],
+      remediation: [{ action: "Complete order form customer fields and obtain fully executed agreement", owner: "Mal + SardineAI", due: daysFrom(14), status: "Open" }], cleared: false },
     "CASE-BANK-ZEN-0001": { id: "CASE-BANK-ZEN-0001", agent: "zenus", reason: "AML/BSA gap analysis — PSA alignment", status: "Remediation", level: "Findings",
       start: daysFrom(-15), foDue: daysFrom(14), assignedTo: "Dr. Angel Wesley", country: "United States", txStart: "", txEnd: "", txGroup: "",
       findings: [
@@ -366,9 +462,50 @@ function seed() {
   ];
   const library = Object.entries(JUR_NEWS).flatMap(([jur, items]) =>
     items.map((it, k) => ({ id: jur + k, jur, type: it.type, sev: it.sev, text: it.text, at: daysFrom(-(k + 1) * 2), source: "Partner desk" })));
-  return { v: SEED_VERSION, agents, partners: [], reviews, broadcasts, library, tasks: [
-    { id: "t1", agent: "gulf", title: "Provide independent AML audit report", due: daysFrom(3), status: "Open" },
+  const rfis = [
+    { id: "rfi1", partnerId: "swiftx", title: "Settlement-leg control evidence", body: "Provide evidence of the settlement-leg matching control referenced in finding F-1 — screenshots or logs from the last 30 days of PK payouts.", why: "Mal must verify remediation of the IVTS settlement gap before closing CASE-PK-0001.", due: daysFrom(5), sev: "high", status: "Open", createdAt: daysFrom(-2), createdBy: "Supervisor (Mal)", response: null, closedAt: null },
+    { id: "rfi2", partnerId: "zenus", title: "SAR/CTR filing allocation confirmation", body: "Confirm in writing whether Path A (Mal direct filer) or Path B (Zenus as BSA-reporting bank) applies, with supporting programme schedule.", why: "Unresolved BSA filing allocation is a critical gap in CASE-BANK-ZEN-0001.", due: daysFrom(10), sev: "crit", status: "Open", createdAt: daysFrom(-1), createdBy: "Dr. Angel Wesley", response: null, closedAt: null },
+    { id: "rfi4", partnerId: "shufti", title: "Confirm support tier on Sales Order", body: "Confirm which Support Type (Basic, Priority or Premium) applies to Mal Digital Ltd under the executed Sales Order.", why: "Schedule 3 response/resolution SLAs differ by tier; Sales Order is silent.", due: daysFrom(8), sev: "med", status: "Open", createdAt: daysFrom(-2), createdBy: "Supervisor (Mal)", response: null, closedAt: null },
+  ];
+  const threads = [
+    { id: "th1", partnerId: "swiftx", subject: "Pakistan corridor settlement verification", createdAt: daysFrom(-4), messages: [
+      { id: "m1", at: daysFrom(-4), from: "Tayel Mohamed", role: "supervisor", body: "We need to understand how settlement legs are matched for PK payouts. Can you walk us through your process?", read: true },
+      { id: "m2", at: daysFrom(-3), from: "SwiftX DLT Pay Ltd", role: "partner", body: "We use bank SWIFT confirmations matched to payout references in our ledger. Happy to share a redacted sample.", read: true },
+      { id: "m3", at: daysFrom(-1), from: "Tayel Mohamed", role: "supervisor", body: "Please upload the sample via the RFI we issued. Also confirm no hawala agents anywhere in the chain.", read: false },
+    ]},
+    { id: "th2", partnerId: "rain", subject: "MSA Schedule 1 amendment discussion", createdAt: daysFrom(-2), messages: [
+      { id: "m4", at: daysFrom(-2), from: "Loay Osama", role: "supervisor", body: "Mal MLRO requires AML/sanctions terms carved out of unilateral ToS amendments. Can Signify accommodate a bilateral amendment process?", read: false },
+    ]},
+  ];
+  const mysteryExercises = [
+    { id: "MS-Q1-2026-SWIFTX", partnerId: "swiftx", quarter: "Q1 2026", title: "PK corridor — KYC bypass at agent desk", scenario: "Shopper requests PK payout above tier limit citing VIP status; tests whether agent enforces beneficiary ID and escalation.", channel: "Partner call centre · Lahore desk", scheduledDate: daysFrom(-18), conductedDate: daysFrom(-10), conductedBy: "Prosegur Compliance Testing Ltd", status: "Remediation", result: "Fail",
+      findings: [
+        { ref: "MS-1", desc: "Agent processed test transaction without requesting beneficiary ID when shopper claimed VIP exemption", sev: "Critical", category: "CDD", standard: "SBP AML/CFT Guidelines §4.2", status: "Open" },
+        { ref: "MS-2", desc: "No escalation to compliance when shopper refused to provide source-of-funds", sev: "High", category: "Escalation", standard: "SwiftX AML Manual §7.3", status: "Open" },
+      ],
+      remediation: [
+        { id: "r1", action: "Retrain all PK desk agents on tier-1 KYC — no VIP override without MLRO approval", owner: "SwiftX CO", due: daysFrom(6), status: "In progress", partnerResponse: null },
+        { id: "r2", action: "Implement dual-control override for >$500 equivalent without full ID", owner: "SwiftX Ops", due: daysFrom(-2), status: "Overdue", partnerResponse: null },
+      ],
+      partnerNotifiedAt: daysFrom(-18), partnerAckAt: daysFrom(-17), closedAt: null },
+    { id: "MS-Q1-2026-THUNES", partnerId: "thunes", quarter: "Q1 2026", title: "Proposal-stage — no live corridor test", scenario: "Exercise deferred until executed PSA — document repository contains commercial proposal only.", channel: "N/A — pre-contract", scheduledDate: daysFrom(30), conductedDate: null, conductedBy: "TBD", status: "Scheduled", result: null,
+      findings: [], remediation: [], partnerNotifiedAt: daysFrom(-3), partnerAckAt: null, closedAt: null },
+    { id: "MS-Q1-2026-ZENUS", partnerId: "zenus", quarter: "Q1 2026", title: "FBO programme — prohibited customer category", scenario: "Shopper attempts to open sub-account for MSB without licence documentation.", channel: "Programme onboarding portal", scheduledDate: daysFrom(-7), conductedDate: daysFrom(-3), conductedBy: "Mal MLRO office", status: "Findings logged", result: "Fail",
+      findings: [
+        { ref: "MS-1", desc: "Initial auto-approval path did not block MSB category before human review — control gap in pre-screen rules", sev: "High", category: "Onboarding", standard: "Zenus PSA Schedule 3 · prohibited categories", status: "Open" },
+      ],
+      remediation: [
+        { id: "r1", action: "Patch pre-screen rules to hard-stop MSB/unlicensed categories before account creation", owner: "Zenus Compliance", due: daysFrom(12), status: "In progress", partnerResponse: null },
+      ],
+      partnerNotifiedAt: daysFrom(-7), partnerAckAt: daysFrom(-6), closedAt: null },
+    { id: "MS-Q4-2025-SWIFTX", partnerId: "swiftx", quarter: "Q4 2025", title: "PK corridor — IVTS settlement probe", scenario: "Shopper probes whether hawala settlement is offered for urgent payouts.", channel: "Partner call centre", scheduledDate: daysFrom(-120), conductedDate: daysFrom(-112), conductedBy: "Prosegur Compliance Testing Ltd", status: "Closed", result: "Pass",
+      findings: [],
+      remediation: [],
+      partnerNotifiedAt: daysFrom(-120), partnerAckAt: daysFrom(-119), closedAt: daysFrom(-100) },
+  ];
+  return { v: SEED_VERSION, agents, partners: [], reviews, broadcasts, library, rfis, threads, mysteryExercises, tasks: [
     { id: "t2", agent: "swiftx", title: "Close finding F-1 (settlement-leg control)", due: daysFrom(10), status: "Open" },
+    { id: "t3", agent: "sardine", title: "Complete order form customer legal entity", due: daysFrom(14), status: "Open" },
   ], speakup: [], audit: [{ id: "a0", at: daysFrom(-1), actor: "System", role: "system", action: "Platform seeded", target: "—" }] };
 }
 
@@ -417,6 +554,161 @@ function earlyWarnings(a, slice, reviews) {
   }
   return w;
 }
+function complianceHealth(base, slice, store) {
+  const training = trainingRate(slice);
+  const ddPct = Math.round(100 * ddStatus(slice).done / Math.max(1, ddStatus(slice).total));
+  const openCrit = Object.values(store.reviews).some(r => r.agent === base.id && r.findings?.some(f => f.sev === "Critical" && f.status === "Open"));
+  const findingsScore = openCrit ? 42 : 100;
+  const partnerOb = OBLIGATIONS.filter(o => o.partner === base.id && o.owner === "Partner");
+  const obScore = partnerOb.length ? Math.round(100 * partnerOb.filter(o => !o.due || dueIn(o.due) >= 0).length / partnerOb.length) : 100;
+  return Math.round(training * 0.25 + ddPct * 0.30 + findingsScore * 0.25 + obScore * 0.20);
+}
+function partnershipReadiness(base, slice, store) {
+  const items = [
+    { done: !!slice.onboarding, weight: 15 },
+    { done: ddStatus(slice).done >= Math.ceil(ddStatus(slice).total * 0.5), weight: 10 },
+    { done: ddStatus(slice).done === ddStatus(slice).total, weight: 20 },
+    { done: trainingRate(slice) >= 50, weight: 10 },
+    { done: trainingRate(slice) >= 80, weight: 10 },
+    { done: slice.acks.length > 0, weight: 10 },
+    { done: slice.registers.cert.length > 0 || slice.registers.questionnaire.length > 0, weight: 10 },
+    { done: !Object.values(store.reviews).some(r => r.agent === base.id && r.findings?.some(f => f.sev === "Critical" && f.status === "Open")), weight: 10 },
+    { done: base.live, weight: 5 },
+  ];
+  const totalW = items.reduce((s, i) => s + i.weight, 0);
+  const doneW = items.filter(i => i.done).reduce((s, i) => s + i.weight, 0);
+  return Math.round(100 * doneW / totalW);
+}
+function lifecycleStage(base, slice) {
+  const dd = ddStatus(slice);
+  if (base.live) return { n: 5, label: "Approved & live", hint: "Your partnership is active. Maintain ongoing monitoring requirements." };
+  if (!slice.onboarding) return { n: 1, label: "Registration", hint: "Complete your onboarding intake to begin the trust journey." };
+  if (dd.done === 0) return { n: 2, label: "Intake received", hint: "Mal is reviewing your submission and starting verification." };
+  if (dd.done < dd.total) return { n: 3, label: "Verification & due diligence", hint: "Provide outstanding documents so Mal can complete independent checks." };
+  return { n: 4, label: "Approval pending", hint: "Due diligence is substantially complete — awaiting final Mal approval." };
+}
+function trustTier(score) {
+  if (score >= 85) return { label: "Trusted partner", c: "#16a34a" };
+  if (score >= 70) return { label: "Established", c: "#2563eb" };
+  if (score >= 55) return { label: "Building trust", c: "#d97706" };
+  return { label: "Provisional", c: "#dc2626" };
+}
+function partnerOutstandingActions(base, slice, store) {
+  return buildPartnerLifecycleTasks(base, slice, store, true)
+    .filter(t => t.status !== "done")
+    .map(t => ({ id: t.id, priority: t.priority, title: t.title, why: t.why, tab: t.tab, cta: t.navLabel }));
+}
+function buildPartnerLifecycleTasks(base, slice, store, partnerFacing = false) {
+  const tasks = [];
+  DD_ITEMS.forEach(d => {
+    const done = slice.dd[d.id] === "Complete";
+    tasks.push({ id: "dd-" + d.id, category: "Due diligence", title: d.label, why: "Mal must verify your controls independently — this document supports that verification.", status: done ? "done" : "open", priority: d.id === "onboarding" ? "high" : "med", due: null, dueLabel: done ? "Complete" : "Outstanding", tab: "ddA", navLabel: "Due diligence file", source: "DD verification checklist", completedAt: done ? (slice.onboarding?.onboardedAt || null) : null });
+  });
+  slice.training.forEach(c => {
+    const done = c.status === "Completed";
+    const feedHit = slice.feed.find(f => f.text && f.text.includes(c.title));
+    tasks.push({ id: "train-" + c.id, category: "Training", title: c.title, why: "Mandatory regulatory knowledge for your partnership category.", status: done ? "done" : "open", priority: "med", due: null, dueLabel: done ? "Completed" + (c.score != null ? " · " + c.score + "%" : "") : "Not started", tab: "trainingA", navLabel: "Training center", source: "Knowledge center", completedAt: feedHit?.at || null });
+  });
+  OBLIGATIONS.filter(o => o.partner === base.id && o.owner === "Partner").forEach(o => {
+    const rem = obReminder(o);
+    const overdue = o.due && dueIn(o.due) < 0;
+    const soon = o.due && dueIn(o.due) >= 0 && dueIn(o.due) <= 7;
+    tasks.push({ id: "ob-" + o.id, category: "Obligation", title: o.title, why: o.detail, status: !o.due && o.kind === "ongoing" ? "ongoing" : overdue ? "overdue" : soon ? "due_soon" : "open", priority: o.sev, due: o.due, dueLabel: rem.label, tab: "slaA", navLabel: "Obligations & SLA", source: o.clause, completedAt: null });
+  });
+  Object.values(store.reviews).filter(r => r.agent === base.id).forEach(r => {
+    if (partnerFacing) return;
+    const sla = slaStatus(r.foDue);
+    const done = r.status === "Closed";
+    tasks.push({ id: "rev-" + r.id, category: "Programme review", title: r.programme || "Periodic review", why: "Mal conducts periodic oversight to confirm ongoing compliance standards.", status: done ? "done" : sla.cd < 0 ? "overdue" : sla.cd <= 3 ? "due_soon" : "open", priority: r.findings?.some(f => f.sev === "Critical") ? "crit" : "high", due: r.foDue, dueLabel: done ? "Closed" : sla.st, tab: "reviewsA", navLabel: "My reviews", source: "Ongoing monitoring", completedAt: r.closedAt || null });
+  });
+  store.broadcasts.filter(b => b.jur === "All" || b.jur === base.jur).forEach(b => {
+    const ack = slice.acks.find(x => x.id === b.id);
+    tasks.push({ id: "ack-" + b.id, category: "Policy acknowledgement", title: b.title, why: b.behavior || (b.body || "").slice(0, 140) || "Confirm you have read and applied this regulatory update.", status: ack ? "done" : "open", priority: b.sev === "crit" ? "crit" : b.sev === "high" ? "high" : "med", due: null, dueLabel: ack ? "Acknowledged · " + fmtDate(ack.at) : "Awaiting acknowledgement", tab: "commsA", navLabel: "Collaboration hub", source: "Regulatory broadcast", completedAt: ack?.at || null });
+  });
+  if (slice.registers.cert.length === 0) {
+    const certDue = _nextAnnual(11, 31);
+    tasks.push({ id: "cert-annual", category: "Certification", title: "Submit annual compliance certification", why: "Self-certification confirms your AML/CFT programme remains effective.", status: dueIn(certDue) < 0 ? "overdue" : dueIn(certDue) <= 30 ? "due_soon" : "open", priority: "high", due: certDue, dueLabel: "Annual · " + fmtDate(certDue), tab: "reportingA", navLabel: "Reporting hub", source: "Self-certification", completedAt: null });
+  }
+  slice.registers.cert.forEach(c => {
+    tasks.push({ id: "cert-" + c.ref, category: "Certification", title: c.summary || "Compliance certification", why: "Filed certification on record.", status: "done", priority: "med", due: null, dueLabel: c.status, tab: "reportingA", navLabel: "Reporting hub", source: "Self-certification", completedAt: c.at });
+  });
+  (store.rfis || []).filter(r => r.partnerId === base.id).forEach(r => {
+    const overdue = r.due && dueIn(r.due) < 0;
+    const soon = r.due && dueIn(r.due) >= 0 && dueIn(r.due) <= 7;
+    const done = r.status === "Closed";
+    const responded = r.status === "Responded";
+    tasks.push({ id: "rfi-" + r.id, category: "Request for information", title: r.title, why: r.why || r.body.slice(0, 140), status: done ? "done" : responded ? "ongoing" : overdue ? "overdue" : soon ? "due_soon" : "open", priority: r.sev, due: r.due, dueLabel: done ? "Closed" : responded ? "Awaiting Mal review" : overdue ? "Overdue · respond now" : r.due ? "Due " + fmtDate(r.due) : "Open", tab: "commsA", navLabel: "Collaboration hub", source: "Secure collaboration", completedAt: r.response?.at || r.closedAt || null });
+  });
+  (store.threads || []).filter(t => t.partnerId === base.id && t.messages.some(m => m.role === "supervisor" && !m.read)).forEach(t => {
+    tasks.push({ id: "msg-" + t.id, category: "Secure message", title: "Unread: " + t.subject, why: "Mal has sent a secure message requiring your attention.", status: "open", priority: "med", due: null, dueLabel: "Unread", tab: "commsA", navLabel: "Collaboration hub", completedAt: null });
+  });
+  (store.mysteryExercises || []).filter(ex => ex.partnerId === base.id).forEach(ex => {
+    if (ex.status === "Scheduled" && !ex.partnerAckAt) {
+      tasks.push({ id: "ms-ack-" + ex.id, category: "Mystery shopper", title: "Acknowledge scheduled exercise · " + ex.title, why: "Mal will conduct a mystery shopper test on " + fmtDate(ex.scheduledDate) + ". Confirm your team is aware.", status: "open", priority: "high", due: ex.scheduledDate, dueLabel: "Scheduled " + fmtDate(ex.scheduledDate), tab: "mysteryA", navLabel: "Mystery shopper", source: ex.quarter, completedAt: null });
+    }
+    ex.remediation.filter(r => r.status !== "Verified" && r.status !== "Done").forEach(r => {
+      const overdue = r.due && dueIn(r.due) < 0;
+      const soon = r.due && dueIn(r.due) >= 0 && dueIn(r.due) <= 7;
+      const responded = !!r.partnerResponse;
+      tasks.push({ id: "ms-" + ex.id + "-" + r.id, category: "Mystery shopper remediation", title: r.action, why: "Finding from " + ex.title + " (" + ex.quarter + ") — submit evidence of completion.", status: responded ? "ongoing" : overdue ? "overdue" : soon ? "due_soon" : "open", priority: ex.findings.some(f => f.sev === "Critical" && f.status === "Open") ? "crit" : "high", due: r.due, dueLabel: responded ? "Awaiting Mal verification" : overdue ? "Overdue" : r.due ? "Due " + fmtDate(r.due) : "Open", tab: "mysteryA", navLabel: "Mystery shopper", source: ex.id, completedAt: r.partnerResponse?.at || null });
+    });
+  });
+  const statusOrder = { overdue: 0, due_soon: 1, open: 2, ongoing: 3, done: 4 };
+  const pri = { crit: 0, high: 1, med: 2, low: 3 };
+  return tasks.sort((a, b) => {
+    const sd = (statusOrder[a.status] ?? 2) - (statusOrder[b.status] ?? 2);
+    if (sd !== 0) return sd;
+    if (a.due && b.due) return new Date(a.due) - new Date(b.due);
+    return (pri[a.priority] ?? 2) - (pri[b.priority] ?? 2);
+  });
+}
+function partnerCommsBadgeCount(store, partnerId, base) {
+  const slice = store.agents[partnerId];
+  if (!slice || !base) return 0;
+  const unacked = store.broadcasts.filter(b => (b.jur === "All" || b.jur === base.jur) && !slice.acks.find(x => x.id === b.id)).length;
+  const openRfis = (store.rfis || []).filter(r => r.partnerId === partnerId && r.status === "Open").length;
+  const unread = (store.threads || []).filter(t => t.partnerId === partnerId && t.messages.some(m => m.role === "supervisor" && !m.read)).length;
+  return unacked + openRfis + unread;
+}
+function partnerMysteryBadgeCount(store, partnerId) {
+  return (store.mysteryExercises || []).filter(ex => {
+    if (ex.partnerId !== partnerId || ex.status === "Closed") return false;
+    if (ex.status === "Scheduled" && !ex.partnerAckAt) return true;
+    return ex.remediation.some(r => r.status !== "Verified" && r.status !== "Done" && !r.partnerResponse);
+  }).length;
+}
+function mysterySupervisorBadgeCount(store) {
+  return (store.mysteryExercises || []).filter(ex => {
+    if (ex.status === "Closed") return false;
+    const remOverdue = ex.remediation.some(r => r.status !== "Verified" && r.due && dueIn(r.due) < 0);
+    const openCrit = ex.findings.some(f => f.sev === "Critical" && f.status === "Open");
+    return remOverdue || openCrit || ex.status === "Scheduled";
+  }).length;
+}
+function mysteryTrendByQuarter(exercises) {
+  const map = {};
+  exercises.forEach(ex => {
+    if (!ex.quarter) return;
+    if (!map[ex.quarter]) map[ex.quarter] = { quarter: ex.quarter, exercises: 0, findings: 0, critical: 0, pass: 0, fail: 0 };
+    map[ex.quarter].exercises += 1;
+    map[ex.quarter].findings += ex.findings.length;
+    map[ex.quarter].critical += ex.findings.filter(f => f.sev === "Critical").length;
+    if (ex.result === "Pass") map[ex.quarter].pass += 1;
+    if (ex.result === "Fail" || ex.result === "Fail with remediation") map[ex.quarter].fail += 1;
+    if (ex.result === "Pass with observations") map[ex.quarter].pass += 1;
+  });
+  return Object.values(map).sort((a, b) => a.quarter.localeCompare(b.quarter));
+}
+function msResultColor(result) {
+  if (!result) return { c: "var(--muted)", bg: "var(--elevated)" };
+  if (result === "Pass") return { c: "var(--green)", bg: "rgba(22,163,74,.12)" };
+  if (result.startsWith("Pass")) return { c: "var(--blue)", bg: "rgba(37,99,235,.1)" };
+  return { c: "var(--red)", bg: "rgba(239,68,68,.12)" };
+}
+function msStatusColor(status) {
+  const m = { Scheduled: "var(--blue)", "In progress": "var(--amber)", "Findings logged": "var(--amber)", Remediation: "var(--red)", Closed: "var(--green)" };
+  return m[status] || "var(--muted)";
+}
 function gateStatus(base) {
   const g = base.gates;
   if (!g) return { status: "unknown", openCount: 0, clearedCount: 0, blockingNote: null };
@@ -434,8 +726,15 @@ const fmtDT = (s) => new Date(s).toLocaleString();
    STYLES
 ============================================================================ */
 const CSS = `
-:root{--page:#eef1fa;--surface:#ffffff;--elevated:#f4f6fc;--ink:#ffffff;
+:root{--page:#eef1fa;--surface:#ffffff;--elevated:#f4f6fc;--ink:#111827;
 --text:#111827;--muted:#6b7280;--line:#e2e8f0;--panel:#ffffff;--panel2:#f4f6fc;
+--chip-bg:var(--elevated);--chip-fg:var(--muted);
+--on-brand:#ffffff;--on-danger:#ffffff;--on-inverse:#f9fafb;--inverse-bg:#111827;
+--warn-surface:#fffbeb;--warn-chip-bg:#fef3c7;--warn-chip-fg:#b45309;
+--success-chip-bg:#dcfce7;--success-chip-fg:#16a34a;
+--indigo-chip-bg:#eef2ff;--indigo-chip-fg:#3730a3;
+--warm-border:#e9dcc6;--warm-border-soft:#efe6d6;--warm-highlight:#ffffff;--flow-arrow:#cdbb9c;
+--lifecycle-stage-bg:linear-gradient(135deg,#fbf5ea 0%,#f4ecdf 58%,#efe7f6 100%);
 --brand:#8b5cf6;--brand2:#3b82f6;--brand600:#7c3aed;
 --brand50:rgba(139,92,246,.08);--brand100:rgba(139,92,246,.15);
 --brandGrad:linear-gradient(135deg,#a855f7,#818cf8,#60a5fa);
@@ -450,7 +749,7 @@ background-image:radial-gradient(ellipse 1400px 600px at 70% -10%,rgba(139,92,24
 background-attachment:fixed;-webkit-font-smoothing:antialiased;}
 .mpc *::-webkit-scrollbar{height:8px;width:8px}.mpc *::-webkit-scrollbar-thumb{background:rgba(139,92,246,.18);border-radius:8px}.mpc *::-webkit-scrollbar-track{background:transparent}
 .mono{font-family:var(--mono)}.muted{color:var(--muted)}
-.topbar{display:flex;align-items:center;gap:14px;padding:11px 18px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(14px);position:sticky;top:0;z-index:30;flex-wrap:wrap}
+.topbar{display:flex;align-items:center;gap:14px;padding:11px 18px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(14px);position:sticky;top:0;z-index:30;flex-wrap:wrap;color:var(--text)}
 .brand{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--text)}
 .brand b{font-weight:800;background:var(--brandGrad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .brandmark{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(168,85,247,.14),rgba(96,165,250,.1));border:1px solid rgba(139,92,246,.28);box-shadow:0 0 14px rgba(139,92,246,.1)}
@@ -458,11 +757,11 @@ background-attachment:fixed;-webkit-font-smoothing:antialiased;}
 .spacer{flex:1}
 .seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--elevated)}
 .seg button{background:transparent;color:var(--muted);border:none;padding:7px 15px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:var(--sans)}
-.seg button.on{background:var(--brandGrad);color:#fff;font-weight:800}
+.seg button.on{background:var(--brandGrad);color:var(--on-brand);font-weight:800}
 .pill{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:12.5px;color:var(--text);cursor:pointer}
 .statchip{display:flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid rgba(139,92,246,.22);border-radius:12px;background:rgba(139,92,246,.07)}
 .statchip .v{font-family:var(--mono);font-weight:700}
-.ticker{display:flex;align-items:stretch;border-bottom:1px solid var(--line);background:rgba(248,249,252,.92);overflow:hidden}
+.ticker{display:flex;align-items:stretch;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--elevated) 92%,transparent);overflow:hidden;color:var(--text)}
 .ticker .live{display:flex;align-items:center;gap:8px;padding:8px 13px;background:rgba(220,38,38,.08);border-right:1px solid rgba(220,38,38,.18);color:var(--red);font-weight:800;font-size:11.5px;white-space:nowrap;letter-spacing:.4px}
 .ticker .track{overflow:hidden;flex:1;display:flex;align-items:center}
 .ticker .crawl{display:inline-flex;gap:40px;white-space:nowrap;padding-left:28px;animation:crawl 55s linear infinite}
@@ -477,13 +776,13 @@ background-attachment:fixed;-webkit-font-smoothing:antialiased;}
 @keyframes crawl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(220,38,38,.6)}70%{box-shadow:0 0 0 7px rgba(220,38,38,0)}100%{box-shadow:0 0 0 0 rgba(220,38,38,0)}}
 .shell{display:grid;grid-template-columns:252px 1fr;min-height:calc(100vh - 112px)}
-.rail{border-right:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;gap:2px;position:sticky;top:112px;align-self:start;height:calc(100vh - 112px);overflow:auto;background:rgba(238,241,250,.65)}
+.rail{border-right:1px solid var(--line);padding:10px 8px;display:flex;flex-direction:column;gap:2px;position:sticky;top:112px;align-self:start;height:calc(100vh - 112px);overflow:auto;background:color-mix(in srgb,var(--page) 65%,var(--elevated));color:var(--text)}
 .railhead{font-size:9px;letter-spacing:1px;color:rgba(139,92,246,.6);font-weight:800;padding:12px 12px 4px;text-transform:uppercase;border-top:1px solid rgba(139,92,246,.1);margin-top:6px}
 .railhead.noline{border-top:none;margin-top:0}
 .navbtn{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:600;border:1px solid transparent;transition:all .15s}
 .navbtn:hover{background:rgba(139,92,246,.07);color:var(--text);border-color:rgba(139,92,246,.14)}
 .navbtn.active{background:rgba(139,92,246,.1);color:var(--brand);border-color:rgba(139,92,246,.22);box-shadow:inset 3px 0 0 var(--brand)}
-.navbtn .badge{margin-left:auto;font-family:var(--mono);font-size:11px;background:var(--red);color:#fff;border-radius:999px;padding:1px 7px;font-weight:800}
+.navbtn .badge{margin-left:auto;font-family:var(--mono);font-size:11px;background:var(--red);color:var(--on-danger);border-radius:999px;padding:1px 7px;font-weight:800}
 .main{padding:20px 24px;max-width:1260px}
 .h1{font-size:21px;font-weight:800;margin:0;letter-spacing:-.01em;color:var(--text)}.sub{color:var(--muted);font-size:13px;margin:4px 0 16px;max-width:900px}
 .grid{display:grid;gap:13px}
@@ -492,16 +791,16 @@ background-attachment:fixed;-webkit-font-smoothing:antialiased;}
 .kpi{font-family:var(--mono);font-size:27px;font-weight:800;line-height:1;color:var(--text)}
 .row{display:flex;align-items:center;gap:10px}
 .btn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-weight:700;font-size:12.5px;cursor:pointer;transition:.15s}
-.btn:hover{background:rgba(139,92,246,.07);border-color:rgba(139,92,246,.28);color:var(--brand)}.btn.gold{background:var(--brandGrad);color:#fff;border:none;font-weight:800}.btn.gold:hover{opacity:.9;filter:brightness(1.05)}
+.btn:hover{background:rgba(139,92,246,.07);border-color:rgba(139,92,246,.28);color:var(--brand)}.btn.gold{background:var(--brandGrad);color:var(--on-brand);border:none;font-weight:800}.btn.gold:hover{opacity:.9;filter:brightness(1.05)}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}.btn.ghost:hover{background:rgba(139,92,246,.05);color:var(--text)}
 .btn:disabled{opacity:.35;cursor:not-allowed}
 .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
 table{border-collapse:collapse;width:100%;font-size:12.5px}
-th{text-align:left;color:rgba(139,92,246,.7);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:9px 11px;background:rgba(238,241,250,.8);position:sticky;top:0;border-bottom:1px solid var(--line)}
+th{text-align:left;color:rgba(139,92,246,.85);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:9px 11px;background:var(--elevated);position:sticky;top:0;border-bottom:1px solid var(--line)}
 td{padding:9px 11px;border-bottom:1px solid rgba(226,232,240,.7);vertical-align:top;color:var(--text)}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:rgba(139,92,246,.03)}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--chip-bg);color:var(--chip-fg)}
 .bar{height:7px;border-radius:999px;background:rgba(0,0,0,.06);overflow:hidden;border:1px solid var(--line)}.bar>span{display:block;height:100%}
 .heat{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .tile{border:1px solid var(--line);border-radius:14px;padding:13px;background:var(--elevated)}
@@ -527,9 +826,84 @@ textarea{min-height:70px;resize:vertical}
 .badge2{display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;padding:15px 11px;border-radius:14px;border:1px solid var(--line);background:var(--elevated)}
 .badge2.on{border-color:rgba(139,92,246,.32);background:rgba(139,92,246,.07)}
 .badge2 .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(139,92,246,.08);color:var(--brand)}
-.badge2.on .ic{background:var(--brandGrad);color:#fff}
+.badge2.on .ic{background:var(--brandGrad);color:var(--on-brand)}
+.trustHero{background:linear-gradient(135deg,rgba(139,92,246,.08),rgba(96,165,250,.06));border:1px solid rgba(139,92,246,.18);border-radius:20px;padding:20px;margin-bottom:14px}
+.trustHero .lead{font-size:14px;color:var(--muted);max-width:720px;margin:6px 0 0}
+.trustGauges{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+@media(max-width:860px){.trustGauges{grid-template-columns:1fr}}
+.trustGauge{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center;position:relative}
+.trustGauge .score{font-family:var(--mono);font-size:32px;font-weight:800;line-height:1;margin-top:10px}
+.trustGauge .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:rgba(139,92,246,.75)}
+.trustGauge .tier{font-size:12px;font-weight:700;margin-top:6px}
+.trustWhy{display:inline-flex;align-items:center;justify-content:center;margin-left:5px;color:var(--muted);cursor:help;vertical-align:-2px}
+.trustWhy:hover{color:var(--brand)}
+.trustWhy[data-tip]{position:relative}
+.trustWhy[data-tip]:hover::after{content:attr(data-tip);position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);width:220px;padding:8px 10px;background:var(--inverse-bg);color:var(--on-inverse);font-size:11px;font-weight:500;line-height:1.4;border-radius:10px;text-align:left;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.18);pointer-events:none;white-space:normal}
+.trustStage{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.trustStage .step{flex:1;min-width:90px;text-align:center;padding:10px 6px;border-radius:12px;border:1px solid var(--line);background:var(--elevated);font-size:11px;font-weight:600;color:var(--muted)}
+.trustStage .step.done{background:rgba(23,163,74,.08);border-color:rgba(23,163,74,.25);color:var(--green)}
+.trustStage .step.now{background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.28);color:var(--brand);box-shadow:inset 0 0 0 1px rgba(139,92,246,.12)}
+.trustAction{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(226,232,240,.7)}
+.trustAction:last-child{border-bottom:none}
+.trustAction .pri{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none}
+.trustAction .body{flex:1;min-width:0}
+.trustAction .body b{font-size:13.5px;display:block;margin-bottom:3px}
+.trustAction .why{font-size:12px;color:var(--muted);line-height:1.45}
+.trustRing{width:72px;height:72px;border-radius:50%;margin:0 auto;display:grid;place-items:center;position:relative}
+.trustRing .inner{width:54px;height:54px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-family:var(--mono);font-weight:800;font-size:17px}
+.trustSplit{display:grid;grid-template-columns:1.2fr 1fr;gap:13px}
+@media(max-width:900px){.trustSplit{grid-template-columns:1fr}}
+.taskFilters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.taskFilters button{font-size:12px;padding:6px 12px}
+.taskStatus{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.taskStatus.overdue{background:rgba(220,38,38,.12);color:var(--red)}
+.taskStatus.due_soon{background:rgba(217,119,6,.14);color:var(--amber)}
+.taskStatus.open{background:rgba(37,99,235,.1);color:var(--blue)}
+.taskStatus.ongoing{background:rgba(107,114,128,.12);color:var(--muted)}
+.taskStatus.done{background:rgba(22,163,74,.12);color:var(--green)}
+.msgThread{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:11px;background:var(--surface)}
+.msgThread.unread{border-color:rgba(139,92,246,.35);background:rgba(139,92,246,.04)}
+.msgBubble{max-width:85%;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.45;margin-bottom:8px}
+.msgBubble.sup{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.18);margin-right:auto}
+.msgBubble.prt{background:var(--elevated);border:1px solid var(--line);margin-left:auto;text-align:right}
+.msgMeta{font-size:10.5px;color:var(--muted);margin-bottom:4px}
+.msgCompose{display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
+.rfiCard{border-left:3px solid var(--brand)}
+.rfiCard.overdue{border-left-color:var(--red)}
+.secureTag{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--brand);background:rgba(139,92,246,.08);padding:3px 8px;border-radius:999px}
+.mlroPanel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 18px 14px;margin-bottom:16px;box-shadow:0 2px 12px -4px rgba(15,23,42,.08)}
+.mlroPanelHead{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.mlroPanelHead h2{margin:0;font-size:15px;font-weight:800;color:var(--text)}
+.mlroPanelHead p{margin:4px 0 0;font-size:12.5px;color:var(--muted);max-width:720px}
+.mlroSection{margin-bottom:14px}
+.mlroSection:last-child{margin-bottom:0}
+.mlroSectionTitle{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.55px;margin-bottom:6px;color:var(--text)}
+.mlroSectionSub{font-size:12px;color:var(--muted);margin:0 0 12px;line-height:1.45}
+.mlroGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.mlroCard{background:var(--elevated);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;min-height:120px}
+.mlroCard strong{font-size:14px;color:var(--text);line-height:1.3}
+.mlroCardReason{font-size:12px;color:var(--muted);line-height:1.5;margin:0;flex:1}
+.mlroCardTop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mlroCard--stop{border-left:4px solid var(--red);background:linear-gradient(135deg,rgba(220,38,38,.04),var(--elevated))}
+.mlroCard--warn{border-left:4px solid var(--amber);background:linear-gradient(135deg,rgba(217,119,6,.05),var(--elevated))}
+.mlroCard--info{border-left:4px solid var(--blue);background:linear-gradient(135deg,rgba(37,99,235,.04),var(--elevated))}
+.partnerHero{background:linear-gradient(135deg,rgba(139,92,246,.07),rgba(96,165,250,.05));border:1px solid rgba(139,92,246,.16);border-radius:18px;padding:20px;margin-bottom:14px}
+.partnerHero .lead{font-size:14px;color:var(--muted);max-width:760px;margin:6px 0 0;line-height:1.5}
+.msKpiGrid{grid-template-columns:repeat(4,1fr);margin-top:13px;gap:11px}
+@media(max-width:900px){.msKpiGrid{grid-template-columns:repeat(2,1fr)}}
+.msCard{border-left:3px solid rgba(139,92,246,.35)}
+.msMeta{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-size:11.5px;color:var(--muted)}
+.msScenario{font-size:12.5px;color:var(--text);margin:10px 0 0;line-height:1.55;padding:10px 12px;background:var(--elevated);border-radius:10px;border:1px solid var(--lineSoft)}
+.msAckBox{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;background:rgba(37,99,235,.06);border:1px solid rgba(37,99,235,.18);border-radius:12px}
+.msRemRow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--lineSoft);flex-wrap:wrap}
+.msResponse{margin-top:6px;padding:8px 10px;background:var(--elevated);border-radius:8px;font-size:12px;border:1px solid var(--lineSoft)}
+.partnerQuick{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:11px;margin-top:14px}
+.partnerQuick .qcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;transition:.15s;text-align:left}
+.partnerQuick .qcard:hover{border-color:rgba(139,92,246,.35);box-shadow:0 4px 16px -8px rgba(139,92,246,.2);transform:translateY(-1px)}
+.partnerQuick .qcard b{display:block;font-size:13px;color:var(--text);margin:8px 0 4px}
+.partnerQuick .qcard span{font-size:12px;color:var(--muted);line-height:1.4}
 .ring{position:relative;width:46px;height:46px;border-radius:50%}
-.ring .hole{position:absolute;inset:5px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-family:var(--mono);font-weight:800;font-size:13px}
+.ring .hole{position:absolute;inset:5px;border-radius:50%;background:var(--surface);display:grid;place-items:center;font-family:var(--mono);font-weight:800;font-size:13px;color:var(--text)}
 @media (max-width:880px){.shell{grid-template-columns:1fr}.rail{position:static;height:auto;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--line)}}
 @media (prefers-reduced-motion:reduce){.ticker .crawl{animation:none}.pulse{animation:none}}
 `;
@@ -545,8 +919,8 @@ textarea{min-height:70px;resize:vertical}
 const HIGH_CORRIDORS = ["Pakistan", "Bangladesh", "Egypt"]; // Very-High/High corridors → Tier 3 by default
 function suggestTier(category, jur) {
   if (category === "Payout partners") return HIGH_CORRIDORS.includes(jur) ? "Tier 3 — EDD" : "Tier 2 — Elevated";
-  if (category === "Technology & processors") return "Tier 3 — EDD"; // touch CDD/screening/critical systems
-  if (category === "Banking partner" || category === "Card & settlement") return "Tier 2 — Elevated";
+  if (category === "KYC & identity" || category === "Risk platform" || category === "Technology & processors") return "Tier 3 — EDD";
+  if (category === "Banking partner" || category === "Card & settlement" || category === "Virtual accounts") return "Tier 2 — Elevated";
   return "Tier 2 — Elevated";
 }
 const TIER_NOTE = {
@@ -615,6 +989,22 @@ const CATEGORY_LIGHT = {
   "Technology & processors": [{ title: "Technology — quick check", why: "We treat processors as never-CDD-reliance and validate your controls ourselves.", fields: [
     { k: "serviceType", label: "Service type", t: "select", options: ["Screening / KYT", "Core ledger", "Identity verification", "Other"] },
     { k: "dataResidency", label: "Data residency / primary hosting jurisdiction", t: "text" },
+  ]}],
+  "KYC & identity": [{ title: "KYC & identity — quick check", why: "Processor output is never relied on as customer due diligence — Mal validates independently.", fields: [
+    { k: "serviceType", label: "Verification services offered", t: "select", options: ["Document verification", "Face / liveness", "OCR", "Other"] },
+    { k: "dataResidency", label: "Data residency / primary hosting jurisdiction", t: "text" },
+  ]}],
+  "Risk platform": [{ title: "Risk platform — quick check", why: "Confirms fraud / device intelligence scope and integration model.", fields: [
+    { k: "modules", label: "Modules in scope (device intel, case mgmt, SAR, etc.)", t: "text" },
+    { k: "dataResidency", label: "Data residency / primary hosting jurisdiction", t: "text" },
+  ]}],
+  "Virtual accounts": [{ title: "Virtual accounts — quick check", why: "Confirms virtual-account rails and settlement model.", fields: [
+    { k: "currency", label: "Account currencies offered", t: "text" },
+    { k: "settlementModel", label: "Settlement / safeguarding model", t: "text" },
+  ]}],
+  "Lending": [{ title: "Lending — quick check", why: "Confirms lending product type and regulatory perimeter.", fields: [
+    { k: "productType", label: "Lending product type", t: "text" },
+    { k: "regulator", label: "Primary regulator", t: "text" },
   ]}],
 };
 const schemaFor = (cat) => [...COMMON_LIGHT, ...(CATEGORY_LIGHT[cat] || [])];
@@ -725,6 +1115,10 @@ function Onboarding({ store, category, setCategory, onboard, viewProfile }) {
     <>
       <h1 className="h1">Onboarding & due-diligence</h1>
       <p className="sub">Partnership, not interrogation. Partners give the minimum that’s satisfactory to start; Mal runs the deep due diligence — independent verification plus automatic sanctions, adverse-media and ownership screening. Pick a category to open its light intake.</p>
+      <div className="card" style={{ marginBottom: 16, borderLeft: "3px solid var(--gold)" }}>
+        <h3 style={{ marginTop: 0 }}>Integrating systems (TM, screening, core, API)</h3>
+        <p className="muted" style={{ fontSize: 12.5 }}>After light intake, complete the <b>TM system assessment</b> (Mal Bank pre-implementation questionnaire + BRD go-live gates) before any production integration. Use Mission I → TM system assessment — scoped by partner category.</p>
+      </div>
       <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))" }}>
         {CATEGORIES.map(cat => (
           <div className="card" key={cat.id}>
@@ -824,7 +1218,7 @@ function DDView({ slice, base, screening, onScreen, screenLoading, supervisor = 
           <div><b style={{ fontSize: 15 }}>{base.name}</b> <span className="muted">· {base.category} · {base.jur}</span></div>
           <div className="row" style={{ gap: 8 }}>
             <span className="chip" style={{ background: "var(--brand50)", color: "var(--brand600)" }}>{tier}</span>
-            <span className="chip" style={{ background: "#f5f6fb" }}>{slice.lifecycle || base.lifecycle || "Stage 3 — Verification & DD"}</span>
+            <span className="chip" style={{ background: "var(--elevated)" }}>{slice.lifecycle || base.lifecycle || "Stage 3 — Verification & DD"}</span>
           </div>
         </div>
         <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>{TIER_NOTE[tier]}</div>
@@ -934,7 +1328,7 @@ const OBLIGATIONS = [
   { id: "z9", partner: "zenus", owner: "Mal", title: "Independent AML/BSA audit", detail: "Independent AML test within 12 months of launch, by someone other than the CO, reported to the Board (gap: add to Schedule 3.6(a)).", clause: "Gap item 4 / Annex 1", cadence: "Annual", sla: "Within 12 months of launch", sev: "high", kind: "recurring", due: _nextAnnual(2, 31) },
   { id: "z10", partner: "zenus", owner: "Mal", title: "Deliver audited financial statements", detail: "Audited consolidated financial statements within 180 days after each fiscal year-end.", clause: "§3.6(c)", cadence: "Annual", sla: "≤ 180 days after FY-end", sev: "med", kind: "deadline", due: _nextAnnual(5, 29) },
   { id: "z11", partner: "zenus", owner: "Mal", title: "Maintain OFAC SDN screening & 5-year records", detail: "Screen applicants at onboarding and on each SDN update; never open accounts for sanctioned persons; retain End-User & transaction records 5 years.", clause: "Sch. 4.1(a)", cadence: "Continuous", sla: "On each SDN publication", sev: "crit", kind: "ongoing", due: null },
-  { id: "z12", partner: "zenus", owner: "Mal", title: "Non-renewal notice window", detail: "If electing not to renew, give ≥ 90 days written notice before the end of the 36-month initial term (29 May 2029).", clause: "§12.1", cadence: "One-time", sla: "≥ 90 days before term end", sev: "low", kind: "deadline", due: "2029-02-28" },
+  { id: "z12", partner: "zenus", owner: "Mal", title: "Non-renewal notice window", detail: "If electing not to renew, give ≥ 90 days written notice before the end of the 36-month initial term (8 June 2029).", clause: "§12.1", cadence: "One-time", sla: "≥ 90 days before term end", sev: "low", kind: "deadline", due: "2029-03-10" },
   { id: "z20", partner: "zenus", owner: "Partner", title: "Provide read-only FBO access; no commingling", detail: "Zenus gives Mal read-only FBO access, never commingles third-party funds, and moves funds only on Mal’s instruction.", clause: "§7.4", cadence: "Continuous", sla: "Continuous", sev: "high", kind: "ongoing", due: null },
   { id: "z21", partner: "zenus", owner: "Partner", title: "Notice before account adjustments", detail: "Zenus notifies Mal (email/phone) before making adjustments to the FBO / sub-account information.", clause: "§7.3", cadence: "On change", sla: "Prior notice", sev: "med", kind: "event", due: null },
   { id: "z22", partner: "zenus", owner: "Partner", title: "Prompt notice of proceedings affecting Zenus", detail: "Zenus promptly notifies Mal of any material action, suit or regulatory action affecting it.", clause: "§9", cadence: "On event", sla: "Promptly", sev: "med", kind: "event", due: null },
@@ -952,12 +1346,31 @@ const OBLIGATIONS = [
   { id: "r23", partner: "rain", owner: "Partner", title: "Provide the missing Co-Brand Agreement", detail: "Co-Brand Agreement is referenced as governing the services but was not attached; obtain and review it.", clause: "Schedule 3 / Co-Brand", cadence: "Before signing", sla: "Pre-signature", sev: "high", kind: "pending", due: null },
   { id: "r24", partner: "rain", owner: "Partner", title: "Monthly invoices & interchange settlement", detail: "Signify issues monthly invoices and pays interchange revenue monthly on a gross basis; no markup on actual gas fees.", clause: "Invoicing / Revenue share", cadence: "Monthly", sla: "Each month", sev: "low", kind: "recurring", due: _nextMonthly(5) },
 
-  /* ---------------- OSCILAR — TM/screening (pre-contract gap remediation) ---------------- */
-  { id: "o20", partner: "oscilar", owner: "Partner", title: "Deliver integrated OFAC/UN/OFSI screening module", detail: "Sanctions screening with fail-closed suspense quarantine and 10-day blocking-report capability; the library currently has zero OFAC rules.", clause: "Gap O-1 / 31 CFR 501", cadence: "Before go-live", sla: "Pre-go-live", sev: "crit", kind: "pending", due: null },
-  { id: "o21", partner: "oscilar", owner: "Partner", title: "Deliver crypto / CVC monitoring rules", detail: "Wallet adjacency, mixer/tumbler exposure, chain-hopping detection and blockchain analytics over the reserve.", clause: "Gap O-2 / FIN-2025-CVC", cadence: "Before go-live", sla: "Pre-go-live", sev: "crit", kind: "pending", due: null },
-  { id: "o22", partner: "oscilar", owner: "Partner", title: "Real-time preventive holds for Pakistan corridor", detail: "Real-Time Risk Assessment with minimum dwell time and age-scaled caps — prevention, not just post-transaction detection.", clause: "Gap O-3", cadence: "Before go-live", sla: "Pre-go-live", sev: "crit", kind: "pending", due: null },
-  { id: "o23", partner: "oscilar", owner: "Partner", title: "Geographic weighting + MRM tuning", detail: "SBP/provincial corridor weighting, tuning of hardcoded OOTB defaults, and a zero-hit KRI.", clause: "Gap O-4", cadence: "Before go-live", sla: "Pre-go-live", sev: "high", kind: "pending", due: null },
-  { id: "o1", partner: "oscilar", owner: "Mal", title: "Independent model validation & tuning", detail: "Validate and tune the monitoring rules; never rely on processor output as CDD (processor governance).", clause: "Doc 0.4 / processor governance", cadence: "Annual", sla: "Every 12 months", sev: "med", kind: "recurring", due: _nextAnnual(8, 30) },
+  /* ---------------- SWIFTX — Platform Services Agreement (executed 1 May 2026) ---------------- */
+  { id: "sx1", partner: "swiftx", owner: "Mal", title: "Pay fees per Schedule 1", detail: "Pay SwiftX Canada fees and charges for Pakistan corridor services per Schedule 1 and any Order Form.", clause: "Schedule 1 — Fees", cadence: "Per transaction / monthly", sla: "Per invoice terms", sev: "med", kind: "recurring", due: _nextMonthly(1) },
+  { id: "sx2", partner: "swiftx", owner: "Mal", title: "Provide accurate payment instructions via API", detail: "Submit payment details and instructions through the API; ensure Customer authorization for each Transaction.", clause: "API / Transaction definitions", cadence: "Per transaction", sla: "Real-time", sev: "high", kind: "ongoing", due: null },
+  { id: "sx3", partner: "swiftx", owner: "Mal", title: "Cooperate on MMVC review at 6-month mark", detail: "Confirm monthly minimum volume commitment threshold at 6 months (deferred first 6 months per Schedule 1).", clause: "Schedule 1 — MMVC", cadence: "One-time", sla: "At month 6", sev: "med", kind: "deadline", due: "2026-11-01" },
+  { id: "sx4", partner: "swiftx", owner: "Mal", title: "Non-compete / exclusivity (Pakistan corridor)", detail: "Refrain from competing Pakistan corridor arrangements without SwiftX express prior written approval for 2 years.", clause: "Non-compete § (Agreement)", cadence: "Continuous", sla: "2 years from Effective Date", sev: "med", kind: "ongoing", due: "2028-05-01" },
+  { id: "sx20", partner: "swiftx", owner: "Partner", title: "Maintain API uptime 99.95%", detail: "SwiftX commits to API uptime of 99.95% based on historical performance; communicate changes in real time.", clause: "Schedule 1 — API commitment", cadence: "Continuous", sla: "99.95% monthly", sev: "crit", kind: "ongoing", due: null },
+  { id: "sx21", partner: "swiftx", owner: "Partner", title: "PKR disbursement — 98% within 15 minutes", detail: "Real-time PKR disbursement: 98% of transactions completed in 15 minutes or less.", clause: "Schedule 1 — PKR disbursement", cadence: "Continuous", sla: "98% ≤ 15 min", sev: "crit", kind: "ongoing", due: null },
+  { id: "sx22", partner: "swiftx", owner: "Partner", title: "Provide regulated payment services (FINTRAC MSB)", detail: "SwiftX Canada provides regulated payment services; SwiftX Meydan provides non-regulated technology only.", clause: "Background (A)–(B)", cadence: "Continuous", sla: "Continuous", sev: "high", kind: "ongoing", due: null },
+  { id: "sx23", partner: "swiftx", owner: "Partner", title: "Report API downtime & extenuating circumstances", detail: "Communicate in real time any changes in uptime expectations or extenuating circumstances.", clause: "Schedule 1 — API commitment", cadence: "On event", sla: "Real-time notice", sev: "med", kind: "event", due: null },
+
+  /* ---------------- SHUFTIPRO — Sales Order (effective 22 Apr 2026) ---------------- */
+  { id: "sp1", partner: "shufti", owner: "Mal", title: "Prepay verification charges", detail: "Pre-paid billing at $0.20/verification for 175,000 checks; overage at same rate unless agreed in writing.", clause: "Sales Order — Charges", cadence: "Prepaid", sla: "Wire or online transfer", sev: "med", kind: "recurring", due: null },
+  { id: "sp2", partner: "shufti", owner: "Mal", title: "Provide cooperation & information to Provider", detail: "Supply all cooperation, support and information required for Provider compliance and Client responsibilities.", clause: "Terms — Client responsibilities", cadence: "Continuous", sla: "Timely", sev: "med", kind: "ongoing", due: null },
+  { id: "sp3", partner: "shufti", owner: "Mal", title: "Route support requests through help desk", detail: "All Support Services requests must be made through the Provider help desk (email / web chat).", clause: "Schedule 3 §1", cadence: "On support need", sla: "Via help desk only", sev: "low", kind: "ongoing", due: null },
+  { id: "sp20", partner: "shufti", owner: "Partner", title: "Uptime — reasonable endeavours 99%/month", detail: "Provider uses reasonable endeavours to ensure ≥99% monthly uptime (excludes scheduled maintenance, client errors, third-party hosting).", clause: "Schedule 1 — Availability", cadence: "Monthly", sla: "≥99% (endeavour)", sev: "high", kind: "ongoing", due: null },
+  { id: "sp21", partner: "shufti", owner: "Partner", title: "Support response & resolution (tier-dependent)", detail: "Help desk per Schedule 3: e.g. Priority Normal 8 BH response / 2 BD resolution; Urgent 4 BH / 1 BD. Tier selected on Sales Order.", clause: "Schedule 3 §4", cadence: "On ticket", sla: "Per support tier", sev: "med", kind: "event", due: null },
+  { id: "sp22", partner: "shufti", owner: "Partner", title: "Monthly uptime report on request", detail: "Report calendar-month uptime within 10 Business Days of Client written request.", clause: "Schedule 1 §1", cadence: "On request", sla: "≤10 Business Days", sev: "low", kind: "event", due: null },
+  { id: "sp23", partner: "shufti", owner: "Partner", title: "Security updates — 10 BD notice (non-security)", detail: "≥10 Business Days prior written notice before non-security platform upgrades.", clause: "Terms — Updates", cadence: "On upgrade", sla: "≥10 Business Days", sev: "med", kind: "event", due: null },
+
+  /* ---------------- SARDINE — Customer Agreement order form ---------------- */
+  { id: "sa1", partner: "sardine", owner: "Mal", title: "Pay annual minimum commitment", detail: "$255,000 annual credits invoiced from Service Start Date; 30-day payment terms; overages monthly in arrears.", clause: "Order Form — Billing", cadence: "Annual", sla: "≤30 days from invoice", sev: "high", kind: "recurring", due: _nextAnnual(12, 10) },
+  { id: "sa2", partner: "sardine", owner: "Mal", title: "Maintain network & integration environment", detail: "Customer responsible for maintenance of networks, servers, software and equipment related to the Services.", clause: "Customer Obligations", cadence: "Continuous", sla: "Continuous", sev: "med", kind: "ongoing", due: null },
+  { id: "sa20", partner: "sardine", owner: "Partner", title: "Platform availability 99.9%/month", detail: "SardineAI uses commercially reasonable measures to ensure System Availability ≥99.9% each calendar month.", clause: "SLA — Service Standard", cadence: "Monthly", sla: "99.9% uptime", sev: "crit", kind: "ongoing", due: null },
+  { id: "sa21", partner: "sardine", owner: "Partner", title: "Respond to unscheduled downtime ≤1 hour", detail: "Respond to Unscheduled Downtime reports within 1 hour of each report (24×7×365 email).", clause: "SLA — Response Times", cadence: "On incident", sla: "≤1 hour", sev: "crit", kind: "event", due: null },
+  { id: "sa22", partner: "sardine", owner: "Partner", title: "Standard / priority support per order form", detail: "Standard Support includes integration team access; priority-3 issues: 1 business day response during business hours.", clause: "Products & Pricing — Support", cadence: "On request", sla: "1 BD (P3)", sev: "med", kind: "event", due: null },
 
   /* ── Mal → Regulatory filing deadlines (BSA / OFAC / FinCEN) ── */
   { id: "mf1", partner: "mal", owner: "Mal", title: "SAR filing — Path A (Mal direct filer)", detail: "File SAR with FinCEN BSA E-Filing within 30 calendar days of the initial detection date. Extension: additional 30 days if subject cannot be identified. Never tip off the subject.", clause: "31 C.F.R. § 1022.320; 31 U.S.C. § 5318(g)", cadence: "On detection", sla: "30 calendar days from detection", sev: "crit", kind: "event", due: null },
@@ -968,7 +1381,7 @@ const OBLIGATIONS = [
   { id: "mf6", partner: "mal", owner: "Mal", title: "Annual Blocked Property Report (ARBP) — first filing due", detail: "First ARBP: report all property blocked as of June 30, 2026 — file with OFAC by September 30, 2026. Subsequent annual reports due September 30 each year (property as of prior June 30).", clause: "31 C.F.R. § 501.603", cadence: "Annual (Sept 30)", sla: "September 30, 2026 — first filing", sev: "crit", kind: "deadline", due: "2026-09-30" },
   { id: "mf7", partner: "mal", owner: "Mal", title: "314(a) FinCEN information request response", detail: "Respond to FinCEN 314(a) requests within the specified window (typically ~14 calendar days from the posting date). Search records going back 6 years.", clause: "31 C.F.R. § 1010.520", cadence: "On request", sla: "~14 days (per FinCEN notice)", sev: "high", kind: "event", due: null },
   { id: "mf8", partner: "mal", owner: "Mal", title: "OFAC SDN screening update — < 3 business days", detail: "Incorporate OFAC SDN and applicable sanctions list updates into screening systems within 3 business days of each OFAC publication. Fail-open is not acceptable.", clause: "OFAC guidance; Zenus Programme SLA", cadence: "On each SDN publication", sla: "< 3 business days after publication", sev: "crit", kind: "event", due: null },
-  { id: "mf9", partner: "mal", owner: "Mal", title: "FinCEN advisory — TM rule incorporation", detail: "Incorporate typologies and red flags from FinCEN advisories into Oscilar transaction monitoring rules within 30 days of advisory publication. Log the update in the control register.", clause: "Mal Standards Hierarchy §6; BSA § 1022.210", cadence: "On advisory publication", sla: "30 days from publication", sev: "med", kind: "event", due: null },
+  { id: "mf9", partner: "mal", owner: "Mal", title: "FinCEN advisory — rule incorporation", detail: "Incorporate typologies and red flags from FinCEN advisories into transaction monitoring controls within 30 days of advisory publication. Log the update in the control register.", clause: "Mal Standards Hierarchy §6; BSA § 1022.210", cadence: "On advisory publication", sla: "30 days from publication", sev: "med", kind: "event", due: null },
   { id: "mf10", partner: "mal", owner: "Mal", title: "Independent AML / BSA audit — post-launch", detail: "Conduct first independent AML/BSA audit within 12 months of commercial launch, by a qualified party other than the Compliance Officer, with findings reported to the Board.", clause: "31 C.F.R. § 1022.210; Board Resolution §4.4; Zenus Sch. 3.6(a)", cadence: "Annual (first: within 12 months of launch)", sla: "≤ 12 months from launch", sev: "high", kind: "pending", due: null },
   { id: "mf11", partner: "mal", owner: "Mal", title: "Training & records retention — 5-year minimum", detail: "Retain all AML training completion records, SAR/CTR copies, CDD records, and correspondence for a minimum of 5 years per BSA recordkeeping requirements.", clause: "31 C.F.R. Chapter X; 31 C.F.R. § 1022.400", cadence: "Ongoing", sla: "5 years minimum", sev: "med", kind: "ongoing", due: null },
 ];
@@ -983,9 +1396,9 @@ function ObCard({ ob }) {
       </div>
       <div className="muted" style={{ fontSize: 12.5, margin: "5px 0 8px" }}>{ob.detail}</div>
       <div className="row" style={{ gap: 8, flexWrap: "wrap", fontSize: 11 }}>
-        <span className="chip" style={{ background: "#f5f6fb" }}>{ob.cadence}</span>
-        <span className="chip" style={{ background: "#f5f6fb" }}>SLA: {ob.sla}</span>
-        <span className="chip" style={{ background: "#f5f6fb" }}>{ob.clause}</span>
+        <span className="chip" style={{ background: "var(--elevated)" }}>{ob.cadence}</span>
+        <span className="chip" style={{ background: "var(--elevated)" }}>SLA: {ob.sla}</span>
+        <span className="chip" style={{ background: "var(--elevated)" }}>{ob.clause}</span>
         <span className="chip" style={{ background: SEV[ob.sev].c + "18", color: SEV[ob.sev].c }}>{SEV[ob.sev].t}</span>
         {ob.due && <span className="muted mono" style={{ fontSize: 11 }}>next: {r.when}</span>}
       </div>
@@ -1006,11 +1419,11 @@ function ObligationsView({ partnerId, base, supervisor }) {
       <p className="sub">Every commitment in the agreement, as a live alert — split by who owes it — so the SLA is met on both sides. {overdue.length > 0 ? <b style={{ color: "var(--red)" }}>{overdue.length} overdue.</b> : null} {urgent.length > 0 ? <b style={{ color: "var(--amber)" }}>{urgent.length} due within 7 days.</b> : null}</p>
       <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", alignItems: "start" }}>
         <div>
-          <div className="row" style={{ gap: 8, marginBottom: 8 }}><span className="catdot" style={{ background: "var(--brand600)" }} /><b style={{ fontSize: 14 }}>{supervisor ? "Mal must provide" : "What we (Mal) provide to you"}</b><span className="chip" style={{ background: "#f5f6fb" }}>{malSide.length}</span></div>
+          <div className="row" style={{ gap: 8, marginBottom: 8 }}><span className="catdot" style={{ background: "var(--brand600)" }} /><b style={{ fontSize: 14 }}>{supervisor ? "Mal must provide" : "What we (Mal) provide to you"}</b><span className="chip" style={{ background: "var(--elevated)" }}>{malSide.length}</span></div>
           {malSide.map(o => <ObCard key={o.id} ob={o} />)}
         </div>
         <div>
-          <div className="row" style={{ gap: 8, marginBottom: 8 }}><span className="catdot" style={{ background: "var(--info)" }} /><b style={{ fontSize: 14 }}>{supervisor ? `${base.name} must provide` : "Your obligations to Mal"}</b><span className="chip" style={{ background: "#f5f6fb" }}>{partnerSide.length}</span></div>
+          <div className="row" style={{ gap: 8, marginBottom: 8 }}><span className="catdot" style={{ background: "var(--info)" }} /><b style={{ fontSize: 14 }}>{supervisor ? `${base.name} must provide` : "Your obligations to Mal"}</b><span className="chip" style={{ background: "var(--elevated)" }}>{partnerSide.length}</span></div>
           {partnerSide.map(o => <ObCard key={o.id} ob={o} />)}
         </div>
       </div>
@@ -1118,7 +1531,7 @@ const LC_SLIDES = [
   { tag: "Metaphor → system", kind: "glossary", title: "Kitchen glossary" },
   { tag: "The connection, at a glance", kind: "recap", title: "How it all connects" },
 ];
-const lcCard = { background: "#fff", border: "1px solid #e9dcc6", borderRadius: 14, padding: "14px 12px", textAlign: "center" };
+const lcCard = { background: "var(--surface)", border: "1px solid var(--warm-border)", borderRadius: 14, padding: "14px 12px", textAlign: "center", color: "var(--text)" };
 function SlideHead({ title, note }) {
   return <div style={{ textAlign: "center" }}>
     <div style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-.01em" }}>{title}</div>
@@ -1136,8 +1549,8 @@ function LifecycleShow() {
   const go = (d) => setI(x => (x + d + N) % N);
   const stage = {
     position: "relative", borderRadius: 22, padding: "30px 28px 26px", minHeight: 392, overflow: "hidden",
-    background: "linear-gradient(135deg,#fbf5ea 0%,#f4ecdf 58%,#efe7f6 100%)", border: "1px solid #e9dcc6",
-    boxShadow: "inset 0 1px 0 #fff, 0 12px 32px -18px rgba(120,80,30,.35)",
+    background: "var(--lifecycle-stage-bg)", border: "1px solid var(--warm-border)",
+    boxShadow: "inset 0 1px 0 var(--warm-highlight), 0 12px 32px -18px rgba(120,80,30,.35)",
   };
   return (
     <>
@@ -1146,7 +1559,7 @@ function LifecycleShow() {
 
       <div style={stage}>
         <div style={{ position: "absolute", top: 15, right: 16 }}>
-          <span className="chip mono" style={{ background: "#fff", border: "1px solid #e9dcc6", color: "var(--brand600)" }}>{s.tag}</span>
+          <span className="chip mono" style={{ background: "var(--surface)", border: "1px solid var(--warm-border)", color: "var(--brand600)" }}>{s.tag}</span>
         </div>
 
         {s.kind === "intro" && (
@@ -1156,7 +1569,7 @@ function LifecycleShow() {
             <div style={{ fontSize: 34, fontWeight: 900, letterSpacing: "-.02em", margin: "12px 0 6px" }}>The Kitchen Guide</div>
             <div className="muted" style={{ fontSize: 14, maxWidth: 520 }}>How Mal works with its partners — the product lifecycle, explained over a cup of tea.</div>
             <div className="row" style={{ gap: 8, marginTop: 18, flexWrap: "wrap", justifyContent: "center" }}>
-              {["Mal", "Zenus", "Oscilar", "SaaScada", "Rain"].map(x => <span key={x} className="chip" style={{ background: "#fff", border: "1px solid #e9dcc6" }}>{x}</span>)}
+              {["Mal", "Zenus", "Oscilar", "SaaScada", "Rain"].map(x => <span key={x} className="chip" style={{ background: "var(--surface)", border: "1px solid var(--warm-border)" }}>{x}</span>)}
             </div>
           </div>
         )}
@@ -1204,16 +1617,16 @@ function LifecycleShow() {
             <div className="row" style={{ gap: 4, marginTop: 30, justifyContent: "center", flexWrap: "wrap" }}>
               {LC_FLOW.map((node, k) => (
                 <React.Fragment key={node}>
-                  <div style={{ padding: "14px 16px", borderRadius: 14, border: "2px solid", borderColor: pulse === k ? "var(--gold)" : "#e9dcc6", background: pulse === k ? "var(--brand50)" : "#fff", transition: ".35s", textAlign: "center", minWidth: 104 }}>
+                  <div style={{ padding: "14px 16px", borderRadius: 14, border: "2px solid", borderColor: pulse === k ? "var(--gold)" : "var(--warm-border)", background: pulse === k ? "var(--brand50)" : "var(--surface)", transition: ".35s", textAlign: "center", minWidth: 104, color: "var(--text)" }}>
                     <div style={{ fontSize: 22 }}>{LC_FLOW_EMOJI[k]}</div>
                     <div style={{ fontWeight: 800, fontSize: 13, marginTop: 4, color: pulse === k ? "var(--brand600)" : "var(--text)" }}>{node}</div>
                   </div>
-                  {k < LC_FLOW.length - 1 && <div style={{ fontSize: 22, color: pulse === k ? "var(--gold)" : "#cdbb9c", transition: ".35s", padding: "0 2px" }}>{"→"}</div>}
+                  {k < LC_FLOW.length - 1 && <div style={{ fontSize: 22, color: pulse === k ? "var(--gold)" : "var(--flow-arrow)", transition: ".35s", padding: "0 2px" }}>{"→"}</div>}
                 </React.Fragment>
               ))}
             </div>
             <div style={{ textAlign: "center", marginTop: 26 }}>
-              <span className="chip" style={{ background: "var(--red)", color: "#fff", fontWeight: 800, letterSpacing: ".6px" }}>NO EXCEPTIONS</span>
+              <span className="chip" style={{ background: "var(--red)", color: "var(--on-danger)", fontWeight: 800, letterSpacing: ".6px" }}>NO EXCEPTIONS</span>
             </div>
             <div className="muted" style={{ textAlign: "center", fontSize: 12.5, marginTop: 12, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>The risk gate (Oscilar) sits before the user — funds can’t reach a customer without passing the safety check first.</div>
           </div>
@@ -1224,7 +1637,7 @@ function LifecycleShow() {
             <SlideHead title="Kitchen glossary — metaphor to system" note="The cheat sheet that ties the story to the real architecture." />
             <div style={{ ...lcCard, padding: 0, marginTop: 16, textAlign: "left", maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
               {LC_GLOSSARY.map(([a, b], k) => (
-                <div key={a} className="row" style={{ justifyContent: "space-between", padding: "9px 16px", borderBottom: k < LC_GLOSSARY.length - 1 ? "1px solid #efe6d6" : "none" }}>
+                <div key={a} className="row" style={{ justifyContent: "space-between", padding: "9px 16px", borderBottom: k < LC_GLOSSARY.length - 1 ? "1px solid var(--warm-border-soft)" : "none" }}>
                   <span style={{ fontSize: 13 }}>{"🍳  " + a}</span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: "var(--brand600)" }}>{b}</span>
                 </div>
@@ -1238,7 +1651,7 @@ function LifecycleShow() {
             <SlideHead title="The connection, at a glance" note="Every partner has one clear job — and money flows safely between them." />
             <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", marginTop: 16 }}>
               {LC_HELPERS.map(h => (
-                <div key={h.name} className="row" style={{ gap: 10, background: "#fff", border: "1px solid #e9dcc6", borderRadius: 12, padding: "10px 12px" }}>
+                <div key={h.name} className="row" style={{ gap: 10, background: "var(--surface)", border: "1px solid var(--warm-border)", borderRadius: 12, padding: "10px 12px", color: "var(--text)" }}>
                   <span style={{ fontSize: 22 }}>{h.emoji}</span>
                   <div><b style={{ fontSize: 13 }}>{h.name}</b> <span className="chip" style={{ background: h.c + "1e", color: h.c }}>{h.role}</span>
                     <div className="muted" style={{ fontSize: 11.5 }}>{h.note}</div></div>
@@ -1433,8 +1846,8 @@ function AMLExaminer() {
             <div className="card" style={{ marginBottom: 13 }}><h3>Executive summary</h3>
               <div className="row" style={{ gap: 10, flexWrap: "wrap", marginBottom: 10 }}>
                 <span className="chip" style={{ background: r.band.c + "22", color: r.band.c }}>Overall: {r.band.t} ({r.overall})</span>
-                <span className="chip" style={{ background: "#f5f6fb" }}>Maturity {r.maturity.n}/5 - {r.maturity.t}</span>
-                <span className="chip" style={{ background: "#f5f6fb" }}>{r.readiness}</span>
+                <span className="chip" style={{ background: "var(--elevated)" }}>Maturity {r.maturity.n}/5 - {r.maturity.t}</span>
+                <span className="chip" style={{ background: "var(--elevated)" }}>{r.readiness}</span>
               </div>
               <div className="grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
                 <div>
@@ -1490,7 +1903,7 @@ function AMLExaminer() {
                       <b style={{ fontSize: 13.5 }}>{c.id} - {c.requirement}</b>
                       <div className="row" style={{ gap: 6 }}>
                         <span className="chip" style={{ background: p.c + "22", color: p.c }}>{p.t} priority</span>
-                        <span className="chip" style={{ background: "#f5f6fb" }}>{c.complexity} effort</span>
+                        <span className="chip" style={{ background: "var(--elevated)" }}>{c.complexity} effort</span>
                       </div>
                     </div>
                     <div className="muted" style={{ fontSize: 12.5, margin: "6px 0" }}><b>Reason:</b> {c.remediation}</div>
@@ -1635,7 +2048,7 @@ function ThreatAtlas() {
           </div>
         </div>
 
-        <div className="card" style={{ borderColor: "var(--amber)", background: "#fffbeb" }}>
+        <div className="card" style={{ borderColor: "var(--amber)", background: "var(--warn-surface)", color: "var(--text)" }}>
           <div className="row" style={{ gap: 8, alignItems: "flex-start" }}><AlertTriangle size={15} color="var(--amber)" style={{ marginTop: 1 }} />
             <span style={{ fontSize: 12.5 }}><b>Working draft — verify before use.</b> Ratings, thresholds, FATF status and NRA findings in this register are internally compiled with no live web access and are time-sensitive (marked <b>[VERIFY]</b> in the source). Treat every item as a lead to confirm at the primary source (FATF/FSRB MER, the relevant FIU/regulator, FinCEN/OFAC), not as current authority.</span>
           </div>
@@ -1657,9 +2070,9 @@ function ThreatAtlas() {
             <div key={x.id} className="card" style={{ padding: 14, borderLeft: `3px solid ${AT_CATC(x.cat)}`, opacity: isStudied && !open ? .82 : 1 }}>
               <div className="row" style={{ gap: 6, flexWrap: "wrap", marginBottom: 6 }}>
                 <span className="chip" style={{ background: AT_CATC(x.cat) + "22", color: AT_CATC(x.cat) }}>{x.cat}</span>
-                <span className="chip" style={{ background: "#f5f6fb" }}>{x.jur}</span>
-                {x.xb && <span className="chip" style={{ background: "#fef3c7", color: "#b45309" }} title={x.xbName}>cross-border</span>}
-                {isStudied && <span className="chip" style={{ background: "#dcfce7", color: "#16a34a" }}><Check size={11} /> known</span>}
+                <span className="chip" style={{ background: "var(--elevated)" }}>{x.jur}</span>
+                {x.xb && <span className="chip" style={{ background: "var(--warn-chip-bg)", color: "var(--warn-chip-fg)" }} title={x.xbName}>cross-border</span>}
+                {isStudied && <span className="chip" style={{ background: "var(--success-chip-bg)", color: "var(--success-chip-fg)" }}><Check size={11} /> known</span>}
               </div>
               <b style={{ fontSize: 13.5, display: "block", marginBottom: 4 }}>{x.name}</b>
               <div className="muted" style={{ fontSize: 12.5 }}>{x.desc}</div>
@@ -1935,7 +2348,7 @@ function ControlRegister() {
           {[...overdue, ...dueSoon].slice(0, 8).length === 0 ? <div className="muted" style={{ fontSize: 13 }}>Nothing overdue or due within 30 days.</div> :
             [...overdue, ...dueSoon].sort((a, b) => a.f.days - b.f.days).slice(0, 8).map(r => (
               <div key={r.id} className="row" style={{ justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid var(--line)", gap: 8 }}>
-                <div className="row" style={{ gap: 8 }}><span className="chip mono" style={{ background: "#f5f6fb" }}>{r.id}</span><span style={{ fontSize: 12.5 }}>{r.requirement}</span></div>
+                <div className="row" style={{ gap: 8 }}><span className="chip mono" style={{ background: "var(--elevated)" }}>{r.id}</span><span style={{ fontSize: 12.5 }}>{r.requirement}</span></div>
                 <div className="row" style={{ gap: 6 }}>
                   <span className="chip" style={{ background: r.f.c + "22", color: r.f.c }}>{r.f.state}{r.f.days < 0 ? ` ${-r.f.days}d` : ` ${r.f.days}d`}</span>
                   <button className="btn ghost" style={{ padding: "3px 9px", fontSize: 11 }} onClick={() => markTested(r.id)}>Mark tested</button>
@@ -1960,7 +2373,7 @@ function ControlRegister() {
             <div key={r.id} className="card" style={{ padding: 14, borderLeft: `3px solid ${CR_STATC[r.status]}` }}>
               <div className="row" style={{ justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
                 <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
-                  <span className="chip mono" style={{ background: "#f5f6fb" }}>{r.id}</span>
+                  <span className="chip mono" style={{ background: "var(--elevated)" }}>{r.id}</span>
                   <b style={{ fontSize: 13.5 }}>{r.requirement}</b>
                 </div>
                 <div className="row" style={{ gap: 6 }}>
@@ -1985,7 +2398,7 @@ function ControlRegister() {
                 </div>
                 <div className="muted" style={{ fontSize: 10.5, textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 5 }}>Evidence ({r.evidence.length})</div>
                 {r.evidence.length === 0 && <div className="muted" style={{ fontSize: 12, marginBottom: 7 }}>No evidence attached yet.</div>}
-                {r.evidence.map(e => <div key={e.id} className="row" style={{ gap: 8, padding: "4px 0", fontSize: 12 }}><FileText size={13} className="muted" /><b style={{ fontWeight: 600 }}>{e.name}</b><span className="chip" style={{ background: "#f5f6fb" }}>{e.type}</span><span className="muted">{e.at}</span></div>)}
+                {r.evidence.map(e => <div key={e.id} className="row" style={{ gap: 8, padding: "4px 0", fontSize: 12 }}><FileText size={13} className="muted" /><b style={{ fontWeight: 600 }}>{e.name}</b><span className="chip" style={{ background: "var(--elevated)" }}>{e.type}</span><span className="muted">{e.at}</span></div>)}
                 <div className="row" style={{ gap: 7, marginTop: 9, flexWrap: "wrap" }}>
                   <input value={evName} onChange={e => setEvName(e.target.value)} placeholder="Evidence name / reference…" style={{ width: "auto", flex: 1, minWidth: 160, padding: "7px 10px", border: "1px solid var(--line)", borderRadius: 9, fontFamily: "var(--sans)", fontSize: 12.5 }} />
                   <select value={evType} onChange={e => setEvType(e.target.value)} style={{ width: "auto", minWidth: 130 }}>{CR_EVTYPES.map(t => <option key={t}>{t}</option>)}</select>
@@ -2009,11 +2422,11 @@ function ControlRegister() {
             <h3 style={{ margin: 0, flex: 1 }}>Evidence vault</h3>
             <select value={evFilter} onChange={e => setEvFilter(e.target.value)} style={{ width: "auto", minWidth: 150 }}><option value="All">All types</option>{CR_EVTYPES.map(t => <option key={t}>{t}</option>)}</select>
           </div>
-          {(rows.length - evidenced) > 0 && <div className="row" style={{ gap: 8, marginBottom: 10, background: "#fffbeb", border: "1px solid var(--amber)", borderRadius: 9, padding: "8px 11px" }}><AlertTriangle size={14} color="var(--amber)" /><span style={{ fontSize: 12 }}>{rows.length - evidenced} controls have no evidence attached — open them in the register to attach a test result, policy reference or board minute.</span></div>}
+          {(rows.length - evidenced) > 0 && <div className="row" style={{ gap: 8, marginBottom: 10, background: "var(--warn-surface)", border: "1px solid var(--amber)", borderRadius: 9, padding: "8px 11px", color: "var(--text)" }}><AlertTriangle size={14} color="var(--amber)" /><span style={{ fontSize: 12 }}>{rows.length - evidenced} controls have no evidence attached — open them in the register to attach a test result, policy reference or board minute.</span></div>}
           <div className="tablewrap"><table>
             <thead><tr><th>Control</th><th>Domain</th><th>Evidence</th><th>Type</th><th>Date</th></tr></thead>
             <tbody>{allEvidence.filter(e => evFilter === "All" || e.type === evFilter).sort((a, b) => (a.at < b.at ? 1 : -1)).map(e => (
-              <tr key={e.id}><td className="mono">{e.ctl}</td><td>{dn(e.dom)}</td><td>{e.name}</td><td><span className="chip" style={{ background: "#f5f6fb" }}>{e.type}</span></td><td className="muted">{e.at}</td></tr>
+              <tr key={e.id}><td className="mono">{e.ctl}</td><td>{dn(e.dom)}</td><td>{e.name}</td><td><span className="chip" style={{ background: "var(--elevated)" }}>{e.type}</span></td><td className="muted">{e.at}</td></tr>
             ))}</tbody>
           </table></div>
         </div>
@@ -2233,7 +2646,7 @@ function CaseManagement() {
         <div className="row" style={{ justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
           <div>
             <div className="row" style={{ gap: 8, flexWrap: "wrap", marginBottom: 5 }}>
-              <span className="chip mono" style={{ background: "#f5f6fb" }}>{sel.id}</span>
+              <span className="chip mono" style={{ background: "var(--elevated)" }}>{sel.id}</span>
               <span className="chip" style={{ background: CM_SEVC[sel.sev] + "22", color: CM_SEVC[sel.sev] }}>{sel.sev}</span>
               <span className="chip" style={{ background: CM_STATC[sel.status] + "22", color: CM_STATC[sel.status] }}>{sel.status}</span>
             </div>
@@ -2247,7 +2660,7 @@ function CaseManagement() {
           </div>
         </div>
         <div className="row" style={{ gap: 6, flexWrap: "wrap", marginTop: 10 }}>
-          {typ && <span className="chip" style={{ background: "#fef3c7", color: "#b45309" }}><Flame size={11} /> {sel.typName}</span>}
+          {typ && <span className="chip" style={{ background: "var(--warn-chip-bg)", color: "var(--warn-chip-fg)" }}><Flame size={11} /> {sel.typName}</span>}
           {sel.controls.map(cid => { const c = atCtl(cid); return <span key={cid} className="chip" style={{ background: "var(--brand50)", color: "var(--brand600)" }} title={c ? c.requirement : ""}>{cid}</span>; })}
           {suggested.map(cid => <button key={cid} className="btn ghost" style={{ padding: "2px 8px", fontSize: 10.5 }} onClick={() => addControl(cid)}><Plus size={10} /> {cid}</button>)}
         </div>
@@ -2341,7 +2754,7 @@ function CaseManagement() {
           <div key={a.id} className="row" style={{ justifyContent: "space-between", gap: 8, padding: "9px 0", borderBottom: "1px solid var(--line)", flexWrap: "wrap" }}>
             <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
               <span className="chip" style={{ background: CM_SEVC[a.sev] + "22", color: CM_SEVC[a.sev] }}>{a.sev}</span>
-              <span className="chip mono" style={{ background: "#f5f6fb" }}>{a.id}</span>
+              <span className="chip mono" style={{ background: "var(--elevated)" }}>{a.id}</span>
               <div><div style={{ fontSize: 12.5, fontWeight: 600 }}>{a.typName} · {a.corridor}</div><div className="muted" style={{ fontSize: 11.5 }}>{a.cust} · {a.source} · {a.signal}</div></div>
             </div>
             <button className="btn gold" onClick={() => openCaseFromAlert(a)}><Plus size={13} /> Open case</button>
@@ -2504,7 +2917,7 @@ function RegChange() {
             <div className="row" style={{ gap: 6, flexWrap: "wrap", marginBottom: 6 }}>
               <span className="chip" style={{ background: (RC_SRCC[r.src] || "#64748b") + "22", color: RC_SRCC[r.src] || "#64748b" }}>{r.src}</span>
               <span className="chip" style={{ background: (RC_TYPEC[r.type] || "#64748b") + "18", color: RC_TYPEC[r.type] || "#64748b" }}>{r.type}</span>
-              <span className="chip" style={{ background: "#f5f6fb" }}>{r.jur}</span>
+              <span className="chip" style={{ background: "var(--elevated)" }}>{r.jur}</span>
               <span className="chip" style={{ background: RC_SEVC[r.sev] + "18", color: RC_SEVC[r.sev] }}>{r.sev} impact</span>
               <span className="muted" style={{ fontSize: 11, alignSelf: "center" }}>{r.date}</span>
               <span className="spacer" />
@@ -2514,7 +2927,7 @@ function RegChange() {
             <div className="muted" style={{ fontSize: 12.5, margin: "5px 0 8px" }}>{r.summary}</div>
             <div className="row" style={{ gap: 5, flexWrap: "wrap" }}>
               {r.controls.map(id => { const st = ctlStatus(id); return <span key={id} className="chip" style={{ background: "var(--brand50)", color: "var(--brand600)" }} title={(atCtl(id)?.requirement || "") + " · current: " + st}>{id}{st === "Gap" || st === "Not implemented" ? " ⚠" : ""}</span>; })}
-              {r.typologies.map(id => <span key={id} className="chip" style={{ background: "#fef3c7", color: "#b45309" }} title={typName(id)}><Flame size={10} /> {typName(id)}</span>)}
+              {r.typologies.map(id => <span key={id} className="chip" style={{ background: "var(--warn-chip-bg)", color: "var(--warn-chip-fg)" }} title={typName(id)}><Flame size={10} /> {typName(id)}</span>)}
             </div>
             <button className="btn ghost" style={{ marginTop: 9, padding: "4px 11px", fontSize: 11.5 }} onClick={() => setOpenId(op ? null : r.id)}>{op ? "Hide" : "Action required + impacted controls"}</button>
             {op && (<div style={{ marginTop: 10 }}>
@@ -2523,7 +2936,7 @@ function RegChange() {
               <div className="muted" style={{ fontSize: 10.5, textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 5 }}>Impacted controls (current status)</div>
               {r.controls.map(id => { const st = ctlStatus(id); const c = atCtl(id); return (
                 <div key={id} className="row" style={{ gap: 8, padding: "3px 0", fontSize: 12 }}>
-                  <span className="chip mono" style={{ background: "#f5f6fb" }}>{id}</span>
+                  <span className="chip mono" style={{ background: "var(--elevated)" }}>{id}</span>
                   <span style={{ flex: 1 }}>{c ? c.requirement : id}</span>
                   <span className="chip" style={{ background: (CR_STATC[st] || "#64748b") + "22", color: CR_STATC[st] || "#64748b" }}>{st}</span>
                 </div>
@@ -2566,7 +2979,7 @@ function RegChange() {
           <thead><tr><th>Control</th><th>Domain</th><th>Changes</th><th>Current status</th><th>Driving changes</th></tr></thead>
           <tbody>{ctlRows.map(r => (
             <tr key={r.id}>
-              <td><span className="chip mono" style={{ background: "#f5f6fb" }}>{r.id}</span> {r.ctl ? r.ctl.requirement : ""}</td>
+              <td><span className="chip mono" style={{ background: "var(--elevated)" }}>{r.id}</span> {r.ctl ? r.ctl.requirement : ""}</td>
               <td className="muted">{r.ctl ? dn(r.ctl.domain) : ""}</td>
               <td><b>{r.n}</b></td>
               <td><span className="chip" style={{ background: (CR_STATC[r.status] || "#64748b") + "22", color: CR_STATC[r.status] || "#64748b" }}>{r.status}{r.status === "Gap" || r.status === "Not implemented" ? " ⚠" : ""}</span></td>
@@ -2673,9 +3086,9 @@ function FrameworkCrosswalk() {
       <div className="muted" style={{ fontSize: 12, marginBottom: 9 }}>A single Mal control typically evidences a BSA pillar, one or more FATF Recommendations and a Wolfsberg section at the same time.</div>
       {multi.map(({ c }) => (
         <div key={c.id} className="row" style={{ gap: 8, padding: "7px 0", borderBottom: "1px solid var(--line)", flexWrap: "wrap" }}>
-          <span className="chip mono" style={{ background: "#f5f6fb" }}>{c.id}</span>
+          <span className="chip mono" style={{ background: "var(--elevated)" }}>{c.id}</span>
           <span style={{ fontSize: 12.5, flex: 1, minWidth: 160 }}>{c.requirement}</span>
-          <span className="chip" style={{ background: "#eef2ff", color: "#3730a3" }}>BSA: {c.map[0]}</span>
+          <span className="chip" style={{ background: "var(--indigo-chip-bg)", color: "var(--indigo-chip-fg)" }}>BSA: {c.map[0]}</span>
           {c.map[1].map(r => <span key={r} className="chip" style={{ background: "#7c3aed18", color: "#7c3aed" }}>FATF {r}</span>)}
           <span className="chip" style={{ background: "#0891b218", color: "#0891b2" }}>Wolfsberg: {c.map[2]}</span>
         </div>
@@ -2750,7 +3163,7 @@ function ExaminerRoom() {
       <div className="card" style={{ marginBottom: 13, borderColor: "var(--brand)" }}>
         <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
           <div className="row" style={{ gap: 8 }}><Lock size={15} color="var(--brand600)" /><b style={{ fontSize: 13 }}>Read-only examiner access · scope {period}</b></div>
-          <div className="row" style={{ gap: 8 }}><span className="chip" style={{ background: "#fef3c7", color: "#b45309" }}><Clock size={11} /> Expires in 10 business days</span><button className="btn gold" onClick={examinerExtract}><Download size={13} /> Generate examiner extract</button></div>
+          <div className="row" style={{ gap: 8 }}><span className="chip" style={{ background: "var(--warn-chip-bg)", color: "var(--warn-chip-fg)" }}><Clock size={11} /> Expires in 10 business days</span><button className="btn gold" onClick={examinerExtract}><Download size={13} /> Generate examiner extract</button></div>
         </div>
       </div>
       <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: 13 }}>
@@ -2807,8 +3220,8 @@ function ExaminerRoom() {
         <div className="card" style={{ marginTop: 13 }}><h3>7 · Key risks & remediation</h3>
           {topGaps.length === 0 ? <div className="muted" style={{ fontSize: 12.5 }}>No open gaps.</div> : topGaps.map(g => (
             <div key={g.id} className="row" style={{ gap: 8, padding: "6px 0", borderBottom: "1px solid var(--line)", flexWrap: "wrap" }}>
-              <span className="chip mono" style={{ background: "#f5f6fb" }}>{g.id}</span><span style={{ fontSize: 12.5, flex: 1, minWidth: 160 }}>{g.requirement}</span>
-              <span className="chip" style={{ background: (CR_STATC[g.status] || "#64748b") + "22", color: CR_STATC[g.status] || "#64748b" }}>{g.status}</span><span className="chip" style={{ background: "#f5f6fb" }}>{g.risk}</span>
+              <span className="chip mono" style={{ background: "var(--elevated)" }}>{g.id}</span><span style={{ fontSize: 12.5, flex: 1, minWidth: 160 }}>{g.requirement}</span>
+              <span className="chip" style={{ background: (CR_STATC[g.status] || "#64748b") + "22", color: CR_STATC[g.status] || "#64748b" }}>{g.status}</span><span className="chip" style={{ background: "var(--elevated)" }}>{g.risk}</span>
             </div>
           ))}
         </div>
@@ -2830,13 +3243,14 @@ export default function App() {
   const [live, setLive] = useState({ items: [], at: null, status: "idle" }); // idle|loading|ok|error
   const [fcie, setFcie] = useState({ items: [], at: null, status: "idle" }); // Financial Crime Intelligence Engine
   const [obCategory, setObCategory] = useState(null);
+  const [tmAssessmentPartner, setTmAssessmentPartner] = useState("oscilar");
   const [screeningLoading, setScreeningLoading] = useState({});
   const [intake, setIntake] = useState(null);
 
   useEffect(() => { (async () => { const s = await loadStore(); setStore(s && s.v === SEED_VERSION ? s : seed()); const c = await loadLive(); if (c && c.items?.length) setLive({ ...c, status: "ok" }); const f = await loadFcie(); if (f && f.items?.length) setFcie({ ...f, status: "ok" }); })(); }, []);
   useEffect(() => { const t = setInterval(() => setNow(Date.now()), 30000); return () => clearInterval(t); }, []);
   useEffect(() => { try { const m = (window.location.hash || "").match(/intake=([^&]+)/); if (m) { const c = decodeURIComponent(m[1]); setIntake({ category: CATEGORIES.find(x => x.id === c) ? c : null }); } } catch (e) {} }, []);
-  useEffect(() => { setTab(role === "supervisor" ? "oversight" : "profile"); setProfileId(null); }, [role]);
+  useEffect(() => { setTab(role === "supervisor" ? "oversight" : "home"); setProfileId(null); }, [role]);
 
   async function fetchScreening(partnerId) {
     const p = [...AGENTS_BASE, ...((store && store.partners) || [])].find(a => a.id === partnerId); if (!p) return;
@@ -3037,9 +3451,160 @@ export default function App() {
     setStore(prev => { const s = { id: "s" + Date.now(), at: new Date().toISOString(), from: role === "partner" ? partnerName(actingPartner) : "Supervisor", topic: values.topic, body: values.body, anon: values.anon === "Y" }; const next = { ...prev, speakup: [s, ...prev.speakup] }; saveStore(next); return next; });
     audit("Raised speak-up report", "(confidential)"); flash("Submitted to the speak-up channel"); setModal(null);
   }
+  function raiseSpeakup(values) {
+    setStore(prev => { const s = { id: "s" + Date.now(), at: new Date().toISOString(), from: role === "partner" ? partnerName(actingPartner) : "Supervisor", topic: values.topic, body: values.body, anon: values.anon === "Y" }; const next = { ...prev, speakup: [s, ...prev.speakup] }; saveStore(next); return next; });
+    audit("Raised speak-up report", "(confidential)"); flash("Submitted to the speak-up channel"); setModal(null);
+  }
+  function createRfi(values) {
+    const rfi = { id: "rfi" + Date.now(), partnerId: values.partnerId, title: values.title, body: values.body, why: values.why || "", due: values.due ? new Date(values.due).toISOString() : new Date(Date.now() + 14 * 864e5).toISOString(), sev: values.sev || "med", status: "Open", createdAt: new Date().toISOString(), createdBy: "Supervisor (Mal)", response: null, closedAt: null };
+    setStore(prev => {
+      const ag = { ...prev.agents[values.partnerId] };
+      ag.feed = [{ id: "f" + Date.now(), kind: "Correspondence", at: rfi.createdAt, text: `RFI issued: “${rfi.title}” — response due ${fmtDate(rfi.due)}.`, actor: "Supervisor (Mal)" }, ...ag.feed];
+      const next = { ...prev, rfis: [rfi, ...(prev.rfis || [])], agents: { ...prev.agents, [values.partnerId]: ag } };
+      saveStore(next); return next;
+    });
+    audit("Issued RFI", rfi.title); flash("RFI sent to " + partnerName(values.partnerId)); setModal(null);
+  }
+  function respondRfi(rfiId, values) {
+    const pid = role === "partner" ? actingPartner : modal?.partnerId;
+    setStore(prev => {
+      const rfis = (prev.rfis || []).map(r => r.id === rfiId ? { ...r, status: "Responded", response: { at: new Date().toISOString(), body: values.body, evidence: values.evidence || "" } } : r);
+      const ag = { ...prev.agents[pid] };
+      const rfi = rfis.find(r => r.id === rfiId);
+      ag.feed = [{ id: "f" + Date.now(), kind: "Correspondence", at: new Date().toISOString(), text: `Responded to RFI: “${rfi?.title || rfiId}”.`, actor: partnerName(pid) }, ...ag.feed];
+      ag.registers = { ...ag.registers, correspondence: [{ ref: "RFI-" + rfiId.slice(-6), at: new Date().toISOString(), status: "Responded", summary: rfi?.title || "RFI response" }, ...ag.registers.correspondence] };
+      const next = { ...prev, rfis, agents: { ...prev.agents, [pid]: ag } };
+      saveStore(next); return next;
+    });
+    audit("Responded to RFI", rfiId); flash("Response submitted — audit logged"); setModal(null);
+  }
+  function closeRfi(rfiId) {
+    setStore(prev => {
+      const rfis = (prev.rfis || []).map(r => r.id === rfiId ? { ...r, status: "Closed", closedAt: new Date().toISOString() } : r);
+      const next = { ...prev, rfis }; saveStore(next); return next;
+    });
+    audit("Closed RFI", rfiId); flash("RFI closed");
+  }
+  function createThread(values) {
+    const thread = { id: "th" + Date.now(), partnerId: values.partnerId, subject: values.subject, createdAt: new Date().toISOString(), messages: [{ id: "m" + Date.now(), at: new Date().toISOString(), from: "Supervisor (Mal)", role: "supervisor", body: values.body, read: false }] };
+    setStore(prev => {
+      const ag = { ...prev.agents[values.partnerId] };
+      ag.feed = [{ id: "f" + Date.now(), kind: "Correspondence", at: thread.createdAt, text: `Secure message thread opened: “${thread.subject}”.`, actor: "Supervisor (Mal)" }, ...ag.feed];
+      const next = { ...prev, threads: [thread, ...(prev.threads || [])], agents: { ...prev.agents, [values.partnerId]: ag } };
+      saveStore(next); return next;
+    });
+    audit("Opened secure message thread", thread.subject); flash("Secure message sent"); setModal(null);
+  }
+  function replyThread(threadId, body) {
+    const from = role === "partner" ? partnerName(actingPartner) : "Supervisor (Mal)";
+    const msgRole = role === "partner" ? "partner" : "supervisor";
+    const pid = role === "partner" ? actingPartner : (store.threads || []).find(t => t.id === threadId)?.partnerId;
+    setStore(prev => {
+      const threads = (prev.threads || []).map(t => {
+        if (t.id !== threadId) return t;
+        const msgs = [...t.messages, { id: "m" + Date.now(), at: new Date().toISOString(), from, role: msgRole, body, read: false }];
+        if (msgRole === "partner") msgs.forEach(m => { if (m.role === "supervisor") m.read = true; });
+        return { ...t, messages: msgs };
+      });
+      const ag = pid ? { ...prev.agents[pid], feed: [{ id: "f" + Date.now(), kind: "Correspondence", at: new Date().toISOString(), text: `Secure message in “${threads.find(t => t.id === threadId)?.subject}”.`, actor: from }, ...(prev.agents[pid]?.feed || [])] } : null;
+      const next = { ...prev, threads, agents: ag ? { ...prev.agents, [pid]: ag } : prev.agents };
+      saveStore(next); return next;
+    });
+    audit("Secure message reply", threadId);
+  }
+  function markThreadRead(threadId) {
+    setStore(prev => {
+      const threads = (prev.threads || []).map(t => t.id !== threadId ? t : { ...t, messages: t.messages.map(m => m.role === "supervisor" ? { ...m, read: true } : m) });
+      const next = { ...prev, threads }; saveStore(next); return next;
+    });
+  }
   function updateReview(caseId, patch) {
     setStore(prev => { const r = { ...prev.reviews[caseId], ...patch }; const next = { ...prev, reviews: { ...prev.reviews, [caseId]: r } }; saveStore(next); return next; });
     audit("Updated program review", caseId);
+  }
+  function updateMysteryExercise(exId, patch) {
+    setStore(prev => {
+      const mysteryExercises = (prev.mysteryExercises || []).map(ex => ex.id === exId ? { ...ex, ...patch } : ex);
+      const next = { ...prev, mysteryExercises }; saveStore(next); return next;
+    });
+    audit("Updated mystery shopper exercise", exId);
+  }
+  function scheduleMysteryExercise(values) {
+    const ex = {
+      id: "MS-" + (values.quarter || "Q").replace(/\s/g, "") + "-" + values.partnerId.toUpperCase().slice(0, 6) + "-" + String(Date.now()).slice(-4),
+      partnerId: values.partnerId, quarter: values.quarter, title: values.title, scenario: values.scenario,
+      channel: values.channel || "Partner channel", scheduledDate: values.scheduledDate ? new Date(values.scheduledDate).toISOString() : new Date(Date.now() + 14 * 864e5).toISOString(),
+      conductedDate: null, conductedBy: values.conductedBy || "TBD", status: "Scheduled", result: null,
+      findings: [], remediation: [], partnerNotifiedAt: new Date().toISOString(), partnerAckAt: null, closedAt: null,
+    };
+    setStore(prev => {
+      const ag = { ...prev.agents[values.partnerId] };
+      ag.feed = [{ id: "f" + Date.now(), kind: "Mystery shopper", at: ex.partnerNotifiedAt, text: `Mystery shopper exercise scheduled: “${ex.title}” — ${fmtDate(ex.scheduledDate)}.`, actor: "Supervisor (Mal)" }, ...ag.feed];
+      const next = { ...prev, mysteryExercises: [ex, ...(prev.mysteryExercises || [])], agents: { ...prev.agents, [values.partnerId]: ag } };
+      saveStore(next); return next;
+    });
+    audit("Scheduled mystery shopper exercise", ex.title); flash("Exercise scheduled · partner notified"); setModal(null);
+  }
+  function addMsFinding(exId, finding) {
+    setStore(prev => {
+      const mysteryExercises = (prev.mysteryExercises || []).map(ex => {
+        if (ex.id !== exId) return ex;
+        const findings = [...ex.findings, finding];
+        const status = ex.status === "Scheduled" ? "Findings logged" : ex.status === "In progress" ? "Findings logged" : ex.status;
+        return { ...ex, findings, status, conductedDate: ex.conductedDate || new Date().toISOString(), result: finding.sev === "Critical" || finding.sev === "High" ? "Fail" : ex.result || "Pass with observations" };
+      });
+      const next = { ...prev, mysteryExercises }; saveStore(next); return next;
+    });
+    audit("Logged mystery shopper finding", exId); flash("Finding logged"); setModal(null);
+  }
+  function addMsRemediation(exId, rem) {
+    setStore(prev => {
+      const mysteryExercises = (prev.mysteryExercises || []).map(ex => ex.id === exId ? { ...ex, remediation: [...ex.remediation, { ...rem, id: "r" + Date.now(), partnerResponse: null }], status: "Remediation" } : ex);
+      const next = { ...prev, mysteryExercises }; saveStore(next); return next;
+    });
+    audit("Added mystery shopper remediation", exId); flash("Remediation action added"); setModal(null);
+  }
+  function respondMsRemediation(exId, remId, values) {
+    setStore(prev => {
+      const mysteryExercises = (prev.mysteryExercises || []).map(ex => {
+        if (ex.id !== exId) return ex;
+        const remediation = ex.remediation.map(r => r.id === remId ? { ...r, partnerResponse: { at: new Date().toISOString(), body: values.body, evidence: values.evidence || "" }, status: "Done" } : r);
+        return { ...ex, remediation };
+      });
+      const ag = { ...prev.agents[actingPartner], feed: [{ id: "f" + Date.now(), kind: "Mystery shopper", at: new Date().toISOString(), text: `Remediation evidence submitted for ${exId}.`, actor: partnerName(actingPartner) }, ...(prev.agents[actingPartner]?.feed || [])] };
+      const next = { ...prev, mysteryExercises, agents: { ...prev.agents, [actingPartner]: ag } };
+      saveStore(next); return next;
+    });
+    audit("Submitted mystery shopper remediation", exId); flash("Remediation evidence submitted"); setModal(null);
+  }
+  function ackMysteryExercise(exId) {
+    setStore(prev => {
+      const mysteryExercises = (prev.mysteryExercises || []).map(ex => ex.id === exId ? { ...ex, partnerAckAt: new Date().toISOString() } : ex);
+      const ag = { ...prev.agents[actingPartner], feed: [{ id: "f" + Date.now(), kind: "Mystery shopper", at: new Date().toISOString(), text: `Acknowledged scheduled mystery shopper exercise ${exId}.`, actor: partnerName(actingPartner) }, ...(prev.agents[actingPartner]?.feed || [])] };
+      const next = { ...prev, mysteryExercises, agents: { ...prev.agents, [actingPartner]: ag } };
+      saveStore(next); return next;
+    });
+    audit("Partner acknowledged mystery shopper exercise", exId); flash("Exercise acknowledged");
+  }
+  function verifyMsRemediation(exId, remId) {
+    setStore(prev => {
+      const mysteryExercises = (prev.mysteryExercises || []).map(ex => {
+        if (ex.id !== exId) return ex;
+        const remediation = ex.remediation.map(r => r.id === remId ? { ...r, status: "Verified" } : r);
+        const allVerified = remediation.every(r => r.status === "Verified");
+        const openFindings = ex.findings.some(f => f.status === "Open");
+        return { ...ex, remediation, findings: openFindings && allVerified ? ex.findings.map(f => ({ ...f, status: "Closed" })) : ex.findings, status: allVerified && !openFindings ? ex.status : ex.status };
+      });
+      const next = { ...prev, mysteryExercises }; saveStore(next); return next;
+    });
+    audit("Verified mystery shopper remediation", remId); flash("Remediation verified");
+  }
+  function closeMysteryExercise(exId) {
+    setStore(prev => {
+      const mysteryExercises = (prev.mysteryExercises || []).map(ex => ex.id === exId ? { ...ex, status: "Closed", closedAt: new Date().toISOString() } : ex);
+      const next = { ...prev, mysteryExercises }; saveStore(next); return next;
+    });
+    audit("Closed mystery shopper exercise", exId); flash("Exercise closed");
   }
 
   /* ---- nav ---- */
@@ -3076,10 +3641,16 @@ export default function App() {
       registers: { sar: [], str: [], fatca: [], crs: [], ofac_block: [], arbp: [], a314: [], cbddq: [], questionnaire: [], cert: [], audit: [], correspondence: [], corrective: [] },
       training: COURSES.map(c => ({ ...c, status: "Not started", score: null })),
       dd: ddmap, acks: [], onboarding: { ...v, category, onboardedAt: partner.onboardedAt }, screening: null,
+      tmAssessment: requiresTmAssessment(category) ? { responses: {}, updatedAt: partner.onboardedAt, overall: 0, rating: "Not started", decision: "Pending" } : null,
     };
     setStore(prev => { const next = { ...prev, partners: [...(prev.partners || []), partner], agents: { ...prev.agents, [id]: slice } }; saveStore(next); return next; });
     audit("Onboarded partner (light intake)", v.entityName + " (" + category + ")");
-    flash(v.entityName + " onboarded — profile created; screening started");
+    const tmNote = requiresTmAssessment(category) ? " Complete TM system assessment (Mission I) before production integration." : "";
+    flash(v.entityName + " onboarded — profile created; screening started." + tmNote);
+    if (requiresTmAssessment(category)) {
+      setTmAssessmentPartner(id);
+      setTab("tmassessment");
+    }
     setTimeout(() => fetchScreening(id), 300);
   }
 
@@ -3090,11 +3661,13 @@ export default function App() {
 
     { type: "group", label: "Mission I · Who Enters?" },
     { id: "onboarding", label: "Onboarding & DD", icon: UserPlus },
+    { id: "tmassessment", label: "TM system assessment", icon: ListChecks },
     { id: "agents", label: "Partners directory", icon: Users },
     { id: "lifecycle", label: "Product lifecycle", icon: Film },
 
     { type: "group", label: "Mission II · Defend" },
     { id: "reviews", label: "Programme reviews", icon: ClipboardCheck, badge: Object.values(store.reviews).filter(r => r.status !== "Closed" && slaStatus(r.foDue).cd < 0).length || null },
+    { id: "mystery", label: "Mystery shopper", icon: Eye, badge: mysterySupervisorBadgeCount(store) || null },
     { id: "controls", label: "Control register", icon: ShieldCheck },
     { id: "casemgmt", label: "Case management", icon: FolderOpen },
     { id: "obligations", label: "Obligations & SLA", icon: Clock, badge: OBLIGATIONS.filter(o => o.due && dueIn(o.due) < 0).length || null },
@@ -3113,21 +3686,10 @@ export default function App() {
     { id: "training", label: "Knowledge center", icon: GraduationCap },
 
     { type: "group", label: "Governance" },
-    { id: "comms", label: "Communications", icon: MessageSquare },
+    { id: "comms", label: "Collaboration hub", icon: MessageSquare },
     { id: "audit", label: "Audit trail", icon: Database },
   ];
-  const AG_NAV = [
-    { id: "profile", label: "My profile", icon: Building2 },
-    { id: "standing", label: "My standing", icon: Trophy },
-    { id: "lifecycleA", label: "Product lifecycle", icon: Film },
-    { id: "reportingA", label: "Reporting hub", icon: FileText },
-    { id: "intelA", label: "Intelligence", icon: Radio },
-    { id: "trainingA", label: "Training center", icon: GraduationCap },
-    { id: "ddA", label: "Due diligence file", icon: FolderOpen },
-    { id: "slaA", label: "Obligations & SLA", icon: Clock, badge: OBLIGATIONS.filter(o => o.partner === actingPartner && o.due && dueIn(o.due) < 0).length || null },
-    { id: "reviewsA", label: "My reviews", icon: ClipboardCheck },
-    { id: "commsA", label: "Communications", icon: Megaphone, badge: store.broadcasts.filter(b => !store.agents[actingPartner].acks.find(x => x.id === b.id)).length || null },
-  ];
+  const AG_NAV = buildPartnerNav(store, actingPartner, baseAll);
   const nav = role === "supervisor" ? SUP_NAV : AG_NAV;
   const tickerJur = role === "partner" ? baseAll().find(a => a.id === actingPartner).jur : null;
   const liveScoped = (role === "partner"
@@ -3147,7 +3709,7 @@ export default function App() {
           <button className={role === "partner" ? "on" : ""} onClick={() => setRole("partner")}>Partner</button>
         </div>
         {role === "partner" && (
-          <select className="pill mono" value={actingPartner} onChange={e => { setActingPartner(e.target.value); }}>
+          <select className="pill mono" value={actingPartner} onChange={e => { setActingPartner(e.target.value); setTab("home"); }}>
             {CATEGORIES.map(cat => { const inCat = baseAll().filter(a => a.category === cat.id); if (!inCat.length) return null; return (
               <optgroup key={cat.id} label={cat.id}>{inCat.map(a => <option key={a.id} value={a.id}>{a.name} · {a.jur}</option>)}</optgroup>
             ); })}
@@ -3191,20 +3753,73 @@ export default function App() {
 
         <main className="main">
           {/* SUPERVISOR */}
-          {role === "supervisor" && profileId && <Profile {...{ store, agents, id: profileId, back: () => setProfileId(null), now, supervisor: true, updateReview, setModal, onScreen: fetchScreening, screenLoading: screeningLoading }} />}
+          {role === "supervisor" && profileId && <Profile {...{ store, agents, id: profileId, back: () => setProfileId(null), now, supervisor: true, updateReview, setModal, onScreen: fetchScreening, screenLoading: screeningLoading, onSaveTmAssessment: (data) => { setStore(prev => { const ag = { ...prev.agents[profileId], tmAssessment: data }; const next = { ...prev, agents: { ...prev.agents, [profileId]: ag } }; saveStore(next); return next; }); audit("Updated TM assessment", profileId); } }} />}
           {role === "supervisor" && !profileId && tab === "oversight" && <Oversight {...{ agents, store, openProfile: setProfileId }} />}
           {role === "supervisor" && !profileId && tab === "agents" && <Directory {...{ agents, store, openProfile: setProfileId }} />}
           {role === "supervisor" && !profileId && tab === "lifecycle" && <LifecycleShow />}
           {role === "supervisor" && !profileId && tab === "reviews" && <Reviews {...{ store, partnerName, updateReview, supervisor: true, setModal }} />}
+          {role === "supervisor" && !profileId && tab === "mystery" && <MysteryShopper {...{ store, agents, partnerName, setModal, updateMysteryExercise, closeMysteryExercise, verifyMsRemediation }} />}
           {role === "supervisor" && !profileId && tab === "reporting" && <ReportingHub {...{ store, agents, supervisor: true }} />}
           {role === "supervisor" && !profileId && tab === "intel" && <Intel {...{ store, supervisor: true, setModal, live, onRefresh: () => fetchLive([...coveredJurs, "United States"]), jurs: [...coveredJurs, "United States"] }} />}
           {role === "supervisor" && !profileId && tab === "training" && <TrainingCenter {...{ store, agents, supervisor: true }} />}
           {role === "supervisor" && !profileId && tab === "fcie" && <FinancialCrimeIntelligence {...{ fcie, onRefresh: fetchFCIE, store, setStore, flash: (m) => { setToast(m); setTimeout(() => setToast(null), 2200); } }} />}
-          {role === "supervisor" && !profileId && tab === "comms" && <Comms {...{ store, agents, supervisor: true, setModal, fcie }} />}
+          {role === "supervisor" && !profileId && tab === "comms" && <Comms {...{ store, agents, supervisor: true, setModal, fcie, partnerName, onCloseRfi: closeRfi, onReplyThread: replyThread, onMarkThreadRead: markThreadRead, baseAll }} />}
           {role === "supervisor" && !profileId && tab === "exec" && <Exec {...{ agents, store }} />}
           {role === "supervisor" && !profileId && tab === "audit" && <AuditTrail store={store} />}
           {role === "supervisor" && !profileId && tab === "obligations" && <ObligationsRollup {...{ store, agents, viewProfile: (id) => setProfileId(id) }} />}
           {role === "supervisor" && !profileId && tab === "onboarding" && <Onboarding {...{ store, category: obCategory, setCategory: setObCategory, onboard: onboardPartner, viewProfile: (id) => setProfileId(id) }} />}
+          {role === "supervisor" && !profileId && tab === "tmassessment" && (() => {
+            const integrators = baseAll().filter((a) => requiresTmAssessment(a.category));
+            const selected = integrators.find((a) => a.id === tmAssessmentPartner);
+            return (
+              <>
+                <div className="card" style={{ marginBottom: 14 }}>
+                  <div className="row" style={{ gap: 12, flexWrap: "wrap", alignItems: "flex-end" }}>
+                    <div style={{ flex: 1, minWidth: 240 }}>
+                      <div className="muted" style={{ fontSize: 11, marginBottom: 4 }}>Integrating system / partner</div>
+                      <select
+                        className="input"
+                        value={tmAssessmentPartner}
+                        onChange={(e) => setTmAssessmentPartner(e.target.value)}
+                      >
+                        <option value="">— Category template (unsaved) —</option>
+                        {integrators.map((a) => (
+                          <option key={a.id} value={a.id}>{a.name} · {a.category}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="muted" style={{ fontSize: 12 }}>
+                      {integrators.length} integrating partner{integrators.length === 1 ? "" : "s"} in scope · questionnaire sections filtered by category
+                    </div>
+                  </div>
+                </div>
+                <TmSystemAssessment
+                  category={selected?.category || obCategory || "System integrator"}
+                  partnerName={selected?.name}
+                  partnerId={selected?.id}
+                  assessment={selected ? store.agents[selected.id]?.tmAssessment : store.globalTmAssessment}
+                  onSave={(data) => {
+                    if (selected) {
+                      setStore((prev) => {
+                        const ag = { ...prev.agents[selected.id], tmAssessment: data };
+                        const next = { ...prev, agents: { ...prev.agents, [selected.id]: ag } };
+                        saveStore(next);
+                        return next;
+                      });
+                      audit("Updated TM system assessment", selected.id);
+                    } else {
+                      setStore((prev) => {
+                        const next = { ...prev, globalTmAssessment: data };
+                        saveStore(next);
+                        return next;
+                      });
+                      audit("Updated TM system assessment", "global template");
+                    }
+                  }}
+                />
+              </>
+            );
+          })()}
           {role === "supervisor" && !profileId && tab === "examiner" && <AMLExaminer />}
           {role === "supervisor" && !profileId && tab === "atlas" && <ThreatAtlas />}
           {role === "supervisor" && !profileId && tab === "controls" && <ControlRegister />}
@@ -3214,24 +3829,29 @@ export default function App() {
           {role === "supervisor" && !profileId && tab === "examinerroom" && <ExaminerRoom />}
 
           {/* AGENT */}
-          {role === "partner" && tab === "profile" && <Profile {...{ store, agents, id: actingPartner, now, supervisor: false, updateReview, setModal, onScreen: fetchScreening, screenLoading: screeningLoading }} />}
-          {role === "partner" && tab === "standing" && <Standing {...{ agent: baseAll().find(a => a.id === actingPartner), slice: store.agents[actingPartner], store }} />}
-          {role === "partner" && tab === "lifecycleA" && <LifecycleShow />}
+          {role === "partner" && tab === "home" && (() => { const b = baseAll().find(a => a.id === actingPartner); const s = store.agents[actingPartner]; return b && s ? <PartnerWorkspaceHome base={b} slice={s} store={store} onNavigate={setTab} /> : null; })()}
+          {role === "partner" && tab === "tasksA" && (() => { const b = baseAll().find(a => a.id === actingPartner); const s = store.agents[actingPartner]; return b && s ? <LifecycleTasks base={b} slice={s} store={store} onNavigate={setTab} partnerFacing /> : null; })()}
           {role === "partner" && tab === "reportingA" && <AgentReporting {...{ store, agentId: actingPartner, onSubmit: (tid) => setModal({ t: "report", typeId: tid, agentId: actingPartner }) }} />}
-          {role === "partner" && tab === "intelA" && <Intel {...{ store, supervisor: false, jur: baseAll().find(a => a.id === actingPartner).jur, setModal, agentId: actingPartner, live, onRefresh: () => fetchLive([baseAll().find(a => a.id === actingPartner).jur, "United States"]), jurs: [baseAll().find(a => a.id === actingPartner).jur, "United States"] }} />}
           {role === "partner" && tab === "trainingA" && <AgentTraining {...{ slice: store.agents[actingPartner], onComplete: (cid) => completeCourse(actingPartner, cid) }} />}
           {role === "partner" && tab === "ddA" && <DDFile {...{ slice: store.agents[actingPartner], base: baseAll().find(a => a.id === actingPartner), screening: store.agents[actingPartner]?.screening, onScreen: () => fetchScreening(actingPartner), screenLoading: !!screeningLoading[actingPartner] }} />}
           {role === "partner" && tab === "slaA" && <ObligationsView partnerId={actingPartner} base={baseAll().find(a => a.id === actingPartner)} supervisor={false} />}
-          {role === "partner" && tab === "reviewsA" && <Reviews {...{ store, partnerName, updateReview, supervisor: false, agentId: actingPartner, setModal }} />}
-          {role === "partner" && tab === "commsA" && <Comms {...{ store, agents, supervisor: false, agentId: actingPartner, onAck: ackBroadcast, setModal, fcie }} />}
+          {role === "partner" && tab === "commsA" && <Comms {...{ store, agents, supervisor: false, agentId: actingPartner, onAck: ackBroadcast, setModal, fcie, partnerName, onRespondRfi: (id, v) => respondRfi(id, v), onReplyThread: replyThread, onMarkThreadRead: markThreadRead, baseAll }} />}
+          {role === "partner" && tab === "mysteryA" && <MysteryShopperPartner {...{ store, agentId: actingPartner, partnerName, setModal, ackMysteryExercise }} />}
         </main>
       </div>
 
       {modal?.t === "report" && <ReportModal type={REPORT_TYPES.find(r => r.id === modal.typeId)} onClose={() => setModal(null)} onSubmit={(v) => submitReport(modal.agentId, modal.typeId, v)} />}
       {modal?.t === "intel" && <IntelModal onClose={() => setModal(null)} onSubmit={(v) => shareIntel(modal.agentId, v)} />}
       {modal?.t === "broadcast" && <BroadcastModal onClose={() => setModal(null)} onSubmit={broadcast} />}
+      {modal?.t === "rfi" && <RfiModal partners={baseAll()} onClose={() => setModal(null)} onSubmit={createRfi} />}
+      {modal?.t === "rfiRespond" && <RfiResponseModal rfi={(store.rfis || []).find(r => r.id === modal.rfiId)} onClose={() => setModal(null)} onSubmit={(v) => respondRfi(modal.rfiId, v)} />}
+      {modal?.t === "thread" && <ThreadModal partners={baseAll()} onClose={() => setModal(null)} onSubmit={createThread} />}
       {modal?.t === "speakup" && <SpeakupModal onClose={() => setModal(null)} onSubmit={raiseSpeakup} />}
       {modal?.t === "finding" && <FindingModal review={store.reviews[modal.caseId]} onClose={() => setModal(null)} onSave={(f) => { updateReview(modal.caseId, { findings: [...store.reviews[modal.caseId].findings, f] }); setModal(null); flash("Finding logged"); }} />}
+      {modal?.t === "msSchedule" && <MsScheduleModal partners={baseAll()} onClose={() => setModal(null)} onSubmit={scheduleMysteryExercise} />}
+      {modal?.t === "msFinding" && <MsFindingModal exercise={(store.mysteryExercises || []).find(e => e.id === modal.exId)} onClose={() => setModal(null)} onSave={(f) => addMsFinding(modal.exId, f)} />}
+      {modal?.t === "msRemediation" && <MsRemediationModal onClose={() => setModal(null)} onSubmit={(v) => addMsRemediation(modal.exId, v)} />}
+      {modal?.t === "msRespond" && <MsRespondModal exercise={(store.mysteryExercises || []).find(e => e.id === modal.exId)} remId={modal.remId} onClose={() => setModal(null)} onSubmit={(v) => respondMsRemediation(modal.exId, modal.remId, v)} />}
       {toast && <div className="toast"><Check size={16} color="var(--gold)" /> {toast}</div>}
     </div>
   );
@@ -3254,6 +3874,85 @@ const JUR_CRAM = {
 };
 const CRAM_C = { High: "#ef4444", Medium: "#f59e0b", Low: "#17a34a" };
 const LOG_KIND_COLOR = { SAR: "#ef4444", STR: "#f59e0b", "Audit finding": "#8b5cf6", Correspondence: "#1e63e9", Escalation: "#ef4444", "Speak-up": "#0ea5e9" };
+
+function MlroAccountabilityPanel({ rows, openProfile }) {
+  const blocked = rows.filter(x => x.gs.status === "blocked");
+  const needConc = rows.filter(x => x.gs.status !== "blocked" && !x.base.gates?.approvedBy && x.base.live);
+  const gateOpen = rows.filter(x => x.gs.status === "review" && !blocked.includes(x) && !needConc.includes(x));
+  if (blocked.length === 0 && needConc.length === 0 && gateOpen.length === 0) return null;
+
+  const catColor = (id) => CATEGORIES.find(c => c.id === id)?.color || "#888";
+
+  return (
+    <div className="mlroPanel">
+      <div className="mlroPanelHead">
+        <ShieldCheck size={20} color="var(--brand)" style={{ flexShrink: 0, marginTop: 2 }} />
+        <div>
+          <h2>MLRO accountability — pre-reliance status</h2>
+          <p>Track what must be resolved before Mal can rely on a partner or system. Ultimate accountability remains with the MLRO regardless of delegation.</p>
+        </div>
+      </div>
+
+      {blocked.length > 0 && (
+        <section className="mlroSection">
+          <div className="mlroSectionTitle"><AlertCircle size={14} color="var(--red)" /> Not cleared for reliance · {blocked.length}</div>
+          <p className="mlroSectionSub">These relationships are on hold — do not use for customer due diligence or onboarding until the block is lifted.</p>
+          <div className="mlroGrid">
+            {blocked.map(x => (
+              <article className="mlroCard mlroCard--stop" key={x.base.id}>
+                <div className="mlroCardTop">
+                  <span className="catdot" style={{ background: catColor(x.base.category) }} />
+                  <strong>{x.base.name}</strong>
+                  <span className="chip" style={{ background: catColor(x.base.category) + "18", color: catColor(x.base.category), fontSize: 10 }}>{x.base.category}</span>
+                </div>
+                <p className="mlroCardReason">{x.gs.blockingNote}</p>
+                <button className="btn ghost" style={{ alignSelf: "flex-start", fontSize: 12 }} onClick={() => openProfile(x.base.id)}>Review partner <ChevronRight size={13} /></button>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {needConc.length > 0 && (
+        <section className="mlroSection">
+          <div className="mlroSectionTitle"><Clock size={14} color="var(--amber)" /> MLRO concurrence required · {needConc.length}</div>
+          <p className="mlroSectionSub">Live relationships without documented MLRO approval on record.</p>
+          <div className="mlroGrid">
+            {needConc.map(x => (
+              <article className="mlroCard mlroCard--warn" key={x.base.id}>
+                <div className="mlroCardTop">
+                  <span className="catdot" style={{ background: catColor(x.base.category) }} />
+                  <strong>{x.base.name}</strong>
+                </div>
+                <p className="mlroCardReason">{x.base.relType || "Partner"} · {x.base.tier} tier · awaiting MLRO sign-off</p>
+                <button className="btn ghost" style={{ alignSelf: "flex-start", fontSize: 12 }} onClick={() => openProfile(x.base.id)}>Open record <ChevronRight size={13} /></button>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {gateOpen.length > 0 && (
+        <section className="mlroSection">
+          <div className="mlroSectionTitle"><ShieldAlert size={14} color="var(--blue)" /> Open gate items · {gateOpen.length}</div>
+          <p className="mlroSectionSub">Contractual or assurance gates still outstanding before final approval.</p>
+          <div className="mlroGrid">
+            {gateOpen.map(x => (
+              <article className="mlroCard mlroCard--info" key={x.base.id}>
+                <div className="mlroCardTop">
+                  <span className="catdot" style={{ background: catColor(x.base.category) }} />
+                  <strong>{x.base.name}</strong>
+                </div>
+                <p className="mlroCardReason">{x.gs.openCount} open gate item{x.gs.openCount !== 1 ? "s" : ""} · {x.base.jur}</p>
+                <button className="btn ghost" style={{ alignSelf: "flex-start", fontSize: 12 }} onClick={() => openProfile(x.base.id)}>View gates <ChevronRight size={13} /></button>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
 
 function Oversight({ agents, store, openProfile }) {
   const [logFilter, setLogFilter] = useState("All");
@@ -3362,68 +4061,7 @@ function Oversight({ agents, store, openProfile }) {
       </div>
 
       {/* ── MLRO Accountability Panel ──────────────────────────────── */}
-      {(() => {
-        const blocked    = rows.filter(x => x.gs.status === "blocked");
-        const needConc   = rows.filter(x => x.gs.status !== "blocked" && !x.base.gates?.approvedBy && x.base.live);
-        const gateOpen   = rows.filter(x => x.gs.status === "review" && !blocked.includes(x) && !needConc.includes(x));
-        if (blocked.length === 0 && needConc.length === 0 && gateOpen.length === 0) return null;
-        return (
-          <div style={{ marginBottom: 14 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-              <ShieldCheck size={15} color="var(--red)" />
-              <span style={{ fontWeight: 700, fontSize: 13, color: "var(--text)" }}>MLRO Accountability — action required</span>
-              <span className="muted" style={{ fontSize: 11 }}>Ultimate accountability for every item below remains with the MLRO regardless of delegation.</span>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
-              {blocked.length > 0 && (
-                <div style={{ background: "#ef444410", border: "1.5px solid #ef4444", borderRadius: 8, padding: "10px 14px" }}>
-                  <div style={{ fontWeight: 700, fontSize: 12, color: "#ef4444", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    Blocking — do not use for CDD ({blocked.length})
-                  </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {blocked.map(x => (
-                      <div key={x.base.id} style={{ background: "#fff", border: "1px solid #ef4444", borderRadius: 6, padding: "4px 10px", fontSize: 12 }}>
-                        <span style={{ fontWeight: 700 }}>{x.base.name}</span>
-                        <span style={{ color: "#ef4444", marginLeft: 6, fontSize: 11 }}>{x.gs.blockingNote}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {needConc.length > 0 && (
-                <div style={{ background: "#f59e0b10", border: "1.5px solid #f59e0b", borderRadius: 8, padding: "10px 14px" }}>
-                  <div style={{ fontWeight: 700, fontSize: 12, color: "#b45309", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    MLRO concurrence required — live, no approval on record ({needConc.length})
-                  </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {needConc.map(x => (
-                      <div key={x.base.id} style={{ background: "#fff", border: "1px solid #f59e0b", borderRadius: 6, padding: "4px 10px", fontSize: 12 }}>
-                        <span style={{ fontWeight: 700 }}>{x.base.name}</span>
-                        <span className="muted" style={{ marginLeft: 6, fontSize: 11 }}>{x.base.relType} · {x.base.tier}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {gateOpen.length > 0 && (
-                <div style={{ background: "#1e63e910", border: "1.5px solid #1e63e9", borderRadius: 8, padding: "10px 14px" }}>
-                  <div style={{ fontWeight: 700, fontSize: 12, color: "#1e63e9", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    Gate items open — resolve before approval ({gateOpen.length})
-                  </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {gateOpen.map(x => (
-                      <div key={x.base.id} style={{ background: "#fff", border: "1px solid #1e63e9", borderRadius: 6, padding: "4px 10px", fontSize: 12 }}>
-                        <span style={{ fontWeight: 700 }}>{x.base.name}</span>
-                        <span className="muted" style={{ marginLeft: 6, fontSize: 11 }}>{x.gs.openCount} open gate{x.gs.openCount !== 1 ? "s" : ""}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      })()}
+      <MlroAccountabilityPanel rows={rows} openProfile={openProfile} />
 
       {/* ── KPI Row ────────────────────────────────────────────────── */}
       <div className="grid" style={{ gridTemplateColumns: "repeat(6,1fr)" }}>
@@ -3758,7 +4396,7 @@ function Directory({ agents, store, openProfile }) {
     <>
       <h1 className="h1">Partners</h1>
       <p className="sub">Every partner that serves Mal, grouped by the service relationship — payout partners in one category, banking, card &amp; settlement, and technology/processors in others. Open any partner for its compliance profile and timeline.</p>
-      <div className="row" style={{ background: "#f5f6fb", border: "1px solid var(--line)", borderRadius: 9, padding: "0 10px", maxWidth: 360, marginBottom: 16 }}>
+      <div className="row" style={{ background: "var(--elevated)", border: "1px solid var(--line)", borderRadius: 9, padding: "0 10px", maxWidth: 360, marginBottom: 16 }}>
         <Search size={15} color="var(--muted)" /><input className="input" style={{ border: "none", background: "transparent" }} placeholder="Search partners, jurisdictions or category" value={q} onChange={e => setQ(e.target.value)} />
       </div>
       {CATEGORIES.map(cat => {
@@ -3797,7 +4435,7 @@ function Directory({ agents, store, openProfile }) {
 /* ============================================================================
    Profile (social-style) — overview + activity feed
 ============================================================================ */
-function Profile({ store, agents, id, back, now, supervisor, updateReview, setModal, onScreen, screenLoading }) {
+function Profile({ store, agents, id, back, now, supervisor, updateReview, setModal, onScreen, screenLoading, onSaveTmAssessment }) {
   const base = AGENTS_BASE.find(a => a.id === id) || (store.partners || []).find(a => a.id === id); const slice = store.agents[id];
   if (!base || !slice) return null;
   const [t, setT] = useState("feed");
@@ -3821,11 +4459,17 @@ function Profile({ store, agents, id, back, now, supervisor, updateReview, setMo
           </div>}
         </div>
         <div className="row" style={{ gap: 18, marginTop: 12, flexWrap: "wrap" }}>
-          <Mini label="Training" v={trainingRate(slice) + "%"} />
-          <Mini label="DD complete" v={`${ddStatus(slice).done}/${ddStatus(slice).total}`} />
-          <Mini label="Open reviews" v={myReviews.filter(x => x.status !== "Closed").length} />
-          <Mini label="SAR / STR filed" v={`${slice.registers.sar.length} / ${slice.registers.str.length}`} />
-          <Mini label="Open findings" v={myReviews.reduce((n, rv) => n + (rv.findings?.filter(f => f.status === "Open").length || 0), 0)} />
+          {supervisor ? <>
+            <Mini label="Training" v={trainingRate(slice) + "%"} />
+            <Mini label="DD complete" v={`${ddStatus(slice).done}/${ddStatus(slice).total}`} />
+            <Mini label="Open reviews" v={myReviews.filter(x => x.status !== "Closed").length} />
+            <Mini label="SAR / STR filed" v={`${slice.registers.sar.length} / ${slice.registers.str.length}`} />
+            <Mini label="Open findings" v={myReviews.reduce((n, rv) => n + (rv.findings?.filter(f => f.status === "Open").length || 0), 0)} />
+          </> : <>
+            <Mini label="Documents submitted" v={`${ddStatus(slice).done}/${ddStatus(slice).total}`} />
+            <Mini label="Training modules" v={trainingRate(slice) + "% complete"} />
+            <Mini label="Open requests" v={partnerOutstandingActions(base, slice, store).length} />
+          </>}
         </div>
       </div>
 
@@ -3840,7 +4484,7 @@ function Profile({ store, agents, id, back, now, supervisor, updateReview, setMo
               <div className="av">{kindIcon(f.kind)}</div>
               <div style={{ flex: 1 }}>
                 <div className="row" style={{ justifyContent: "space-between" }}>
-                  <span><span className="chip" style={{ background: "#f5f6fb", color: feedColor(f.kind) }}>{f.kind}</span> <b style={{ fontSize: 13 }}>{f.actor}</b></span>
+                  <span><span className="chip" style={{ background: "var(--elevated)", color: feedColor(f.kind) }}>{f.kind}</span> <b style={{ fontSize: 13 }}>{f.actor}</b></span>
                   <span className="muted mono" style={{ fontSize: 11 }}>{fmtDT(f.at)}</span>
                 </div>
                 <div style={{ fontSize: 13.5, marginTop: 5 }}>{f.text}</div>
@@ -3867,6 +4511,22 @@ function Profile({ store, agents, id, back, now, supervisor, updateReview, setMo
               <DDRow label="Commercial terms" v={base.agreement.commercial} />{base.agreement.signedFor ? <DDRow label="Signed for" v={base.agreement.signedFor} /> : null}
             </div>
           </div>}
+          {supervisor && base.contractDisputes && base.contractDisputes.length > 0 && <div className="card" style={{ gridColumn: "1 / -1", borderLeft: "3px solid var(--amber)" }}><h3>Contract disagreements & open points</h3>
+            <p className="muted" style={{ fontSize: 12, marginBottom: 10 }}>Recorded from the 01 Partnerships repository — Mal position vs vendor position until resolved.</p>
+            {base.contractDisputes.map(d => (
+              <div key={d.id} style={{ padding: "10px 0", borderBottom: "1px solid #e7e9f2" }}>
+                <div className="row" style={{ justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
+                  <b style={{ fontSize: 13.5 }}>{d.topic}</b>
+                  <span className="chip" style={{ background: d.status === "Unresolved" ? "var(--red)22" : d.status === "Open" ? "var(--amber)22" : "var(--elevated)", color: d.status === "Unresolved" ? "var(--red)" : d.status === "Open" ? "var(--amber)" : "var(--muted)" }}>{d.status}</span>
+                </div>
+                <div className="grid" style={{ gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 8 }}>
+                  <div><div className="muted" style={{ fontSize: 11, marginBottom: 3 }}>Mal position</div><div style={{ fontSize: 12.5 }}>{d.malPosition}</div></div>
+                  <div><div className="muted" style={{ fontSize: 11, marginBottom: 3 }}>Vendor position / contract text</div><div style={{ fontSize: 12.5 }}>{d.vendorPosition}</div></div>
+                </div>
+                <div className="muted mono" style={{ fontSize: 11, marginTop: 6 }}>{d.contractRef} · {d.source}</div>
+              </div>
+            ))}
+          </div>}
           {supervisor && base.kdp && <div className="card" style={{ gridColumn: "1 / -1" }}><h3>Key individuals — adverse-media & sanctions subjects</h3>
             {base.kdp.map((k, i) => <DDRow key={i} label={k.role} v={k.name} />)}
             <div className="muted" style={{ fontSize: 11, marginTop: 6 }}>These names are screened for adverse media, sanctions and PEP exposure by the screening engine (Due diligence tab). Full UBO verification is conducted by Mal against public registers.</div>
@@ -3890,7 +4550,20 @@ function Profile({ store, agents, id, back, now, supervisor, updateReview, setMo
           {myReviews.length === 0 ? <div className="muted">No program reviews.</div> : myReviews.map(rv => <ReviewCard key={rv.id} rv={rv} supervisor={supervisor} updateReview={updateReview} setModal={setModal} />)}
         </div>
       )}
-      {t === "dd" && <DDView slice={slice} base={base} supervisor={supervisor} screening={slice.screening} onScreen={() => onScreen && onScreen(id)} screenLoading={!!(screenLoading && screenLoading[id])} />}
+      {t === "dd" && <>
+        <DDView slice={slice} base={base} supervisor={supervisor} screening={slice.screening} onScreen={() => onScreen && onScreen(id)} screenLoading={!!(screenLoading && screenLoading[id])} />
+        {supervisor && requiresTmAssessment(base.category) && (
+          <div style={{ marginTop: 16 }}>
+            <TmSystemAssessment
+              partnerId={id}
+              partnerName={base.name}
+              category={base.category}
+              assessment={slice.tmAssessment}
+              onSave={onSaveTmAssessment}
+            />
+          </div>
+        )}
+      </>}
       {t === "sla" && <ObligationsView partnerId={id} base={base} supervisor={supervisor} />}
     </>
   );
@@ -3958,7 +4631,7 @@ function ReviewCard({ rv, partnerName, supervisor, updateReview, setModal }) {
       <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
         <div><b>{rv.id}</b> <span className="muted">· {partnerName ? partnerName(rv.agent) : ""} · {rv.country} · {rv.reason}</span></div>
         <div className="row" style={{ gap: 8 }}>
-          <span className="chip" style={{ background: "#f5f6fb" }}>{rv.status}</span>
+          <span className="chip" style={{ background: "var(--elevated)" }}>{rv.status}</span>
           {rv.level && <span className="chip" style={{ background: findingsLevel ? "rgba(248,113,113,.15)" : "rgba(52,211,153,.15)", color: findingsLevel ? "var(--red)" : "var(--green)" }}>{rv.level}</span>}
           <span className="chip" style={{ background: sla.c + "22", color: sla.c }}><Clock size={12} /> FO {fmtDate(rv.foDue)} · {rv.status === "Closed" ? "—" : (sla.cd + "bd · " + sla.st)}</span>
         </div>
@@ -3997,6 +4670,242 @@ function ReviewCard({ rv, partnerName, supervisor, updateReview, setModal }) {
             <button className="btn gold" disabled={closeBlocked || !rv.level} onClick={() => updateReview(rv.id, { status: "Closed", end: new Date().toISOString() })}><Check size={13} /> Close case</button>
           </>}
           {closeBlocked && <span className="muted" style={{ fontSize: 11.5 }}>Close blocked: findings level needs all remediation done + clearance issued.</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================================
+   Mystery Shopper Programme (Phase 4)
+============================================================================ */
+function MysteryShopper({ store, agents, partnerName, setModal, updateMysteryExercise, closeMysteryExercise, verifyMsRemediation }) {
+  const [filterPartner, setFilterPartner] = useState("All");
+  const [filterStatus, setFilterStatus] = useState("Active");
+  const exercises = (store.mysteryExercises || []);
+  const active = exercises.filter(ex => ex.status !== "Closed");
+  const overdueRem = exercises.reduce((n, ex) => n + ex.remediation.filter(r => r.status !== "Verified" && r.due && dueIn(r.due) < 0).length, 0);
+  const openCrit = exercises.reduce((n, ex) => n + ex.findings.filter(f => f.sev === "Critical" && f.status === "Open").length, 0);
+  const trend = mysteryTrendByQuarter(exercises);
+  let list = exercises.slice().sort((a, b) => new Date(b.scheduledDate) - new Date(a.scheduledDate));
+  if (filterPartner !== "All") list = list.filter(ex => ex.partnerId === filterPartner);
+  if (filterStatus === "Active") list = list.filter(ex => ex.status !== "Closed");
+  else if (filterStatus === "Closed") list = list.filter(ex => ex.status === "Closed");
+
+  function exportReport() {
+    try {
+      const wb = XLSX.utils.book_new();
+      const summary = [["Quarter", "Exercises", "Findings", "Critical", "Pass", "Fail"]];
+      trend.forEach(t => summary.push([t.quarter, t.exercises, t.findings, t.critical, t.pass, t.fail]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), "Trend summary");
+      const detail = [["Exercise ID", "Partner", "Quarter", "Title", "Status", "Result", "Scheduled", "Conducted", "Findings", "Open remediation"]];
+      exercises.forEach(ex => detail.push([ex.id, partnerName(ex.partnerId), ex.quarter, ex.title, ex.status, ex.result || "—", fmtDate(ex.scheduledDate), ex.conductedDate ? fmtDate(ex.conductedDate) : "—", ex.findings.length, ex.remediation.filter(r => r.status !== "Verified").length]));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(detail), "All exercises");
+      XLSX.writeFile(wb, "Mal_Mystery_Shopper_Report.xlsx");
+    } catch (e) {}
+  }
+
+  return (
+    <>
+      <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+        <div>
+          <h1 className="h1">Quarterly Mystery Shopper Programme</h1>
+          <p className="sub">Schedule exercises, record findings, track remediation, and compare historical results across partners. Management reports export to Excel.</p>
+        </div>
+        <div className="row" style={{ gap: 8 }}>
+          <button className="btn ghost" onClick={exportReport}><Download size={14} /> Management report</button>
+          <button className="btn gold" onClick={() => setModal({ t: "msSchedule" })}><Plus size={14} /> Schedule exercise</button>
+        </div>
+      </div>
+
+      <div className="grid msKpiGrid">
+        <Kpi label="Active exercises" value={active.length} accent={active.length ? "var(--blue)" : "var(--green)"} />
+        <Kpi label="Open critical findings" value={openCrit} accent={openCrit ? "var(--red)" : "var(--green)"} />
+        <Kpi label="Overdue remediation" value={overdueRem} accent={overdueRem ? "var(--amber)" : "var(--green)"} />
+        <Kpi label="Partners tested (all time)" value={new Set(exercises.map(e => e.partnerId)).size} />
+      </div>
+
+      <div className="grid" style={{ gridTemplateColumns: "1.4fr 1fr", marginTop: 13, gap: 13 }}>
+        <div className="card">
+          <h3>Historical trend</h3>
+          <div style={{ height: 200 }}>
+            {trend.length ? (
+              <ResponsiveContainer><BarChart data={trend}>
+                <XAxis dataKey="quarter" tick={{ fill: "var(--muted)", fontSize: 11 }} />
+                <YAxis tick={{ fill: "var(--muted)", fontSize: 11 }} allowDecimals={false} />
+                <Tooltip contentStyle={{ background: "var(--elevated)", border: "1px solid var(--line)", borderRadius: 8, color: "var(--text)" }} />
+                <Bar dataKey="findings" name="Findings" fill="#8000ff" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="pass" name="Pass" fill="#17a34a" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="fail" name="Fail" fill="#ef4444" radius={[3, 3, 0, 0]} />
+              </BarChart></ResponsiveContainer>
+            ) : <div className="muted" style={{ padding: 40, textAlign: "center" }}>No historical data yet.</div>}
+          </div>
+        </div>
+        <div className="card">
+          <h3>Partner performance snapshot</h3>
+          {agents.filter(({ base }) => base.category === "Payout partners" || base.category === "Banking partner").slice(0, 6).map(({ base }) => {
+            const px = exercises.filter(e => e.partnerId === base.id);
+            const closed = px.filter(e => e.status === "Closed");
+            const passRate = closed.length ? Math.round(100 * closed.filter(e => e.result === "Pass" || (e.result || "").startsWith("Pass")).length / closed.length) : null;
+            return (
+              <div className="row" key={base.id} style={{ justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid var(--lineSoft)" }}>
+                <span style={{ fontSize: 12.5 }}><b>{base.name}</b> <span className="muted">· {px.length} test{px.length !== 1 ? "s" : ""}</span></span>
+                <span className="chip" style={{ background: passRate == null ? "var(--elevated)" : passRate >= 80 ? "rgba(22,163,74,.12)" : passRate >= 50 ? "rgba(251,191,36,.12)" : "rgba(239,68,68,.12)", color: passRate == null ? "var(--muted)" : passRate >= 80 ? "var(--green)" : passRate >= 50 ? "var(--amber)" : "var(--red)" }}>
+                  {passRate == null ? "No closed tests" : passRate + "% pass"}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="row" style={{ gap: 10, marginTop: 14, flexWrap: "wrap" }}>
+        <select className="pill" value={filterPartner} onChange={e => setFilterPartner(e.target.value)}>
+          <option value="All">All partners</option>
+          {agents.map(({ base }) => <option key={base.id} value={base.id}>{base.name}</option>)}
+        </select>
+        <select className="pill" value={filterStatus} onChange={e => setFilterStatus(e.target.value)}>
+          <option value="Active">Active</option>
+          <option value="All">All</option>
+          <option value="Closed">Closed</option>
+        </select>
+      </div>
+
+      <div className="grid" style={{ gap: 11, marginTop: 11 }}>
+        {list.length === 0 ? <div className="card muted">No exercises match filters.</div> : list.map(ex => (
+          <MsExerciseCard key={ex.id} ex={ex} partnerLabel={partnerName(ex.partnerId)} supervisor setModal={setModal} updateMysteryExercise={updateMysteryExercise} closeMysteryExercise={closeMysteryExercise} verifyMsRemediation={verifyMsRemediation} />
+        ))}
+      </div>
+    </>
+  );
+}
+
+function MysteryShopperPartner({ store, agentId, partnerName, setModal, ackMysteryExercise }) {
+  const exercises = (store.mysteryExercises || []).filter(ex => ex.partnerId === agentId).sort((a, b) => new Date(b.scheduledDate) - new Date(a.scheduledDate));
+  const pendingAck = exercises.filter(ex => ex.status === "Scheduled" && !ex.partnerAckAt).length;
+  const openRem = exercises.reduce((n, ex) => n + ex.remediation.filter(r => r.status !== "Verified" && r.status !== "Done" && !r.partnerResponse).length, 0);
+  return (
+    <>
+      <div className="partnerHero">
+        <div className="row" style={{ gap: 10, alignItems: "flex-start" }}>
+          <Eye size={22} color="var(--brand)" style={{ marginTop: 4 }} />
+          <div style={{ flex: 1 }}>
+            <h1 className="h1" style={{ margin: 0 }}>Mystery shopper exercises</h1>
+            <p className="lead">Mal conducts periodic mystery shopper tests to verify your controls work in practice. Respond to findings and submit remediation evidence here — no internal scores are shown.</p>
+          </div>
+        </div>
+        <div className="row" style={{ gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+          {pendingAck > 0 && <span className="chip" style={{ background: "rgba(37,99,235,.1)", color: "var(--blue)" }}>{pendingAck} exercise{pendingAck !== 1 ? "s" : ""} to acknowledge</span>}
+          {openRem > 0 && <span className="chip" style={{ background: "rgba(217,119,6,.12)", color: "var(--amber)" }}>{openRem} remediation action{openRem !== 1 ? "s" : ""} open</span>}
+          {pendingAck === 0 && openRem === 0 && <span className="chip" style={{ background: "rgba(22,163,74,.1)", color: "var(--green)" }}><Check size={12} /> All exercises up to date</span>}
+        </div>
+      </div>
+      <div className="grid" style={{ gap: 11 }}>
+        {exercises.length === 0 ? (
+          <div className="card" style={{ textAlign: "center", padding: 36 }}>
+            <Eye size={32} color="var(--brand)" />
+            <div style={{ fontWeight: 700, marginTop: 10 }}>No exercises assigned</div>
+            <div className="muted" style={{ fontSize: 12.5, marginTop: 4 }}>When Mal schedules a mystery shopper test, it will appear here with any required responses.</div>
+          </div>
+        ) : exercises.map(ex => (
+          <MsExerciseCard key={ex.id} ex={ex} supervisor={false} setModal={setModal} ackMysteryExercise={ackMysteryExercise} />
+        ))}
+      </div>
+    </>
+  );
+}
+
+function MsExerciseCard({ ex, partnerLabel, supervisor, setModal, updateMysteryExercise, closeMysteryExercise, verifyMsRemediation, ackMysteryExercise }) {
+  const remOpen = ex.remediation.filter(r => r.status !== "Verified").length;
+  const resultStyle = msResultColor(ex.result);
+  const statusC = msStatusColor(ex.status);
+  return (
+    <div className="card msCard">
+      <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+        <div>
+          <b>{ex.title}</b>
+          {partnerLabel && <span className="muted"> · {partnerLabel}</span>}
+          <div className="muted mono" style={{ fontSize: 11, marginTop: 3 }}>{ex.id} · {ex.quarter}</div>
+        </div>
+        <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+          <span className="chip" style={{ background: statusC + "18", color: statusC }}>{ex.status}</span>
+          {ex.result && <span className="chip" style={{ background: resultStyle.bg, color: resultStyle.c }}>{ex.result}</span>}
+          <span className="chip" style={{ background: "var(--elevated)" }}><Clock size={11} /> {fmtDate(ex.scheduledDate)}</span>
+        </div>
+      </div>
+      <div className="msMeta">
+        <span><Target size={12} /> {ex.channel}</span>
+        {ex.conductedBy && <span>Conducted by: {ex.conductedBy}</span>}
+        {ex.conductedDate && <span>Completed: {fmtDate(ex.conductedDate)}</span>}
+      </div>
+      <p className="msScenario">{ex.scenario}</p>
+
+      {!supervisor && ex.status === "Scheduled" && !ex.partnerAckAt && (
+        <div className="msAckBox">
+          <AlertCircle size={16} color="var(--blue)" />
+          <div style={{ flex: 1 }}>
+            <b>Acknowledgement required</b>
+            <div className="muted" style={{ fontSize: 12 }}>Confirm your compliance team is aware of this scheduled test on {fmtDate(ex.scheduledDate)}.</div>
+          </div>
+          <button className="btn gold" onClick={() => ackMysteryExercise(ex.id)}><Check size={13} /> Acknowledge</button>
+        </div>
+      )}
+
+      {ex.findings.length > 0 && (
+        <div className="tablewrap" style={{ marginTop: 10 }}>
+          <div className="muted" style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 5 }}>Findings</div>
+          <table><thead><tr><th>Ref</th><th>Finding</th><th>Category</th><th>Severity</th><th>Standard</th><th>Status</th></tr></thead>
+            <tbody>{ex.findings.map((f, i) => (
+              <tr key={i}><td className="mono">{f.ref}</td><td>{f.desc}</td><td>{f.category}</td>
+                <td><span className="chip" style={{ background: (SEV[f.sev.toLowerCase()]?.c || "#888") + "22", color: SEV[f.sev.toLowerCase()]?.c || "#888" }}>{f.sev}</span></td>
+                <td className="muted">{f.standard}</td><td>{f.status}</td></tr>
+            ))}</tbody></table>
+        </div>
+      )}
+
+      {ex.remediation.length > 0 && (
+        <div style={{ marginTop: 10 }}>
+          <div className="muted" style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 5 }}>Remediation</div>
+          {ex.remediation.map(r => {
+            const overdue = r.due && dueIn(r.due) < 0 && r.status !== "Verified";
+            return (
+              <div className="msRemRow" key={r.id}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12.5 }}>{r.action} <span className="muted">· {r.owner} · due {fmtDate(r.due)}</span></div>
+                  {r.partnerResponse && (
+                    <div className="msResponse">
+                      <b>Partner response</b> · {fmtDate(r.partnerResponse.at)}
+                      <div>{r.partnerResponse.body}</div>
+                      {r.partnerResponse.evidence && <div className="muted mono" style={{ fontSize: 11 }}>Evidence: {r.partnerResponse.evidence}</div>}
+                    </div>
+                  )}
+                </div>
+                <div className="row" style={{ gap: 6, flexShrink: 0 }}>
+                  <span className="chip" style={{ background: r.status === "Verified" ? "rgba(22,163,74,.12)" : overdue ? "rgba(239,68,68,.12)" : "rgba(251,191,36,.12)", color: r.status === "Verified" ? "var(--green)" : overdue ? "var(--red)" : "var(--amber)" }}>{overdue && r.status !== "Verified" ? "Overdue" : r.status}</span>
+                  {!supervisor && !r.partnerResponse && r.status !== "Verified" && (
+                    <button className="btn ghost" onClick={() => setModal({ t: "msRespond", exId: ex.id, remId: r.id })}><UploadCloud size={12} /> Submit evidence</button>
+                  )}
+                  {supervisor && r.partnerResponse && r.status !== "Verified" && (
+                    <button className="btn ghost" onClick={() => verifyMsRemediation(ex.id, r.id)}><ShieldCheck size={12} /> Verify</button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {supervisor && ex.status !== "Closed" && (
+        <div className="row" style={{ gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+          {ex.status === "Scheduled" && <button className="btn ghost" onClick={() => updateMysteryExercise(ex.id, { status: "In progress" })}><Play size={13} /> Mark in progress</button>}
+          <button className="btn ghost" onClick={() => setModal({ t: "msFinding", exId: ex.id })}><Plus size={13} /> Add finding</button>
+          <button className="btn ghost" onClick={() => setModal({ t: "msRemediation", exId: ex.id })}><Plus size={13} /> Add remediation</button>
+          <select className="pill" value={ex.result || ""} onChange={e => updateMysteryExercise(ex.id, { result: e.target.value || null })}>
+            <option value="">Set result…</option>
+            {["Pass", "Pass with observations", "Fail", "Fail with remediation"].map(x => <option key={x} value={x}>{x}</option>)}
+          </select>
+          <button className="btn gold" disabled={ex.remediation.some(r => r.status !== "Verified") || ex.findings.some(f => f.status === "Open")} onClick={() => closeMysteryExercise(ex.id)}><Check size={13} /> Close exercise</button>
+          {(ex.remediation.some(r => r.status !== "Verified") || ex.findings.some(f => f.status === "Open")) && <span className="muted" style={{ fontSize: 11 }}>Close blocked until all remediation is verified and findings are closed.</span>}
         </div>
       )}
     </div>
@@ -4668,8 +5577,8 @@ function FinancialCrimeIntelligence({ fcie, onRefresh, store, setStore, flash })
                     <div className="row" style={{ gap: 6, flexWrap: "wrap" }}>
                       <span className="chip" style={{ background: sc + "22", color: sc, textTransform: "capitalize" }}>{item.severity}</span>
                       <span className="chip" style={{ background: cc + "22", color: cc }}>{catLabel(item.category)}</span>
-                      <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)" }}>{item.country}</span>
-                      {item.authority && item.authority !== item.country + " Authority" && <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)" }}>{item.authority}</span>}
+                      <span className="chip" style={{ background: "var(--elevated)", color: "var(--muted)" }}>{item.country}</span>
+                      {item.authority && item.authority !== item.country + " Authority" && <span className="chip" style={{ background: "var(--elevated)", color: "var(--muted)" }}>{item.authority}</span>}
                     </div>
                     <div className="row" style={{ gap: 6 }}>
                       {item.publishedAt && <span className="muted mono" style={{ fontSize: 11 }}>{String(item.publishedAt).slice(0, 10)}</span>}
@@ -4682,7 +5591,7 @@ function FinancialCrimeIntelligence({ fcie, onRefresh, store, setStore, flash })
                     {item.url ? <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ color: "var(--text)", textDecoration: "none" }}>{item.title}</a> : item.title}
                   </div>
                   {item.summary && <div className="muted" style={{ fontSize: 12.5, lineHeight: 1.55, marginBottom: 8 }}>{item.summary.slice(0, 240)}{item.summary.length > 240 ? "…" : ""}</div>}
-                  {item.tags?.length > 0 && <div className="row" style={{ gap: 5, flexWrap: "wrap", marginBottom: 8 }}>{item.tags.slice(0, 5).map(t => <span key={t} className="chip" style={{ background: "#f5f6fb", color: "var(--muted)", fontSize: 11 }}>{t}</span>)}</div>}
+                  {item.tags?.length > 0 && <div className="row" style={{ gap: 5, flexWrap: "wrap", marginBottom: 8 }}>{item.tags.slice(0, 5).map(t => <span key={t} className="chip" style={{ background: "var(--elevated)", color: "var(--muted)", fontSize: 11 }}>{t}</span>)}</div>}
                   <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
                     <span className="muted" style={{ fontSize: 11 }}>{item.source}</span>
                     <div style={{ flex: 1 }} />
@@ -4763,7 +5672,7 @@ function FinancialCrimeIntelligence({ fcie, onRefresh, store, setStore, flash })
               <span style={{ fontSize: 13, fontWeight: 500, flex: "1 1 220px" }}>{item.title.slice(0, 110)}{item.title.length > 110 ? "…" : ""}</span>
               <div className="row" style={{ gap: 6 }}>
                 <span className="chip" style={{ background: FCIE_SEV_COLOR[item.severity] + "22", color: FCIE_SEV_COLOR[item.severity], textTransform: "capitalize", fontSize: 11 }}>{item.severity}</span>
-                <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)", fontSize: 11 }}>{item.country}</span>
+                <span className="chip" style={{ background: "var(--elevated)", color: "var(--muted)", fontSize: 11 }}>{item.country}</span>
                 {item.publishedAt && <span className="muted mono" style={{ fontSize: 11 }}>{String(item.publishedAt).slice(0, 10)}</span>}
               </div>
             </div>
@@ -4786,7 +5695,7 @@ function FinancialCrimeIntelligence({ fcie, onRefresh, store, setStore, flash })
               <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
                 <div className="row" style={{ gap: 6 }}>
                   <span className="chip" style={{ background: sc + "22", color: sc, textTransform: "capitalize" }}>{item.severity}</span>
-                  <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)" }}>{item.country}</span>
+                  <span className="chip" style={{ background: "var(--elevated)", color: "var(--muted)" }}>{item.country}</span>
                   <span className="chip" style={{ background: catColor(item.category) + "22", color: catColor(item.category) }}>{catLabel(item.category)}</span>
                 </div>
                 {item.publishedAt && <span className="muted mono" style={{ fontSize: 11 }}>{String(item.publishedAt).slice(0, 10)}</span>}
@@ -4828,7 +5737,7 @@ function FinancialCrimeIntelligence({ fcie, onRefresh, store, setStore, flash })
           <div className="muted" style={{ fontSize: 12.5, marginTop: 6, marginBottom: 12 }}>The NestJS backend intelligence service refreshes automatically every hour via scheduled job, fetching from Google News RSS for all 9 jurisdictions. Manual refresh is always available.</div>
           <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
             {[["Every hour", true], ["Every 6 hours", false], ["Daily", false], ["Weekly", false]].map(([s, active]) => (
-              <span key={s} className="chip" style={{ background: active ? "var(--brand50)" : "#f5f6fb", color: active ? "var(--brand600)" : "var(--muted)" }}>{s}</span>
+              <span key={s} className="chip" style={{ background: active ? "var(--brand50)" : "var(--elevated)", color: active ? "var(--brand600)" : "var(--muted)" }}>{s}</span>
             ))}
           </div>
         </div>
@@ -4855,72 +5764,200 @@ function FinancialCrimeIntelligence({ fcie, onRefresh, store, setStore, flash })
 }
 
 /* ============================================================================
-   Communications & collaboration
+   Communications & collaboration hub (Phase 3)
 ============================================================================ */
-function Comms({ store, agents, supervisor, agentId, onAck, setModal, fcie }) {
+function Comms({ store, agents, supervisor, agentId, onAck, setModal, fcie, partnerName, onCloseRfi, onReplyThread, onMarkThreadRead, onRespondRfi, baseAll }) {
+  const [tab, setTab] = useState("announcements");
+  const [activeThread, setActiveThread] = useState(null);
+  const [reply, setReply] = useState("");
   const recentIntel = (fcie?.items || []).filter(i => i.severity === "critical" || i.severity === "high").slice(0, 5);
+  const rfis = (store.rfis || []).filter(r => supervisor ? true : r.partnerId === agentId);
+  const threads = (store.threads || []).filter(t => supervisor ? true : t.partnerId === agentId);
+  const base = !supervisor && agentId ? (baseAll ? baseAll().find(a => a.id === agentId) : null) : null;
+  const openRfiCount = rfis.filter(r => r.status === "Open").length;
+  const unreadMsgCount = threads.filter(t => t.messages.some(m => m.role === (supervisor ? "partner" : "supervisor") && !m.read)).length;
+
+  useEffect(() => {
+    if (!supervisor && activeThread && onMarkThreadRead) onMarkThreadRead(activeThread);
+  }, [activeThread, supervisor]);
+
+  function sendReply() {
+    if (!reply.trim() || !activeThread) return;
+    onReplyThread(activeThread, reply.trim());
+    setReply("");
+  }
+
   return (
     <>
-      <div className="row" style={{ justifyContent: "space-between" }}>
-        <div><h1 className="h1">Communications & collaboration</h1>
-          <p className="sub">{supervisor ? "Broadcast regulatory updates and see who acknowledged and confirmed they applied them — acknowledgement is evidence, the behaviour confirmation is the point." : "Regulatory notices from Mal. Acknowledge each, and confirm you have applied it — not just read it."}</p></div>
-        {supervisor && <button className="btn gold" onClick={() => setModal({ t: "broadcast" })}><Megaphone size={14} /> New broadcast</button>}
+      <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
+        <div>
+          <div className="row" style={{ gap: 8, marginBottom: 4 }}><span className="secureTag"><Lock size={11} /> Secure · audit logged</span></div>
+          <h1 className="h1">Collaboration hub</h1>
+          <p className="sub">{supervisor ? "Regulatory announcements, structured RFIs, and secure partner messaging — every interaction is timestamped and audit-ready." : "Announcements from Mal, information requests with deadlines, and secure messages. Acknowledge policies and respond promptly."}</p>
+        </div>
+        {supervisor && (
+          <div className="row" style={{ gap: 8, flexWrap: "wrap" }}>
+            <button className="btn" onClick={() => setModal({ t: "broadcast" })}><Megaphone size={14} /> Broadcast</button>
+            <button className="btn" onClick={() => setModal({ t: "rfi" })}><FileText size={14} /> New RFI</button>
+            <button className="btn gold" onClick={() => setModal({ t: "thread" })}><MessageSquare size={14} /> Secure message</button>
+          </div>
+        )}
       </div>
 
-      {/* Live Financial Crime Intelligence panel */}
-      <div className="card" style={{ marginBottom: 16, borderColor: recentIntel.length ? "var(--gold)" : "var(--line)" }}>
-        <div className="row" style={{ justifyContent: "space-between", marginBottom: recentIntel.length ? 10 : 0 }}>
-          <h3 style={{ margin: 0, color: "var(--gold)" }}><Radio size={13} style={{ verticalAlign: "-2px", marginRight: 6 }} />Live Financial Crime Intelligence</h3>
-          {recentIntel.length > 0 && <span className="chip" style={{ background: "rgba(220,38,38,.12)", color: "var(--red)", fontSize: 11 }}>{recentIntel.length} critical / high</span>}
-        </div>
-        {recentIntel.length === 0
-          ? <div className="muted" style={{ fontSize: 12.5 }}>No critical or high intelligence yet — visit <b>Crime Intelligence Engine</b> to refresh the live feed for all 9 jurisdictions.</div>
-          : recentIntel.map(item => {
-            const sc = FCIE_SEV_COLOR[item.severity] || "#6b7280";
-            return (
-              <div key={item.id} style={{ padding: "8px 0", borderBottom: "1px solid var(--line)" }}>
-                <div className="row" style={{ gap: 6, marginBottom: 3 }}>
-                  <span className="chip" style={{ background: sc + "22", color: sc, fontSize: 11, textTransform: "capitalize" }}>{item.severity}</span>
-                  <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)", fontSize: 11 }}>{item.country}</span>
-                  {item.publishedAt && <span className="muted mono" style={{ fontSize: 11 }}>{String(item.publishedAt).slice(0, 10)}</span>}
+      <div className="grid" style={{ gridTemplateColumns: "repeat(4,1fr)", gap: 11, marginBottom: 14 }}>
+        <Kpi label="Policy broadcasts" value={store.broadcasts.length} />
+        <Kpi label={supervisor ? "Open RFIs" : "RFIs awaiting response"} value={openRfiCount} accent={openRfiCount ? "var(--amber)" : "var(--green)"} onClick={() => setTab("rfis")} />
+        <Kpi label="Secure threads" value={threads.length} onClick={() => setTab("messages")} />
+        <Kpi label="Unread" value={unreadMsgCount} accent={unreadMsgCount ? "var(--red)" : "var(--green)"} onClick={() => setTab("messages")} />
+      </div>
+
+      <div className="tabs2">
+        {[["announcements", "Announcements"], ["rfis", "Requests for information"], ["messages", "Secure messages"]].map(([k, lab]) => (
+          <button key={k} className={tab === k ? "on" : ""} onClick={() => { setTab(k); setActiveThread(null); }}>{lab}{k === "rfis" && openRfiCount ? ` (${openRfiCount})` : ""}{k === "messages" && unreadMsgCount ? ` (${unreadMsgCount})` : ""}</button>
+        ))}
+      </div>
+
+      {tab === "announcements" && (
+        <>
+          <div className="card" style={{ marginBottom: 16, borderColor: recentIntel.length ? "var(--gold)" : "var(--line)" }}>
+            <div className="row" style={{ justifyContent: "space-between", marginBottom: recentIntel.length ? 10 : 0 }}>
+              <h3 style={{ margin: 0, color: "var(--gold)" }}><Radio size={13} style={{ verticalAlign: "-2px", marginRight: 6 }} />Live Financial Crime Intelligence</h3>
+              {recentIntel.length > 0 && <span className="chip" style={{ background: "rgba(220,38,38,.12)", color: "var(--red)", fontSize: 11 }}>{recentIntel.length} critical / high</span>}
+            </div>
+            {recentIntel.length === 0
+              ? <div className="muted" style={{ fontSize: 12.5 }}>No critical or high intelligence yet — visit <b>Crime Intelligence Engine</b> to refresh the live feed.</div>
+              : recentIntel.map(item => {
+                const sc = FCIE_SEV_COLOR[item.severity] || "#6b7280";
+                return (
+                  <div key={item.id} style={{ padding: "8px 0", borderBottom: "1px solid var(--line)" }}>
+                    <div className="row" style={{ gap: 6, marginBottom: 3 }}>
+                      <span className="chip" style={{ background: sc + "22", color: sc, fontSize: 11, textTransform: "capitalize" }}>{item.severity}</span>
+                      <span className="chip" style={{ background: "var(--elevated)", color: "var(--muted)", fontSize: 11 }}>{item.country}</span>
+                    </div>
+                    <div style={{ fontSize: 13 }}>{item.title.slice(0, 130)}</div>
+                  </div>
+                );
+              })}
+          </div>
+          <div className="grid" style={{ gap: 11 }}>
+            {store.broadcasts.map(b => {
+              const acked = !supervisor && store.agents[agentId].acks.find(x => x.id === b.id);
+              const ackCount = agents.filter(({ slice }) => slice.acks.find(x => x.id === b.id)).length;
+              const appliedCount = agents.filter(({ slice }) => slice.acks.find(x => x.id === b.id && x.applied)).length;
+              const show = supervisor || b.jur === "All" || b.jur === base?.jur;
+              if (!show) return null;
+              return (
+                <div className="card" key={b.id}>
+                  <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                    <span><Megaphone size={14} color="var(--gold)" style={{ verticalAlign: "-2px", marginRight: 7 }} /><b>{b.title}</b> <span className="muted">· {b.jur}</span></span>
+                    <span className="chip" style={{ background: SEV[b.sev].c + "22", color: SEV[b.sev].c }}>{SEV[b.sev].t}</span>
+                  </div>
+                  <div style={{ fontSize: 13.5, margin: "8px 0" }}>{b.body}</div>
+                  <div className="muted" style={{ fontSize: 12 }}><b style={{ color: "var(--gold2)" }}>Required behaviour:</b> {b.behavior}</div>
+                  <div className="muted" style={{ fontSize: 11, marginTop: 6 }}><HelpCircle size={11} style={{ verticalAlign: "-1px" }} /> Why: Policy acknowledgement creates an auditable record that you received and understood this regulatory update.</div>
+                  {supervisor ? (
+                    <div className="row" style={{ gap: 16, marginTop: 10 }}>
+                      <span className="muted" style={{ fontSize: 12 }}>Acknowledged {ackCount}/{agents.length}</span>
+                      <span className="muted" style={{ fontSize: 12 }}>Confirmed applied {appliedCount}/{agents.length}</span>
+                      <div className="bar" style={{ flex: 1, maxWidth: 200 }}><span style={{ width: (appliedCount / Math.max(agents.length, 1) * 100) + "%", background: "var(--green)" }} /></div>
+                    </div>
+                  ) : (
+                    <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                      {acked ? <span className="chip" style={{ background: "rgba(52,211,153,.15)", color: "var(--green)" }}><Check size={12} /> {acked.applied ? "Acknowledged · applied" : "Acknowledged"} · {fmtDate(acked.at)}</span>
+                        : <><button className="btn ghost" onClick={() => onAck(agentId, b.id, false)}>Acknowledge</button><button className="btn gold" onClick={() => onAck(agentId, b.id, true)}><Check size={13} /> Acknowledge & confirm applied</button></>}
+                    </div>
+                  )}
                 </div>
-                <div style={{ fontSize: 13 }}>{item.url ? <a href={item.url} target="_blank" rel="noopener noreferrer" style={{ color: "var(--text)", textDecoration: "none" }}>{item.title.slice(0, 130)}{item.title.length > 130 ? "…" : ""}</a> : item.title.slice(0, 130)}</div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {tab === "rfis" && (
+        <div className="grid" style={{ gap: 11 }}>
+          {rfis.length === 0 ? <div className="card muted" style={{ textAlign: "center", padding: 28 }}>No requests for information yet.</div> : rfis.map(r => {
+            const overdue = r.due && dueIn(r.due) < 0 && r.status === "Open";
+            const pname = partnerName ? partnerName(r.partnerId) : r.partnerId;
+            return (
+              <div className={"card rfiCard" + (overdue ? " overdue" : "")} key={r.id} style={{ borderLeftColor: SEV[r.sev]?.c || "var(--brand)" }}>
+                <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+                  <span><FileText size={14} color="var(--brand)" style={{ verticalAlign: "-2px", marginRight: 7 }} /><b>{r.title}</b>{supervisor && <span className="muted"> · {pname}</span>}</span>
+                  <span className="chip" style={{ background: r.status === "Closed" ? "rgba(22,163,74,.12)" : r.status === "Responded" ? "rgba(37,99,235,.1)" : overdue ? "rgba(220,38,38,.12)" : "var(--elevated)", color: r.status === "Closed" ? "var(--green)" : r.status === "Responded" ? "var(--blue)" : overdue ? "var(--red)" : "var(--muted)" }}>{r.status}{overdue ? " · overdue" : ""}</span>
+                </div>
+                <div style={{ fontSize: 13.5, margin: "8px 0" }}>{r.body}</div>
+                {r.why && <div className="muted" style={{ fontSize: 12, marginBottom: 6 }}><b>Why this is required:</b> {r.why}</div>}
+                <div className="row" style={{ gap: 8, flexWrap: "wrap", fontSize: 11, marginBottom: 8 }}>
+                  <span className="chip" style={{ background: SEV[r.sev].c + "22", color: SEV[r.sev].c }}>{SEV[r.sev].t}</span>
+                  {r.due && <span className="chip" style={{ background: "var(--elevated)" }}>Due {fmtDate(r.due)}</span>}
+                  <span className="muted">Issued {fmtDate(r.createdAt)} · {r.createdBy}</span>
+                </div>
+                {r.response && (
+                  <div style={{ background: "var(--elevated)", borderRadius: 12, padding: 12, marginTop: 8, border: "1px solid var(--line)" }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: ".5px", marginBottom: 6 }}>Partner response · {fmtDT(r.response.at)}</div>
+                    <div style={{ fontSize: 13 }}>{r.response.body}</div>
+                    {r.response.evidence && <div className="muted" style={{ fontSize: 12, marginTop: 6 }}><Paperclip size={12} /> Evidence: {r.response.evidence}</div>}
+                  </div>
+                )}
+                <div className="row" style={{ gap: 8, marginTop: 10 }}>
+                  {!supervisor && r.status === "Open" && <button className="btn gold" onClick={() => setModal({ t: "rfiRespond", rfiId: r.id })}><Send size={13} /> Submit response</button>}
+                  {supervisor && r.status === "Responded" && <button className="btn" onClick={() => onCloseRfi(r.id)}><Check size={13} /> Close RFI</button>}
+                  {supervisor && r.status === "Open" && overdue && <span className="chip" style={{ background: "rgba(220,38,38,.1)", color: "var(--red)" }}><AlertCircle size={12} /> Partner overdue</span>}
+                </div>
               </div>
             );
-          })
-        }
-        {recentIntel.length > 0 && <div className="muted" style={{ fontSize: 11.5, marginTop: 8 }}>Full intelligence feed and AI analysis available in the <b>Crime Intelligence Engine</b>.</div>}
-      </div>
+          })}
+        </div>
+      )}
 
-      <div className="grid" style={{ gap: 11 }}>
-        {store.broadcasts.map(b => {
-          const acked = !supervisor && store.agents[agentId].acks.find(x => x.id === b.id);
-          const ackCount = agents.filter(({ slice }) => slice.acks.find(x => x.id === b.id)).length;
-          const appliedCount = agents.filter(({ slice }) => slice.acks.find(x => x.id === b.id && x.applied)).length;
-          return (
-            <div className="card" key={b.id}>
-              <div className="row" style={{ justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-                <span><Megaphone size={14} color="var(--gold)" style={{ verticalAlign: "-2px", marginRight: 7 }} /><b>{b.title}</b> <span className="muted">· {b.jur}</span></span>
-                <span className="chip" style={{ background: SEV[b.sev].c + "22", color: SEV[b.sev].c }}>{SEV[b.sev].t}</span>
-              </div>
-              <div style={{ fontSize: 13.5, margin: "8px 0" }}>{b.body}</div>
-              <div className="muted" style={{ fontSize: 12 }}><b style={{ color: "var(--gold2)" }}>Required behaviour:</b> {b.behavior}</div>
-              {supervisor ? (
-                <div className="row" style={{ gap: 16, marginTop: 10 }}>
-                  <span className="muted" style={{ fontSize: 12 }}>Acknowledged {ackCount}/{agents.length}</span>
-                  <span className="muted" style={{ fontSize: 12 }}>Confirmed applied {appliedCount}/{agents.length}</span>
-                  <div className="bar" style={{ flex: 1, maxWidth: 200 }}><span style={{ width: (appliedCount / agents.length * 100) + "%", background: "var(--green)" }} /></div>
+      {tab === "messages" && (
+        <div className="grid trustSplit">
+          <div>
+            <h3 style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".6px", color: "var(--muted)", marginBottom: 10 }}>Threads</h3>
+            {threads.length === 0 ? <div className="card muted" style={{ padding: 20, fontSize: 13 }}>No secure messages yet.</div> : threads.map(t => {
+              const unread = t.messages.some(m => m.role === (supervisor ? "partner" : "supervisor") && !m.read);
+              const pname = partnerName ? partnerName(t.partnerId) : t.partnerId;
+              return (
+                <div key={t.id} className={"msgThread" + (unread ? " unread" : "") + (activeThread === t.id ? " active" : "")} style={{ cursor: "pointer", borderColor: activeThread === t.id ? "rgba(139,92,246,.4)" : undefined }} onClick={() => { setActiveThread(t.id); if (!supervisor && onMarkThreadRead) onMarkThreadRead(t.id); }}>
+                  <div className="row" style={{ justifyContent: "space-between" }}>
+                    <b style={{ fontSize: 13.5 }}>{t.subject}</b>
+                    {unread && <span className="chip" style={{ background: "rgba(139,92,246,.12)", color: "var(--brand)", fontSize: 10 }}>New</span>}
+                  </div>
+                  {supervisor && <div className="muted" style={{ fontSize: 11.5, marginTop: 3 }}>{pname}</div>}
+                  <div className="muted" style={{ fontSize: 11, marginTop: 4 }}>{t.messages.length} message{t.messages.length !== 1 ? "s" : ""} · {fmtDate(t.createdAt)}</div>
                 </div>
-              ) : (
-                <div className="row" style={{ gap: 8, marginTop: 10 }}>
-                  {acked ? <span className="chip" style={{ background: "rgba(52,211,153,.15)", color: "var(--green)" }}><Check size={12} /> {acked.applied ? "Acknowledged · applied" : "Acknowledged"}</span>
-                    : <><button className="btn ghost" onClick={() => onAck(agentId, b.id, false)}>Acknowledge</button><button className="btn gold" onClick={() => onAck(agentId, b.id, true)}><Check size={13} /> Acknowledge & confirm applied</button></>}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+              );
+            })}
+          </div>
+          <div className="card" style={{ minHeight: 280 }}>
+            {!activeThread ? <div className="muted" style={{ textAlign: "center", padding: 40, fontSize: 13 }}>Select a thread to view the secure conversation.</div> : (() => {
+              const t = threads.find(x => x.id === activeThread);
+              if (!t) return null;
+              return (
+                <>
+                  <div className="row" style={{ justifyContent: "space-between", marginBottom: 12 }}>
+                    <b>{t.subject}</b>
+                    <span className="secureTag"><Lock size={10} /> Encrypted channel</span>
+                  </div>
+                  <div style={{ maxHeight: 320, overflow: "auto", marginBottom: 8 }}>
+                    {t.messages.map(m => (
+                      <div key={m.id}>
+                        <div className={"msgMeta" + (m.role === "partner" ? " row" : "")} style={m.role === "partner" ? { justifyContent: "flex-end" } : {}}>{m.from} · {fmtDT(m.at)}</div>
+                        <div className={"msgBubble " + (m.role === "supervisor" ? "sup" : "prt")}>{m.body}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="msgCompose">
+                    <textarea className="input" style={{ minHeight: 44, flex: 1 }} placeholder="Type a secure reply…" value={reply} onChange={e => setReply(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendReply(); } }} />
+                    <button className="btn gold" disabled={!reply.trim()} onClick={sendReply}><Send size={14} /></button>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+        </div>
+      )}
+
       {supervisor && store.speakup.length > 0 && (
         <div className="card" style={{ marginTop: 13 }}><h3>Speak-up channel</h3>
           {store.speakup.map(s => <div key={s.id} style={{ padding: "7px 0", borderBottom: "1px solid #e7e9f2" }}><div className="row" style={{ justifyContent: "space-between" }}><b style={{ fontSize: 13 }}>{s.topic}</b><span className="muted mono" style={{ fontSize: 11 }}>{s.anon ? "Anonymous" : s.from} · {fmtDate(s.at)}</span></div><div className="muted" style={{ fontSize: 12.5, marginTop: 3 }}>{s.body}</div></div>)}
@@ -4956,12 +5993,12 @@ function Exec({ agents, store }) {
           <div style={{ height: 180 }}><ResponsiveContainer><PieChart>
             <Pie data={riskDist.filter(d => d.value)} dataKey="value" nameKey="name" innerRadius={42} outerRadius={70} paddingAngle={3}>
               {riskDist.filter(d => d.value).map((d, i) => <Cell key={i} fill={d.c} stroke="none" />)}</Pie>
-            <Tooltip contentStyle={{ background: "#f5f6fb", border: "1px solid #e4e7ef", borderRadius: 8, color: "#0c0d14" }} /></PieChart></ResponsiveContainer></div>
+            <Tooltip contentStyle={{ background: "var(--elevated)", border: "1px solid var(--line)", borderRadius: 8, color: "var(--text)" }} /></PieChart></ResponsiveContainer></div>
         </div>
         <div className="card"><h3>SAR / STR by partner</h3>
           <div style={{ height: 180 }}><ResponsiveContainer><BarChart data={sarStr}>
             <XAxis dataKey="name" tick={{ fill: "#5b6472", fontSize: 11 }} /><YAxis tick={{ fill: "#5b6472", fontSize: 11 }} allowDecimals={false} />
-            <Tooltip contentStyle={{ background: "#f5f6fb", border: "1px solid #e4e7ef", borderRadius: 8, color: "#0c0d14" }} cursor={{ fill: "#ffffff08" }} />
+            <Tooltip contentStyle={{ background: "var(--elevated)", border: "1px solid var(--line)", borderRadius: 8, color: "var(--text)" }} cursor={{ fill: "rgba(139,92,246,.06)" }} />
             <Bar dataKey="SAR" fill="#ef4444" radius={[3, 3, 0, 0]} /><Bar dataKey="STR" fill="#8000ff" radius={[3, 3, 0, 0]} /></BarChart></ResponsiveContainer></div>
         </div>
       </div>
@@ -4972,6 +6009,152 @@ function Exec({ agents, store }) {
             <span className="muted" style={{ fontSize: 12 }}>{ew.join(" · ") || "monitor"}</span>
           </div>
         ); })}
+      </div>
+    </>
+  );
+}
+
+/* ============================================================================
+   Partner workspace home — information exchange (no internal scores)
+============================================================================ */
+function PartnerWorkspaceHome({ base, slice, store, onNavigate }) {
+  const cfg = partnerPortalConfig(base.category);
+  const cat = CATEGORIES.find(c => c.id === base.category);
+  const actions = partnerOutstandingActions(base, slice, store);
+  const openRfis = (store.rfis || []).filter(r => r.partnerId === base.id && r.status === "Open").length;
+  const unreadMsgs = (store.threads || []).filter(t => t.partnerId === base.id && t.messages.some(m => m.role === "supervisor" && !m.read)).length;
+  const unacked = store.broadcasts.filter(b => (b.jur === "All" || b.jur === base.jur) && !slice.acks.find(x => x.id === b.id)).length;
+  const priColor = { crit: "var(--red)", high: "var(--amber)", med: "var(--blue)", low: "var(--muted)" };
+  return (
+    <>
+      <div className="partnerHero">
+        <div className="row" style={{ flexWrap: "wrap", gap: 12, alignItems: "flex-start" }}>
+          <span className="catdot" style={{ background: cat?.color || "var(--brand)", width: 14, height: 14, marginTop: 6 }} />
+          <div style={{ flex: 1 }}>
+            <h1 className="h1" style={{ margin: 0 }}>{cfg.homeTitle}</h1>
+            <p className="lead">Welcome, <b>{base.name}</b>. {cfg.tagline}</p>
+          </div>
+          <span className="secureTag"><Lock size={11} /> Secure portal</span>
+        </div>
+        <div className="row" style={{ gap: 10, marginTop: 14, flexWrap: "wrap" }}>
+          {actions.length > 0 && <span className="chip" style={{ background: "rgba(139,92,246,.1)", color: "var(--brand)" }}>{actions.length} item{actions.length !== 1 ? "s" : ""} awaiting response</span>}
+          {openRfis > 0 && <span className="chip" style={{ background: "rgba(37,99,235,.1)", color: "var(--blue)" }}>{openRfis} information request{openRfis !== 1 ? "s" : ""}</span>}
+          {unreadMsgs > 0 && <span className="chip" style={{ background: "rgba(217,119,6,.12)", color: "var(--amber)" }}>{unreadMsgs} unread message{unreadMsgs !== 1 ? "s" : ""}</span>}
+          {unacked > 0 && <span className="chip" style={{ background: "rgba(139,92,246,.08)", color: "var(--brand600)" }}>{unacked} notice{unacked !== 1 ? "s" : ""} to acknowledge</span>}
+          {actions.length === 0 && openRfis === 0 && unreadMsgs === 0 && unacked === 0 && <span className="chip" style={{ background: "rgba(22,163,74,.1)", color: "var(--green)" }}><Check size={12} /> All caught up</span>}
+        </div>
+        <div className="partnerQuick">
+          {cfg.quickLinks.map(q => (
+            <button type="button" key={q.tab} className="qcard" onClick={() => onNavigate(q.tab)}>
+              <q.icon size={18} color={cat?.color || "var(--brand)"} />
+              <b>{q.label}</b>
+              <span>{q.desc}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="card">
+        <div className="row" style={{ justifyContent: "space-between", marginBottom: 4 }}>
+          <h3 style={{ margin: 0 }}>What Mal needs from you</h3>
+          {actions.length > 0 && <button className="btn ghost" style={{ fontSize: 12 }} onClick={() => onNavigate("tasksA")}>View all tasks<ChevronRight size={14} /></button>}
+        </div>
+        <p className="muted" style={{ fontSize: 12.5, margin: "0 0 10px" }}>Submit documents, respond to requests, and acknowledge notices — all exchanges are logged for both parties.</p>
+        {actions.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "28px 12px" }}>
+            <MessageSquare size={32} color="var(--brand)" />
+            <div style={{ fontWeight: 700, marginTop: 10 }}>Nothing pending right now</div>
+            <div className="muted" style={{ fontSize: 12.5, marginTop: 4 }}>We will notify you here when Mal needs information or documents.</div>
+          </div>
+        ) : actions.slice(0, 6).map(a => (
+          <div className="trustAction" key={a.id}>
+            <span className="pri" style={{ background: priColor[a.priority] || priColor.med }} />
+            <div className="body">
+              <b>{a.title}</b>
+              <div className="why">{a.why}</div>
+            </div>
+            <button className="btn" style={{ flexShrink: 0 }} onClick={() => onNavigate(a.tab)}>{a.cta}<ChevronRight size={14} /></button>
+          </div>
+        ))}
+      </div>
+
+      {slice.feed.length > 0 && (
+        <div className="card" style={{ marginTop: 13 }}>
+          <h3>Recent exchanges</h3>
+          {slice.feed.slice(0, 5).map(f => (
+            <div className="feeditem" key={f.id}>
+              <div className="av">{f.actor.slice(0, 1)}</div>
+              <div style={{ flex: 1 }}>
+                <div className="row" style={{ justifyContent: "space-between" }}>
+                  <span className="chip" style={{ background: "var(--elevated)", fontSize: 10 }}>{f.kind}</span>
+                  <span className="muted mono" style={{ fontSize: 11 }}>{fmtDT(f.at)}</span>
+                </div>
+                <div style={{ fontSize: 13, marginTop: 4 }}>{f.text}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
+
+/* ============================================================================
+   Lifecycle task engine — unified partner task queue (Phase 2)
+============================================================================ */
+function LifecycleTasks({ base, slice, store, onNavigate, partnerFacing = false }) {
+  const [filter, setFilter] = useState("open");
+  const tasks = buildPartnerLifecycleTasks(base, slice, store, partnerFacing);
+  const openCount = tasks.filter(t => t.status !== "done").length;
+  const overdueCount = tasks.filter(t => t.status === "overdue").length;
+  const soonCount = tasks.filter(t => t.status === "due_soon").length;
+  const doneCount = tasks.filter(t => t.status === "done").length;
+  const filtered = filter === "all" ? tasks
+    : filter === "open" ? tasks.filter(t => t.status !== "done")
+      : filter === "overdue" ? tasks.filter(t => t.status === "overdue")
+        : filter === "soon" ? tasks.filter(t => t.status === "due_soon")
+          : tasks.filter(t => t.status === "done");
+  const statusLabel = { overdue: "Overdue", due_soon: "Due soon", open: "Open", ongoing: "Ongoing", done: "Complete" };
+  const priColor = { crit: "var(--red)", high: "var(--amber)", med: "var(--blue)", low: "var(--muted)" };
+  return (
+    <>
+      <h1 className="h1">{partnerFacing ? "Your tasks" : "My task queue"}</h1>
+      <p className="sub">{partnerFacing ? "Information Mal needs from you — documents, responses, acknowledgements, and messages. Everything is timestamped for your records." : "Every onboarding step, obligation, review, training module, and policy acknowledgement in one place — with deadlines, context, and audit history."}</p>
+      <div className="grid" style={{ gridTemplateColumns: "repeat(4,1fr)", gap: 11, marginBottom: 14 }}>
+        <Kpi label="Open tasks" value={openCount} accent={openCount ? "var(--amber)" : "var(--green)"} onClick={() => setFilter("open")} />
+        <Kpi label="Overdue" value={overdueCount} accent="var(--red)" onClick={() => setFilter("overdue")} />
+        <Kpi label="Due within 7 days" value={soonCount} accent="var(--amber)" onClick={() => setFilter("soon")} />
+        <Kpi label="Completed" value={doneCount} accent="var(--green)" onClick={() => setFilter("done")} />
+      </div>
+      <div className="taskFilters">
+        {[["open", "Open"], ["overdue", "Overdue"], ["soon", "Due soon"], ["done", "Completed"], ["all", "All"]].map(([k, lab]) => (
+          <button key={k} className={"btn" + (filter === k ? " gold" : "")} onClick={() => setFilter(k)}>{lab}</button>
+        ))}
+      </div>
+      <div className="tablewrap">
+        <table>
+          <thead><tr><th>Task</th><th>Category</th><th>Status</th><th>Due / timing</th><th>Source</th><th>Audit</th><th></th></tr></thead>
+          <tbody>
+            {filtered.length === 0 ? <tr><td colSpan={7} className="muted" style={{ textAlign: "center", padding: 24 }}>No tasks in this view.</td></tr> : filtered.map(t => (
+              <tr key={t.id}>
+                <td>
+                  <div style={{ fontWeight: 600, fontSize: 13 }}>{t.title}</div>
+                  <div className="muted" style={{ fontSize: 11.5, marginTop: 3, maxWidth: 340 }}>{t.why}</div>
+                </td>
+                <td><span className="chip" style={{ background: "var(--elevated)", fontSize: 10 }}>{t.category}</span></td>
+                <td><span className={"taskStatus " + t.status}>{statusLabel[t.status] || t.status}</span></td>
+                <td className="mono" style={{ fontSize: 11.5, whiteSpace: "nowrap" }}>{t.due ? fmtDate(t.due) : t.dueLabel}</td>
+                <td className="muted" style={{ fontSize: 11.5 }}>{t.source}</td>
+                <td className="muted mono" style={{ fontSize: 11, whiteSpace: "nowrap" }}>{t.completedAt ? fmtDT(t.completedAt) : "—"}</td>
+                <td>{t.status !== "done" ? <button className="btn" style={{ padding: "5px 10px", fontSize: 11.5 }} onClick={() => onNavigate(t.tab)}>{t.navLabel}<ChevronRight size={12} /></button> : <span className="chip" style={{ background: "rgba(22,163,74,.1)", color: "var(--green)", fontSize: 10 }}><Check size={11} /> logged</span>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="card" style={{ marginTop: 13 }}>
+        <h3>Audit note</h3>
+        <p className="muted" style={{ fontSize: 12.5, margin: 0 }}>Task completion timestamps are drawn from your submissions, acknowledgements, and activity feed. Every action you take in the portal is recorded in the audit trail for regulatory examination.</p>
       </div>
     </>
   );
@@ -5013,7 +6196,7 @@ function Standing({ agent, slice, store }) {
           ].map(([label, ok], i) => (
             <div key={i} className="row" style={{ justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid var(--line)" }}>
               <span style={{ fontSize: 13 }}>{label}</span>
-              {ok ? <span className="chip" style={{ background: "rgba(23,163,74,.14)", color: "var(--green)" }}><Check size={12} /> done</span> : <span className="chip" style={{ background: "#f5f6fb", color: "var(--muted)" }}>to do</span>}
+              {ok ? <span className="chip" style={{ background: "rgba(23,163,74,.14)", color: "var(--green)" }}><Check size={12} /> done</span> : <span className="chip" style={{ background: "var(--elevated)", color: "var(--muted)" }}>to do</span>}
             </div>
           ))}
         </div>
@@ -5043,7 +6226,7 @@ function AuditTrail({ store }) {
       <p className="sub">Complete record of actions — submissions, approvals, acknowledgements, risk-scoring and review changes, and communications — for regulatory examination.</p>
       <div className="tablewrap"><table>
         <thead><tr><th>When</th><th>Actor</th><th>Role</th><th>Action</th><th>Target</th></tr></thead>
-        <tbody>{store.audit.map(a => <tr key={a.id}><td className="muted mono" style={{ whiteSpace: "nowrap" }}>{fmtDT(a.at)}</td><td>{a.actor}</td><td><span className="chip" style={{ background: "#f5f6fb" }}>{a.role}</span></td><td style={{ fontWeight: 600 }}>{a.action}</td><td className="muted">{a.target}</td></tr>)}</tbody>
+        <tbody>{store.audit.map(a => <tr key={a.id}><td className="muted mono" style={{ whiteSpace: "nowrap" }}>{fmtDT(a.at)}</td><td>{a.actor}</td><td><span className="chip" style={{ background: "var(--elevated)" }}>{a.role}</span></td><td style={{ fontWeight: 600 }}>{a.action}</td><td className="muted">{a.target}</td></tr>)}</tbody>
       </table></div>
     </>
   );
@@ -5091,6 +6274,61 @@ function BroadcastModal({ onClose, onSubmit }) {
     </div>
   </Modal>;
 }
+function MsScheduleModal({ partners, onClose, onSubmit }) {
+  const [v, setV] = useState({ partnerId: partners[0]?.id || "", quarter: "Q2 2026", conductedBy: "External testing firm" });
+  const schedDefault = new Date(Date.now() + 21 * 864e5).toISOString().slice(0, 10);
+  return <Modal title="Schedule mystery shopper exercise" sub="Partner is notified automatically — no customer PII is used in test scripts" onClose={onClose}
+    footer={<><button className="btn ghost" onClick={onClose}>Cancel</button><button className="btn gold" disabled={!v.partnerId || !v.title || !v.scenario} onClick={() => onSubmit({ ...v, scheduledDate: v.scheduledDate || schedDefault })}><Eye size={14} /> Schedule</button></>}>
+    <div className="field"><label>Partner</label><select value={v.partnerId} onChange={e => setV({ ...v, partnerId: e.target.value })}>{partners.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></div>
+    <div className="row" style={{ gap: 10 }}>
+      <div className="field" style={{ flex: 1 }}><label>Quarter</label><input className="input" value={v.quarter || ""} onChange={e => setV({ ...v, quarter: e.target.value })} placeholder="Q2 2026" /></div>
+      <div className="field" style={{ flex: 1 }}><label>Scheduled date</label><input className="input" type="date" value={v.scheduledDate || schedDefault} onChange={e => setV({ ...v, scheduledDate: e.target.value })} /></div>
+    </div>
+    <div className="field"><label>Exercise title</label><input className="input" value={v.title || ""} onChange={e => setV({ ...v, title: e.target.value })} placeholder="e.g. PK corridor — structuring probe" /></div>
+    <div className="field"><label>Test scenario (internal script)</label><textarea value={v.scenario || ""} onChange={e => setV({ ...v, scenario: e.target.value })} /></div>
+    <div className="row" style={{ gap: 10 }}>
+      <div className="field" style={{ flex: 1 }}><label>Channel</label><input className="input" value={v.channel || ""} onChange={e => setV({ ...v, channel: e.target.value })} placeholder="Call centre / API / branch" /></div>
+      <div className="field" style={{ flex: 1 }}><label>Conducted by</label><input className="input" value={v.conductedBy || ""} onChange={e => setV({ ...v, conductedBy: e.target.value })} /></div>
+    </div>
+  </Modal>;
+}
+function MsFindingModal({ exercise, onClose, onSave }) {
+  const [v, setV] = useState({ sev: "Medium", status: "Open", category: "CDD" });
+  const ref = "MS-" + ((exercise?.findings?.length || 0) + 1);
+  if (!exercise) return null;
+  return <Modal title={"Add finding · " + exercise.id} sub="Attribute each finding to observed behaviour and a specific standard" onClose={onClose}
+    footer={<><button className="btn ghost" onClick={onClose}>Cancel</button><button className="btn gold" disabled={!v.desc || !v.standard} onClick={() => onSave({ ref, ...v })}><Plus size={14} /> Log finding</button></>}>
+    <div className="field"><label>Finding</label><textarea value={v.desc || ""} onChange={e => setV({ ...v, desc: e.target.value })} /></div>
+    <div className="row" style={{ gap: 10 }}>
+      <div className="field" style={{ flex: 1 }}><label>Category</label><select value={v.category} onChange={e => setV({ ...v, category: e.target.value })}>{["CDD", "Escalation", "Sanctions", "Timeliness", "Onboarding", "Training", "Other"].map(x => <option key={x}>{x}</option>)}</select></div>
+      <div className="field" style={{ flex: 1 }}><label>Severity</label><select value={v.sev} onChange={e => setV({ ...v, sev: e.target.value })}>{["Critical", "High", "Medium", "Low"].map(x => <option key={x}>{x}</option>)}</select></div>
+    </div>
+    <div className="field"><label>Standard / policy breached</label><input className="input" value={v.standard || ""} onChange={e => setV({ ...v, standard: e.target.value })} /></div>
+  </Modal>;
+}
+function MsRemediationModal({ onClose, onSubmit }) {
+  const [v, setV] = useState({ status: "In progress" });
+  const dueDefault = new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10);
+  return <Modal title="Add remediation action" sub="Assign to partner with a due date — response is collected via the partner portal" onClose={onClose}
+    footer={<><button className="btn ghost" onClick={onClose}>Cancel</button><button className="btn gold" disabled={!v.action || !v.owner} onClick={() => onSubmit({ ...v, due: v.due ? new Date(v.due).toISOString() : new Date(dueDefault).toISOString() })}><Plus size={14} /> Add action</button></>}>
+    <div className="field"><label>Remediation action</label><textarea value={v.action || ""} onChange={e => setV({ ...v, action: e.target.value })} /></div>
+    <div className="row" style={{ gap: 10 }}>
+      <div className="field" style={{ flex: 1 }}><label>Owner</label><input className="input" value={v.owner || ""} onChange={e => setV({ ...v, owner: e.target.value })} placeholder="Partner compliance lead" /></div>
+      <div className="field" style={{ flex: 1 }}><label>Due date</label><input className="input" type="date" value={v.due || dueDefault} onChange={e => setV({ ...v, due: e.target.value })} /></div>
+    </div>
+  </Modal>;
+}
+function MsRespondModal({ exercise, remId, onClose, onSubmit }) {
+  const [v, setV] = useState({});
+  const rem = exercise?.remediation?.find(r => r.id === remId);
+  if (!exercise || !rem) return null;
+  return <Modal title="Submit remediation evidence" sub={rem.action + " · audit-logged and timestamped"} onClose={onClose}
+    footer={<><button className="btn ghost" onClick={onClose}>Cancel</button><button className="btn gold" disabled={!v.body} onClick={() => onSubmit(v)}><UploadCloud size={14} /> Submit</button></>}>
+    <div className="muted" style={{ fontSize: 12.5, marginBottom: 10, padding: 10, background: "var(--elevated)", borderRadius: 10 }}>Due {fmtDate(rem.due)} · describe what was done and where evidence can be found.</div>
+    <div className="field"><label>Remediation summary (required)</label><textarea value={v.body || ""} onChange={e => setV({ ...v, body: e.target.value })} /></div>
+    <div className="field"><label>Evidence reference</label><input className="input" placeholder="Document ref, training roster ID, system screenshot location…" value={v.evidence || ""} onChange={e => setV({ ...v, evidence: e.target.value })} /></div>
+  </Modal>;
+}
 function SpeakupModal({ onClose, onSubmit }) {
   const [v, setV] = useState({ anon: "N" });
   return <Modal title="Speak-up channel" sub="Raise a compliance concern. A safe, documented path — not a surveillance tool." onClose={onClose}
@@ -5108,5 +6346,39 @@ function FindingModal({ review, onClose, onSave }) {
     <div className="field"><label>Finding</label><textarea value={v.desc || ""} onChange={e => setV({ ...v, desc: e.target.value })} /></div>
     <div className="field"><label>Standard / regulation breached</label><input className="input" value={v.standard || ""} onChange={e => setV({ ...v, standard: e.target.value })} /></div>
     <div className="field"><label>Severity</label><select value={v.sev} onChange={e => setV({ ...v, sev: e.target.value })}>{["Critical", "High", "Medium", "Low"].map(x => <option key={x}>{x}</option>)}</select></div>
+  </Modal>;
+}
+function RfiModal({ partners, onClose, onSubmit }) {
+  const [v, setV] = useState({ sev: "med", partnerId: partners[0]?.id || "" });
+  const dueDefault = new Date(Date.now() + 14 * 864e5).toISOString().slice(0, 10);
+  return <Modal title="New request for information" sub="Structured RFI with deadline — partner response is audit-logged" onClose={onClose}
+    footer={<><button className="btn ghost" onClick={onClose}>Cancel</button><button className="btn gold" disabled={!v.partnerId || !v.title || !v.body} onClick={() => onSubmit(v)}><Send size={14} /> Send RFI</button></>}>
+    <div className="field"><label>Partner</label><select value={v.partnerId} onChange={e => setV({ ...v, partnerId: e.target.value })}>{partners.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></div>
+    <div className="field"><label>Title</label><input className="input" value={v.title || ""} onChange={e => setV({ ...v, title: e.target.value })} /></div>
+    <div className="field"><label>Request detail</label><textarea value={v.body || ""} onChange={e => setV({ ...v, body: e.target.value })} /></div>
+    <div className="field"><label>Why this is required (shown to partner)</label><input className="input" value={v.why || ""} onChange={e => setV({ ...v, why: e.target.value })} /></div>
+    <div className="row" style={{ gap: 10 }}>
+      <div className="field" style={{ flex: 1 }}><label>Response due</label><input className="input" type="date" value={v.due || dueDefault} onChange={e => setV({ ...v, due: e.target.value })} /></div>
+      <div className="field" style={{ flex: 1 }}><label>Severity</label><select value={v.sev} onChange={e => setV({ ...v, sev: e.target.value })}>{["low", "med", "high", "crit"].map(x => <option key={x} value={x}>{SEV[x].t}</option>)}</select></div>
+    </div>
+  </Modal>;
+}
+function RfiResponseModal({ rfi, onClose, onSubmit }) {
+  const [v, setV] = useState({});
+  if (!rfi) return null;
+  return <Modal title={"Respond to RFI · " + rfi.title} sub={"Due " + fmtDate(rfi.due) + " · timestamped and audit-logged"} onClose={onClose}
+    footer={<><button className="btn ghost" onClick={onClose}>Cancel</button><button className="btn gold" disabled={!v.body} onClick={() => onSubmit(v)}><Send size={14} /> Submit response</button></>}>
+    <div className="muted" style={{ fontSize: 12.5, marginBottom: 10, padding: 10, background: "var(--elevated)", borderRadius: 10 }}>{rfi.body}</div>
+    <div className="field"><label>Your response (required)</label><textarea value={v.body || ""} onChange={e => setV({ ...v, body: e.target.value })} /></div>
+    <div className="field"><label>Evidence reference / attachment note</label><input className="input" placeholder="e.g. Document uploaded to DD file ref XYZ" value={v.evidence || ""} onChange={e => setV({ ...v, evidence: e.target.value })} /></div>
+  </Modal>;
+}
+function ThreadModal({ partners, onClose, onSubmit }) {
+  const [v, setV] = useState({ partnerId: partners[0]?.id || "" });
+  return <Modal title="New secure message" sub="Opens an encrypted, audit-logged thread with the partner" onClose={onClose}
+    footer={<><button className="btn ghost" onClick={onClose}>Cancel</button><button className="btn gold" disabled={!v.partnerId || !v.subject || !v.body} onClick={() => onSubmit(v)}><MessageSquare size={14} /> Send</button></>}>
+    <div className="field"><label>Partner</label><select value={v.partnerId} onChange={e => setV({ ...v, partnerId: e.target.value })}>{partners.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></div>
+    <div className="field"><label>Subject</label><input className="input" value={v.subject || ""} onChange={e => setV({ ...v, subject: e.target.value })} /></div>
+    <div className="field"><label>Message</label><textarea value={v.body || ""} onChange={e => setV({ ...v, body: e.target.value })} /></div>
   </Modal>;
 }
