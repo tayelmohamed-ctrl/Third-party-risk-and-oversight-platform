@@ -42,6 +42,7 @@ const TITLES: Record<string, [string, string]> = {
   "/cram": ["CRAM Workspace", "The brain — kept current by Sayed"],
   "/regulatory": ["Regulatory Management", "Sayed · browse · track · impact · remediation"],
   "/test-bench": ["CRAM Risk Test Bench", "Individual & entity · golden thread · TM deploy"],
+  "/kyb-checklist": ["KYB Document Checklists", "Sayed · entity-type document matrix · PDF export"],
   "/rerating": ["Re-rating & Reviews", "Theme #1 strong — dynamic re-rating + scheduler + feeds"],
   "/feeds": ["Signal Feeds", "Real-time trigger pipeline — feeds auto-drive re-rating"],
   "/screening": ["Screening & Monitoring", "Vital4 disposition queue · SLA tracking"],

@@ -547,6 +547,11 @@ function earlyWarnings(a, slice, reviews) {
     if (ob.stablecoinAttest === "N") w.push("Stablecoin GENIUS Act compliance not attested (Pub.L. 119-27)");
     if (ob.prohibitedAttest === "N") w.push("CRITICAL: prohibited category exposure self-disclosed — immediate MLRO review");
   }
+  if (requiresTmAssessment(a.category)) {
+    const tm = slice?.tmAssessment;
+    if (!tm || tm.overall < 0.75) w.push("TM pre-implementation assessment incomplete or below conditional threshold");
+    if (tm?.decision === "No-go") w.push("TM assessment no-go — production integration blocked");
+  }
   // ── FATF-monitored corridor auto-detect (independent of onboarding answer) ──
   const juris = a.juris || (a.jur ? [a.jur] : []);
   if (juris.some(j => FATF_MONITORED_JURS.some(k => j === k || j.includes(k)))) {
@@ -642,6 +647,25 @@ function buildPartnerLifecycleTasks(base, slice, store, partnerFacing = false) {
   (store.threads || []).filter(t => t.partnerId === base.id && t.messages.some(m => m.role === "supervisor" && !m.read)).forEach(t => {
     tasks.push({ id: "msg-" + t.id, category: "Secure message", title: "Unread: " + t.subject, why: "Mal has sent a secure message requiring your attention.", status: "open", priority: "med", due: null, dueLabel: "Unread", tab: "commsA", navLabel: "Collaboration hub", completedAt: null });
   });
+  if (requiresTmAssessment(base.category)) {
+    const tm = slice.tmAssessment;
+    const pct = tm?.overall != null ? Math.round(tm.overall * 100) : 0;
+    const done = tm?.overall >= 0.9 && (tm?.decision === "Approved" || tm?.decision === "Approved with conditions");
+    tasks.push({
+      id: "tm-preimpl",
+      category: "TM system assessment",
+      title: "Pre-implementation assessment (Mal Bank questionnaire)",
+      why: "Required before production integration — maps to BRD go-live gates GATE-1 through GATE-7.",
+      status: done ? "done" : tm?.decision === "No-go" ? "overdue" : pct > 0 ? "ongoing" : "open",
+      priority: "crit",
+      due: null,
+      dueLabel: tm?.rating ? tm.rating + (pct ? " · " + pct + "%" : "") : "Not started",
+      tab: "ddA",
+      navLabel: "Documents & TM assessment",
+      source: "TM Pre-Implementation Assessment",
+      completedAt: done ? tm?.updatedAt : null,
+    });
+  }
   (store.mysteryExercises || []).filter(ex => ex.partnerId === base.id).forEach(ex => {
     if (ex.status === "Scheduled" && !ex.partnerAckAt) {
       tasks.push({ id: "ms-ack-" + ex.id, category: "Mystery shopper", title: "Acknowledge scheduled exercise · " + ex.title, why: "Mal will conduct a mystery shopper test on " + fmtDate(ex.scheduledDate) + ". Confirm your team is aware.", status: "open", priority: "high", due: ex.scheduledDate, dueLabel: "Scheduled " + fmtDate(ex.scheduledDate), tab: "mysteryA", navLabel: "Mystery shopper", source: ex.quarter, completedAt: null });
@@ -3833,7 +3857,7 @@ export default function App() {
           {role === "partner" && tab === "tasksA" && (() => { const b = baseAll().find(a => a.id === actingPartner); const s = store.agents[actingPartner]; return b && s ? <LifecycleTasks base={b} slice={s} store={store} onNavigate={setTab} partnerFacing /> : null; })()}
           {role === "partner" && tab === "reportingA" && <AgentReporting {...{ store, agentId: actingPartner, onSubmit: (tid) => setModal({ t: "report", typeId: tid, agentId: actingPartner }) }} />}
           {role === "partner" && tab === "trainingA" && <AgentTraining {...{ slice: store.agents[actingPartner], onComplete: (cid) => completeCourse(actingPartner, cid) }} />}
-          {role === "partner" && tab === "ddA" && <DDFile {...{ slice: store.agents[actingPartner], base: baseAll().find(a => a.id === actingPartner), screening: store.agents[actingPartner]?.screening, onScreen: () => fetchScreening(actingPartner), screenLoading: !!screeningLoading[actingPartner] }} />}
+          {role === "partner" && tab === "ddA" && <DDFile {...{ slice: store.agents[actingPartner], base: baseAll().find(a => a.id === actingPartner), screening: store.agents[actingPartner]?.screening, onScreen: () => fetchScreening(actingPartner), screenLoading: !!screeningLoading[actingPartner], onSaveTmAssessment: (data) => { setStore(prev => { const ag = { ...prev.agents[actingPartner], tmAssessment: data }; const next = { ...prev, agents: { ...prev.agents, [actingPartner]: ag } }; saveStore(next); return next; }); audit("Partner updated TM assessment", actingPartner); } }} />}
           {role === "partner" && tab === "slaA" && <ObligationsView partnerId={actingPartner} base={baseAll().find(a => a.id === actingPartner)} supervisor={false} />}
           {role === "partner" && tab === "commsA" && <Comms {...{ store, agents, supervisor: false, agentId: actingPartner, onAck: ackBroadcast, setModal, fcie, partnerName, onRespondRfi: (id, v) => respondRfi(id, v), onReplyThread: replyThread, onMarkThreadRead: markThreadRead, baseAll }} />}
           {role === "partner" && tab === "mysteryA" && <MysteryShopperPartner {...{ store, agentId: actingPartner, partnerName, setModal, ackMysteryExercise }} />}
@@ -5447,12 +5471,23 @@ function AgentTraining({ slice, onComplete }) {
 /* ============================================================================
    Due diligence file
 ============================================================================ */
-function DDFile({ slice, base, screening, onScreen, screenLoading }) {
+function DDFile({ slice, base, screening, onScreen, screenLoading, onSaveTmAssessment }) {
   return (
     <>
       <h1 className="h1">Due diligence file</h1>
       <p className="sub">Your complete compliance file — the partner-as-customer record (CDD + EDD). Searchable, exportable and examination-ready.</p>
       <DDView slice={slice} base={base} supervisor={false} screening={screening} onScreen={onScreen} screenLoading={screenLoading} />
+      {requiresTmAssessment(base.category) && (
+        <div style={{ marginTop: 16 }}>
+          <TmSystemAssessment
+            partnerId={base.id}
+            partnerName={base.name}
+            category={base.category}
+            assessment={slice.tmAssessment}
+            onSave={onSaveTmAssessment}
+          />
+        </div>
+      )}
     </>
   );
 }

@@ -46,6 +46,13 @@ export default function TmReadinessPanel({
     );
   }, [oscilarRules]);
 
+  const gate3Status = useMemo(() => {
+    const linked = ruleCrosswalk.length;
+    const active = ruleCrosswalk.filter((r) => r.rule?.status === "active").length;
+    const ready = linked > 0 && active === linked;
+    return { linked, active, ready };
+  }, [ruleCrosswalk]);
+
   return (
     <div className={compact ? "mt-3" : "mt-4"}>
       <Sec
@@ -69,6 +76,19 @@ export default function TmReadinessPanel({
 
       {tab === "gates" && (
         <div className="grid gap-3">
+          <Card className={`p-3 ${gate3Status.ready ? "border-low/40" : "border-hi/40"}`}>
+            <div className="flex justify-between gap-2 flex-wrap">
+              <span className="font-bold text-[13px]">GATE-3 · Oscilar rule deployment check</span>
+              <span className={`text-[10px] font-semibold ${gate3Status.ready ? "text-low" : "text-hi"}`}>
+                {gate3Status.active}/{gate3Status.linked} BRD-linked rules active
+              </span>
+            </div>
+            <p className="text-[12px] text-muted mt-1">
+              {gate3Status.ready
+                ? "All Oscilar rules cross-walked to FR-007 alert generation are deployed — proceed to maker-checker sign-off."
+                : "Deploy remaining Oscilar rules before GATE-3 approval. See Oscilar crosswalk tab for gaps."}
+            </p>
+          </Card>
           {TM_GO_LIVE_GATES.map((g) => (
             <Card key={g.id} className="p-3">
               <div className="flex justify-between gap-2 flex-wrap">
