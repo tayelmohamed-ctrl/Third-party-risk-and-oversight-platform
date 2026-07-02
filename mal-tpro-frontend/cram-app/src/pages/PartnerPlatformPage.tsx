@@ -3,7 +3,7 @@ import PlatformChrome from "../components/PlatformChrome";
 import { usePlatformTheme } from "../context/PlatformThemeContext";
 import "../styles/partner-theme.css";
 
-const PartnerApp = lazy(() => import("@partner"));
+const PartnerApp = lazy(() => import("../../partner/Mal_ThirdParty_Risk_Oversight_Platform.jsx"));
 
 export default function PartnerPlatformPage() {
   const { theme } = usePlatformTheme();

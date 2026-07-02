@@ -1,16 +1,29 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { fileURLToPath } from 'url'
+import tailwindcss from 'tailwindcss'
+import autoprefixer from 'autoprefixer'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
+const partnerEntry = path.resolve(__dirname, 'partner/Mal_ThirdParty_Risk_Oversight_Platform.jsx')
 
 export default defineConfig({
   plugins: [react()],
+  css: {
+    postcss: {
+      plugins: [tailwindcss(), autoprefixer()],
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "@partner": path.resolve(__dirname, "./partner/Mal_ThirdParty_Risk_Oversight_Platform.jsx"),
+      "@partner": partnerEntry,
     },
+  },
+  optimizeDeps: {
+    include: ["recharts", "xlsx"],
   },
   server: {
     port: 5174,

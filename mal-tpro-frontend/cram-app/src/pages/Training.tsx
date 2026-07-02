@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "../components/ui";
 import { PLATFORM_USERS } from "../config/platformUsers";
-import { TRAINING_COURSES } from "../config/trainingCatalogue";
+import { TRAINING_COURSES, type TrainingCourseId } from "../config/trainingCatalogue";
 import {
   apiAssignTraining,
   apiCompleteTraining,
@@ -36,7 +36,7 @@ export default function Training() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const [assignEmail, setAssignEmail] = useState(PLATFORM_USERS[0]?.email ?? "");
-  const [assignCourse, setAssignCourse] = useState(TRAINING_COURSES[0]?.id ?? "");
+  const [assignCourse, setAssignCourse] = useState<TrainingCourseId>(TRAINING_COURSES[0]?.id ?? "AML-FCC-101");
 
   const refresh = useCallback(async () => {
     try {
@@ -231,7 +231,7 @@ export default function Training() {
               </label>
               <label className="block text-[11px] mb-3">
                 <span className="text-faint">Course</span>
-                <select className="input w-full mt-1 text-[12px]" value={assignCourse} onChange={(e) => setAssignCourse(e.target.value)}>
+                <select className="input w-full mt-1 text-[12px]" value={assignCourse} onChange={(e) => setAssignCourse(e.target.value as TrainingCourseId)}>
                   {TRAINING_COURSES.map((c) => (
                     <option key={c.id} value={c.id}>{c.id} — {c.name}</option>
                   ))}

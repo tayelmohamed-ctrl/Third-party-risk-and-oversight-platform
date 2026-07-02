@@ -7,6 +7,14 @@ import { WORKBOOK_META } from "../config/malProductServiceRiskLibraries";
 
 export { WORKBOOK_META };
 
+type WorksheetWithValidations = ExcelJS.Worksheet & {
+  dataValidations: { add: (ref: string, rule: ExcelJS.DataValidation) => void };
+};
+
+export function addListValidation(ws: ExcelJS.Worksheet, ref: string, rule: ExcelJS.DataValidation) {
+  (ws as WorksheetWithValidations).dataValidations.add(ref, rule);
+}
+
 export const BRAND = {
   navy: "FF0C1233",
   navyLight: "FF141B36",
@@ -162,7 +170,7 @@ export function addRateConditionalFormatting(ws: ExcelJS.Worksheet, ref: string)
 }
 
 export function addScoreValidation(ws: ExcelJS.Worksheet, ref: string) {
-  ws.dataValidations.add(ref, {
+  addListValidation(ws, ref, {
     type: "list",
     allowBlank: true,
     formulae: ['"1,2,3"'],
