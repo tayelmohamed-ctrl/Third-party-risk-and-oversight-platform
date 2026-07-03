@@ -6,13 +6,16 @@ import type { GoldenThreadResult } from "../../engine/goldenThread";
 import { OVERRIDES } from "../../engine/data";
 import { OUTCOMES } from "../../engine/cram";
 import { boundarySetLabel } from "../../config/modelProvenance";
-import { exportCramMethodologyPdf } from "../../lib/cramMethodologyPdf";
+import { exportCramMethodologyDocument } from "../../lib/cramMethodologyExport";
 import {
   exportMalProductRiskWorkbook,
   exportMalServiceRiskWorkbook,
   exportMethodologyWorkbook,
+  exportReferenceListWorkbook,
   METHODOLOGY_EXCEL_EXPORTS,
+  REFERENCE_LIST_EXPORTS,
   type MethodologyWorkbookKind,
+  type ReferenceListWorkbookKind,
 } from "../../lib/cramRiskWorkbookExport";
 import { METHODOLOGY_DOCUMENT } from "../../config/cramMethodologyDocument";
 import {
@@ -76,22 +79,23 @@ export default function CramMethodologyPanel({
             onClick={async () => {
               setExporting(true);
               try {
-                await exportCramMethodologyPdf();
+                await exportCramMethodologyDocument();
               } finally {
                 setExporting(false);
               }
             }}
           >
-            {exporting ? "Generating PDF…" : "Download full methodology PDF"}
+            {exporting ? "Downloading…" : "Download full methodology"}
           </button>
           <span className="cram-method__export-meta mono">
-            {METHODOLOGY_DOCUMENT.modelVersionId} · Mal-branded Excel workbooks with live formulas
+            {METHODOLOGY_DOCUMENT.modelVersionId} · Mal_Customer_Risk_Assessment_Methodology_v1_0.docx · Excel workbooks with live formulas
           </span>
         </div>
 
         {(["product", "country", "customer", "operations"] as const).map((group) => {
           const items = [
             ...METHODOLOGY_EXCEL_EXPORTS.filter((e) => e.group === group),
+            ...REFERENCE_LIST_EXPORTS.filter((e) => e.group === group),
             ...(group === "product"
               ? [
                   { kind: "product-risk" as const, label: "Product risk" },
@@ -119,7 +123,9 @@ export default function CramMethodologyPanel({
                       try {
                         if (item.kind === "product-risk") await exportMalProductRiskWorkbook();
                         else if (item.kind === "service-risk") await exportMalServiceRiskWorkbook();
-                        else await exportMethodologyWorkbook(item.kind as MethodologyWorkbookKind);
+                        else if (item.kind === "nob-list" || item.kind === "country-list") {
+                          await exportReferenceListWorkbook(item.kind as ReferenceListWorkbookKind, mode);
+                        } else await exportMethodologyWorkbook(item.kind as MethodologyWorkbookKind);
                       } finally {
                         setExportingKind(null);
                       }
@@ -189,7 +195,7 @@ export default function CramMethodologyPanel({
         )}
         <div className="cram-method__rules-grid">
           <RuleCard title="Worst-of pillars" items={["Product & service → max(product, service)", "Channel → max(initiation, delivery)", "Geography → max(country attributes)"]} />
-          <RuleCard title="PEP treatment" items={["PEP score excluded from composite", "Foreign/IO PEP → OVR-008 High floor", "Domestic PEP → OVR-016 Medium floor"]} />
+          <RuleCard title="PEP treatment (CBUAE Art. 15(14))" items={["PEP score excluded from composite", "Foreign PEP → OVR-008 High floor · automatic EDD", "Domestic / IO PEP → identify first; OVR-016 only when high-risk relationship or cross-border"]} />
         </div>
       </section>
 

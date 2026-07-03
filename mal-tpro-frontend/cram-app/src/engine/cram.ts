@@ -230,11 +230,6 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   const deviationScore = activityDeviationScore(i.expectedMonthlyBand, i.actualMonthlyBand);
 
   const mode = i.customerMode ?? (i.legalForm === "natural" ? "individual" : "entity");
-  const pepGateRaw = resolvePepGate(i.pep);
-  const pepGate: PepGateResult = {
-    ...pepGateRaw,
-    auditShare: pepAuditShare(i.pep, mode),
-  };
   const hasDeclaration = !!(i.declaredProfession?.trim() || i.declaredActivity?.trim() || i.providedIsicCode?.trim());
   const activityScores = hasDeclaration
     ? resolveCustomerTypeActivityScores({
@@ -284,13 +279,10 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
       key: "pep",
       name: "PEP status (gate only)",
       weight: 0,
-      score: pepGate.score,
+      score: 1,
       contribution: 0,
-      auditContribution: pepGate.auditShare,
       countsInComposite: false,
-      compositeNote: pepGate.overrideId
-        ? `${pepGate.overrideId} ${pepGate.overrideHigh ? "High" : "Medium"} floor — not in composite`
-        : "Clear — no PEP floor",
+      compositeNote: "Resolved after composite — CBUAE Art. 15(14)",
     },
     { key: "geography", name: "Geography / country risk", weight: fw.geography, score: geography, contribution: geography * fw.geography },
     ...psFactors,
@@ -300,6 +292,25 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
 
   const composite = factors.reduce((a, f) => a + f.contribution, 0);
   const mathBand = bandFor(composite, boundary);
+
+  const pepGateRaw = resolvePepGate(i.pep, { mathBand, input: i });
+  const pepGate: PepGateResult = {
+    ...pepGateRaw,
+    auditShare: pepAuditShare(i.pep, mode, pepGateRaw.score),
+  };
+  const pepFactorIdx = factors.findIndex((f) => f.key === "pep");
+  if (pepFactorIdx >= 0) {
+    factors[pepFactorIdx] = {
+      ...factors[pepFactorIdx],
+      score: pepGate.score,
+      auditContribution: pepGate.auditShare,
+      compositeNote: pepGate.overrideId
+        ? `${pepGate.overrideId} ${pepGate.overrideHigh ? "High" : "Medium"} floor — not in composite`
+        : pepGate.gateType === "identify"
+          ? `${pepGate.cbuaeBasis} — not in composite`
+          : "Clear — no PEP floor",
+    };
+  }
 
   // Overrides / floors / prohibitions
   const overrides: OverrideHit[] = [];
@@ -331,7 +342,7 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   if (i.watchlist === "True Match") overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: "Internal watchlist true match" });
   if (geoFirmMax >= 4 || SANCTIONS_A.includes(i.residenceName) || SANCTIONS_A.includes(i.sofName))
     overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: "Category-A sanctioned-country nexus" });
-  if (i.pep === "Foreign" || i.pep === "IO") overrides.push({ id: "OVR-008", cls: "HIGH", why: `${i.pep === "IO" ? "IO" : "Foreign"} PEP nexus` });
+  if (i.pep === "Foreign") overrides.push({ id: "OVR-008", cls: "HIGH", why: "Foreign PEP — CBUAE Art. 15(14) First · automatic enhanced measures" });
   if (i.adverse === "True Match") overrides.push({ id: "OVR-009", cls: "HIGH", why: "Material adverse media" });
   if (firmToScore(geoFirmMax) === 3 && geoFirmMax < 4) overrides.push({ id: "OVR-011", cls: "HIGH", why: "High-risk country exposure" });
   if (activityScores.activityResolution.prohibited)
@@ -341,7 +352,13 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   if (mode === "entity" && entityTypeNpoFlag(i.declaredEntityType))
     overrides.push({ id: "OVR-NPO", cls: "HIGH", why: "NPO — EDD & Head of Compliance approval (Policy 8.2)" });
   if (nobScore >= 3) overrides.push({ id: "OVR-012", cls: "HIGH", why: "High-risk nature of business" });
-  if (i.pep === "Domestic") overrides.push({ id: "OVR-016", cls: "MEDIUM", why: "Domestic PEP" });
+  if ((i.pep === "Domestic" || i.pep === "IO") && pepGateRaw.relationshipHighRisk) {
+    const label = i.pep === "IO" ? "International-organization PEP" : "Domestic PEP";
+    overrides.push({ id: "OVR-016", cls: "MEDIUM", why: `${label} — high-risk business relationship (CBUAE Art. 15 Second)` });
+  }
+  if (pepGateRaw.crossBorderExposure && (i.pep === "Domestic" || i.pep === "IO")) {
+    profileNotes.push("Cross-border exposure — domestic/IO PEP may require Art. 15(b–d) measures · Mohsen OS-TM-022");
+  }
   if (i.strsScore >= 3 || i.investigationsScore >= 3)
     overrides.push({ id: "OVR-010", cls: "HIGH", why: "STR/SAR filed or confirmed suspicion" });
   if (behaviourGate.overrideHigh) {

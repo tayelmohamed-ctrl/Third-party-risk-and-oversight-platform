@@ -103,11 +103,20 @@ export function gatesFromResult(result: ScoreResult, input: ScoreInput): {
   flags: { name: string; on: boolean; status: string }[];
 } {
   const pepAny = input.pep !== "None";
+  const pepEnhanced = result.pepGate?.relationshipHighRisk ?? input.pep === "Foreign";
   const prohibited = result.finalRating === "Prohibited" || result.floor === "PROHIBITED";
   const overrideToHigh = result.floor === "HIGH" || result.overrides.some((o) => o.cls === "HIGH" || o.cls === "PROHIBITED");
 
+  const pepStatusLabel = input.pep === "Foreign"
+    ? "OVERRIDE"
+    : pepEnhanced
+      ? "Enhanced"
+      : pepAny
+        ? "Identify"
+        : "Clear";
+
   const flags = [
-    { name: "PEP", on: pepAny, status: input.pep === "Foreign" || input.pep === "IO" ? "OVERRIDE" : pepAny ? "Enhanced" : "Clear" },
+    { name: "PEP", on: pepAny, status: pepStatusLabel },
     { name: "Sanctions screening", on: input.sanctions !== "Clear", status: input.sanctions === "True Match" ? "PROHIBIT" : input.sanctions === "Potential Match" ? "OVERRIDE" : "Clear" },
     { name: "Investigations", on: input.investigationsScore >= 3, status: input.investigationsScore >= 3 ? "OVERRIDE" : "Clear" },
     { name: "STR / SAR", on: input.strsScore >= 3, status: input.strsScore >= 3 ? "OVERRIDE" : "Clear" },

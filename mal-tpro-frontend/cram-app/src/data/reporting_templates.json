@@ -468,7 +468,7 @@
       "format": "return",
       "frequency": "Quarterly",
       "tags": ["PEP", "statistics", "return"],
-      "body": "PEP STATISTICS — {{period}}\n\nTotal PEP customers: {{pepTotal}}\nDomestic: {{domestic}} · Foreign: {{foreign}} · IO: {{io}} · Associates: {{associates}}\n\nNew PEP identified (period): {{newPep}}\nEDD completed: {{eddCompleted}} · Pending: {{eddPending}}\n\nHigh-risk PEP (senior / foreign): {{highRiskPep}}\n\nScreening source: Vital4 (sole authority)"
+      "body": "PEP STATISTICS — {{period}}\n\nTotal PEP customers: {{pepTotal}}\nDomestic: {{domestic}} · Foreign: {{foreign}} · IO: {{io}} · Associates: {{associates}}\n\nForeign PEP (Art. 15 First — automatic EDD): {{foreignEddAuto}}\nDomestic/IO PEP — high-risk relationship (Art. 15 Second): {{domesticIoHighRisk}}\nDomestic/IO PEP — identification only: {{domesticIoStandard}}\n\nNew PEP identified (period): {{newPep}}\nEDD completed: {{eddCompleted}} · Pending: {{eddPending}}\n\nCross-border PEP alerts (Mohsen OS-TM-022): {{crossBorderPepAlerts}}\n\nScreening source: Vital4 (sole authority)"
     },
     {
       "id": "OPS-SANC-DAILY-001",

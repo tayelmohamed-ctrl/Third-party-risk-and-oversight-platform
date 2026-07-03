@@ -30,7 +30,9 @@ screeningScore = True Match -> 3
                  Clear | False Positive -> 1
 ```
 - `Sanctions/TFS = True Match` OR `Internal Watchlist = True Match` → **HARD STOP → PROHIBITED**. Do not proceed.
-- `PEP = True Match` → read **pep_type**: Foreign/IO PEP → HIGH floor (OVR-008); Domestic PEP → MEDIUM floor (OVR-016). `pep_type` is a mandatory explicit input.
+- `PEP = True Match` → read **pep_type** (mandatory explicit input):
+  - **Foreign PEP** → HIGH floor (OVR-008) · automatic enhanced measures (CBUAE Art. 15 First).
+  - **Domestic PEP / IO PEP** → identify first; OVR-016 and Art. 15(b–d) measures **only when high-risk business relationship** (composite Medium+ or cross-border exposure). Not presumed High (Art. 15 Second).
 - `Adverse Media = True Match` → HIGH floor (OVR-009); Potential = "Review".
 - Sanctions **Category A** country nexus (Iran, North Korea, Syria) → no account / prohibition (see `sanctions_programme.json`).
 

@@ -24,7 +24,10 @@ inputs → expected final outcome; encode them as automated tests in `@cram/engi
 | ID | Input | Expected |
 |---|---|---|
 | GV-08 | Composite 1.3 (Low) + Foreign PEP true match (OVR-008) | Final = HIGH (floor not diluted) |
-| GV-09 | Domestic PEP true match, otherwise Low | Final = MEDIUM (OVR-016); EDD still forced (PEP>0) |
+| GV-09 | Domestic PEP, otherwise Low composite | Final = LOW — identification only (Art. 15 Second); no automatic floor |
+| GV-09b | IO PEP, otherwise Low composite | Final = LOW — not presumed High |
+| GV-09c | Domestic PEP + cross-border service/product | Final = MEDIUM (OVR-016); Art. 15(b–d) measures |
+| GV-09d | IO PEP + Medium+ composite | Final = MEDIUM (OVR-016) when high-risk relationship |
 | GV-10 | Adverse media true match, otherwise Low | Final = HIGH (OVR-009) |
 | GV-11 | Manual downgrade attempted below a High floor | Rejected / requires policy exception; never below floor |
 

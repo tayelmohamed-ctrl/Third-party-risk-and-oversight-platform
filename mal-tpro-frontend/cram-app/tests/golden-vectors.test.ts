@@ -14,7 +14,7 @@ describe("Golden vectors GV-01…39", () => {
   });
 
   it("covers all 39 documented cases", () => {
-    expect(GOLDEN_VECTORS).toHaveLength(40);
+    expect(GOLDEN_VECTORS).toHaveLength(43);
   });
 
   it("reproducibility cases GV-29 and GV-39", () => {

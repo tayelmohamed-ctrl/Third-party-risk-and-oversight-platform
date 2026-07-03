@@ -62,6 +62,9 @@ export interface PepGateResult {
   overrideId: "OVR-008" | "OVR-016" | null;
   eddTrigger: boolean;
   approvalNote: string;
+  relationshipHighRisk: boolean;
+  crossBorderExposure: boolean;
+  cbuaeBasis: string;
   /** Legacy share — shown for audit; not in composite */
   auditShare?: number;
 }

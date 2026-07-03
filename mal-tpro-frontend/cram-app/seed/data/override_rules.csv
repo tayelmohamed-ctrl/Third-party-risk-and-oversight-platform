@@ -6,7 +6,7 @@ OVR-004,Unable / refused to identify or verify UBO,Reject or High pending remedi
 OVR-005,Shell bank or FI permitting shell-bank use,Reject / Exit,Highest,FI due diligence; respondent controls
 OVR-006,Unlicensed regulated activity,Reject / Prohibited,Highest,License review; legal/compliance assessment
 OVR-007,"Anonymous, bearer-like or unverified product feature",Prohibited,Highest,Product risk assessment; block evidence
-OVR-008,"Foreign PEP, IO PEP, high-risk PEP nexus",HIGH Floor,High,PEP screening; SoW/SoF; senior approval
+OVR-008,"Foreign PEP — automatic High floor (CBUAE Art. 15 First)",HIGH Floor,High,PEP screening; SoW/SoF; senior approval
 OVR-009,Material adverse media (ML/TF/PF/sanctions/fraud),HIGH Floor or Reject,High,Adverse-media review; mitigation rationale
 OVR-010,STR/SAR filed or confirmed suspicion,HIGH Floor,High,Restricted investigation; tipping-off controls
 OVR-011,High-risk country exposure (non-prohibited),HIGH Floor,High,Country-risk library; EDD rationale; approval
@@ -14,7 +14,7 @@ OVR-012,High-risk business / product / merchant activity,HIGH Floor,High,Busines
 OVR-013,Failed digital identity controls (liveness/biometric/deepfake),HIGH Floor or Reject,High,ID vendor result; fraud/compliance review
 OVR-014,Correspondent / nested / payable-through FI exposure,HIGH Floor,High,FI EDD; downstream controls; senior approval
 OVR-015,Non-resident (no other High indicator),MEDIUM Floor,Medium,Residency evidence; purpose; expected activity
-OVR-016,Moderate adverse media / domestic PEP with mitigants,MEDIUM Floor,Medium,Disposition rationale; approval
+OVR-016,"Domestic or IO PEP — high-risk business relationship (CBUAE Art. 15 Second)",MEDIUM Floor,Medium,Art. 15(b–d) measures; disposition rationale
 OVR-017,Unassessed / medium-risk country,MEDIUM Floor,Medium,Country-risk task; remediation owner
 OVR-018,Document/manual verification resolved (not strong assurance),MEDIUM Floor,Medium,Manual review evidence; approval
 OVR-019,New entity / limited operating history,MEDIUM Floor,Medium,Operating evidence; follow-up review

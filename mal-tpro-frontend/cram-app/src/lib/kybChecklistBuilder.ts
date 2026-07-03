@@ -60,6 +60,8 @@ export interface KybCaseContext {
   ddLevel: string;
   reviewMonths: number;
   eddRequired: boolean;
+  /** Foreign | Domestic | IO | None — drives Art. 15 identification vs enhanced checklist */
+  pepStatus?: "None" | "Domestic" | "Foreign" | "IO";
   uboLayers?: number;
   hasFinancingFacility?: boolean;
   generatedAt?: string;
@@ -205,6 +207,15 @@ export function buildKybChecklist(ctx: KybCaseContext): KybChecklistPackage {
   }
   if (entityMeta?.eddTrigger) {
     escalations.push(`Entity type EDD trigger: ${entityMeta.name}`);
+  }
+  if (ctx.pepStatus === "Foreign") {
+    escalations.push("Foreign PEP (CBUAE Art. 15 First) — senior approval, SoF/wealth, enhanced monitoring mandatory");
+  } else if (ctx.pepStatus === "Domestic" || ctx.pepStatus === "IO") {
+    if (ctx.eddRequired) {
+      escalations.push(`${ctx.pepStatus === "IO" ? "International-organization" : "Domestic"} PEP — high-risk relationship · Art. 15(b–d) enhanced KYB`);
+    } else {
+      escalations.push(`${ctx.pepStatus === "IO" ? "International-organization" : "Domestic"} PEP identified — identification complete; standard KYB unless relationship escalates`);
+    }
   }
   escalations.push(`Review cycle: ${ctx.reviewMonths} months per CRAM residual band`);
 

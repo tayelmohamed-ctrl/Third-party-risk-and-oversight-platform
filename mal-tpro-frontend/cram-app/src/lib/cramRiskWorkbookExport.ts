@@ -13,6 +13,13 @@ export {
   type MethodologyWorkbookKind,
 } from "./cramMethodologyWorkbookBuilder";
 
+export {
+  exportReferenceListWorkbook,
+  buildReferenceListWorkbook,
+  REFERENCE_LIST_EXPORTS,
+  type ReferenceListWorkbookKind,
+} from "./cramReferenceListWorkbookBuilder";
+
 /** Combined export (product + service in one file). */
 export async function exportMalProductServiceRiskWorkbook(): Promise<void> {
   const { buildProductRiskWorkbook, buildServiceRiskWorkbook } = await import("./cramRiskWorkbookBuilder");

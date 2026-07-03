@@ -1,0 +1,86 @@
+[
+  {
+    "activity": "Bail and Bond Payment Providers",
+    "cramScore": 4,
+    "amlRating": "Prohibited",
+    "isicCode": "6619",
+    "isicTitle": "Other activities auxiliary to financial services",
+    "override": "OVR-002",
+    "regulatoryBasis": "MAL-CMP-AML-01 §8 · FinCEN MSB Rule 31 C.F.R. § 1022.380 · CBUAE AML/CFT customer risk assessment",
+    "rationale": "Third-party payment of bail/bonds — high ML/TF abuse typology; restricted appetite without licensed MSB status.",
+    "cddEdd": "Reject / Exit — no onboarding",
+    "source": "nature_of_business.csv + ISIC Rev.5 typology lookup"
+  },
+  {
+    "activity": "Casinos, Gambling, Betting and Adult Entertainment",
+    "cramScore": 4,
+    "amlRating": "Prohibited",
+    "isicCode": "9200",
+    "isicTitle": "Gambling and betting activities",
+    "override": "OVR-002",
+    "regulatoryBasis": "MAL-CMP-AML-01 §8 · FATF R.12 · Wolfsberg gambling sector guidance · US UIGEA (where applicable)",
+    "rationale": "Mal prohibited category — gambling/adult entertainment outside licensed appetite; ISIC 9200 inherent High but policy = Prohibited.",
+    "cddEdd": "Reject / Exit — no onboarding",
+    "source": "nature_of_business.csv + ISIC Rev.5 typology lookup"
+  },
+  {
+    "activity": "Dating and Escort Services",
+    "cramScore": 4,
+    "amlRating": "Prohibited",
+    "isicCode": "9609",
+    "isicTitle": "Other personal service activities n.e.c.",
+    "override": "OVR-002",
+    "regulatoryBasis": "MAL-CMP-AML-01 §8 · UAE Federal Decree-Law No. 20/2018 (AML/CFT prohibited business categories)",
+    "rationale": "Escort/adult services — reputational, trafficking and ML typology risk; outside Mal digital-bank appetite.",
+    "cddEdd": "Reject / Exit — no onboarding",
+    "source": "nature_of_business.csv + ISIC Rev.5 typology lookup"
+  },
+  {
+    "activity": "Firearms and Ammunition (including Guns) - Shops & Clubs",
+    "cramScore": 4,
+    "amlRating": "Prohibited",
+    "isicCode": "2520",
+    "isicTitle": "Manufacture of weapons and ammunition",
+    "override": "OVR-002 / OVR-006",
+    "regulatoryBasis": "ISIC rule VH02 · US ITAR/EAR export controls · UN sanctions dual-use · CBUAE proliferation financing controls",
+    "rationale": "Defense-sensitive goods — prohibition unless government-licensed exception; minimum High + export-control screening.",
+    "cddEdd": "Reject / Exit — no onboarding",
+    "source": "nature_of_business.csv + ISIC Rev.5 typology lookup"
+  },
+  {
+    "activity": "Narcotics",
+    "cramScore": 4,
+    "amlRating": "Prohibited",
+    "isicCode": "—",
+    "isicTitle": "Controlled substances (non-medical)",
+    "override": "OVR-002",
+    "regulatoryBasis": "UAE Federal Law on narcotics · US Controlled Substances Act · FATF PF/ML typologies",
+    "rationale": "Illegal controlled substances — absolute prohibition.",
+    "cddEdd": "Reject / Exit — no onboarding",
+    "source": "nature_of_business.csv + ISIC Rev.5 typology lookup"
+  },
+  {
+    "activity": "Political Groups (including Fund raising organizations)",
+    "cramScore": 4,
+    "amlRating": "Prohibited",
+    "isicCode": "9492",
+    "isicTitle": "Activities of political organizations",
+    "override": "OVR-002",
+    "regulatoryBasis": "MAL-CMP-AML-01 §8 · FATF R.8 (NPO/charity abuse) · FinCEN political organization guidance",
+    "rationale": "Political fundraising — TF/sanctions evasion typology; outside retail digital-bank appetite.",
+    "cddEdd": "Reject / Exit — no onboarding",
+    "source": "nature_of_business.csv + ISIC Rev.5 typology lookup"
+  },
+  {
+    "activity": "Unregulated Money Service Business",
+    "cramScore": 4,
+    "amlRating": "Prohibited",
+    "isicCode": "6619",
+    "isicTitle": "Other activities auxiliary to financial services (MSB)",
+    "override": "OVR-002 / OVR-006",
+    "regulatoryBasis": "FinCEN MSB registration 31 C.F.R. § 1022.380 · CBUAE payment services / hawala licensing · FATF R.14",
+    "rationale": "Unlicensed MSB/remittance — cannot onboard; regulated MSB may be High (ISIC 6619) with EDD.",
+    "cddEdd": "Reject / Exit — no onboarding",
+    "source": "nature_of_business.csv + ISIC Rev.5 typology lookup"
+  }
+]

@@ -132,7 +132,7 @@ export default function Dashboard() {
           {[
             { agent: "sayed" as const, t: "CBUAE notice 2026/14 has no mapped control", s: "Sayed drafted a control + scoring-parameter mapping for approval" },
             { agent: "mohsen" as const, t: "Case CLC…366 ready for SAR sign-off", s: "Mohsen investigated · Jana drafted the STR" },
-            { agent: "sayed" as const, t: "2 High-risk onboardings await approval", s: "Foreign-PEP floor applied · EDD complete" },
+            { agent: "sayed" as const, t: "2 onboardings await approval", s: "Foreign PEP → automatic EDD · Domestic/IO PEP → risk-assessed per Art. 15(14)" },
           ].map((item, i) => (
             <div key={i} className="flex gap-3 items-start py-2.5 border-b border-lineSoft last:border-0">
               <AgentAvatar agent={item.agent} size="sm" />

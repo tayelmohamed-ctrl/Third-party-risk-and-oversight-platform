@@ -82,6 +82,9 @@ export interface RiskAssessmentSummary {
     mediumFloor: boolean;
     approvalNote: string;
     auditShare?: number;
+    relationshipHighRisk?: boolean;
+    crossBorderExposure?: boolean;
+    cbuaeBasis?: string;
   } | null;
   drivers: RiskDriver[];
   factorBreakdown: FactorTransparencyRow[];
@@ -91,7 +94,7 @@ export interface RiskAssessmentSummary {
 
 const FACTOR_POLICY: Record<string, string> = {
   customerType: "CRA Methodology §6.5 · Customer-type factor (25%) — PEP excluded",
-  pep: "PEP gate only · OVR-008/016 floors · not in composite",
+  pep: "PEP gate · CBUAE Art. 15(14) · Foreign auto-floor · Domestic/IO risk-based · not in composite",
   geography: "CRA Methodology §6.4 · Geography — worst-of attributes (20%)",
   productService: "Product & service pillar · max(product, service) × 25% (non-dilution)",
   product: "Product risk library · audit sub-score (15% share)",
@@ -171,6 +174,9 @@ export function buildRiskAssessmentSummary(
       mediumFloor: result.pepGate.mediumFloor,
       approvalNote: result.pepGate.approvalNote,
       auditShare: result.pepGate.auditShare,
+      relationshipHighRisk: result.pepGate.relationshipHighRisk,
+      crossBorderExposure: result.pepGate.crossBorderExposure,
+      cbuaeBasis: result.pepGate.cbuaeBasis,
     } : null,
     drivers,
     factorBreakdown,
@@ -251,8 +257,17 @@ function buildRiskDrivers(
       label: `PEP gate: ${input.pep}`,
       detail: result.pepGate?.approvalNote ?? "Politically exposed person — categorical controls",
       impact: result.pepGate?.overrideHigh ? "floor" : result.pepGate?.mediumFloor ? "increase" : "neutral",
-      policyRef: result.pepGate?.overrideId ? `${result.pepGate.overrideId} · gate only (not in composite)` : "PEP register",
+      policyRef: result.pepGate?.cbuaeBasis ?? result.pepGate?.overrideId ?? "PEP register",
     });
+    if (result.pepGate?.crossBorderExposure && (input.pep === "Domestic" || input.pep === "IO")) {
+      d.push({
+        id: "pep_xborder",
+        label: "PEP cross-border exposure",
+        detail: "Cross-border activity may elevate domestic/IO PEP to high-risk relationship · Mohsen OS-TM-022",
+        impact: result.pepGate.relationshipHighRisk ? "increase" : "neutral",
+        policyRef: "CBUAE Art. 15 Second · FATF cross-border PEP guidance",
+      });
+    }
   }
 
   d.push({
@@ -365,7 +380,7 @@ function buildRiskDrivers(
 function buildPolicyAlignment(input: ScoreInput, result: ScoreResult, gt: GoldenThreadResult): string[] {
   const lines: string[] = [
     `CRA composite ${result.composite.toFixed(2)} → ${result.finalRating} (math band ${result.mathBand})`,
-    `Six-factor model · PEP gate-only (excluded from customer-type composite) · behaviour gate drives review/override`,
+    `Six-factor model · PEP gate-only (CBUAE Art. 15(14) · Foreign automatic · Domestic/IO risk-based) · behaviour gate drives review/override`,
   ];
   if (gt.eddRequired) lines.push("EDD triggered — Enhanced Due Diligence per AML Policy before onboarding");
   else lines.push("Standard CDD pathway — no mandatory EDD triggers active");

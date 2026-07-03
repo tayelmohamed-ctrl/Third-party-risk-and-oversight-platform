@@ -64,7 +64,7 @@ export const TM_FUNCTIONAL_REQUIREMENTS: BrdRequirement[] = [
   { id: "FR-001", category: "Scenario configuration", description: "Configure AML/CFT/CPF scenarios mapped to typologies with version control and maker-checker approval." },
   { id: "FR-002", category: "Rule engine", description: "Support configurable rules with aggregation, velocity, and relationship-level logic." },
   { id: "FR-003", category: "Threshold management", description: "Risk-based thresholds by segment, product, channel, and geography with MLRO approval for changes." },
-  { id: "FR-004", category: "Customer segmentation", description: "Apply monitoring by CRA rating, PEP, non-resident, cash-intensive, and high-risk typologies." },
+  { id: "FR-004", category: "Customer segmentation", description: "Apply monitoring by CRA rating, PEP tier (Foreign automatic EDD · Domestic/IO risk-based), non-resident, cash-intensive, and high-risk typologies." },
   { id: "FR-005", category: "Transaction ingestion", description: "Ingest complete transaction narratives from core banking, payments, cards, and digital channels." },
   { id: "FR-006", category: "Processing mode", description: "Support batch, near-real-time, and real-time monitoring per product/channel risk." },
   { id: "FR-007", category: "Alert generation", description: "Generate alerts with de-duplication, prioritisation, assignment, and full audit trail.", oscilarRuleIds: ["OS-TM-001", "OS-TM-003", "OS-TM-012"] },
@@ -81,7 +81,7 @@ export const TM_FUNCTIONAL_REQUIREMENTS: BrdRequirement[] = [
 export const TM_ALERT_BUSINESS_RULES: AlertRule[] = [
   { id: "ALR-001", title: "Alert prioritisation by risk", requirement: "Prioritise alerts using CRA rating, scenario severity, transaction value, and corridor risk.", severity: "All", policyRef: "TM Policy §1.5 · BRD §I" },
   { id: "ALR-002", title: "De-duplication and aggregation", requirement: "Aggregate related alerts; suppress only where formally configured, approved, and auditable.", policyRef: "BRD Alert Generation §I" },
-  { id: "ALR-003", title: "Mandatory scenario coverage", requirement: "Low-risk classification must not suppress mandatory monitoring scenarios (PEP, sanctions, high-risk geography).", policyRef: "BRD §F · OVR-010" },
+  { id: "ALR-003", title: "Mandatory scenario coverage", requirement: "Low-risk classification must not suppress mandatory monitoring scenarios (Foreign PEP, sanctions, high-risk geography). Domestic/IO PEP cross-border transfers remain in scope per OS-TM-022.", policyRef: "BRD §F · CBUAE Art. 15(14)" },
   { id: "ALR-004", title: "Alert-to-case linkage", requirement: "Every escalated alert links to investigation case with source data snapshot and rule ID.", policyRef: "Oscilar → Mohsen pipeline" },
   { id: "ALR-005", title: "SLA and escalation", requirement: "Critical/high alerts escalate to Mohsen within SLA; breach triggers MLRO notification.", severity: "critical/high", policyRef: "TXN_SCREENING_CASE_MGMT" },
   { id: "ALR-006", title: "TM → CRAM re-rating", requirement: "Closed TM alerts with disposition feed CRAM behaviour gate and may trigger re-rating.", policyRef: "partnerIntegration · behaviourGate" },

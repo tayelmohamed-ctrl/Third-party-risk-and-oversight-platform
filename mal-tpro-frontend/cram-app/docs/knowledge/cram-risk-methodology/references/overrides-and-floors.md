@@ -28,7 +28,8 @@ floors. A Low/Medium mathematical score can never suppress a higher override.
 | **OVR-005** | Shell bank, or FI permitting shell-bank use | **Reject / Exit** | Highest | FI due diligence, respondent controls assessment |
 | **OVR-006** | Unlicensed regulated activity where a license is required | **Reject / Prohibited** | Highest | License review and legal/compliance assessment |
 | **OVR-007** | Anonymous, bearer-like or unverified product feature | **Prohibited** | Highest | Product risk assessment and block evidence |
-| **OVR-008** | Foreign PEP, IO PEP, high-risk PEP nexus, or close associate/family of material PEP | **High** | High | PEP screening, SoW/SoF, senior approval |
+| **OVR-008** | Foreign PEP — automatic enhanced measures (CBUAE Art. 15 First) | **High** | High | PEP screening, SoW/SoF, senior approval |
+| **OVR-016** | Domestic or international-organization PEP — **high-risk business relationship** only (CBUAE Art. 15 Second) | **Medium** | Medium | Art. 15(b–d): senior approval, SoW/SoF, enhanced monitoring when relationship high-risk |
 | **OVR-009** | Material adverse media involving ML/TF/PF, sanctions, fraud, corruption or serious predicate offence | **High or Reject** | High | Adverse media review and mitigation rationale |
 | **OVR-010** | STR/SAR filed, confirmed suspicion, or suspicion cannot be mitigated | **High** | High | Restricted investigation record; tipping-off controls |
 | **OVR-011** | High-risk country exposure not prohibited (high-risk residence/operation/SOF/corridor) | **High** | High | Country-risk library, EDD rationale and approval |
@@ -36,7 +37,6 @@ floors. A Low/Medium mathematical score can never suppress a higher override.
 | **OVR-013** | Failed or unresolved digital identity controls: liveness fail, biometric mismatch, deepfake/injection, device farm | **High or Reject** | High | ID vendor result, fraud/compliance review |
 | **OVR-014** | Correspondent, nested, downstream or payable-through FI exposure within appetite | **High** | High | FI EDD, downstream controls, senior approval |
 | **OVR-015** | Non-resident with strong evidence and no other High indicator | **Medium floor** | Medium | Residency evidence, purpose, expected activity |
-| **OVR-016** | Moderate adverse media, or domestic PEP with mitigants and no High indicator | **Medium floor** | Medium | Disposition rationale and approval |
 | **OVR-017** | Unassessed country, medium-risk country, or multiple medium geography indicators | **Medium floor** | Medium | Country risk task and remediation owner |
 | **OVR-018** | Document/manual digital verification resolved but not strong assurance | **Medium floor** | Medium | Manual review evidence and approval |
 | **OVR-019** | New entity, limited operating history, or newly launched merchant with plausible business model | **Medium floor** | Medium | Operating evidence and follow-up review |

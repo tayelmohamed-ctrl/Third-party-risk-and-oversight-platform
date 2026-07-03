@@ -12,8 +12,9 @@ import ruleLibrary from "../data/oscilar_rule_library.json";
 import { SCREENING_AUTHORITY, SCREENING_SLA } from "../config/partnerIntegration";
 import { apiTmAlerts, type TmAlertRecord } from "../lib/api";
 import TmReadinessPanel from "../components/tm/TmReadinessPanel";
+import PaymentPurposeGuidancePanel from "../components/tm/PaymentPurposeGuidancePanel";
 
-type TabId = "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "readiness";
+type TabId = "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "purpose" | "readiness";
 
 const TABS: { id: TabId; label: string; hint: string }[] = [
   { id: "programme", label: "Screening programme", hint: "Scope · authority · coverage" },
@@ -21,6 +22,7 @@ const TABS: { id: TabId; label: string; hint: string }[] = [
   { id: "workflow", label: "Workflow", hint: "Real-time decision path" },
   { id: "cases", label: "Alerts & cases", hint: "SLA · ownership · outputs" },
   { id: "monitoring", label: "TM rule library", hint: "Oscilar rules · transfers & cards" },
+  { id: "purpose", label: "Purpose codes", hint: "Accept · conditional · eliminate · PDF" },
   { id: "readiness", label: "Pre-impl readiness", hint: "BRD gates · alert & screening rules" },
 ];
 
@@ -101,6 +103,7 @@ export default function TransactionMonitoring() {
           setQuery={setQuery}
         />
       )}
+      {tab === "purpose" && <PaymentPurposeGuidancePanel />}
       {tab === "readiness" && <TmReadinessPanel />}
 
       <Card className="p-4 mt-5 text-[11px] text-muted">

@@ -172,12 +172,29 @@ describe("PEP gate — excluded from composite", () => {
     expect(rPep.overrides.some((o) => o.id === "OVR-008")).toBe(true);
   });
 
-  it("Domestic PEP applies Medium floor without composite uplift", () => {
+  it("Domestic PEP low-risk relationship — no automatic Medium floor", () => {
     const r = scoreCustomer(baseInput({ ...ALL_LOW, pep: "Domestic" }), "calculator");
-    expect(r.pepGate?.mediumFloor).toBe(true);
-    expect(r.finalRating).toBe("Medium");
+    expect(r.pepGate?.gateType).toBe("identify");
+    expect(r.pepGate?.relationshipHighRisk).toBe(false);
+    expect(r.finalRating).toBe("Low");
     const none = scoreCustomer(baseInput({ ...ALL_LOW }), "calculator");
     expect(r.composite).toBeCloseTo(none.composite, 5);
+    expect(r.overrides.some((o) => o.id === "OVR-016")).toBe(false);
+  });
+
+  it("IO PEP low-risk — not presumed High (CBUAE Art. 15 Second)", () => {
+    const r = scoreCustomer(baseInput({ ...ALL_LOW, pep: "IO" }), "calculator");
+    expect(r.pepGate?.overrideHigh).toBe(false);
+    expect(r.finalRating).toBe("Low");
+    expect(r.overrides.some((o) => o.id === "OVR-008")).toBe(false);
+  });
+
+  it("Domestic PEP + cross-border service triggers OVR-016", () => {
+    const r = scoreCustomer(baseInput({ ...ALL_LOW, pep: "Domestic", serviceScore: 3 as Score }), "calculator");
+    expect(r.pepGate?.relationshipHighRisk).toBe(true);
+    expect(r.pepGate?.crossBorderExposure).toBe(true);
+    expect(r.finalRating).toBe("Medium");
+    expect(r.overrides.some((o) => o.id === "OVR-016")).toBe(true);
   });
 
   it("PEP audit row shows legacy share but zero composite contribution", () => {

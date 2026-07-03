@@ -2,6 +2,7 @@
 import type { ScoreInput, ScoreResult, FinalRating, Band } from "./types";
 import { isMaterialActivityDeviation, activityDeviationScore } from "./activityProfile";
 import { CFG, resolveDueDiligenceLevel, type ControlInputs, type CustomerMode } from "./cramSuiteConfig";
+import { pepTriggersEnhancedMeasures } from "../config/pepGate";
 import { OUTCOMES } from "./cram";
 import { professionTriggersEdd } from "./professionRiskIntelligence";
 import { entityTypeRequiresEdd } from "../config/entityLegalTypes";
@@ -64,8 +65,8 @@ function eddRequired(
   const entityEdd = mode === "entity" && entityTypeRequiresEdd(input.declaredEntityType);
 
   return (
-    rating === "High" || pepAny ||
-    input.pep === "Foreign" || input.pep === "IO" ||
+    rating === "High" ||
+    pepTriggersEnhancedMeasures(input.pep, result.mathBand, input) ||
     input.adverse === "True Match" ||
     input.watchlist === "True Match" ||
     highNature || highProfession || typologyEdd || entityEdd ||
@@ -82,11 +83,14 @@ function eddRequired(
   );
 }
 
-function authority(rating: FinalRating, edd: boolean, input: ScoreInput): ApprovalAuthority {
+function authority(rating: FinalRating, edd: boolean, input: ScoreInput, result: ScoreResult): ApprovalAuthority {
   if (rating === "Prohibited") return { who: "MLRO + Financial Crime Committee", cls: "PROHIBITED" };
-  if (edd || input.pep === "Foreign" || input.pep === "IO") return { who: "MLRO sign-off required", cls: "HIGH" };
+  if (input.pep === "Foreign" || edd) return { who: "MLRO sign-off required", cls: "HIGH" };
   if (rating === "High") return { who: "Head of Compliance / MLRO", cls: "HIGH" };
-  if (rating === "Medium" || input.pep === "Domestic") return { who: "Branch / team lead + Compliance", cls: "MEDIUM" };
+  if (input.pep === "Domestic" || input.pep === "IO") {
+    return { who: "Identify PEP · standard CDD unless high-risk relationship (Art. 15 Second)", cls: "LOW" };
+  }
+  if (rating === "Medium") return { who: "Branch / team lead + Compliance", cls: "MEDIUM" };
   return { who: "Relationship manager (auto)", cls: "LOW" };
 }
 
@@ -118,8 +122,17 @@ function eddWorkflowItems(
   }
 
   if (pepAny) {
-    items.push({ id: "e_pep", required: true, text: "Record PEP category, position and tenure; complete the PEP declaration" });
-    items.push({ id: "e_pep2", required: false, text: "Screen close associates / family and establish ultimate source of wealth" });
+    items.push({ id: "e_pep", required: true, text: "Record PEP category (Foreign / Domestic / IO), position and tenure; complete the PEP declaration" });
+    if (input.pep === "Domestic" || input.pep === "IO") {
+      items.push({
+        id: "e_pep_id",
+        required: true,
+        text: "Confirm sufficient measures to identify domestic or international-organization PEP per CBUAE Art. 15(14) Second",
+      });
+    }
+    if (pepTriggersEnhancedMeasures(input.pep, result.mathBand, input)) {
+      items.push({ id: "e_pep2", required: false, text: "Screen close associates / family and establish ultimate source of wealth" });
+    }
   }
   if (input.sanctions === "Potential Match") {
     items.push({ id: "e_scr", required: true, text: "Escalate the partial screening match to the sanctions team; hold pending disposition" });
@@ -155,6 +168,7 @@ function eddWorkflowItems(
 function monitoringProfile(
   rating: FinalRating,
   input: ScoreInput,
+  result: ScoreResult,
   reviewMonths: number | null,
   nextReview: string | null,
   controlGap: boolean,
@@ -167,13 +181,14 @@ function monitoringProfile(
   if (controlGap) tol *= 0.85;
 
   const pepAny = input.pep !== "None";
+  const pepEnhanced = pepTriggersEnhancedMeasures(input.pep, result.mathBand, input);
   return {
-    intensity: rating === "High" ? "Enhanced" : rating === "Medium" ? "Standard" : "Baseline",
+    intensity: rating === "High" ? "Enhanced" : rating === "Medium" ? "Standard" : pepEnhanced ? "Standard" : "Baseline",
     singleTxnAlertAed: Math.round(ex.single * tol),
     monthlyCumulativeAlertAed: Math.round(ex.monthly * tol),
     structuringWatchAed: Math.round(ex.single * tol * 0.9),
-    sanctionsRescreen: (rating === "High" || pepAny) ? "Daily" : rating === "Medium" ? "Weekly" : "Monthly",
-    adverseMediaSweep: (rating === "High" || pepAny) ? "Quarterly" : rating === "Medium" ? "Semi-annual" : "At review",
+    sanctionsRescreen: (rating === "High" || input.pep === "Foreign" || pepEnhanced) ? "Daily" : pepAny ? "Weekly" : rating === "Medium" ? "Weekly" : "Monthly",
+    adverseMediaSweep: (rating === "High" || input.pep === "Foreign" || pepEnhanced) ? "Quarterly" : pepAny ? "Semi-annual" : rating === "Medium" ? "Semi-annual" : "At review",
     periodicKycReview: reviewMonths ? `Every ${reviewMonths} mo · ${nextReview ?? "—"}` : "—",
   };
 }
@@ -191,7 +206,7 @@ export function computeGoldenThread(
   const pepAny = gates.pepAny;
   const rating = result.finalRating;
   const edd = eddRequired(rating, input, result, residual, pepAny, mode);
-  const auth = authority(rating, edd, input);
+  const auth = authority(rating, edd, input, result);
   const reviewMonths = rating === "Prohibited" ? null : CFG.reviewMonths[rating];
   let nextReviewDate: string | null = null;
   if (reviewMonths && reviewFrom) {
@@ -202,7 +217,7 @@ export function computeGoldenThread(
 
   const monitoring = rating === "Prohibited"
     ? null
-    : monitoringProfile(rating, input, reviewMonths, nextReviewDate, residual.controlGap, result.behaviourGate?.reviewRequired);
+    : monitoringProfile(rating, input, result, reviewMonths, nextReviewDate, residual.controlGap, result.behaviourGate?.reviewRequired);
 
   const eddItems = eddWorkflowItems(rating, input, result, residual, pepAny, mode);
   const dd = resolveDueDiligenceLevel(rating, edd, pepAny);
