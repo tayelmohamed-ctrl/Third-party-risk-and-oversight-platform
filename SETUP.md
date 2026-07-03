@@ -73,7 +73,8 @@ npm run build
 | All source, configs, JSON libraries, tests | `node_modules/` — run `npm install` |
 | `regulatory_monitor_state.json` (Sayed monitor snapshot) | `.env` — copy from `.env.example` |
 | CRAM methodology `.docx` in `public/` | Docker Postgres **data volume** — empty DB until migrate; re-seed via app |
-| Purpose code catalog JSON + PDF generators | `.partnerships-extract/` — partner PDFs/contracts (~113MB); backup separately if needed |
+| Purpose code catalog JSON + PDF generators | |
+| `.partnerships-extract/` — partner contracts & due diligence PDFs (~113MB) | |
 
 ## 8. Re-import purpose catalog from Excel (optional)
 
