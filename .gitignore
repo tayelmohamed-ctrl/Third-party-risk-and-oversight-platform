@@ -23,3 +23,6 @@ backend/prisma/migrations/*.sql.bak
 # Logs
 *.log
 npm-debug.log*
+
+# Local partnership document extracts (backup separately — not app runtime)
+.partnerships-extract/
