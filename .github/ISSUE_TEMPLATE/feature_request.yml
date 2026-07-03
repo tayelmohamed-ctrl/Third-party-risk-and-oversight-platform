@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest an enhancement to the platform or compliance tooling
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or compliance need
+      description: What user or regulatory requirement does this address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Primary module
+      options:
+        - CRAM / Risk Test Bench
+        - Transaction monitoring
+        - Regulatory management
+        - Partner oversight
+        - Reporting
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Impact area
+      options:
+        - label: Requires CRAM model / policy update
+        - label: Requires Oscilar / TM rule change
+        - label: Requires partner / corridor EWRA review

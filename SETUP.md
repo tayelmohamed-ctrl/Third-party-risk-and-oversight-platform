@@ -7,8 +7,7 @@ Use this to run the project on a **new laptop** from GitHub with the same code t
 ```bash
 git clone git@github.com:tayelmohamed-ctrl/Third-party-risk-and-oversight-platform.git
 cd Third-party-risk-and-oversight-platform
-git checkout feature/fincrime-os-save-jul2026
-# Or use tag: git checkout save-2026-07-03
+git checkout main
 ```
 
 ## 2. Prerequisites
@@ -94,4 +93,4 @@ npx tsx scripts/import-transaction-purpose-catalog.ts ~/Downloads/Mal_Transactio
 ---
 
 **Repo:** [Third-party-risk-and-oversight-platform](https://github.com/tayelmohamed-ctrl/Third-party-risk-and-oversight-platform)  
-**Branch:** `feature/fincrime-os-save-jul2026`
+**Branch:** `main`

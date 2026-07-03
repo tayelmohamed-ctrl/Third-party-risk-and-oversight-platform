@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Setup guide
+    url: https://github.com/tayelmohamed-ctrl/Third-party-risk-and-oversight-platform/blob/main/SETUP.md
+    about: Clone and run the platform locally
+  - name: Documentation index
+    url: https://github.com/tayelmohamed-ctrl/Third-party-risk-and-oversight-platform/blob/main/docs/README.md
+    about: Product and engineering runbooks
