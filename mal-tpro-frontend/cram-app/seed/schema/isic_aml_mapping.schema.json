@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "isic_aml_mapping row",
+  "type": "object",
+  "required": ["isic_code","isic_level","activity_title","aml_rating","risk_score"],
+  "properties": {
+    "isic_code": {"type": "string", "minLength": 1},
+    "isic_level": {"enum": ["Section","Division","Group","Class"]},
+    "section": {"type": "string"},
+    "activity_title": {"type": "string", "minLength": 1},
+    "aml_rating": {"enum": ["Low","Medium","High"]},
+    "risk_score": {"type": "integer", "minimum": 1, "maximum": 3},
+    "risk_theme": {"type": "string"},
+    "risk_drivers": {"type": "string"},
+    "cdd_edd": {"type": "string"},
+    "controls": {"type": "string"},
+    "rule_id": {"type": "string"},
+    "rule_basis": {"type": "string"},
+    "notes": {"type": "string"},
+    "source_url": {"type": "string"}
+  }
+}

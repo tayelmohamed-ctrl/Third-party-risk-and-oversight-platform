@@ -1,0 +1,86 @@
+/* Partner Defense Command — dark palette via shared platform theme toggle */
+.partner-platform-root[data-theme="dark"] .mpc {
+  --page: #0c0f1a;
+  --surface: #151923;
+  --elevated: #1c2230;
+  --ink: #f3f4f6;
+  --text: #f3f4f6;
+  --muted: #9ca3af;
+  --line: #2d3548;
+  --panel: #151923;
+  --panel2: #1c2230;
+  --chip-bg: #252b3a;
+  --chip-fg: #d1d5db;
+  --on-brand: #ffffff;
+  --on-danger: #ffffff;
+  --on-inverse: #f9fafb;
+  --inverse-bg: #111827;
+  --warn-surface: rgba(217, 119, 6, 0.12);
+  --warn-chip-bg: rgba(217, 119, 6, 0.22);
+  --warn-chip-fg: #fcd34d;
+  --success-chip-bg: rgba(22, 163, 74, 0.18);
+  --success-chip-fg: #86efac;
+  --indigo-chip-bg: rgba(99, 102, 241, 0.18);
+  --indigo-chip-fg: #a5b4fc;
+  --warm-border: #3d465c;
+  --warm-border-soft: #2d3548;
+  --warm-highlight: rgba(255, 255, 255, 0.06);
+  --flow-arrow: #9ca3af;
+  --lifecycle-stage-bg: linear-gradient(
+    135deg,
+    rgba(217, 119, 6, 0.08) 0%,
+    #1c2230 58%,
+    rgba(139, 92, 246, 0.1) 100%
+  );
+  background-image:
+    radial-gradient(ellipse 1400px 600px at 70% -10%, rgba(139, 92, 246, 0.12), transparent 60%),
+    radial-gradient(ellipse 900px 500px at 0% 90%, rgba(96, 165, 250, 0.08), transparent 60%);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .topbar {
+  background: rgba(21, 25, 35, 0.94);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .ticker {
+  background: rgba(21, 25, 35, 0.92);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .rail {
+  background: rgba(12, 15, 26, 0.88);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc th {
+  background: rgba(28, 34, 48, 0.95);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc td {
+  border-bottom-color: rgba(45, 53, 72, 0.75);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .bar {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .overlay {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .feeditem {
+  border-bottom-color: rgba(45, 53, 72, 0.75);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 4px 16px -6px rgba(0, 0, 0, 0.35);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .mlroPanel,
+.partner-platform-root[data-theme="dark"] .mpc .mlroCard,
+.partner-platform-root[data-theme="dark"] .mpc .partnerQuick .qcard {
+  background: var(--elevated);
+  border-color: var(--line);
+}
+
+.partner-platform-root[data-theme="dark"] .mpc .mlroCard strong,
+.partner-platform-root[data-theme="dark"] .mpc .partnerQuick .qcard b {
+  color: var(--text);
+}

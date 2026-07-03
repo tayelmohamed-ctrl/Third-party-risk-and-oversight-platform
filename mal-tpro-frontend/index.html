@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mal · Partner Defense Command</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      /* Shim: the platform persists via window.storage (Claude artifacts API).
+         In a normal browser we back it with localStorage so edits persist. */
+      (function () {
+        if (window.storage) return;
+        window.storage = {
+          async get(k) { const v = localStorage.getItem(k); return v === null ? null : { key: k, value: v, shared: false }; },
+          async set(k, v) { localStorage.setItem(k, v); return { key: k, value: v, shared: false }; },
+          async delete(k) { localStorage.removeItem(k); return { key: k, deleted: true, shared: false }; },
+          async list(prefix = "") { return { keys: Object.keys(localStorage).filter((x) => x.startsWith(prefix)), prefix, shared: false }; },
+        };
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

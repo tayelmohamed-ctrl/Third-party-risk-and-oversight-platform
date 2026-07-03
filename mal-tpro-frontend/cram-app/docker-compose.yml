@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: cram
+      POSTGRES_PASSWORD: cram
+      POSTGRES_DB: cram
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cram -d cram"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Optional: local Kafka for QUEUE_DRIVER=kafka
+  kafka:
+    image: redpandadata/redpanda:v24.2.4
+    command:
+      - redpanda start
+      - --overprovisioned
+      - --smp 1
+      - --memory 512M
+      - --reserve-memory 0M
+      - --node-id 0
+      - --check=false
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://localhost:9092
+    ports:
+      - "9092:9092"
+    profiles: ["kafka"]
+
+volumes:
+  pgdata:

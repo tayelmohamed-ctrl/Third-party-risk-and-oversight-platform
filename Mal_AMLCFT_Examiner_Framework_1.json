@@ -1,0 +1,1134 @@
+{
+  "name": "Mal AML/CFT Policy Examiner — Authoritative Assessment Framework",
+  "version": "1.0",
+  "basis": "Derived from Mal Money Inc. AML/CFT policy set: Governance & Regulatory Perimeter Memo (Doc 0.1 / uploaded scanned memorandum); AML/BSA Compliance Programme (1.2); CDD (1.3); Sanctions/OFAC (1.4) & SCP v1.1; Transaction Monitoring (1.5); Travel Rule & Recordkeeping (1.6); SAR/CTR (1.7); PEP (1.8); Record Retention (1.9); MLRO Mandate (2.1); Independent Testing (2.3); Vendor Oversight (0.4); CRAM-01 risk methodology.",
+  "riskWeights": {
+    "Critical": 3,
+    "High": 2,
+    "Medium": 1.5,
+    "Low": 1
+  },
+  "domains": [
+    {
+      "id": "REG",
+      "name": "Regulatory perimeter & licensing",
+      "color": "#6a00d6"
+    },
+    {
+      "id": "GOV",
+      "name": "Governance & oversight",
+      "color": "#8000ff"
+    },
+    {
+      "id": "RA",
+      "name": "Risk assessment",
+      "color": "#7c3aed"
+    },
+    {
+      "id": "CDD",
+      "name": "Customer due diligence",
+      "color": "#1e63e9"
+    },
+    {
+      "id": "EDD",
+      "name": "Enhanced due diligence",
+      "color": "#2563eb"
+    },
+    {
+      "id": "OM",
+      "name": "Ongoing monitoring & review",
+      "color": "#0ea5e9"
+    },
+    {
+      "id": "TM",
+      "name": "Transaction monitoring",
+      "color": "#0891b2"
+    },
+    {
+      "id": "SANC",
+      "name": "Sanctions screening",
+      "color": "#dc2626"
+    },
+    {
+      "id": "PEP",
+      "name": "PEP controls",
+      "color": "#db2777"
+    },
+    {
+      "id": "SAR",
+      "name": "Suspicious activity reporting",
+      "color": "#b91c1c"
+    },
+    {
+      "id": "REP",
+      "name": "Mandatory reporting (CTR/Travel)",
+      "color": "#9333ea"
+    },
+    {
+      "id": "REC",
+      "name": "Record retention",
+      "color": "#0d9488"
+    },
+    {
+      "id": "TRN",
+      "name": "Training & awareness",
+      "color": "#16a34a"
+    },
+    {
+      "id": "AUD",
+      "name": "Independent audit",
+      "color": "#ca8a04"
+    },
+    {
+      "id": "TPO",
+      "name": "Third-party & agent oversight",
+      "color": "#ea580c"
+    },
+    {
+      "id": "DOB",
+      "name": "Digital onboarding",
+      "color": "#4f46e5"
+    },
+    {
+      "id": "ESC",
+      "name": "Escalation & reporting",
+      "color": "#e11d48"
+    }
+  ],
+  "controls": [
+    {
+      "id": "REG-1",
+      "domain": "REG",
+      "requirement": "Registered money-services / transmitter status with a documented regulatory perimeter",
+      "expected": "Entity is registered with FinCEN as an MSB (or local equivalent) and maintains a documented activity-classification / regulatory-perimeter analysis covering each leg of the funds flow.",
+      "citation": "Mal Doc 0.1 (Regulatory Perimeter Memo); Doc 1.2 §2; 31 CFR 1022.380",
+      "risk": "High",
+      "keywords": [
+        "msb",
+        "fincen",
+        "money transmitter",
+        "registration",
+        "perimeter",
+        "licensed",
+        "registered"
+      ],
+      "remediation": "Register with FinCEN (or confirm exemption with counsel) and produce a written perimeter memo classifying each activity and money-transmission leg.",
+      "suggestedWording": "The Company is registered with FinCEN as a money services business and maintains a documented regulatory-perimeter analysis, reviewed by counsel, classifying each activity across the funds flow.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "REG-2",
+      "domain": "REG",
+      "requirement": "Filing-institution responsibility is determined and documented",
+      "expected": "SAR, CTR and OFAC-report filing responsibility is explicitly allocated (files directly / banking-partner files / split), with an escalation package and SLA where a partner files.",
+      "citation": "Mal Doc 1.2 §2.2; Doc 1.7",
+      "risk": "High",
+      "keywords": [
+        "filing institution",
+        "files directly",
+        "banking partner",
+        "allocation",
+        "escalation package",
+        "responsible for"
+      ],
+      "remediation": "Document, with counsel and each partner, which institution files SARs/CTRs/OFAC reports for every leg; where the partner files, define a complete escalation package and timeline.",
+      "suggestedWording": "Filing-institution responsibility for SAR, CTR and OFAC reports is documented for each leg; where a partner is the filer the Company transmits a complete escalation package within 20 days of detection.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "REG-3",
+      "domain": "REG",
+      "requirement": "Stricter-standard / standards-hierarchy rule",
+      "expected": "Where any partner agreement, scheme rule or law imposes a stricter standard, the stricter standard governs.",
+      "citation": "Mal Doc 1.2 §1.3",
+      "risk": "Medium",
+      "keywords": [
+        "stricter standard",
+        "applicable law",
+        "scheme rule",
+        "governs",
+        "prevails"
+      ],
+      "remediation": "Add an explicit clause that the stricter of policy, partner, scheme or legal requirements always applies.",
+      "suggestedWording": "Where any law, regulation, partner agreement or scheme rule imposes a stricter requirement than this policy, the stricter requirement applies.",
+      "complexity": "Low"
+    },
+    {
+      "id": "GOV-1",
+      "domain": "GOV",
+      "requirement": "Board approval and active oversight",
+      "expected": "The Board approves the AML programme and material changes at least annually, receives a quarterly compliance dashboard and an annual programme-effectiveness report, and commissions the independent audit.",
+      "citation": "Mal Doc 1.2 §5.1",
+      "risk": "Critical",
+      "keywords": [
+        "board",
+        "approv",
+        "quarterly",
+        "annual report",
+        "effectiveness",
+        "oversight",
+        "senior management"
+      ],
+      "remediation": "Establish Board approval of the programme (≥annual), a quarterly compliance dashboard, an annual effectiveness report and Board commissioning of the audit.",
+      "suggestedWording": "The Board approves this programme at least annually, receives a quarterly compliance dashboard and an annual programme-effectiveness report, and commissions the independent audit.",
+      "complexity": "Low"
+    },
+    {
+      "id": "GOV-2",
+      "domain": "GOV",
+      "requirement": "Designated compliance officer with independence and authority",
+      "expected": "A named, qualified AML/BSA compliance officer (MLRO) is designated, reports independently to the Board, is not compensated on revenue, and can be removed only by the Board.",
+      "citation": "Mal Doc 1.2 §5.2; 31 CFR 1022.210",
+      "risk": "Critical",
+      "keywords": [
+        "compliance officer",
+        "mlro",
+        "designated",
+        "independent",
+        "authority",
+        "reports to the board",
+        "appointed"
+      ],
+      "remediation": "Appoint a qualified compliance officer in writing with a Board-reporting line, documented authority and revenue-independent compensation.",
+      "suggestedWording": "The Board appoints a qualified AML/BSA Compliance Officer who reports directly and independently to the Board, whose compensation is not tied to revenue, and who may be removed only by Board resolution.",
+      "complexity": "Low"
+    },
+    {
+      "id": "GOV-3",
+      "domain": "GOV",
+      "requirement": "Three lines of defence with tester independence",
+      "expected": "First, second and third lines are documented; the compliance officer is excluded from the independent-testing function.",
+      "citation": "Mal Doc 1.2 §5.3",
+      "risk": "Medium",
+      "keywords": [
+        "three lines",
+        "line of defence",
+        "second line",
+        "independent",
+        "segregation of duties"
+      ],
+      "remediation": "Document the three-lines model and ensure the independent test is performed by someone other than the compliance officer.",
+      "suggestedWording": "The programme operates a three-lines-of-defence model; the independent testing function is performed by parties independent of the functions tested and excludes the Compliance Officer.",
+      "complexity": "Low"
+    },
+    {
+      "id": "RA-1",
+      "domain": "RA",
+      "requirement": "Documented enterprise-wide risk assessment",
+      "expected": "A written enterprise risk assessment evaluates inherent ML/TF/sanctions/fraud risk across customers, products, geographies/corridors, channels and counterparties; concludes on residual risk; refreshed at least annually and on material change.",
+      "citation": "Mal Doc 1.1; Doc 1.2 §4.1",
+      "risk": "Critical",
+      "keywords": [
+        "risk assessment",
+        "inherent risk",
+        "residual risk",
+        "methodology",
+        "annually",
+        "customers, products"
+      ],
+      "remediation": "Produce a documented enterprise risk assessment across all risk categories with a residual-risk conclusion, refreshed annually and on material change.",
+      "suggestedWording": "The Company maintains a documented enterprise-wide risk assessment across customers, products, geographies, channels and counterparties, concluding on residual risk and refreshed at least annually and upon any material change.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "RA-2",
+      "domain": "RA",
+      "requirement": "Risk-to-control matrix",
+      "expected": "Each identified risk is mapped to a specific control, governing document, owner, review frequency and evidence.",
+      "citation": "Mal Doc 1.2 §4.1",
+      "risk": "High",
+      "keywords": [
+        "risk-to-control",
+        "control matrix",
+        "mapped to a control",
+        "owner",
+        "evidence"
+      ],
+      "remediation": "Build a risk-to-control matrix linking every inherent risk to a named control, owner, frequency and evidence source.",
+      "suggestedWording": "A Risk-to-Control Matrix records, for each identified risk, the mitigating control, governing document, accountable owner, review frequency and evidence.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "RA-3",
+      "domain": "RA",
+      "requirement": "Customer & geographic risk-rating model",
+      "expected": "A documented, weighted customer risk-rating model assigns risk bands that drive due diligence, limits, monitoring and review cadence; corridor/geographic risk is classified on an internal basis.",
+      "citation": "Mal CRAM-01; Doc 1.2 §4.2-4.3",
+      "risk": "High",
+      "keywords": [
+        "risk rating",
+        "risk band",
+        "scoring",
+        "weighted",
+        "corridor",
+        "geographic risk",
+        "risk tier"
+      ],
+      "remediation": "Implement a documented weighted risk-rating model with bands that drive treatment, plus an internal corridor/geographic risk classification.",
+      "suggestedWording": "Each customer is assigned a risk band by a documented, weighted risk-rating model; the band drives due-diligence depth, limits, monitoring intensity and review cadence. Geographic/corridor risk is classified on an internal, evidence-based methodology.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "CDD-1",
+      "domain": "CDD",
+      "requirement": "Customer identification programme (minimum identity data + verification)",
+      "expected": "Before transacting, collect full legal name, date of birth, residential address (no PO box) and a government-ID number; verify by documentary and non-documentary methods.",
+      "citation": "Mal Doc 1.3; 31 CFR 1020.220 expectations",
+      "risk": "Critical",
+      "keywords": [
+        "identity",
+        "identification",
+        "verify",
+        "date of birth",
+        "address",
+        "government id",
+        "document"
+      ],
+      "remediation": "Define mandatory CIP fields and a verification standard (documentary + non-documentary) completed before account functionality.",
+      "suggestedWording": "Before an account becomes transactable the Company collects and verifies the customer's full legal name, date of birth, residential address and government-issued identification using documentary and non-documentary methods.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "CDD-2",
+      "domain": "CDD",
+      "requirement": "Beneficial ownership identification",
+      "expected": "For legal-entity customers, identify and verify beneficial owners at the 25% ownership prong plus one control person (enhanced 10% threshold for high-risk).",
+      "citation": "Mal Doc 1.3; 31 CFR 1010.230",
+      "risk": "High",
+      "keywords": [
+        "beneficial owner",
+        "ownership",
+        "control person",
+        "25%",
+        "ubo",
+        "ultimate beneficial"
+      ],
+      "remediation": "Adopt a beneficial-ownership standard (25% + control person; 10% for high-risk) with verification and re-confirmation at review.",
+      "suggestedWording": "For each legal-entity customer the Company identifies and verifies every beneficial owner holding 25% or more and one control person (10% for high-risk relationships), re-confirmed at each periodic review.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "CDD-3",
+      "domain": "CDD",
+      "requirement": "Purpose, nature and source of funds",
+      "expected": "Understand and record the purpose and expected nature of the relationship; obtain risk-based source of funds.",
+      "citation": "Mal Doc 1.3; GA-1",
+      "risk": "High",
+      "keywords": [
+        "purpose",
+        "nature of the relationship",
+        "expected activity",
+        "source of funds"
+      ],
+      "remediation": "Capture purpose/expected activity at onboarding and require risk-based source-of-funds evidence.",
+      "suggestedWording": "The Company records the purpose and expected nature of each relationship and obtains source-of-funds evidence on a risk-sensitive basis.",
+      "complexity": "Low"
+    },
+    {
+      "id": "CDD-4",
+      "domain": "CDD",
+      "requirement": "Prohibited customers, refusal and completion deadline",
+      "expected": "Prohibited customer types are rejected at the gate; the relationship is refused/exited on evasion or failure to evidence; CDD that cannot be completed within a set period (e.g., 30 days) restricts the account.",
+      "citation": "Mal Doc 1.3; Doc 5.11",
+      "risk": "High",
+      "keywords": [
+        "prohibited",
+        "refuse",
+        "exit",
+        "reject",
+        "terminate",
+        "cannot be completed"
+      ],
+      "remediation": "Define prohibited customer types, a refusal/exit procedure and a hard CDD-completion deadline that restricts the account.",
+      "suggestedWording": "Prohibited customer types are rejected at onboarding; relationships are refused or exited on evasion or failure to evidence identity, ownership or source of funds; CDD not completed within 30 days results in account restriction and exit consideration.",
+      "complexity": "Low"
+    },
+    {
+      "id": "EDD-1",
+      "domain": "EDD",
+      "requirement": "EDD triggers and senior approval",
+      "expected": "Enhanced due diligence applies to high-risk relationships and requires senior-management/compliance approval to onboard or retain.",
+      "citation": "Mal Doc 1.3; Doc 1.8",
+      "risk": "Critical",
+      "keywords": [
+        "enhanced due diligence",
+        "edd",
+        "senior approval",
+        "senior management",
+        "high-risk",
+        "high risk"
+      ],
+      "remediation": "Define EDD triggers and require documented senior approval to onboard/retain high-risk relationships.",
+      "suggestedWording": "High-risk relationships are subject to enhanced due diligence and require documented senior-compliance approval to onboard or retain.",
+      "complexity": "Low"
+    },
+    {
+      "id": "EDD-2",
+      "domain": "EDD",
+      "requirement": "Source of wealth for high-risk / PEP",
+      "expected": "Full source-of-wealth is established for high-risk customers and PEPs.",
+      "citation": "Mal Doc 1.3; GA-1",
+      "risk": "High",
+      "keywords": [
+        "source of wealth",
+        "sow",
+        "establish wealth"
+      ],
+      "remediation": "Require documented source-of-wealth establishment for high-risk and PEP relationships.",
+      "suggestedWording": "For high-risk relationships and PEPs the Company establishes and documents the customer's source of wealth.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "EDD-3",
+      "domain": "EDD",
+      "requirement": "Enhanced monitoring and critical-tier sign-off",
+      "expected": "EDD relationships receive enhanced monitoring cadence; the highest (critical) tier requires documented MLRO/senior sign-off and bespoke controls.",
+      "citation": "Mal Doc 1.3; CRAM-01",
+      "risk": "High",
+      "keywords": [
+        "enhanced monitoring",
+        "mlro sign-off",
+        "bespoke",
+        "reduced limits"
+      ],
+      "remediation": "Apply enhanced monitoring to EDD relationships and require MLRO sign-off plus bespoke controls for the critical tier.",
+      "suggestedWording": "EDD relationships are subject to enhanced ongoing monitoring; critical-tier relationships additionally require documented MLRO sign-off and bespoke, board-visible controls.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "OM-1",
+      "domain": "OM",
+      "requirement": "Periodic review driven by risk",
+      "expected": "Periodic KYC/CDD refresh occurs on a cadence driven by the customer's risk band.",
+      "citation": "Mal Doc 1.3",
+      "risk": "High",
+      "keywords": [
+        "periodic review",
+        "refresh",
+        "review cycle",
+        "review cadence",
+        "ongoing due diligence"
+      ],
+      "remediation": "Set band-driven periodic review cycles (e.g., higher-risk reviewed more frequently).",
+      "suggestedWording": "Customers are subject to periodic review on a cadence set by risk band, with higher-risk customers reviewed more frequently.",
+      "complexity": "Low"
+    },
+    {
+      "id": "OM-2",
+      "domain": "OM",
+      "requirement": "Trigger-based reviews",
+      "expected": "Defined event triggers re-run screening and recompute the customer's risk rating.",
+      "citation": "Mal Doc 1.3",
+      "risk": "Medium",
+      "keywords": [
+        "trigger",
+        "event-driven",
+        "re-screen",
+        "recompute",
+        "trigger event"
+      ],
+      "remediation": "Define a trigger set (new payer, adverse media, anomalies) that forces re-screening and rescoring.",
+      "suggestedWording": "Defined trigger events (e.g., adverse media, anomalous activity, new high-value counterparties) cause immediate re-screening and recomputation of the customer's risk rating.",
+      "complexity": "Low"
+    },
+    {
+      "id": "OM-3",
+      "domain": "OM",
+      "requirement": "Continuous / delta re-screening",
+      "expected": "Customer base is re-screened on each watchlist/list update (delta re-screen).",
+      "citation": "Mal Doc 1.4; Doc 1.3",
+      "risk": "High",
+      "keywords": [
+        "delta",
+        "watchlist update",
+        "continuous screening",
+        "ongoing screening",
+        "each update"
+      ],
+      "remediation": "Implement automatic delta re-screening of the full base on each list update.",
+      "suggestedWording": "The full customer and counterparty base is automatically re-screened on each watchlist update.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "TM-1",
+      "domain": "TM",
+      "requirement": "Transaction monitoring coverage",
+      "expected": "All inbound, outbound and card activity is monitored against a typology library (structuring, mule, trade-based ML, corridor layering, card anomalies).",
+      "citation": "Mal Doc 1.5",
+      "risk": "Critical",
+      "keywords": [
+        "transaction monitoring",
+        "monitor",
+        "typolog",
+        "structuring",
+        "alert",
+        "suspicious patterns"
+      ],
+      "remediation": "Implement transaction monitoring covering all rails with a documented typology rule library.",
+      "suggestedWording": "All inbound funding, outbound payments and card activity are monitored in line with a documented typology library, including structuring, mule activity, trade-based laundering, corridor layering and card anomalies.",
+      "complexity": "High"
+    },
+    {
+      "id": "TM-2",
+      "domain": "TM",
+      "requirement": "Fail-closed, pre-availability screening",
+      "expected": "Funds are not made available, and payments do not leave, without a recorded screening disposition; the system fails closed on outage.",
+      "citation": "Mal Doc 1.5; Doc 1.4",
+      "risk": "High",
+      "keywords": [
+        "fail-closed",
+        "fail closed",
+        "suspense",
+        "pre-availability",
+        "recorded disposition",
+        "quarantine"
+      ],
+      "remediation": "Quarantine inbound/outbound funds until a recorded disposition exists; ensure monitoring fails closed.",
+      "suggestedWording": "No funds become available and no payment is dispatched without a recorded monitoring/screening disposition; on system outage the platform fails closed and funds remain quarantined.",
+      "complexity": "High"
+    },
+    {
+      "id": "TM-3",
+      "domain": "TM",
+      "requirement": "Advisory incorporation and rule tuning",
+      "expected": "Regulatory advisories/typologies are incorporated promptly (e.g., within 30 days); rules are tuned under documented change control.",
+      "citation": "Mal Doc 1.5",
+      "risk": "Medium",
+      "keywords": [
+        "advisory",
+        "tuning",
+        "change control",
+        "calibrat",
+        "incorporated within"
+      ],
+      "remediation": "Adopt a 30-day advisory-incorporation standard and an evidence-based, change-controlled tuning process.",
+      "suggestedWording": "FinCEN/regulatory advisories are incorporated into monitoring rules and training within 30 days; rule tuning is evidence-based and performed under documented change control.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "TM-4",
+      "domain": "TM",
+      "requirement": "Alert handling and decision provenance",
+      "expected": "Alerts are worked under documented desk references; dispositions (including false-positive rationale) are recorded in examiner-ready form; aged items escalate.",
+      "citation": "Mal Doc 1.5",
+      "risk": "Medium",
+      "keywords": [
+        "alert",
+        "disposition",
+        "decision provenance",
+        "dpl",
+        "four-eyes",
+        "rationale"
+      ],
+      "remediation": "Document alert-handling desk references and a decision-provenance log; auto-escalate aged items.",
+      "suggestedWording": "Alerts are adjudicated under documented desk references; every disposition, including false-positive closures, is recorded in an examiner-ready decision-provenance log, and items aged beyond a set period auto-escalate.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "SANC-1",
+      "domain": "SANC",
+      "requirement": "Sanctions screening scope and timing",
+      "expected": "All customers, beneficial owners, counterparties, beneficiaries and card merchants are screened at onboarding and continuously against OFAC SDN, enhanced lists and UN/EU overlays.",
+      "citation": "Mal Doc 1.4; SCP",
+      "risk": "Critical",
+      "keywords": [
+        "sanctions",
+        "ofac",
+        "sdn",
+        "screening",
+        "watchlist",
+        "un",
+        "screened against"
+      ],
+      "remediation": "Screen all parties at onboarding and continuously against OFAC SDN, enhanced and UN/EU lists.",
+      "suggestedWording": "All customers, beneficial owners, counterparties, beneficiaries and merchants are screened at onboarding and continuously against the OFAC SDN List, enhanced lists and UN/EU overlays.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "SANC-2",
+      "domain": "SANC",
+      "requirement": "List-update SLA and batch re-screening",
+      "expected": "OFAC SDN deltas are live in screening within 24 hours (other lists within 48); every update triggers batch re-screening of the entire base.",
+      "citation": "Mal Doc 1.4",
+      "risk": "High",
+      "keywords": [
+        "list update",
+        "re-screen",
+        "24 hours",
+        "48 hours",
+        "batch",
+        "same business day"
+      ],
+      "remediation": "Set a 24h SDN / 48h other-list update SLA with automatic full-base batch re-screening.",
+      "suggestedWording": "OFAC SDN updates are live in screening within 24 hours and other lists within 48 hours; each update triggers automatic batch re-screening of the entire customer, counterparty and vendor base.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "SANC-3",
+      "domain": "SANC",
+      "requirement": "Blocking/rejection reporting, 50% rule and ARBP",
+      "expected": "Blocking and rejection reports are filed within 10 business days; the 50% rule is applied; the Annual Report of Blocked Property is filed by 30 September.",
+      "citation": "Mal Doc 1.4; 31 CFR 501.603",
+      "risk": "Critical",
+      "keywords": [
+        "blocking",
+        "reject",
+        "10 business days",
+        "blocked property",
+        "50 percent",
+        "annual report"
+      ],
+      "remediation": "Implement 10-business-day blocking/reject reporting, 50%-rule logic and the 30 September ARBP filing.",
+      "suggestedWording": "Blocking and rejection reports are filed with OFAC within 10 business days; the 50% Rule is applied to ownership; the Annual Report of Blocked Property is filed by 30 September for property held as of 30 June.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "SANC-4",
+      "domain": "SANC",
+      "requirement": "Matching quality and independent list validation",
+      "expected": "Screening uses fuzzy/transliteration matching, is regression-tested, and list presence/freshness is independently validated (never vendor attestation alone), with seeded-name testing.",
+      "citation": "Mal Doc 1.4; Doc 2.3",
+      "risk": "High",
+      "keywords": [
+        "fuzzy",
+        "transliteration",
+        "seeded",
+        "list-load",
+        "independent validation",
+        "regression"
+      ],
+      "remediation": "Adopt fuzzy/transliteration matching with independent list-load validation and quarterly seeded-name testing.",
+      "suggestedWording": "Screening applies approved fuzzy and per-script transliteration matching; list presence and freshness are independently validated (never on vendor attestation alone) and proven by periodic seeded-name testing.",
+      "complexity": "High"
+    },
+    {
+      "id": "SANC-5",
+      "domain": "SANC",
+      "requirement": "Geolocation screening and anti-tipping-off",
+      "expected": "Device/IP geolocation is screened to detect transacting from sanctioned jurisdictions; customer-facing communications on holds use tipping-off-safe language.",
+      "citation": "Mal Doc 1.4",
+      "risk": "Medium",
+      "keywords": [
+        "geolocation",
+        "ip",
+        "tipping-off",
+        "safe language",
+        "jurisdiction"
+      ],
+      "remediation": "Add IP/geolocation screening and template-locked, tipping-off-safe hold messaging.",
+      "suggestedWording": "Device IP and session geolocation are screened to prevent transacting from comprehensively sanctioned jurisdictions; all customer-facing communications on a hold use template-locked, tipping-off-safe language.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "PEP-1",
+      "domain": "PEP",
+      "requirement": "PEP identification by dual method",
+      "expected": "PEP status is identified by both database screening and self-certification at onboarding and on list updates; self-certification supplements, never replaces, screening.",
+      "citation": "Mal Doc 1.8",
+      "risk": "High",
+      "keywords": [
+        "pep",
+        "politically exposed",
+        "self-certification",
+        "screening",
+        "database"
+      ],
+      "remediation": "Screen all customers and beneficial owners against PEP databases and require self-certification.",
+      "suggestedWording": "PEP status is identified by both database screening and customer self-certification at onboarding and on each list update; self-certification supplements but never replaces database screening.",
+      "complexity": "Low"
+    },
+    {
+      "id": "PEP-2",
+      "domain": "PEP",
+      "requirement": "PEP EDD treatment",
+      "expected": "A confirmed PEP is escalated to the high-risk tier with senior approval, source-of-wealth establishment and a foreign-corruption focus.",
+      "citation": "Mal Doc 1.8; USA PATRIOT Act §312; FATF R.12",
+      "risk": "High",
+      "keywords": [
+        "pep",
+        "senior approval",
+        "source of wealth",
+        "foreign corruption",
+        "enhanced"
+      ],
+      "remediation": "Treat confirmed PEPs as high-risk with senior approval, source-of-wealth and corruption-focused EDD.",
+      "suggestedWording": "A confirmed PEP is treated as high-risk, requiring senior-compliance approval, source-of-wealth establishment and enhanced due diligence calibrated to detect proceeds of foreign corruption.",
+      "complexity": "Low"
+    },
+    {
+      "id": "PEP-3",
+      "domain": "PEP",
+      "requirement": "Family, associates and ongoing PEP monitoring",
+      "expected": "Immediate family members and close associates are treated as PEPs; PEP relationships are re-screened on each update and reassessed at review; declassification only on documented rationale.",
+      "citation": "Mal Doc 1.8",
+      "risk": "Medium",
+      "keywords": [
+        "family",
+        "close associate",
+        "ongoing",
+        "re-screen",
+        "reassess"
+      ],
+      "remediation": "Extend PEP treatment to family/associates and require ongoing re-screening with documented declassification.",
+      "suggestedWording": "Immediate family members and close associates of PEPs are treated as PEPs; relationships are re-screened on each update and reassessed at review, with declassification only on documented MLRO rationale.",
+      "complexity": "Low"
+    },
+    {
+      "id": "SAR-1",
+      "domain": "SAR",
+      "requirement": "SAR filing and timeline",
+      "expected": "Suspicious activity is reported within 30 days of detection (or a complete escalation package to the partner filer); continuing-activity SARs are filed on a ~90-day cycle.",
+      "citation": "Mal Doc 1.7; 31 CFR 1022.320",
+      "risk": "Critical",
+      "keywords": [
+        "sar",
+        "suspicious activity",
+        "30 days",
+        "file",
+        "report"
+      ],
+      "remediation": "Define a SAR process with a 30-day filing clock (or partner-escalation package) and continuing-SAR cycle.",
+      "suggestedWording": "Suspicious activity is reported within 30 days of detection via the appropriate filing channel (or a complete escalation package to the partner filer within ~20 days), with continuing-activity SARs filed approximately every 90 days.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "SAR-2",
+      "domain": "SAR",
+      "requirement": "SAR confidentiality and anti-tipping-off",
+      "expected": "It is prohibited to disclose that a SAR is filed/contemplated; SAR records are access-restricted and retained for five years.",
+      "citation": "Mal Doc 1.7; 31 U.S.C. §5318(g)",
+      "risk": "Critical",
+      "keywords": [
+        "confidential",
+        "tipping",
+        "disclose",
+        "access-restricted",
+        "never disclose"
+      ],
+      "remediation": "Prohibit tipping-off, restrict SAR access and retain SAR records for five years.",
+      "suggestedWording": "No person is informed that a SAR has been, will be, or is being considered for filing; SAR records are access-restricted to authorised compliance staff and retained for five years from filing.",
+      "complexity": "Low"
+    },
+    {
+      "id": "SAR-3",
+      "domain": "SAR",
+      "requirement": "SAR governance and quality assurance",
+      "expected": "Qualifying cases are decided by a SAR committee/decisioning process with pre-filing QA; SAR trends are reported to the Board.",
+      "citation": "Mal Doc 1.7; Doc 1.2 §4.5",
+      "risk": "Medium",
+      "keywords": [
+        "sar committee",
+        "decision",
+        "quality assurance",
+        "trend",
+        "pre-filing"
+      ],
+      "remediation": "Establish a SAR decisioning body, pre-filing QA and Board trend reporting.",
+      "suggestedWording": "Qualifying cases are decided by a SAR Committee with documented pre-filing quality assurance; SAR volumes and themes are reported to the Board on a quarterly basis.",
+      "complexity": "Low"
+    },
+    {
+      "id": "SAR-4",
+      "domain": "SAR",
+      "requirement": "314(a) handling and evasion indicators",
+      "expected": "Section 314(a) requests are searched within the mandated period and kept confidential; evasion indicators are treated as reportable.",
+      "citation": "Mal Doc 1.7",
+      "risk": "Medium",
+      "keywords": [
+        "314(a)",
+        "314a",
+        "evasion",
+        "reportable",
+        "information request"
+      ],
+      "remediation": "Define 314(a) search/confidentiality handling and treat evasion attempts as SAR-reportable.",
+      "suggestedWording": "Section 314(a) requests are searched against required records within the mandated period and kept strictly confidential; attempts to evade identification or reporting are themselves treated as reportable indicators.",
+      "complexity": "Low"
+    },
+    {
+      "id": "REP-1",
+      "domain": "REP",
+      "requirement": "Currency transaction reporting (CTR)",
+      "expected": "Currency transactions over $10,000 (single or aggregated in a business day) are reported on a CTR within 15 calendar days; structuring is detected.",
+      "citation": "Mal Doc 1.7; 31 CFR 1010.311",
+      "risk": "Medium",
+      "keywords": [
+        "ctr",
+        "currency transaction",
+        "10,000",
+        "15 days",
+        "aggregat"
+      ],
+      "remediation": "Maintain CTR procedures with the $10,000 threshold, aggregation and 15-day filing (even if non-cash).",
+      "suggestedWording": "Currency transactions exceeding $10,000 (single or aggregated for one person in one business day) are reported on a CTR within 15 calendar days; structuring to evade the threshold is detected and reported.",
+      "complexity": "Low"
+    },
+    {
+      "id": "REP-2",
+      "domain": "REP",
+      "requirement": "Travel Rule",
+      "expected": "For transmittals of $3,000 or more, required originator and beneficiary information is recorded and travels to the receiving institution; true names are used and the firm's address is not substituted.",
+      "citation": "Mal Doc 1.6; 31 CFR 1010.410; FATF R.16",
+      "risk": "High",
+      "keywords": [
+        "travel rule",
+        "originator",
+        "beneficiary",
+        "3,000",
+        "transmittal"
+      ],
+      "remediation": "Implement Travel Rule data capture and transmission for transmittals ≥$3,000.",
+      "suggestedWording": "For transmittals of funds of $3,000 or more, required originator and beneficiary information is recorded and transmitted to the receiving institution using true names; the Company's address is never substituted for the customer's.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "REC-1",
+      "domain": "REC",
+      "requirement": "Retention schedule",
+      "expected": "AML records are retained for at least five years (sanctions records aligned to ten years), reconstruction-grade.",
+      "citation": "Mal Doc 1.9; 31 CFR Chapter X",
+      "risk": "High",
+      "keywords": [
+        "retention",
+        "five years",
+        "5 years",
+        "retain",
+        "ten years",
+        "records"
+      ],
+      "remediation": "Adopt a written retention schedule: ≥5 years (sanctions 10 years), reconstruction-grade.",
+      "suggestedWording": "All AML/CFT records are retained for at least five years (sanctions-relevant records for ten years), kept reconstruction-grade and producible to regulators.",
+      "complexity": "Low"
+    },
+    {
+      "id": "REC-2",
+      "domain": "REC",
+      "requirement": "Record integrity, legal hold and disposal",
+      "expected": "Records are tamper-evident, versioned and time-stamped; legal holds suspend disposal; secure disposal is logged.",
+      "citation": "Mal Doc 1.9",
+      "risk": "Medium",
+      "keywords": [
+        "tamper",
+        "legal hold",
+        "disposal",
+        "integrity",
+        "versioned"
+      ],
+      "remediation": "Add record-integrity, legal-hold and secure-disposal controls with a disposal log.",
+      "suggestedWording": "Records are tamper-evident, versioned and time-stamped; legal holds suspend disposal; records past retention and not held are securely disposed of with a disposal log retained.",
+      "complexity": "Low"
+    },
+    {
+      "id": "REC-3",
+      "domain": "REC",
+      "requirement": "Examiner production capability",
+      "expected": "The firm can produce examiner-grade extracts (full history, dispositions, list versions) within 10 business days, proven by an annual lookback drill.",
+      "citation": "Mal Doc 1.9; Doc 2.3",
+      "risk": "Medium",
+      "keywords": [
+        "examiner",
+        "extract",
+        "reconstruct",
+        "lookback",
+        "10 business days"
+      ],
+      "remediation": "Build and annually test a 10-business-day examiner-extract capability.",
+      "suggestedWording": "The Company can produce examiner-grade extracts for any account, including closed accounts, within 10 business days, and proves this capability in an annual lookback exercise.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "TRN-1",
+      "domain": "TRN",
+      "requirement": "Role-based AML training",
+      "expected": "Role-based AML/CFT training is delivered at hire (within ~30 days, before compliance duties) and at least annually.",
+      "citation": "Mal Doc 1.2 §6; Doc 2.2",
+      "risk": "High",
+      "keywords": [
+        "training",
+        "role-based",
+        "annual",
+        "at hire",
+        "awareness"
+      ],
+      "remediation": "Deliver role-based AML training at hire and at least annually.",
+      "suggestedWording": "All relevant staff receive role-based AML/CFT training within 30 days of hire (before performing compliance-relevant duties) and at least annually thereafter.",
+      "complexity": "Low"
+    },
+    {
+      "id": "TRN-2",
+      "domain": "TRN",
+      "requirement": "Testing, attestation and completion tracking",
+      "expected": "Training requires a minimum pass score with signed attestation; completion is tracked to 100% and records retained for five years.",
+      "citation": "Mal Doc 1.2 §6",
+      "risk": "Medium",
+      "keywords": [
+        "test",
+        "attestation",
+        "completion",
+        "pass score",
+        "80%"
+      ],
+      "remediation": "Add a pass threshold, signed attestation and completion tracking with retained records.",
+      "suggestedWording": "Training requires a minimum 80% test score and a signed attestation; completion is tracked to 100% by year-end and records are retained for five years.",
+      "complexity": "Low"
+    },
+    {
+      "id": "TRN-3",
+      "domain": "TRN",
+      "requirement": "Advisory and typology updates in training",
+      "expected": "New advisories/typologies are incorporated into training within ~30 days of publication.",
+      "citation": "Mal Doc 1.2 §6",
+      "risk": "Low",
+      "keywords": [
+        "advisory",
+        "update",
+        "typology",
+        "30 days"
+      ],
+      "remediation": "Commit to incorporating new advisories into training within 30 days.",
+      "suggestedWording": "Material regulatory advisories and emerging typologies are incorporated into training content within 30 days of publication.",
+      "complexity": "Low"
+    },
+    {
+      "id": "AUD-1",
+      "domain": "AUD",
+      "requirement": "Independent testing of the programme",
+      "expected": "An independent test of the AML/sanctions programme is performed by parties independent of the functions tested (not the CO), within 12 months of launch and at least annually, reporting directly to the Board.",
+      "citation": "Mal Doc 2.3; 31 CFR 1022.210",
+      "risk": "Critical",
+      "keywords": [
+        "independent test",
+        "independent audit",
+        "independent of",
+        "board",
+        "at least annually"
+      ],
+      "remediation": "Commission an independent annual audit (first within 12 months of launch) reporting to the Board.",
+      "suggestedWording": "An independent test of the BSA/AML and sanctions programme is conducted by parties independent of the functions tested (excluding the Compliance Officer), within 12 months of launch and at least annually, reporting directly to the Board.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "AUD-2",
+      "domain": "AUD",
+      "requirement": "Audit scope",
+      "expected": "Audit scope covers risk-assessment adequacy, CIP/KYC/EDD file testing, monitoring/alert quality, SAR decisioning, OFAC configuration and blocked-property handling, Travel Rule, recordkeeping, training and partner oversight.",
+      "citation": "Mal Doc 2.3",
+      "risk": "High",
+      "keywords": [
+        "scope",
+        "file testing",
+        "sampl",
+        "alert quality",
+        "coverage"
+      ],
+      "remediation": "Define a comprehensive audit scope across all programme pillars and partner oversight.",
+      "suggestedWording": "The independent audit scope includes, at minimum, the risk assessment, CIP/KYC/EDD file testing, monitoring and alert-disposition quality, SAR decisioning and timeliness, OFAC configuration and blocked-property handling, Travel Rule completeness, recordkeeping retrievability, training, and partner oversight.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "AUD-3",
+      "domain": "AUD",
+      "requirement": "Technical assurance and remediation tracking",
+      "expected": "Seeded-name/wallet tests, fail-closed tests and lookback drills are performed; findings are tracked to closure.",
+      "citation": "Mal Doc 2.3",
+      "risk": "Medium",
+      "keywords": [
+        "seeded",
+        "fail-closed",
+        "lookback",
+        "remediation",
+        "tracked to closure"
+      ],
+      "remediation": "Add seeded-test, fail-closed and lookback assurance with remediation tracking.",
+      "suggestedWording": "The programme is assured by periodic seeded-name/wallet testing, fail-closed testing and lookback drills, with all findings tracked to closure and verified.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "TPO-1",
+      "domain": "TPO",
+      "requirement": "Third-party lifecycle oversight",
+      "expected": "A full third-party lifecycle (planning, due diligence, contracting, ongoing monitoring, termination) applies to all partners that touch the funds flow or data.",
+      "citation": "Mal Doc 0.3/0.4; FDIC FIL-29-2023",
+      "risk": "High",
+      "keywords": [
+        "third-party",
+        "third party",
+        "vendor",
+        "due diligence",
+        "ongoing monitoring",
+        "lifecycle"
+      ],
+      "remediation": "Apply a documented third-party risk lifecycle to all partners, proportionate to criticality.",
+      "suggestedWording": "All third parties that move funds, see customer data or run critical systems are subject to a documented lifecycle: planning, due diligence, contracting, ongoing monitoring and termination, proportionate to criticality.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "TPO-2",
+      "domain": "TPO",
+      "requirement": "Processor non-reliance and model risk",
+      "expected": "Processors (IDV/screening) are never relied upon for CDD; the firm retains CDD ownership and performs model-risk management/validation of vendor models.",
+      "citation": "Mal Doc 0.4; Doc 1.2 §8",
+      "risk": "High",
+      "keywords": [
+        "processor",
+        "reliance",
+        "model risk",
+        "retain",
+        "validation",
+        "cdd ownership"
+      ],
+      "remediation": "State that processors are not CDD reliance and add independent validation of vendor models.",
+      "suggestedWording": "Identity-verification and screening vendors are processors only; the Company retains full ownership of CDD and all decisions and independently validates vendor models rather than relying on vendor output.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "TPO-3",
+      "domain": "TPO",
+      "requirement": "Partner scorecards and termination triggers",
+      "expected": "Partners are scored quarterly against documented KPIs/KRIs; non-discretionary remediation-or-exit triggers on sustained breaches (e.g., two consecutive quarters).",
+      "citation": "Mal Doc 0.4",
+      "risk": "Medium",
+      "keywords": [
+        "scorecard",
+        "kpi",
+        "kri",
+        "termination",
+        "threshold",
+        "two consecutive"
+      ],
+      "remediation": "Score partners quarterly and define non-discretionary termination triggers.",
+      "suggestedWording": "Each partner is scored quarterly against documented thresholds; any partner breaching its thresholds for two consecutive quarters enters mandatory, non-discretionary remediation or exit.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "TPO-4",
+      "domain": "TPO",
+      "requirement": "Agent / payout-network oversight",
+      "expected": "Payout agents are subject to OFAC/background checks on a defined cycle, AML audits, Travel-Rule data quality, and confirmation of no hawala/hundi settlement.",
+      "citation": "Mal Doc 0.4; GA-4",
+      "risk": "High",
+      "keywords": [
+        "agent",
+        "background check",
+        "hawala",
+        "hundi",
+        "agent audit",
+        "authorisation"
+      ],
+      "remediation": "Add agent-network controls: periodic OFAC/background checks, agent AML audits, no IVTS settlement.",
+      "suggestedWording": "Payout agents are subject to OFAC and background checks at least every three years, periodic AML audits, Travel-Rule data-quality checks, and documented confirmation that no hawala/hundi/IVTS settlement occurs in the chain.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "DOB-1",
+      "domain": "DOB",
+      "requirement": "Remote identity verification and liveness",
+      "expected": "Remote onboarding verifies identity with liveness/selfie match and document verification, supplemented by non-documentary checks and transliteration handling.",
+      "citation": "Mal Doc 1.3",
+      "risk": "High",
+      "keywords": [
+        "liveness",
+        "selfie",
+        "remote",
+        "biometric",
+        "non-documentary",
+        "document verification"
+      ],
+      "remediation": "Implement liveness/selfie + document verification with non-documentary corroboration for remote onboarding.",
+      "suggestedWording": "Remote onboarding verifies identity through document verification and a liveness/selfie match, supplemented by non-documentary verification and per-script transliteration handling.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "DOB-2",
+      "domain": "DOB",
+      "requirement": "Pre-funding sanctions/PEP gate",
+      "expected": "Sanctions and PEP screening complete before account functionality; the onboarding flow fails closed on unresolved alerts.",
+      "citation": "Mal Doc 1.3; Doc 1.4",
+      "risk": "High",
+      "keywords": [
+        "before functionality",
+        "screen at onboarding",
+        "gate",
+        "fail",
+        "unresolved"
+      ],
+      "remediation": "Gate account functionality behind cleared sanctions/PEP screening; fail closed on unresolved alerts.",
+      "suggestedWording": "No account becomes functional until sanctions and PEP screening are complete and any alerts are resolved; unresolved alerts hold the account closed.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "DOB-3",
+      "domain": "DOB",
+      "requirement": "Anti-mule and device/geo controls",
+      "expected": "Digital onboarding applies anti-mule controls and device/geo/IP signals, with first-payer and new-payer holds.",
+      "citation": "Mal Doc 1.3; Doc 1.5",
+      "risk": "Medium",
+      "keywords": [
+        "mule",
+        "device",
+        "geo",
+        "ip",
+        "first-payer",
+        "new payer"
+      ],
+      "remediation": "Add anti-mule messaging plus device/geo signals and first-payer holds at onboarding.",
+      "suggestedWording": "Digital onboarding presents anti-mule controls and ingests device, geolocation and IP signals, applying holds on first and new high-value payers.",
+      "complexity": "Medium"
+    },
+    {
+      "id": "ESC-1",
+      "domain": "ESC",
+      "requirement": "Tiered alert SLAs",
+      "expected": "Alerts are triaged into severities (e.g., P1/P2/P3) with defined response SLAs (e.g., P1 within 4 hours).",
+      "citation": "Mal Doc 1.2 §4.5; Doc 1.5",
+      "risk": "High",
+      "keywords": [
+        "p1",
+        "severity",
+        "sla",
+        "escalation",
+        "tier",
+        "4 hours"
+      ],
+      "remediation": "Define tiered alert severities with response SLAs.",
+      "suggestedWording": "Alerts are triaged into P1/P2/P3 severities with defined response SLAs (P1 within 4 hours, P2 within 24 hours, P3 within 48 hours).",
+      "complexity": "Low"
+    },
+    {
+      "id": "ESC-2",
+      "domain": "ESC",
+      "requirement": "Issue and remediation management",
+      "expected": "Compliance exceptions and issues are tracked in a register with severity-based remediation SLAs and Board reporting.",
+      "citation": "Mal Doc 1.2 §4.9",
+      "risk": "Medium",
+      "keywords": [
+        "issue",
+        "remediation",
+        "exception",
+        "register",
+        "corrective"
+      ],
+      "remediation": "Maintain an exceptions/issues register with severity-based remediation SLAs and Board reporting.",
+      "suggestedWording": "Compliance exceptions and issues are tracked from identification to closure in a register, with remediation SLAs and Board reporting driven by severity.",
+      "complexity": "Low"
+    },
+    {
+      "id": "ESC-3",
+      "domain": "ESC",
+      "requirement": "Compliance-officer stop authority",
+      "expected": "The compliance officer can stop, freeze or escalate any transaction or account presenting material risk, regardless of commercial value.",
+      "citation": "Mal Doc 1.2 §5.2",
+      "risk": "Medium",
+      "keywords": [
+        "stop",
+        "freeze",
+        "authority",
+        "veto",
+        "regardless of commercial"
+      ],
+      "remediation": "Grant the compliance officer documented authority to stop/freeze regardless of commercial value.",
+      "suggestedWording": "The Compliance Officer has documented authority to stop or freeze any transaction or account, and to veto products, partners or corridors, where material AML/CTF risk is present, regardless of commercial value.",
+      "complexity": "Low"
+    }
+  ]
+}

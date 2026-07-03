@@ -1,0 +1,612 @@
+{
+  "version": "1.1.0",
+  "updated": "2026-06-30",
+  "source": "Mal FinCrime OS · CRAM lineage catalogue · Google Drive · Sayed weekly source monitor",
+  "driveFolders": {
+    "regulations": {
+      "id": "0ABopRvbIQ6pFUk9PVA",
+      "label": "01 · Regulations & Obligations",
+      "url": "https://drive.google.com/drive/folders/0ABopRvbIQ6pFUk9PVA",
+      "description": "Primary regulatory library — CBUAE, FATF, Wolfsberg, US BSA/FinCEN, internal AML/CFT policy, regulatory change log, obligation register."
+    },
+    "controlsWorkflows": {
+      "id": "0AEl7ykvShEaOUk9PVA",
+      "label": "02 · Controls & Workflows",
+      "url": "https://drive.google.com/drive/folders/0AEl7ykvShEaOUk9PVA",
+      "description": "Control register, control design & testing, workflow SOPs, risk heat-map methodology, Oscilar/Vital4/Shufti integration specs, module runbooks."
+    },
+    "evidenceRisk": {
+      "id": "0AMIvYfdjtIPBUk9PVA",
+      "label": "03 · Evidence & Risk Assessments",
+      "url": "https://drive.google.com/drive/folders/0AMIvYfdjtIPBUk9PVA",
+      "description": "Operational evidence locker — CDD/EDD files, CRA/EWRA outputs, screening dispositions, TM alert packs, investigation narratives, exam packs, heat-map snapshots."
+    }
+  },
+  "regulations": [
+    {
+      "id": "REG-CBUAE-AML",
+      "name": "CBUAE AML/CFT Rules",
+      "ref": "Art. 4 — CDD · Art. 5 — EDD · Art. 14 — STR",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK", "GROUP"],
+      "driveFolder": "regulations",
+      "driveDoc": "CBUAE/AML-CFT-Rules",
+      "status": "mapped",
+      "controls": ["C-104", "C-101", "C-122", "C-130"]
+    },
+    {
+      "id": "REG-FATF-R10",
+      "name": "FATF Recommendation 10",
+      "ref": "Customer due diligence",
+      "jurisdiction": "International",
+      "driveFolder": "regulations",
+      "driveDoc": "FATF/Rec-10-CDD",
+      "status": "mapped",
+      "controls": ["C-104", "C-105", "C-106"]
+    },
+    {
+      "id": "REG-FATF-R6",
+      "name": "FATF Recommendation 6",
+      "ref": "Targeted financial sanctions",
+      "jurisdiction": "International",
+      "driveFolder": "regulations",
+      "driveDoc": "FATF/Rec-6-TFS",
+      "status": "mapped",
+      "controls": ["C-101", "C-102"]
+    },
+    {
+      "id": "REG-WOLFSBERG",
+      "name": "Wolfsberg Principles",
+      "ref": "Correspondent banking · KYC",
+      "jurisdiction": "International",
+      "driveFolder": "regulations",
+      "driveDoc": "Wolfsberg/Correspondent-Banking",
+      "status": "mapped",
+      "controls": ["C-104", "C-107"]
+    },
+    {
+      "id": "REG-CBUAE-2026-14",
+      "name": "CBUAE Notice 2026/14",
+      "ref": "Virtual-asset travel rule",
+      "jurisdiction": "UAE",
+      "driveFolder": "regulations",
+      "driveDoc": "CBUAE/Notices/2026-14-VASP-travel-rule",
+      "status": "gap",
+      "controls": ["C-118"]
+    },
+    {
+      "id": "REG-US-BSA",
+      "name": "US Bank Secrecy Act / FinCEN",
+      "ref": "BSA AML Program · SAR · CIP",
+      "jurisdiction": "US",
+      "driveFolder": "regulations",
+      "driveDoc": "US/BSA-FinCEN-Program",
+      "status": "mapped",
+      "controls": ["C-104", "C-101", "C-140"]
+    },
+    {
+      "id": "REG-MAL-POLICY",
+      "name": "Mal AML/CFT Policy",
+      "ref": "§12.6 TM · RBA · EDD · behaviour gate",
+      "jurisdiction": "Group",
+      "licenseProfiles": ["GROUP", "UAE_COMMUNITY_BANK", "US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "Internal/MAL-AML-CFT-Policy-v2026",
+      "status": "mapped",
+      "controls": ["C-104", "C-122", "C-TM-001", "C-130"]
+    },
+    {
+      "id": "REG-UAE-AML-LAW",
+      "name": "UAE Federal AML-CFT Law (Decree-Law 20/2018)",
+      "ref": "Art. 15 STR · Art. 16 TFS · Cabinet Decision 10/2019",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK", "GROUP"],
+      "driveFolder": "regulations",
+      "driveDoc": "UAE/Federal-AML-CFT-Law-20-2018",
+      "status": "mapped",
+      "controls": ["C-104", "C-101", "C-130"]
+    },
+    {
+      "id": "REG-CBUAE-STR-3354",
+      "name": "CBUAE Notice 3354/2022 — STR/SAR Guidance",
+      "ref": "goAML · 35 business days · Who/What/When/Where/Why/How",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK"],
+      "driveFolder": "regulations",
+      "driveDoc": "CBUAE/Notices/3354-2022-STR-SAR-Guidance",
+      "status": "mapped",
+      "controls": ["C-130"]
+    },
+    {
+      "id": "REG-CBUAE-TM",
+      "name": "CBUAE Transaction Monitoring expectations",
+      "ref": "Thematic review · scenario calibration · alert disposition",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK"],
+      "driveFolder": "regulations",
+      "driveDoc": "CBUAE/TM-Thematic-Review-Framework",
+      "status": "mapped",
+      "controls": ["C-TM-001", "C-130"]
+    },
+    {
+      "id": "REG-UAE-TFS",
+      "name": "UAE Targeted Financial Sanctions",
+      "ref": "Cabinet Decision 74/2020 · Local terrorist lists",
+      "jurisdiction": "UAE",
+      "licenseProfiles": ["UAE_COMMUNITY_BANK"],
+      "driveFolder": "regulations",
+      "driveDoc": "UAE/TFS-Executive-Office-lists",
+      "status": "mapped",
+      "controls": ["C-101"]
+    },
+    {
+      "id": "REG-FATF-R20",
+      "name": "FATF Recommendation 20",
+      "ref": "Reporting of suspicious transactions",
+      "jurisdiction": "International",
+      "licenseProfiles": ["GROUP", "UAE_COMMUNITY_BANK", "US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "FATF/Rec-20-STR",
+      "status": "mapped",
+      "controls": ["C-130"]
+    },
+    {
+      "id": "REG-US-MSB",
+      "name": "FinCEN MSB Registration (31 CFR 1022)",
+      "ref": "MSB definition · registration · renewal · agent list",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/FinCEN-MSB-Registration",
+      "status": "mapped",
+      "controls": ["C-140"]
+    },
+    {
+      "id": "REG-US-BSA-PROGRAM",
+      "name": "US BSA AML Program (sponsor bank)",
+      "ref": "Four pillars · independent audit · BaaS oversight",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/BSA-AML-Program-Zenus-BaaS",
+      "status": "mapped",
+      "controls": ["C-140", "C-104"]
+    },
+    {
+      "id": "REG-US-SAR",
+      "name": "FinCEN SAR (Form 111)",
+      "ref": "31 CFR 1022.320 · 30-day filing",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/FinCEN-SAR-Form-111",
+      "status": "mapped",
+      "controls": ["C-140"]
+    },
+    {
+      "id": "REG-US-CTR",
+      "name": "FinCEN CTR (Form 104)",
+      "ref": "31 USC 5313 · USD 10k cash threshold",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/FinCEN-CTR-Form-104",
+      "status": "mapped",
+      "controls": ["C-140"]
+    },
+    {
+      "id": "REG-US-CDD",
+      "name": "FinCEN CDD Rule · Beneficial Ownership",
+      "ref": "31 CFR 1010.230 · BOI · CIP",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/FinCEN-CDD-BO-Rule",
+      "status": "mapped",
+      "controls": ["C-104", "C-140"]
+    },
+    {
+      "id": "REG-US-OFAC",
+      "name": "OFAC Sanctions Regulations",
+      "ref": "31 CFR Chapter V · SDN · sectoral programs",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS", "GROUP"],
+      "driveFolder": "regulations",
+      "driveDoc": "US/OFAC-Sanctions-Program",
+      "status": "mapped",
+      "controls": ["C-101", "C-140"]
+    },
+    {
+      "id": "REG-ZENUS-BAAS",
+      "name": "Zenus Bank BaaS Partner Compliance Addendum",
+      "ref": "Sponsor oversight · US MSB · Puerto Rico OCIF",
+      "jurisdiction": "US",
+      "licenseProfiles": ["US_MSB_BAAS_ZENUS"],
+      "driveFolder": "regulations",
+      "driveDoc": "Partners/Zenus/BaaS-Compliance-Addendum",
+      "status": "mapped",
+      "controls": ["C-140", "C-104"]
+    }
+  ],
+  "controls": [
+    {
+      "id": "C-101",
+      "name": "Sanctions / TFS screening",
+      "tests": "CBUAE · FATF R6 · Vital4 authority",
+      "status": "effective",
+      "effectiveness": "strong",
+      "owner": "Compliance",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-101-Sanctions-TFS",
+      "regulations": ["REG-CBUAE-AML", "REG-FATF-R6", "REG-US-BSA"],
+      "workflows": ["WF-SCREENING", "WF-ONBOARDING"],
+      "moduleRoute": "/screening"
+    },
+    {
+      "id": "C-104",
+      "name": "Customer Risk Assessment (CRA)",
+      "tests": "RBA · CDD · 6-factor engine",
+      "status": "effective",
+      "effectiveness": "strong",
+      "owner": "MLRO",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-104-Customer-Risk-Assessment",
+      "regulations": ["REG-CBUAE-AML", "REG-FATF-R10", "REG-MAL-POLICY"],
+      "workflows": ["WF-CRA-SCORE", "WF-RERATING", "WF-GOLDEN-THREAD"],
+      "moduleRoute": "/test-bench"
+    },
+    {
+      "id": "C-105",
+      "name": "Periodic review & re-rating",
+      "tests": "5y/3y/1y cadence · event triggers",
+      "status": "effective",
+      "effectiveness": "strong",
+      "owner": "Compliance",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-105-Periodic-Review",
+      "regulations": ["REG-FATF-R10", "REG-CBUAE-AML"],
+      "workflows": ["WF-RERATING", "WF-FEEDS"],
+      "moduleRoute": "/rerating"
+    },
+    {
+      "id": "C-118",
+      "name": "VASP travel-rule compliance",
+      "tests": "CBUAE 2026/14",
+      "status": "gap",
+      "effectiveness": "weak",
+      "owner": "Compliance",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-118-VASP-travel-rule-DRAFT",
+      "regulations": ["REG-CBUAE-2026-14"],
+      "workflows": ["WF-TM-CRYPTO"],
+      "moduleRoute": "/transaction-monitoring"
+    },
+    {
+      "id": "C-122",
+      "name": "Adverse-media refresh",
+      "tests": "EDD · trigger pipeline",
+      "status": "effective",
+      "effectiveness": "strong",
+      "owner": "Compliance",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-122-Adverse-Media",
+      "regulations": ["REG-CBUAE-AML", "REG-MAL-POLICY"],
+      "workflows": ["WF-FEEDS", "WF-RERATING"],
+      "moduleRoute": "/feeds"
+    },
+    {
+      "id": "C-TM-001",
+      "name": "Transaction monitoring (Oscilar)",
+      "tests": "Mal Policy §12.6 · Oscilar rule library",
+      "status": "effective",
+      "effectiveness": "partial",
+      "owner": "FCC",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-TM-001-Oscilar-TM",
+      "regulations": ["REG-MAL-POLICY", "REG-CBUAE-AML"],
+      "workflows": ["WF-TM-ALERT", "WF-TM-SCREEN-MIRROR"],
+      "moduleRoute": "/transaction-monitoring"
+    },
+    {
+      "id": "C-130",
+      "name": "Investigation & SAR/STR workflow",
+      "tests": "goAML · FinCEN · MLRO sign-off",
+      "status": "effective",
+      "effectiveness": "strong",
+      "owner": "MLRO",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-130-Investigation-SAR",
+      "regulations": ["REG-CBUAE-AML", "REG-MAL-POLICY"],
+      "workflows": ["WF-INVESTIGATION", "WF-REPORTING"],
+      "moduleRoute": "/investigation"
+    },
+    {
+      "id": "C-140",
+      "name": "US BaaS regulatory reporting",
+      "tests": "FinCEN SAR · CTR · OFAC block",
+      "status": "effective",
+      "effectiveness": "strong",
+      "owner": "MLRO",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-140-US-BaaS-Reporting",
+      "regulations": ["REG-US-BSA"],
+      "workflows": ["WF-REPORTING", "WF-RETENTION"],
+      "moduleRoute": "/reporting"
+    },
+    {
+      "id": "C-RET-001",
+      "name": "Record retention & evidence management",
+      "tests": "5-year policy · legal hold · export manifest · scheduler",
+      "status": "effective",
+      "effectiveness": "strong",
+      "owner": "MLRO",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Controls/C-RET-001-Records-Retention",
+      "regulations": ["REG-CBUAE-AML", "REG-US-BSA"],
+      "workflows": ["WF-RETENTION"],
+      "moduleRoute": "/retention"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "WF-CRA-SCORE",
+      "name": "CRA scoring & golden thread",
+      "module": "CRAM Risk Test Bench",
+      "route": "/test-bench",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-CRA-Score-Golden-Thread",
+      "controls": ["C-104"],
+      "evidenceTypes": ["CRA assessment", "EDD checklist", "TM deploy receipt"]
+    },
+    {
+      "id": "WF-GOLDEN-THREAD",
+      "name": "Rating → controls → TM deploy",
+      "module": "Golden thread handoff",
+      "route": "/test-bench",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Golden-Thread-Handoff",
+      "controls": ["C-104", "C-TM-001"],
+      "evidenceTypes": ["Monitoring profile", "Approval authority record"]
+    },
+    {
+      "id": "WF-FEEDS",
+      "name": "Signal feeds → auto re-rating",
+      "module": "Signal Feeds",
+      "route": "/feeds",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Feed-Trigger-Pipeline",
+      "controls": ["C-105", "C-122"],
+      "evidenceTypes": ["Feed event log", "Re-rating audit entry"]
+    },
+    {
+      "id": "WF-RERATING",
+      "name": "Periodic & event-driven re-rating",
+      "module": "Re-rating & Reviews",
+      "route": "/rerating",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Periodic-Re-rating",
+      "controls": ["C-105", "C-104"],
+      "evidenceTypes": ["Review schedule", "Assessment history"]
+    },
+    {
+      "id": "WF-ONBOARDING",
+      "name": "Partner onboarding (Shufti → Vital4 → CRA)",
+      "module": "Onboarding orchestrator",
+      "route": "/test-bench",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Partner-Onboarding",
+      "controls": ["C-101", "C-104"],
+      "evidenceTypes": ["KYC verification", "Screening case", "Onboarding state log"]
+    },
+    {
+      "id": "WF-SCREENING",
+      "name": "Vital4 disposition queue",
+      "module": "Screening & Monitoring",
+      "route": "/screening",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Vital4-Disposition",
+      "controls": ["C-101"],
+      "evidenceTypes": ["Screening disposition", "SLA record", "Case link"]
+    },
+    {
+      "id": "WF-TM-ALERT",
+      "name": "Oscilar TM alert → CRAM feed",
+      "module": "Transaction Monitoring",
+      "route": "/transaction-monitoring",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Oscilar-TM-Alert",
+      "controls": ["C-TM-001"],
+      "evidenceTypes": ["TM alert record", "Feed outcome", "Rule hit detail"]
+    },
+    {
+      "id": "WF-TM-SCREEN-MIRROR",
+      "name": "Oscilar list hit → Vital4 mirror",
+      "module": "Txn screening mirror",
+      "route": "/transaction-monitoring",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Oscilar-Vital4-Mirror",
+      "controls": ["C-TM-001", "C-101"],
+      "evidenceTypes": ["Mirror screening case", "Oscilar alert linkage"]
+    },
+    {
+      "id": "WF-INVESTIGATION",
+      "name": "Investigation pipeline (Mohsen → MLRO)",
+      "module": "Investigation Hub",
+      "route": "/investigation",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Investigation-Hub",
+      "controls": ["C-130"],
+      "evidenceTypes": ["Evidence pack", "Behaviour narrative", "Reasoning trace"]
+    },
+    {
+      "id": "WF-REPORTING",
+      "name": "Regulatory reporting (Jana → MLRO file)",
+      "module": "Reporting Centre",
+      "route": "/reporting",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Regulatory-Reporting",
+      "controls": ["C-130", "C-140"],
+      "evidenceTypes": ["STR/SAR draft", "CTR Form 104 draft", "Filing receipt", "Exam pack index"]
+    },
+    {
+      "id": "WF-RETENTION",
+      "name": "Record retention & legal hold",
+      "module": "Records & Retention",
+      "route": "/retention",
+      "status": "live",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-Record-Retention-Evidence",
+      "controls": ["C-RET-001"],
+      "evidenceTypes": ["Retention registry", "Legal hold register", "Export manifest", "Scheduler run log"]
+    },
+    {
+      "id": "WF-TM-CRYPTO",
+      "name": "Crypto / VASP travel-rule (planned)",
+      "module": "Transaction Monitoring",
+      "route": "/transaction-monitoring",
+      "status": "planned",
+      "driveFolder": "controlsWorkflows",
+      "driveDoc": "Workflows/WF-VASP-Travel-Rule-PLANNED",
+      "controls": ["C-118"],
+      "evidenceTypes": ["Travel-rule payload", "Beneficiary VASP attestation"]
+    }
+  ],
+  "evidence": [
+    {
+      "id": "EV-CDD-001",
+      "name": "CDD file · Omar Khalid",
+      "type": "CDD/EDD",
+      "status": "verified",
+      "customerId": "ACT00005",
+      "driveFolder": "evidenceRisk",
+      "driveDoc": "Customers/ACT00005/CDD-file",
+      "linkedControl": "C-104",
+      "linkedWorkflow": "WF-ONBOARDING",
+      "freshness": "2d"
+    },
+    {
+      "id": "EV-CRA-001",
+      "name": "CRA assessment · High rating",
+      "type": "Risk assessment",
+      "status": "current",
+      "customerId": "ACT00005",
+      "driveFolder": "evidenceRisk",
+      "driveDoc": "Customers/ACT00005/CRA-assessment",
+      "linkedControl": "C-104",
+      "linkedWorkflow": "WF-CRA-SCORE",
+      "freshness": "5d"
+    },
+    {
+      "id": "EV-SCR-001",
+      "name": "Screening result · clear",
+      "type": "Screening",
+      "status": "clear",
+      "customerId": "ACT00005",
+      "driveFolder": "evidenceRisk",
+      "driveDoc": "Customers/ACT00005/Vital4-screening",
+      "linkedControl": "C-101",
+      "linkedWorkflow": "WF-SCREENING",
+      "freshness": "2d"
+    },
+    {
+      "id": "EV-TM-001",
+      "name": "TM alert pack · layering scenario",
+      "type": "Transaction monitoring",
+      "status": "open",
+      "customerId": "ACT00005",
+      "driveFolder": "evidenceRisk",
+      "driveDoc": "Cases/CLC2024082300000366/TM-alert-pack",
+      "linkedControl": "C-TM-001",
+      "linkedWorkflow": "WF-TM-ALERT",
+      "freshness": "1d"
+    },
+    {
+      "id": "EV-INV-001",
+      "name": "Investigation narrative · Mohsen",
+      "type": "Investigation",
+      "status": "in_review",
+      "customerId": "ACT00005",
+      "driveFolder": "evidenceRisk",
+      "driveDoc": "Cases/CLC2024082300000366/Investigation-narrative",
+      "linkedControl": "C-130",
+      "linkedWorkflow": "WF-INVESTIGATION",
+      "freshness": "today"
+    },
+    {
+      "id": "EV-HEAT-001",
+      "name": "Enterprise risk heat map · Q2 2026",
+      "type": "Risk heat map",
+      "status": "approved",
+      "customerId": null,
+      "driveFolder": "evidenceRisk",
+      "driveDoc": "Risk/Heat-maps/EWRA-Q2-2026",
+      "linkedControl": "C-104",
+      "linkedWorkflow": "WF-CRA-SCORE",
+      "freshness": "30d"
+    },
+    {
+      "id": "EV-MV-001",
+      "name": "Model validation report · SR 11-7",
+      "type": "Model governance",
+      "status": "draft",
+      "customerId": null,
+      "driveFolder": "evidenceRisk",
+      "driveDoc": "Governance/Model-validation/SR11-7-2026",
+      "linkedControl": "C-104",
+      "linkedWorkflow": "WF-CRA-SCORE",
+      "freshness": "14d"
+    },
+    {
+      "id": "EV-EXAM-001",
+      "name": "Regulatory exam pack index",
+      "type": "Exam pack",
+      "status": "ready",
+      "customerId": null,
+      "driveFolder": "evidenceRisk",
+      "driveDoc": "Exam-packs/CBUAE-exam-index-2026",
+      "linkedControl": "C-130",
+      "linkedWorkflow": "WF-REPORTING",
+      "freshness": "7d"
+    }
+  ],
+  "heatMap": {
+    "title": "Inherent risk × control strength",
+    "methodologyDriveFolder": "controlsWorkflows",
+    "methodologyDriveDoc": "Risk/Heat-map-methodology",
+    "snapshotDriveFolder": "evidenceRisk",
+    "snapshotDriveDoc": "Risk/Heat-maps/EWRA-Q2-2026",
+    "matrix": {
+      "rows": ["High inherent", "Medium inherent", "Low inherent"],
+      "cols": ["Weak control", "Partial control", "Strong control"],
+      "cells": [
+        [6, 9, 14],
+        [11, 28, 33],
+        [12, 20, 23]
+      ],
+      "cellDriveFolder": "evidenceRisk",
+      "interpretation": "Red zone (high inherent + weak control) = priority remediation. Green zone = within appetite."
+    }
+  },
+  "coverage": {
+    "obligations": 156,
+    "covered": 148,
+    "partial": 0,
+    "uncovered": 8,
+    "controlsTotal": 142,
+    "controlsEffective": 134,
+    "controlsGap": 8,
+    "regulationsCatalogued": 19,
+    "licenseProfiles": ["UAE_COMMUNITY_BANK", "US_MSB_BAAS_ZENUS", "GROUP"],
+    "sayedMonitorCadence": "weekly"
+  }
+}

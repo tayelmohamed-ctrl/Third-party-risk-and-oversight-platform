@@ -1,0 +1,1444 @@
+{
+ "riskWeights": {
+  "Critical": 3,
+  "High": 2,
+  "Medium": 1.5,
+  "Low": 1
+ },
+ "domains": [
+  {
+   "id": "REG",
+   "name": "Regulatory perimeter & licensing",
+   "color": "#6a00d6"
+  },
+  {
+   "id": "GOV",
+   "name": "Governance & oversight",
+   "color": "#8000ff"
+  },
+  {
+   "id": "RA",
+   "name": "Risk assessment",
+   "color": "#7c3aed"
+  },
+  {
+   "id": "CDD",
+   "name": "Customer due diligence",
+   "color": "#1e63e9"
+  },
+  {
+   "id": "EDD",
+   "name": "Enhanced due diligence",
+   "color": "#2563eb"
+  },
+  {
+   "id": "OM",
+   "name": "Ongoing monitoring & review",
+   "color": "#0ea5e9"
+  },
+  {
+   "id": "TM",
+   "name": "Transaction monitoring",
+   "color": "#0891b2"
+  },
+  {
+   "id": "SANC",
+   "name": "Sanctions screening",
+   "color": "#dc2626"
+  },
+  {
+   "id": "PEP",
+   "name": "PEP controls",
+   "color": "#db2777"
+  },
+  {
+   "id": "SAR",
+   "name": "Suspicious activity reporting",
+   "color": "#b91c1c"
+  },
+  {
+   "id": "REP",
+   "name": "Mandatory reporting (CTR/Travel)",
+   "color": "#9333ea"
+  },
+  {
+   "id": "REC",
+   "name": "Record retention",
+   "color": "#0d9488"
+  },
+  {
+   "id": "TRN",
+   "name": "Training & awareness",
+   "color": "#16a34a"
+  },
+  {
+   "id": "AUD",
+   "name": "Independent audit",
+   "color": "#ca8a04"
+  },
+  {
+   "id": "TPO",
+   "name": "Third-party & agent oversight",
+   "color": "#ea580c"
+  },
+  {
+   "id": "DOB",
+   "name": "Digital onboarding",
+   "color": "#4f46e5"
+  },
+  {
+   "id": "ESC",
+   "name": "Escalation & reporting",
+   "color": "#e11d48"
+  }
+ ],
+ "controls": [
+  {
+   "id": "REG-1",
+   "domain": "REG",
+   "requirement": "Registered money-services / transmitter status with a documented regulatory perimeter",
+   "expected": "Entity is registered with FinCEN as an MSB (or local equivalent) and maintains a documented activity-classification / regulatory-perimeter analysis covering each leg of the funds flow.",
+   "citation": "Mal Doc 0.1 (Regulatory Perimeter Memo); Doc 1.2 §2; 31 CFR 1022.380",
+   "risk": "High",
+   "owner": "MLRO + Legal",
+   "cadenceMo": 6,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 2,
+   "bsaPillar": "Programme rules (31 CFR 1022)",
+   "fatf": [
+    "R.26",
+    "R.34"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": [
+    {
+     "name": "Test result — REG-1",
+     "type": "Test result"
+    },
+    {
+     "name": "Sample file — REG-1",
+     "type": "Sample file"
+    }
+   ]
+  },
+  {
+   "id": "REG-2",
+   "domain": "REG",
+   "requirement": "Filing-institution responsibility is determined and documented",
+   "expected": "SAR, CTR and OFAC-report filing responsibility is explicitly allocated (files directly / banking-partner files / split), with an escalation package and SLA where a partner files.",
+   "citation": "Mal Doc 1.2 §2.2; Doc 1.7",
+   "risk": "High",
+   "owner": "MLRO + Legal",
+   "cadenceMo": 6,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 3,
+   "bsaPillar": "Programme rules (31 CFR 1022)",
+   "fatf": [
+    "R.26",
+    "R.34"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": [
+    {
+     "name": "Test result — REG-2",
+     "type": "Test result"
+    },
+    {
+     "name": "Sample file — REG-2",
+     "type": "Sample file"
+    }
+   ]
+  },
+  {
+   "id": "REG-3",
+   "domain": "REG",
+   "requirement": "Stricter-standard / standards-hierarchy rule",
+   "expected": "Where any partner agreement, scheme rule or law imposes a stricter standard, the stricter standard governs.",
+   "citation": "Mal Doc 1.2 §1.3",
+   "risk": "Medium",
+   "owner": "MLRO + Legal",
+   "cadenceMo": 12,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 4,
+   "bsaPillar": "Programme rules (31 CFR 1022)",
+   "fatf": [
+    "R.26",
+    "R.34"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": [
+    {
+     "name": "Test result — REG-3",
+     "type": "Test result"
+    },
+    {
+     "name": "Sample file — REG-3",
+     "type": "Sample file"
+    }
+   ]
+  },
+  {
+   "id": "GOV-1",
+   "domain": "GOV",
+   "requirement": "Board approval and active oversight",
+   "expected": "The Board approves the AML programme and material changes at least annually, receives a quarterly compliance dashboard and an annual programme-effectiveness report, and commissions the independent audit.",
+   "citation": "Mal Doc 1.2 §5.1",
+   "risk": "Critical",
+   "owner": "MLRO",
+   "cadenceMo": 3,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 4,
+   "bsaPillar": "Pillar 2 — Designated compliance officer",
+   "fatf": [
+    "R.18",
+    "R.1"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": [
+    {
+     "name": "Vendor report — GOV-1",
+     "type": "Vendor report"
+    },
+    {
+     "name": "Attestation — GOV-1",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "GOV-2",
+   "domain": "GOV",
+   "requirement": "Designated compliance officer with independence and authority",
+   "expected": "A named, qualified AML/BSA compliance officer (MLRO) is designated, reports independently to the Board, is not compensated on revenue, and can be removed only by the Board.",
+   "citation": "Mal Doc 1.2 §5.2; 31 CFR 1022.210",
+   "risk": "Critical",
+   "owner": "MLRO",
+   "cadenceMo": 3,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 5,
+   "bsaPillar": "Pillar 2 — Designated compliance officer",
+   "fatf": [
+    "R.18",
+    "R.1"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": [
+    {
+     "name": "Vendor report — GOV-2",
+     "type": "Vendor report"
+    },
+    {
+     "name": "Attestation — GOV-2",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "GOV-3",
+   "domain": "GOV",
+   "requirement": "Three lines of defence with tester independence",
+   "expected": "First, second and third lines are documented; the compliance officer is excluded from the independent-testing function.",
+   "citation": "Mal Doc 1.2 §5.3",
+   "risk": "Medium",
+   "owner": "MLRO",
+   "cadenceMo": 12,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 6,
+   "bsaPillar": "Pillar 2 — Designated compliance officer",
+   "fatf": [
+    "R.18",
+    "R.1"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": [
+    {
+     "name": "Attestation — GOV-3",
+     "type": "Attestation"
+    },
+    {
+     "name": "Attestation — GOV-3",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "RA-1",
+   "domain": "RA",
+   "requirement": "Documented enterprise-wide risk assessment",
+   "expected": "A written enterprise risk assessment evaluates inherent ML/TF/sanctions/fraud risk across customers, products, geographies/corridors, channels and counterparties; concludes on residual risk; refreshed at least annually and on material change.",
+   "citation": "Mal Doc 1.1; Doc 1.2 §4.1",
+   "risk": "Critical",
+   "owner": "MLRO",
+   "cadenceMo": 3,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 3,
+   "bsaPillar": "Risk-based approach",
+   "fatf": [
+    "R.1"
+   ],
+   "wolfsberg": "Risk assessment",
+   "evidence": [
+    {
+     "name": "Board minute — RA-1",
+     "type": "Board minute"
+    },
+    {
+     "name": "Vendor report — RA-1",
+     "type": "Vendor report"
+    }
+   ]
+  },
+  {
+   "id": "RA-2",
+   "domain": "RA",
+   "requirement": "Risk-to-control matrix",
+   "expected": "Each identified risk is mapped to a specific control, governing document, owner, review frequency and evidence.",
+   "citation": "Mal Doc 1.2 §4.1",
+   "risk": "High",
+   "owner": "MLRO",
+   "cadenceMo": 6,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 4,
+   "bsaPillar": "Risk-based approach",
+   "fatf": [
+    "R.1"
+   ],
+   "wolfsberg": "Risk assessment",
+   "evidence": [
+    {
+     "name": "Sample file — RA-2",
+     "type": "Sample file"
+    },
+    {
+     "name": "Vendor report — RA-2",
+     "type": "Vendor report"
+    }
+   ]
+  },
+  {
+   "id": "RA-3",
+   "domain": "RA",
+   "requirement": "Customer & geographic risk-rating model",
+   "expected": "A documented, weighted customer risk-rating model assigns risk bands that drive due diligence, limits, monitoring and review cadence; corridor/geographic risk is classified on an internal basis.",
+   "citation": "Mal CRAM-01; Doc 1.2 §4.2-4.3",
+   "risk": "High",
+   "owner": "MLRO",
+   "cadenceMo": 6,
+   "status": "PARTIAL",
+   "lastTestedMonthsAgo": 5,
+   "bsaPillar": "Risk-based approach",
+   "fatf": [
+    "R.1"
+   ],
+   "wolfsberg": "Risk assessment",
+   "evidence": [
+    {
+     "name": "Sample file — RA-3",
+     "type": "Sample file"
+    },
+    {
+     "name": "Vendor report — RA-3",
+     "type": "Vendor report"
+    }
+   ]
+  },
+  {
+   "id": "CDD-1",
+   "domain": "CDD",
+   "requirement": "Customer identification programme (minimum identity data + verification)",
+   "expected": "Before transacting, collect full legal name, date of birth, residential address (no PO box) and a government-ID number; verify by documentary and non-documentary methods.",
+   "citation": "Mal Doc 1.3; 31 CFR 1020.220 expectations",
+   "risk": "Critical",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 3,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 0,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Vendor report — CDD-1",
+     "type": "Vendor report"
+    }
+   ]
+  },
+  {
+   "id": "CDD-2",
+   "domain": "CDD",
+   "requirement": "Beneficial ownership identification",
+   "expected": "For legal-entity customers, identify and verify beneficial owners at the 25% ownership prong plus one control person (enhanced 10% threshold for high-risk).",
+   "citation": "Mal Doc 1.3; 31 CFR 1010.230",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 1,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Attestation — CDD-2",
+     "type": "Attestation"
+    },
+    {
+     "name": "Board minute — CDD-2",
+     "type": "Board minute"
+    }
+   ]
+  },
+  {
+   "id": "CDD-3",
+   "domain": "CDD",
+   "requirement": "Purpose, nature and source of funds",
+   "expected": "Understand and record the purpose and expected nature of the relationship; obtain risk-based source of funds.",
+   "citation": "Mal Doc 1.3; GA-1",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 2,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Attestation — CDD-3",
+     "type": "Attestation"
+    },
+    {
+     "name": "Board minute — CDD-3",
+     "type": "Board minute"
+    }
+   ]
+  },
+  {
+   "id": "CDD-4",
+   "domain": "CDD",
+   "requirement": "Prohibited customers, refusal and completion deadline",
+   "expected": "Prohibited customer types are rejected at the gate; the relationship is refused/exited on evasion or failure to evidence; CDD that cannot be completed within a set period (e.g., 30 days) restricts the account.",
+   "citation": "Mal Doc 1.3; Doc 5.11",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 3,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Attestation — CDD-4",
+     "type": "Attestation"
+    },
+    {
+     "name": "Board minute — CDD-4",
+     "type": "Board minute"
+    }
+   ]
+  },
+  {
+   "id": "EDD-1",
+   "domain": "EDD",
+   "requirement": "EDD triggers and senior approval",
+   "expected": "Enhanced due diligence applies to high-risk relationships and requires senior-management/compliance approval to onboard or retain.",
+   "citation": "Mal Doc 1.3; Doc 1.8",
+   "risk": "Critical",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 3,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 10,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "Enhanced due diligence",
+   "evidence": [
+    {
+     "name": "Sample file — EDD-1",
+     "type": "Sample file"
+    },
+    {
+     "name": "System screenshot — EDD-1",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "EDD-2",
+   "domain": "EDD",
+   "requirement": "Source of wealth for high-risk / PEP",
+   "expected": "Full source-of-wealth is established for high-risk customers and PEPs.",
+   "citation": "Mal Doc 1.3; GA-1",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 0,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "Enhanced due diligence",
+   "evidence": [
+    {
+     "name": "Sample file — EDD-2",
+     "type": "Sample file"
+    },
+    {
+     "name": "System screenshot — EDD-2",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "EDD-3",
+   "domain": "EDD",
+   "requirement": "Enhanced monitoring and critical-tier sign-off",
+   "expected": "EDD relationships receive enhanced monitoring cadence; the highest (critical) tier requires documented MLRO/senior sign-off and bespoke controls.",
+   "citation": "Mal Doc 1.3; CRAM-01",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 1,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "Enhanced due diligence",
+   "evidence": [
+    {
+     "name": "Sample file — EDD-3",
+     "type": "Sample file"
+    },
+    {
+     "name": "System screenshot — EDD-3",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "OM-1",
+   "domain": "OM",
+   "requirement": "Periodic review driven by risk",
+   "expected": "Periodic KYC/CDD refresh occurs on a cadence driven by the customer's risk band.",
+   "citation": "Mal Doc 1.3",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 9,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Board minute — OM-1",
+     "type": "Board minute"
+    }
+   ]
+  },
+  {
+   "id": "OM-2",
+   "domain": "OM",
+   "requirement": "Trigger-based reviews",
+   "expected": "Defined event triggers re-run screening and recompute the customer's risk rating.",
+   "citation": "Mal Doc 1.3",
+   "risk": "Medium",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 10,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Board minute — OM-2",
+     "type": "Board minute"
+    }
+   ]
+  },
+  {
+   "id": "OM-3",
+   "domain": "OM",
+   "requirement": "Continuous / delta re-screening",
+   "expected": "Customer base is re-screened on each watchlist/list update (delta re-screen).",
+   "citation": "Mal Doc 1.4; Doc 1.3",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 0,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Sample file — OM-3",
+     "type": "Sample file"
+    }
+   ]
+  },
+  {
+   "id": "TM-1",
+   "domain": "TM",
+   "requirement": "Transaction monitoring coverage",
+   "expected": "All inbound, outbound and card activity is monitored against a typology library (structuring, mule, trade-based ML, corridor layering, card anomalies).",
+   "citation": "Mal Doc 1.5",
+   "risk": "Critical",
+   "owner": "FinCrime Ops + Engineering",
+   "cadenceMo": 3,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 2,
+   "bsaPillar": "Pillar 1 — Internal controls",
+   "fatf": [
+    "R.20"
+   ],
+   "wolfsberg": "Transaction monitoring",
+   "evidence": [
+    {
+     "name": "System screenshot — TM-1",
+     "type": "System screenshot"
+    },
+    {
+     "name": "Sample file — TM-1",
+     "type": "Sample file"
+    }
+   ]
+  },
+  {
+   "id": "TM-2",
+   "domain": "TM",
+   "requirement": "Fail-closed, pre-availability screening",
+   "expected": "Funds are not made available, and payments do not leave, without a recorded screening disposition; the system fails closed on outage.",
+   "citation": "Mal Doc 1.5; Doc 1.4",
+   "risk": "High",
+   "owner": "FinCrime Ops + Engineering",
+   "cadenceMo": 6,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 3,
+   "bsaPillar": "Pillar 1 — Internal controls",
+   "fatf": [
+    "R.20"
+   ],
+   "wolfsberg": "Transaction monitoring",
+   "evidence": [
+    {
+     "name": "System screenshot — TM-2",
+     "type": "System screenshot"
+    },
+    {
+     "name": "Sample file — TM-2",
+     "type": "Sample file"
+    }
+   ]
+  },
+  {
+   "id": "TM-3",
+   "domain": "TM",
+   "requirement": "Advisory incorporation and rule tuning",
+   "expected": "Regulatory advisories/typologies are incorporated promptly (e.g., within 30 days); rules are tuned under documented change control.",
+   "citation": "Mal Doc 1.5",
+   "risk": "Medium",
+   "owner": "FinCrime Ops + Engineering",
+   "cadenceMo": 12,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 4,
+   "bsaPillar": "Pillar 1 — Internal controls",
+   "fatf": [
+    "R.20"
+   ],
+   "wolfsberg": "Transaction monitoring",
+   "evidence": [
+    {
+     "name": "System screenshot — TM-3",
+     "type": "System screenshot"
+    },
+    {
+     "name": "Sample file — TM-3",
+     "type": "Sample file"
+    }
+   ]
+  },
+  {
+   "id": "TM-4",
+   "domain": "TM",
+   "requirement": "Alert handling and decision provenance",
+   "expected": "Alerts are worked under documented desk references; dispositions (including false-positive rationale) are recorded in examiner-ready form; aged items escalate.",
+   "citation": "Mal Doc 1.5",
+   "risk": "Medium",
+   "owner": "FinCrime Ops + Engineering",
+   "cadenceMo": 12,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 5,
+   "bsaPillar": "Pillar 1 — Internal controls",
+   "fatf": [
+    "R.20"
+   ],
+   "wolfsberg": "Transaction monitoring",
+   "evidence": []
+  },
+  {
+   "id": "SANC-1",
+   "domain": "SANC",
+   "requirement": "Sanctions screening scope and timing",
+   "expected": "All customers, beneficial owners, counterparties, beneficiaries and card merchants are screened at onboarding and continuously against OFAC SDN, enhanced lists and UN/EU overlays.",
+   "citation": "Mal Doc 1.4; SCP",
+   "risk": "Critical",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 3,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 0,
+   "bsaPillar": "OFAC sanctions programme",
+   "fatf": [
+    "R.6",
+    "R.7"
+   ],
+   "wolfsberg": "Sanctions screening",
+   "evidence": [
+    {
+     "name": "Sample file — SANC-1",
+     "type": "Sample file"
+    }
+   ]
+  },
+  {
+   "id": "SANC-2",
+   "domain": "SANC",
+   "requirement": "List-update SLA and batch re-screening",
+   "expected": "OFAC SDN deltas are live in screening within 24 hours (other lists within 48); every update triggers batch re-screening of the entire base.",
+   "citation": "Mal Doc 1.4",
+   "risk": "High",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 1,
+   "bsaPillar": "OFAC sanctions programme",
+   "fatf": [
+    "R.6",
+    "R.7"
+   ],
+   "wolfsberg": "Sanctions screening",
+   "evidence": [
+    {
+     "name": "Vendor report — SANC-2",
+     "type": "Vendor report"
+    },
+    {
+     "name": "Attestation — SANC-2",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "SANC-3",
+   "domain": "SANC",
+   "requirement": "Blocking/rejection reporting, 50% rule and ARBP",
+   "expected": "Blocking and rejection reports are filed within 10 business days; the 50% rule is applied; the Annual Report of Blocked Property is filed by 30 September.",
+   "citation": "Mal Doc 1.4; 31 CFR 501.603",
+   "risk": "Critical",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 3,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 2,
+   "bsaPillar": "OFAC sanctions programme",
+   "fatf": [
+    "R.6",
+    "R.7"
+   ],
+   "wolfsberg": "Sanctions screening",
+   "evidence": [
+    {
+     "name": "Vendor report — SANC-3",
+     "type": "Vendor report"
+    },
+    {
+     "name": "Attestation — SANC-3",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "SANC-4",
+   "domain": "SANC",
+   "requirement": "Matching quality and independent list validation",
+   "expected": "Screening uses fuzzy/transliteration matching, is regression-tested, and list presence/freshness is independently validated (never vendor attestation alone), with seeded-name testing.",
+   "citation": "Mal Doc 1.4; Doc 2.3",
+   "risk": "High",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 3,
+   "bsaPillar": "OFAC sanctions programme",
+   "fatf": [
+    "R.6",
+    "R.7"
+   ],
+   "wolfsberg": "Sanctions screening",
+   "evidence": [
+    {
+     "name": "Vendor report — SANC-4",
+     "type": "Vendor report"
+    },
+    {
+     "name": "Attestation — SANC-4",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "SANC-5",
+   "domain": "SANC",
+   "requirement": "Geolocation screening and anti-tipping-off",
+   "expected": "Device/IP geolocation is screened to detect transacting from sanctioned jurisdictions; customer-facing communications on holds use tipping-off-safe language.",
+   "citation": "Mal Doc 1.4",
+   "risk": "Medium",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 4,
+   "bsaPillar": "OFAC sanctions programme",
+   "fatf": [
+    "R.6",
+    "R.7"
+   ],
+   "wolfsberg": "Sanctions screening",
+   "evidence": [
+    {
+     "name": "Vendor report — SANC-5",
+     "type": "Vendor report"
+    },
+    {
+     "name": "Attestation — SANC-5",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "PEP-1",
+   "domain": "PEP",
+   "requirement": "PEP identification by dual method",
+   "expected": "PEP status is identified by both database screening and self-certification at onboarding and on list updates; self-certification supplements, never replaces, screening.",
+   "citation": "Mal Doc 1.8",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 6,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.12"
+   ],
+   "wolfsberg": "PEPs",
+   "evidence": [
+    {
+     "name": "Test result — PEP-1",
+     "type": "Test result"
+    },
+    {
+     "name": "Policy document — PEP-1",
+     "type": "Policy document"
+    }
+   ]
+  },
+  {
+   "id": "PEP-2",
+   "domain": "PEP",
+   "requirement": "PEP EDD treatment",
+   "expected": "A confirmed PEP is escalated to the high-risk tier with senior approval, source-of-wealth establishment and a foreign-corruption focus.",
+   "citation": "Mal Doc 1.8; USA PATRIOT Act §312; FATF R.12",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 7,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.12"
+   ],
+   "wolfsberg": "PEPs",
+   "evidence": []
+  },
+  {
+   "id": "PEP-3",
+   "domain": "PEP",
+   "requirement": "Family, associates and ongoing PEP monitoring",
+   "expected": "Immediate family members and close associates are treated as PEPs; PEP relationships are re-screened on each update and reassessed at review; declassification only on documented rationale.",
+   "citation": "Mal Doc 1.8",
+   "risk": "Medium",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 12,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 8,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.12"
+   ],
+   "wolfsberg": "PEPs",
+   "evidence": []
+  },
+  {
+   "id": "SAR-1",
+   "domain": "SAR",
+   "requirement": "SAR filing and timeline",
+   "expected": "Suspicious activity is reported within 30 days of detection (or a complete escalation package to the partner filer); continuing-activity SARs are filed on a ~90-day cycle.",
+   "citation": "Mal Doc 1.7; 31 CFR 1022.320",
+   "risk": "Critical",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 3,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 6,
+   "bsaPillar": "Reporting (SAR/CTR/OFAC)",
+   "fatf": [
+    "R.20",
+    "R.21"
+   ],
+   "wolfsberg": "Suspicious activity reporting",
+   "evidence": []
+  },
+  {
+   "id": "SAR-2",
+   "domain": "SAR",
+   "requirement": "SAR confidentiality and anti-tipping-off",
+   "expected": "It is prohibited to disclose that a SAR is filed/contemplated; SAR records are access-restricted and retained for five years.",
+   "citation": "Mal Doc 1.7; 31 U.S.C. §5318(g)",
+   "risk": "Critical",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 3,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 7,
+   "bsaPillar": "Reporting (SAR/CTR/OFAC)",
+   "fatf": [
+    "R.20",
+    "R.21"
+   ],
+   "wolfsberg": "Suspicious activity reporting",
+   "evidence": []
+  },
+  {
+   "id": "SAR-3",
+   "domain": "SAR",
+   "requirement": "SAR governance and quality assurance",
+   "expected": "Qualifying cases are decided by a SAR committee/decisioning process with pre-filing QA; SAR trends are reported to the Board.",
+   "citation": "Mal Doc 1.7; Doc 1.2 §4.5",
+   "risk": "Medium",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 8,
+   "bsaPillar": "Reporting (SAR/CTR/OFAC)",
+   "fatf": [
+    "R.20",
+    "R.21"
+   ],
+   "wolfsberg": "Suspicious activity reporting",
+   "evidence": []
+  },
+  {
+   "id": "SAR-4",
+   "domain": "SAR",
+   "requirement": "314(a) handling and evasion indicators",
+   "expected": "Section 314(a) requests are searched within the mandated period and kept confidential; evasion indicators are treated as reportable.",
+   "citation": "Mal Doc 1.7",
+   "risk": "Medium",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 9,
+   "bsaPillar": "Reporting (SAR/CTR/OFAC)",
+   "fatf": [
+    "R.20",
+    "R.21"
+   ],
+   "wolfsberg": "Suspicious activity reporting",
+   "evidence": []
+  },
+  {
+   "id": "REP-1",
+   "domain": "REP",
+   "requirement": "Currency transaction reporting (CTR)",
+   "expected": "Currency transactions over $10,000 (single or aggregated in a business day) are reported on a CTR within 15 calendar days; structuring is detected.",
+   "citation": "Mal Doc 1.7; 31 CFR 1010.311",
+   "risk": "Medium",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 5,
+   "bsaPillar": "Reporting (SAR/CTR/OFAC)",
+   "fatf": [
+    "R.16"
+   ],
+   "wolfsberg": "Wire transfers / Travel Rule",
+   "evidence": []
+  },
+  {
+   "id": "REP-2",
+   "domain": "REP",
+   "requirement": "Travel Rule",
+   "expected": "For transmittals of $3,000 or more, required originator and beneficiary information is recorded and travels to the receiving institution; true names are used and the firm's address is not substituted.",
+   "citation": "Mal Doc 1.6; 31 CFR 1010.410; FATF R.16",
+   "risk": "High",
+   "owner": "US BSA CO (Jason Mullen)",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 6,
+   "bsaPillar": "Reporting (SAR/CTR/OFAC)",
+   "fatf": [
+    "R.16"
+   ],
+   "wolfsberg": "Wire transfers / Travel Rule",
+   "evidence": []
+  },
+  {
+   "id": "REC-1",
+   "domain": "REC",
+   "requirement": "Retention schedule",
+   "expected": "AML records are retained for at least five years (sanctions records aligned to ten years), reconstruction-grade.",
+   "citation": "Mal Doc 1.9; 31 CFR Chapter X",
+   "risk": "High",
+   "owner": "Engineering + FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 8,
+   "bsaPillar": "Recordkeeping",
+   "fatf": [
+    "R.11"
+   ],
+   "wolfsberg": "Record retention",
+   "evidence": [
+    {
+     "name": "Attestation — REC-1",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "REC-2",
+   "domain": "REC",
+   "requirement": "Record integrity, legal hold and disposal",
+   "expected": "Records are tamper-evident, versioned and time-stamped; legal holds suspend disposal; secure disposal is logged.",
+   "citation": "Mal Doc 1.9",
+   "risk": "Medium",
+   "owner": "Engineering + FinCrime Ops",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 9,
+   "bsaPillar": "Recordkeeping",
+   "fatf": [
+    "R.11"
+   ],
+   "wolfsberg": "Record retention",
+   "evidence": [
+    {
+     "name": "Attestation — REC-2",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "REC-3",
+   "domain": "REC",
+   "requirement": "Examiner production capability",
+   "expected": "The firm can produce examiner-grade extracts (full history, dispositions, list versions) within 10 business days, proven by an annual lookback drill.",
+   "citation": "Mal Doc 1.9; Doc 2.3",
+   "risk": "Medium",
+   "owner": "Engineering + FinCrime Ops",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 10,
+   "bsaPillar": "Recordkeeping",
+   "fatf": [
+    "R.11"
+   ],
+   "wolfsberg": "Record retention",
+   "evidence": [
+    {
+     "name": "Attestation — REC-3",
+     "type": "Attestation"
+    }
+   ]
+  },
+  {
+   "id": "TRN-1",
+   "domain": "TRN",
+   "requirement": "Role-based AML training",
+   "expected": "Role-based AML/CFT training is delivered at hire (within ~30 days, before compliance duties) and at least annually.",
+   "citation": "Mal Doc 1.2 §6; Doc 2.2",
+   "risk": "High",
+   "owner": "Compliance / Training",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 2,
+   "bsaPillar": "Pillar 3 — Ongoing training",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Training & awareness",
+   "evidence": [
+    {
+     "name": "Vendor report — TRN-1",
+     "type": "Vendor report"
+    },
+    {
+     "name": "System screenshot — TRN-1",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "TRN-2",
+   "domain": "TRN",
+   "requirement": "Testing, attestation and completion tracking",
+   "expected": "Training requires a minimum pass score with signed attestation; completion is tracked to 100% and records retained for five years.",
+   "citation": "Mal Doc 1.2 §6",
+   "risk": "Medium",
+   "owner": "Compliance / Training",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 3,
+   "bsaPillar": "Pillar 3 — Ongoing training",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Training & awareness",
+   "evidence": [
+    {
+     "name": "Vendor report — TRN-2",
+     "type": "Vendor report"
+    },
+    {
+     "name": "System screenshot — TRN-2",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "TRN-3",
+   "domain": "TRN",
+   "requirement": "Advisory and typology updates in training",
+   "expected": "New advisories/typologies are incorporated into training within ~30 days of publication.",
+   "citation": "Mal Doc 1.2 §6",
+   "risk": "Low",
+   "owner": "Compliance / Training",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 4,
+   "bsaPillar": "Pillar 3 — Ongoing training",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Training & awareness",
+   "evidence": [
+    {
+     "name": "Vendor report — TRN-3",
+     "type": "Vendor report"
+    },
+    {
+     "name": "System screenshot — TRN-3",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "AUD-1",
+   "domain": "AUD",
+   "requirement": "Independent testing of the programme",
+   "expected": "An independent test of the AML/sanctions programme is performed by parties independent of the functions tested (not the CO), within 12 months of launch and at least annually, reporting directly to the Board.",
+   "citation": "Mal Doc 2.3; 31 CFR 1022.210",
+   "risk": "Critical",
+   "owner": "Independent / Board",
+   "cadenceMo": 3,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 8,
+   "bsaPillar": "Pillar 4 — Independent testing",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Independent testing",
+   "evidence": [
+    {
+     "name": "Board minute — AUD-1",
+     "type": "Board minute"
+    }
+   ]
+  },
+  {
+   "id": "AUD-2",
+   "domain": "AUD",
+   "requirement": "Audit scope",
+   "expected": "Audit scope covers risk-assessment adequacy, CIP/KYC/EDD file testing, monitoring/alert quality, SAR decisioning, OFAC configuration and blocked-property handling, Travel Rule, recordkeeping, training and partner oversight.",
+   "citation": "Mal Doc 2.3",
+   "risk": "High",
+   "owner": "Independent / Board",
+   "cadenceMo": 6,
+   "status": "NOT_IMPLEMENTED",
+   "lastTestedMonthsAgo": null,
+   "bsaPillar": "Pillar 4 — Independent testing",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Independent testing",
+   "evidence": []
+  },
+  {
+   "id": "AUD-3",
+   "domain": "AUD",
+   "requirement": "Technical assurance and remediation tracking",
+   "expected": "Seeded-name/wallet tests, fail-closed tests and lookback drills are performed; findings are tracked to closure.",
+   "citation": "Mal Doc 2.3",
+   "risk": "Medium",
+   "owner": "Independent / Board",
+   "cadenceMo": 12,
+   "status": "NOT_IMPLEMENTED",
+   "lastTestedMonthsAgo": null,
+   "bsaPillar": "Pillar 4 — Independent testing",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Independent testing",
+   "evidence": []
+  },
+  {
+   "id": "TPO-1",
+   "domain": "TPO",
+   "requirement": "Third-party lifecycle oversight",
+   "expected": "A full third-party lifecycle (planning, due diligence, contracting, ongoing monitoring, termination) applies to all partners that touch the funds flow or data.",
+   "citation": "Mal Doc 0.3/0.4; FDIC FIL-29-2023",
+   "risk": "High",
+   "owner": "Back-Office Ops + MLRO",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 0,
+   "bsaPillar": "Third-party / vendor risk",
+   "fatf": [
+    "R.17"
+   ],
+   "wolfsberg": "Third-party / correspondent",
+   "evidence": []
+  },
+  {
+   "id": "TPO-2",
+   "domain": "TPO",
+   "requirement": "Processor non-reliance and model risk",
+   "expected": "Processors (IDV/screening) are never relied upon for CDD; the firm retains CDD ownership and performs model-risk management/validation of vendor models.",
+   "citation": "Mal Doc 0.4; Doc 1.2 §8",
+   "risk": "High",
+   "owner": "Back-Office Ops + MLRO",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 1,
+   "bsaPillar": "Third-party / vendor risk",
+   "fatf": [
+    "R.17"
+   ],
+   "wolfsberg": "Third-party / correspondent",
+   "evidence": [
+    {
+     "name": "Test result — TPO-2",
+     "type": "Test result"
+    }
+   ]
+  },
+  {
+   "id": "TPO-3",
+   "domain": "TPO",
+   "requirement": "Partner scorecards and termination triggers",
+   "expected": "Partners are scored quarterly against documented KPIs/KRIs; non-discretionary remediation-or-exit triggers on sustained breaches (e.g., two consecutive quarters).",
+   "citation": "Mal Doc 0.4",
+   "risk": "Medium",
+   "owner": "Back-Office Ops + MLRO",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 2,
+   "bsaPillar": "Third-party / vendor risk",
+   "fatf": [
+    "R.17"
+   ],
+   "wolfsberg": "Third-party / correspondent",
+   "evidence": [
+    {
+     "name": "Test result — TPO-3",
+     "type": "Test result"
+    }
+   ]
+  },
+  {
+   "id": "TPO-4",
+   "domain": "TPO",
+   "requirement": "Agent / payout-network oversight",
+   "expected": "Payout agents are subject to OFAC/background checks on a defined cycle, AML audits, Travel-Rule data quality, and confirmation of no hawala/hundi settlement.",
+   "citation": "Mal Doc 0.4; GA-4",
+   "risk": "High",
+   "owner": "Back-Office Ops + MLRO",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 3,
+   "bsaPillar": "Third-party / vendor risk",
+   "fatf": [
+    "R.17"
+   ],
+   "wolfsberg": "Third-party / correspondent",
+   "evidence": [
+    {
+     "name": "Test result — TPO-4",
+     "type": "Test result"
+    }
+   ]
+  },
+  {
+   "id": "DOB-1",
+   "domain": "DOB",
+   "requirement": "Remote identity verification and liveness",
+   "expected": "Remote onboarding verifies identity with liveness/selfie match and document verification, supplemented by non-documentary checks and transliteration handling.",
+   "citation": "Mal Doc 1.3",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 8,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10",
+    "R.15"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Sample file — DOB-1",
+     "type": "Sample file"
+    },
+    {
+     "name": "System screenshot — DOB-1",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "DOB-2",
+   "domain": "DOB",
+   "requirement": "Pre-funding sanctions/PEP gate",
+   "expected": "Sanctions and PEP screening complete before account functionality; the onboarding flow fails closed on unresolved alerts.",
+   "citation": "Mal Doc 1.3; Doc 1.4",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 9,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10",
+    "R.15"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Vendor report — DOB-2",
+     "type": "Vendor report"
+    },
+    {
+     "name": "System screenshot — DOB-2",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "DOB-3",
+   "domain": "DOB",
+   "requirement": "Anti-mule and device/geo controls",
+   "expected": "Digital onboarding applies anti-mule controls and device/geo/IP signals, with first-payer and new-payer holds.",
+   "citation": "Mal Doc 1.3; Doc 1.5",
+   "risk": "Medium",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 12,
+   "status": "GAP",
+   "lastTestedMonthsAgo": 10,
+   "bsaPillar": "CDD / CIP (5th pillar)",
+   "fatf": [
+    "R.10",
+    "R.15"
+   ],
+   "wolfsberg": "CDD / KYC",
+   "evidence": [
+    {
+     "name": "Vendor report — DOB-3",
+     "type": "Vendor report"
+    },
+    {
+     "name": "System screenshot — DOB-3",
+     "type": "System screenshot"
+    }
+   ]
+  },
+  {
+   "id": "ESC-1",
+   "domain": "ESC",
+   "requirement": "Tiered alert SLAs",
+   "expected": "Alerts are triaged into severities (e.g., P1/P2/P3) with defined response SLAs (e.g., P1 within 4 hours).",
+   "citation": "Mal Doc 1.2 §4.5; Doc 1.5",
+   "risk": "High",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 6,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 7,
+   "bsaPillar": "Pillar 1 — Internal controls",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": []
+  },
+  {
+   "id": "ESC-2",
+   "domain": "ESC",
+   "requirement": "Issue and remediation management",
+   "expected": "Compliance exceptions and issues are tracked in a register with severity-based remediation SLAs and Board reporting.",
+   "citation": "Mal Doc 1.2 §4.9",
+   "risk": "Medium",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 8,
+   "bsaPillar": "Pillar 1 — Internal controls",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": []
+  },
+  {
+   "id": "ESC-3",
+   "domain": "ESC",
+   "requirement": "Compliance-officer stop authority",
+   "expected": "The compliance officer can stop, freeze or escalate any transaction or account presenting material risk, regardless of commercial value.",
+   "citation": "Mal Doc 1.2 §5.2",
+   "risk": "Medium",
+   "owner": "FinCrime Ops",
+   "cadenceMo": 12,
+   "status": "OPERATING",
+   "lastTestedMonthsAgo": 9,
+   "bsaPillar": "Pillar 1 — Internal controls",
+   "fatf": [
+    "R.18"
+   ],
+   "wolfsberg": "Programme governance & oversight",
+   "evidence": []
+  }
+ ]
+}

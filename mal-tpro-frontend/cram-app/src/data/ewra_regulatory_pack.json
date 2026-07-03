@@ -1,0 +1,165 @@
+{
+  "version": "EWRA-PACK-2026-Q2",
+  "published": "2026-06-30",
+  "entity": "Mal Bank / Mal Digital Platform",
+  "licensePaths": [
+    "UAE Community Bank (CBUAE — application)",
+    "US MSB BaaS under Zenus Bank (Puerto Rico / FinCEN)"
+  ],
+  "methodology": {
+    "title": "Enterprise-Wide Risk Assessment — Heat Map Methodology",
+    "documentId": "MAL-EWRA-METH-2026-Q2",
+    "status": "Board-approved",
+    "approvedBy": "Board FinCrime Committee",
+    "approvedDate": "2026-06-15",
+    "preparedBy": "Sayed (Regulatory Intelligence) · Walid Elsheikha (Head of Compliance)",
+    "modelVersion": "CRAM-CBUAE-2026-05",
+    "regulatoryBasis": [
+      "FATF Recommendation 1 — Assessing risks and applying a risk-based approach",
+      "CBUAE AML/CFT Rulebook — enterprise-wide risk assessment expectations",
+      "FinCEN BSA AML Program — risk assessment for MSB / BaaS (31 CFR 1010.210)",
+      "Mal AML/CFT Policy §4 — Enterprise-Wide Risk Assessment"
+    ],
+    "executiveSummary": "Mal applies a three-by-three heat map plotting inherent AML/CFT/CPF risk against control effectiveness at enterprise level. Inherent risk is scored from the consolidated customer, product, geography, and delivery-channel profile of the licensed entity (UAE community bank path and US MSB BaaS path assessed separately, then aggregated at group level). Control effectiveness reflects design adequacy and operating performance of the control register (142 controls), validated through independent testing, model validation (SR 11-7), and supervisory thematic review alignment. Residual exposure is read from matrix position: red zone triggers mandatory remediation plans; green zone confirms risk within board appetite.",
+    "sections": [
+      {
+        "id": "1",
+        "heading": "Purpose and scope",
+        "body": "This methodology defines how Mal scores inherent risk and control strength for the enterprise-wide risk assessment (EWRA) heat map presented to the Board, CBUAE (upon request), and US sponsor bank (Zenus). It applies to all Mal legal entities and the dual license strategy: (a) UAE community bank licence and (b) US MSB business-as-a-service programme under Zenus Bank. Customer-level ratings from the CRAM engine (CRA) inform but do not replace enterprise inherent scoring — portfolio concentration, emerging typologies, and control gaps are explicitly considered."
+      },
+      {
+        "id": "2",
+        "heading": "Inherent risk — definition and scoring",
+        "body": "Inherent risk is the level of ML/TF/proliferation financing exposure before mitigating controls, scored High / Medium / Low at enterprise level using weighted evidence from:",
+        "bullets": [
+          "Customer typology mix — retail, SME, corporate, HNW, MSB/cash-intensive exposure (ISIC-aligned)",
+          "Product & service — accounts, payments, cards, cross-border corridors, crypto/VASP touchpoints",
+          "Geography — UAE domestic, US BaaS, high-risk/third-country corridors (FATF grey/black, NAMLCFTC lists)",
+          "Delivery channel — digital-first onboarding (Shufti Pro), partner-integrated screening (Vital4), TM (Oscilar)",
+          "Emerging typologies — Mohsen intelligence feed, Oscilar scenario library, regulatory change log (Sayed weekly monitor)"
+        ],
+        "scoringTable": [
+          { "rating": "High inherent", "criteria": "Material exposure to high-risk jurisdictions, cash-intensive sectors, complex UBO structures, or unmitigated VASP/travel-rule gap; OR portfolio growth exceeding control capacity" },
+          { "rating": "Medium inherent", "criteria": "Balanced retail/SME book with moderated cross-border activity; known corridors; no systemic typology concentration" },
+          { "rating": "Low inherent", "criteria": "Predominantly low-risk retail, domestic AED/US activity, verified SoF/SoW, limited high-risk product features enabled" }
+        ]
+      },
+      {
+        "id": "3",
+        "heading": "Control effectiveness — definition and scoring",
+        "body": "Control effectiveness measures how well the AML/CFT control framework mitigates inherent risk. Each control in the register (C-101 through C-140+) is rated Strong / Partial / Weak based on:",
+        "bullets": [
+          "Design adequacy — mapping to regulation (CBUAE, FATF, FinCEN, Zenus addendum) via CRAM obligation graph",
+          "Operating effectiveness — KPI evidence: screening SLA, TM alert disposition, STR timeliness (≤35 business days), override governance",
+          "Independent validation — model validation (SR 11-7), golden-vector regression, manual-vs-system CRA variance ≤0.1%",
+          "Supervisory alignment — CBUAE STR Thematic Review (Jan 2023), goAML narrative quality, post-STR EDD completion"
+        ],
+        "scoringTable": [
+          { "rating": "Strong control", "criteria": "Control effective; tested within 12 months; no material findings; automation with immutable audit (PostgreSQL append-only)" },
+          { "rating": "Partial control", "criteria": "Control operating but with known gaps (e.g. TM effectiveness partial pending Oscilar calibration); remediation plan in flight" },
+          { "rating": "Weak control", "criteria": "Control not implemented or failed testing; regulatory gap flagged (e.g. C-118 VASP travel rule — uncovered)" }
+        ]
+      },
+      {
+        "id": "4",
+        "heading": "Matrix construction and interpretation",
+        "body": "The heat map is a 3×3 matrix. Each cell count represents the number of enterprise risk themes (customer segments × products × geographies) falling into that inherent/control combination. Cell counts are not customer headcount — they are thematic risk units from the EWRA inventory (156 obligations → 148 covered).",
+        "matrix": {
+          "rows": ["High inherent", "Medium inherent", "Low inherent"],
+          "cols": ["Weak control", "Partial control", "Strong control"],
+          "cells": [
+            [6, 9, 14],
+            [11, 28, 33],
+            [12, 20, 23]
+          ],
+          "legend": {
+            "red": "High inherent × Weak control — priority remediation; board escalation within 30 days",
+            "amber": "High inherent × Partial OR Medium × Weak — enhanced monitoring; MLRO action plan",
+            "green": "Strong control column with Low/Medium inherent — within risk appetite"
+          }
+        },
+        "interpretation": "Red zone (high inherent + weak control) = priority remediation. Amber = enhanced monitoring. Green zone = within appetite. Mal targets zero red-zone themes at board-approved timeline; current red count (6) relates primarily to VASP travel-rule control gap (CBUAE 2026/14) under active remediation."
+      },
+      {
+        "id": "5",
+        "heading": "Data sources and governance",
+        "body": "EWRA inputs are sourced from live platform data — not manual spreadsheets alone:",
+        "bullets": [
+          "CRAM obligation coverage dashboard (Sayed) — 156 obligations, 148 mapped",
+          "Control register — 142 controls, 134 effective, 8 gap (Google Drive folder 02)",
+          "CRA portfolio distribution — CRAM engine CRAM-CBUAE-2026-05",
+          "Partner assurance — Vital4 (screening), Oscilar (TM), Shufti Pro (KYC) integration specs",
+          "Regulatory change monitor — weekly source watch (CBUAE, FinCEN RSS primary; HTTP hash backup)"
+        ],
+        "governance": "Annual EWRA refresh minimum; ad-hoc on material change (new product, corridor, regulation, or control failure). Board FinCrime Committee approves heat map snapshot. MLRO (Walid Elsheikha) certifies accuracy. Version controlled in evidence folder 03."
+      },
+      {
+        "id": "6",
+        "heading": "Dual-license treatment",
+        "body": "UAE and US MSB BaaS paths are assessed separately then consolidated:",
+        "bullets": [
+          "UAE path — CBUAE Rulebook, goAML STR framework, UAE TFS, domestic retail/SME focus",
+          "US path — FinCEN BSA program, MSB registration, OFAC, Zenus sponsor oversight, FinCEN SAR/CTR",
+          "Group overlay — FATF R.1, internal policy, shared CRAM model with licenseRegion partition (UAE | US)"
+        ]
+      }
+    ]
+  },
+  "snapshot": {
+    "title": "Enterprise-Wide Risk Assessment — Q2 2026 Heat Map Snapshot",
+    "documentId": "MAL-EWRA-SNAPSHOT-2026-Q2",
+    "status": "Board-approved",
+    "approvedBy": "Board of Directors · FinCrime Committee",
+    "approvedDate": "2026-06-15",
+    "assessmentPeriod": "Q2 2026 (1 Apr – 30 Jun 2026)",
+    "nextReview": "Q3 2026 (Oct 2026 board cycle)",
+    "certification": "I certify this EWRA snapshot accurately reflects Mal's enterprise AML/CFT/CPF risk profile and control environment as at 30 June 2026, across UAE community bank and US MSB BaaS license paths.",
+    "signatory": {
+      "name": "Walid Elsheikha",
+      "title": "Head of Compliance / MLRO",
+      "date": "2026-06-15"
+    },
+    "executiveSummary": "As at Q2 2026, Mal's enterprise residual risk is predominantly in the green zone (strong controls mitigating low-to-medium inherent exposure). Six themes remain in the red zone — primarily the VASP travel-rule obligation (CBUAE Notice 2026/14) where control C-118 is in gap status with remediation targeted Q3 2026. Obligation coverage stands at 95% (148/156). Control effectiveness is 94% (134/142 effective). No material STR filing SLA breaches. Dual FIU routing (goAML / FinCEN) operational. Board accepts residual risk with documented remediation for red-zone themes.",
+    "keyMetrics": [
+      { "label": "Obligation coverage", "value": "95%", "detail": "148 of 156 mapped · 8 uncovered (VASP highest priority)" },
+      { "label": "Control effectiveness", "value": "94%", "detail": "134 of 142 effective · 8 gap/partial" },
+      { "label": "Red-zone themes", "value": "6", "detail": "High inherent × weak control — remediation plans active" },
+      { "label": "CRA portfolio High+", "value": "4.2%", "detail": "Within board appetite threshold (≤8%)" },
+      { "label": "STR avg filing days", "value": "22", "detail": "Target ≤35 CBUAE business days" },
+      { "label": "Model validation", "value": "SR 11-7 draft", "detail": "Independent validation in progress — EV-MV-001" }
+    ],
+    "priorityRemediations": [
+      {
+        "id": "REM-001",
+        "theme": "VASP travel rule (CBUAE 2026/14)",
+        "control": "C-118",
+        "inherent": "High",
+        "controlRating": "Weak",
+        "owner": "Head of Compliance",
+        "targetDate": "2026-09-30",
+        "status": "In progress — workflow WF-TM-CRYPTO planned"
+      },
+      {
+        "id": "REM-002",
+        "theme": "Oscilar TM calibration (partial effectiveness)",
+        "control": "C-TM-001",
+        "inherent": "Medium",
+        "controlRating": "Partial",
+        "owner": "Head of Financial Crimes",
+        "targetDate": "2026-08-31",
+        "status": "Phase 2 live — rule library 30 rules active"
+      }
+    ],
+    "boardConclusion": "The Board noted the EWRA heat map, approved the Q2 2026 snapshot, and endorsed remediation plans for six red-zone themes. Risk appetite confirmed: no expansion of high-risk products until C-118 travel-rule control is effective. US BaaS path remains within Zenus sponsor parameters.",
+    "matrix": {
+      "rows": ["High inherent", "Medium inherent", "Low inherent"],
+      "cols": ["Weak control", "Partial control", "Strong control"],
+      "cells": [
+        [6, 9, 14],
+        [11, 28, 33],
+        [12, 20, 23]
+      ],
+      "totalThemes": 136
+    }
+  }
+}
