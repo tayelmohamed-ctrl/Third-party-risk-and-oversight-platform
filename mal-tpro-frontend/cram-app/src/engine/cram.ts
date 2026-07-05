@@ -239,18 +239,19 @@ function computeUAEGeographyScore(i: ReturnType<typeof normalizeScoreInput>, mod
   const nationalityFirm = i.nationalityFirm;
   const birthFirm = mode === "entity" ? (i.incorpFirm ?? i.birthFirm) : i.birthFirm;
   const sowSofFirm = Math.max(i.sowFirm, i.sofFirm);
-  // Proxy corridor = max(SoW, SoF) until full corridor register is live (B-1)
-  const corridorFirm = i.corridorFirm ?? sowSofFirm;
-  // Default digital geo to Medium (firm=1.5) — conservative pending B-3 capture field
-  const digitalGeoFirm = i.digitalGeoFirm ?? 1.5;
+  // corridorFirm: undefined → toS returns Score 2 (Medium) — conservative placeholder.
+  // Do NOT proxy with sowSofFirm here: that would double-count SoW/SoF at 30% instead of 15%.
+  // When B-3 capture is wired, pass corridorFirm explicitly and this default disappears.
+  // digitalGeoFirm: undefined → toS returns Score 2 (Medium) — conservative pending B-3 capture field.
+  // Note: firm=1.5 would map to Score 1 (Low) via firmToScore — pass undefined to get Score 2.
 
   const weighted = (
     toS(residenceFirm) * 0.25 +
     toS(nationalityFirm) * 0.20 +
     toS(birthFirm) * 0.10 +
     toS(sowSofFirm) * 0.15 +
-    toS(corridorFirm) * 0.15 +
-    toS(digitalGeoFirm) * 0.15
+    toS(i.corridorFirm) * 0.15 +   // undefined → Score 2 (Medium) via toS; no SoW/SoF proxy
+    toS(i.digitalGeoFirm) * 0.15   // undefined → Score 2 (Medium) via toS
   );
 
   // §7.2 floor: "high country residence floors to High unless prohibited"

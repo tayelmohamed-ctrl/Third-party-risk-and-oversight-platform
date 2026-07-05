@@ -16,7 +16,7 @@ const GV07_INPUT = baseInput({
 export const GOLDEN_VECTORS: GoldenCase[] = [
   { id: "GV-01", section: "A", description: "All params Low", input: baseInput(ALL_LOW), expect: { finalRating: "Low", compositeMax: 1.51 } },
   { id: "GV-02", section: "A", description: "All params High", input: baseInput(ALL_HIGH), expect: { finalRating: "High", compositeMin: 2.16 } },
-  { id: "GV-03", section: "A", description: "Composite ~1.40 boundary (PEP-excluded weights · §6.1 NP New)", input: baseInput({ ...ALL_LOW, productScore: 3 as Score, serviceScore: 3 as Score, employmentScore: 1 as Score, professionScore: 1 as Score }), boundary: "calculator", expect: { mathBand: "Low", compositeMin: 1.4001, compositeMax: 1.401 } },
+  { id: "GV-03", section: "A", description: "Composite ~1.46 (PS=High, geo defaults: corridor+digital=Medium; §3.1 NP New)", input: baseInput({ ...ALL_LOW, productScore: 3 as Score, serviceScore: 3 as Score, employmentScore: 1 as Score, professionScore: 1 as Score }), boundary: "calculator", expect: { mathBand: "Low", compositeMin: 1.45, compositeMax: 1.47 } },
   { id: "GV-04", section: "A", description: "Composite 1.5001 → Medium", input: baseInput({ ...ALL_LOW, productScore: 2 as Score, serviceScore: 3 as Score, employmentScore: 3 as Score, professionScore: 3 as Score }), expect: { mathBand: "Medium", compositeMin: 1.5001 } },
   { id: "GV-05", section: "A", description: "Composite 2.1500 boundary-dependent", input: baseInput({ ...ALL_HIGH, residenceFirm: 2.0 }), expect: { compositeMin: 2.0 } },
   { id: "GV-06", section: "A", description: "Composite 2.1501 → High both sets", input: baseInput(ALL_HIGH), expect: { finalRating: "High" } },
