@@ -117,7 +117,7 @@ describe("P0 regulatory integrity — perimeter separation", () => {
     expect(usGt.monitoring.currency).toBe("USD");
     const malProfile = policyProfileForPerimeter("mal_bank");
     const usProfile = policyProfileForPerimeter("global_account");
-    expect(reviewMonthsForBand(malProfile, "Low")).toBe(60);
+    expect(reviewMonthsForBand(malProfile, "Low")).toBe(36); // Updated: UAE Low = 36 months (UAE Methodology §12.1; P0-3)
     expect(reviewMonthsForBand(usProfile, "Low")).toBe(36);
   });
 });

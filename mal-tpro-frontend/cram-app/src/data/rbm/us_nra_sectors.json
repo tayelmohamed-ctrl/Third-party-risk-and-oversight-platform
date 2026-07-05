@@ -24,7 +24,7 @@
       "reviewCycleMonths": 12,
       "mlTypologies": ["Structuring", "Trade-based ML", "Sanctions evasion", "Cash-intensive dealing"],
       "monitoringRules": ["TM-701 Precious metals dealer", "TM-702 CTR/SAR structuring", "TM-503 OFAC screening"],
-      "rationale": "US NRA 2022 — dealers in precious metals, stones, and jewels identified as high-risk for ML/TF and sanctions evasion."
+      "rationale": "US NRA 2024 — dealers in precious metals, stones, and jewels identified as high-risk for ML/TF and sanctions evasion."
     },
     {
       "id": "us-msb",
@@ -54,7 +54,7 @@
       "reviewCycleMonths": 6,
       "mlTypologies": ["Sanctions evasion", "Ransomware", "Mixer/tumbler exposure"],
       "monitoringRules": ["TM-602 VA exposure", "Travel Rule", "OFAC virtual currency guidance"],
-      "rationale": "US NRA 2022 — VASPs Very High; BaaS programmes require VASP registration verification."
+      "rationale": "US NRA 2024 — VASPs Very High; BaaS programmes require VASP registration verification."
     },
     {
       "id": "us-correspondent-banking",

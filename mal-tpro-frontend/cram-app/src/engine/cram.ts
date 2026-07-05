@@ -223,6 +223,64 @@ function snapshotActivityResolutions(
   };
 }
 
+/**
+ * UAE Methodology §7.2 — weighted 6-attribute NP geography composite (B-3).
+ * Replaces the prior worst-of-five logic for the mal_bank perimeter.
+ * Guard: country-of-birth alone cannot floor to High (explicit §7.2 rule).
+ * Floor rule: High-band residence country → geography floored to High.
+ * Missing attributes default to Medium (score=2) — conservative, not Low.
+ * TODO(compliance-confirm): wire corridorFirm and digitalGeoFirm capture fields (B-3).
+ */
+function computeUAEGeographyScore(i: ReturnType<typeof normalizeScoreInput>, mode: "individual" | "entity"): Score {
+  const toS = (firm: number | undefined): number =>
+    firm !== undefined ? firmToScore(firm) : 2;
+
+  const residenceFirm = i.residenceFirm;
+  const nationalityFirm = i.nationalityFirm;
+  const birthFirm = mode === "entity" ? (i.incorpFirm ?? i.birthFirm) : i.birthFirm;
+  const sowSofFirm = Math.max(i.sowFirm, i.sofFirm);
+  // Proxy corridor = max(SoW, SoF) until full corridor register is live (B-1)
+  const corridorFirm = i.corridorFirm ?? sowSofFirm;
+  // Default digital geo to Medium (firm=1.5) — conservative pending B-3 capture field
+  const digitalGeoFirm = i.digitalGeoFirm ?? 1.5;
+
+  const weighted = (
+    toS(residenceFirm) * 0.25 +
+    toS(nationalityFirm) * 0.20 +
+    toS(birthFirm) * 0.10 +
+    toS(sowSofFirm) * 0.15 +
+    toS(corridorFirm) * 0.15 +
+    toS(digitalGeoFirm) * 0.15
+  );
+
+  // §7.2 floor: "high country residence floors to High unless prohibited"
+  if (firmToScore(residenceFirm) === 3) return 3 as Score;
+
+  // §7.2 guard: birth country alone does NOT floor to High — weighted contribution only
+  // (no additional check needed: weighted average naturally prevents single-attribute domination)
+
+  return clampScore(weighted) as Score;
+}
+
+/**
+ * US Methodology §7.1 — funds-flow / corridor geography model (P2-US-1).
+ * Nationality and country of birth play NO role in US geography scoring.
+ * For entities, operating jurisdiction (residenceFirm = opcoFirm) is a valid funds-flow proxy.
+ * Full corridor-tier register: TODO(compliance-confirm) — B-1 implementation pending.
+ */
+function computeUSGeographyScore(i: ReturnType<typeof normalizeScoreInput>, mode: "individual" | "entity"): Score {
+  // Funds-flow inputs: SoW/SoF (both perimeters) + opco jurisdiction (entity only)
+  const sowSofFirm = Math.max(i.sowFirm, i.sofFirm);
+  const opcoFirm = mode === "entity" ? i.residenceFirm : undefined;
+  const firmsToConsider = opcoFirm !== undefined
+    ? [sowSofFirm, opcoFirm]
+    : [sowSofFirm];
+  // OFAC/UN sanctions floors already applied in countryRiskPerimeter.ts via lookupCountry()
+  // Interim FATF compensating control (B-1) also applied there
+  const fundsFirmMax = Math.max(...firmsToConsider);
+  return clampScore(firmToScore(fundsFirmMax)) as Score;
+}
+
 export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"): ScoreResult {
   const i = normalizeScoreInput(raw);
   const perimeter = i.masterRegistryPerimeter ?? "mal_bank";
@@ -255,12 +313,15 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
     + (mode === "entity" && "entityType" in w ? (i.entityTypeScore ?? 2) * (w as typeof CUSTOMER_TYPE_WEIGHTS.entity).entityType : 0)
   );
 
-  // Geography: highest-risk attribute drives (entity: opco · incorp · UBO · SoW · SoF)
-  const geoFirms = mode === "entity"
-    ? [i.residenceFirm, i.incorpFirm ?? i.birthFirm, i.nationalityFirm, i.sowFirm, i.sofFirm]
-    : [i.residenceFirm, i.nationalityFirm, i.birthFirm, i.sowFirm, i.sofFirm];
-  const geoFirmMax = Math.max(...geoFirms);
-  const geography = clampScore(firmToScore(geoFirmMax));
+  // Geography — perimeter-specific model:
+  // UAE Methodology §7.2: weighted 6-attribute composite (B-3)
+  // US Methodology §7.1: corridor/funds-flow only — NOT nationality or birth country (P2-US-1)
+  const geography = perimeter === "global_account"
+    ? computeUSGeographyScore(i, mode)
+    : computeUAEGeographyScore(i, mode);
+  // geoFirmMax: used by sanctions override checks below (OVR-002/OVR-011)
+  // — worst-of all geography firm scores regardless of perimeter model
+  const geoFirmMax = Math.max(i.residenceFirm, i.nationalityFirm, i.birthFirm, i.sowFirm, i.sofFirm, i.incorpFirm ?? 0);
 
   const product = clampScore(i.productScore) as Score;
   const service = clampScore(i.serviceScore) as Score;

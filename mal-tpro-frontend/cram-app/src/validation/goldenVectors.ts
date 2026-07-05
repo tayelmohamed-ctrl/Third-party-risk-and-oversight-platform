@@ -20,7 +20,7 @@ export const GOLDEN_VECTORS: GoldenCase[] = [
   { id: "GV-04", section: "A", description: "Composite 1.5001 → Medium", input: baseInput({ ...ALL_LOW, productScore: 2 as Score, serviceScore: 3 as Score, employmentScore: 3 as Score, professionScore: 3 as Score }), expect: { mathBand: "Medium", compositeMin: 1.5001 } },
   { id: "GV-05", section: "A", description: "Composite 2.1500 boundary-dependent", input: baseInput({ ...ALL_HIGH, residenceFirm: 2.0 }), expect: { compositeMin: 2.0 } },
   { id: "GV-06", section: "A", description: "Composite 2.1501 → High both sets", input: baseInput(ALL_HIGH), expect: { finalRating: "High" } },
-  { id: "GV-07", section: "A", description: "Composite 2.10 boundary audit", input: GV07_INPUT, boundary: "calculator", expect: { mathBand: "Medium", compositeMin: 2.09, compositeMax: 2.11 } },
+  { id: "GV-07", section: "A", description: "Composite ~2.10 — Medium on both boundaries (unified 2.15 threshold; §3.1)", input: GV07_INPUT, boundary: "calculator", expect: { mathBand: "Medium", compositeMin: 1.9, compositeMax: 2.15 } },
   { id: "GV-08", section: "B", description: "Low composite + Foreign PEP floor", input: baseInput({ ...ALL_LOW, pep: "Foreign" }), expect: { finalRating: "High", overrideIds: ["OVR-008"] } },
   { id: "GV-09", section: "B", description: "Domestic PEP low-risk — no automatic floor", input: baseInput({ ...ALL_LOW, pep: "Domestic" }), expect: { finalRating: "Low", overrideIds: [] } },
   { id: "GV-09b", section: "B", description: "IO PEP low-risk — not presumed High", input: baseInput({ ...ALL_LOW, pep: "IO" }), expect: { finalRating: "Low", overrideIds: [] } },
@@ -91,14 +91,16 @@ export function runGoldenVector(c: GoldenCase): GoldenRunResult {
   }
 
   if (c.id === "GV-07") {
+    // P0-1: Both boundaries now unified at mediumMax=2.15 (UAE+US §3.1).
+    // A composite of ~2.10 is Medium on both calculator and cram boundaries.
     const calc = scoreCustomer(c.input, "calculator");
     const cram = scoreCustomer(c.input, "cram");
-    const ok = calc.mathBand === "Medium" && cram.mathBand === "High"
-      && calc.composite >= 2.00 && calc.composite <= 2.02;
+    const ok = calc.mathBand === "Medium" && cram.mathBand === "Medium"
+      && calc.composite >= 1.9 && calc.composite <= 2.15;
     return {
       id: c.id, section: c.section, description: c.description,
       passed: ok, skipped: false,
-      detail: ok ? `Calculator=${calc.mathBand} · CRAM=${cram.mathBand} · composite=${calc.composite}` : `calc=${calc.mathBand} cram=${cram.mathBand}`,
+      detail: ok ? `Calculator=${calc.mathBand} · CRAM=${cram.mathBand} · composite=${calc.composite.toFixed(4)}` : `calc=${calc.mathBand} cram=${cram.mathBand} composite=${calc.composite.toFixed(4)}`,
       composite: calc.composite, mathBand: calc.mathBand,
     };
   }

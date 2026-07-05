@@ -30,10 +30,11 @@ export const POLICY_PROFILES: Record<PolicyProfileId, PolicyProfile> = {
       "High-risk corridor",
       "Complex ownership",
     ],
+    // UAE Methodology §13: Low max 36mo, Medium max 24mo, High max 12mo
+    // Prohibited: no periodic review — exit/decline pathway applies
     reviewCycles: [
-      { band: "Low", months: 60 },
-      { band: "Medium", months: 36 },
-      { band: "Medium High", months: 12 },
+      { band: "Low", months: 36 },
+      { band: "Medium", months: 24 },
       { band: "High", months: 12 },
     ],
     monitoringScenarios: [
@@ -44,7 +45,7 @@ export const POLICY_PROFILES: Record<PolicyProfileId, PolicyProfile> = {
     cddRules: ["Source of Funds", "Source of Wealth", "Beneficial ownership ≥ 25%"],
     pepRules: ["Domestic PEP EDD", "Foreign PEP EDD", "PEP associate review"],
     beneficialOwnershipThreshold: 25,
-    nraVersion: "UAE-NRA-2018-2024",
+    nraVersion: "UAE-NRA-2024",
   },
   us_baas: {
     id: "us_baas",
@@ -70,11 +71,12 @@ export const POLICY_PROFILES: Record<PolicyProfileId, PolicyProfile> = {
       "High-risk jurisdiction corridor",
       "Beneficial ownership opacity",
     ],
+    // US Methodology §13: Low 36mo, Medium 24mo, High 12mo, Prohibited/Critical/Override 6mo
     reviewCycles: [
       { band: "Low", months: 36 },
       { band: "Medium", months: 24 },
-      { band: "Medium High", months: 12 },
-      { band: "High", months: 6 },
+      { band: "High", months: 12 },
+      { band: "Prohibited", months: 6 },
     ],
     monitoringScenarios: [
       { id: "TM-214", label: "Cross-border velocity", trigger: "Global account product" },
@@ -87,7 +89,8 @@ export const POLICY_PROFILES: Record<PolicyProfileId, PolicyProfile> = {
     ctrRules: ["Currency Transaction Report > USD 10,000"],
     travelRule: true,
     beneficialOwnershipThreshold: 25,
-    nraVersion: "US-NRA-2022",
+    // US Methodology — built on 2026 National Risk Assessments (NMLRA/NTFRA/NPFRA)
+    nraVersion: "US-NRA-2026",
   },
 };
 

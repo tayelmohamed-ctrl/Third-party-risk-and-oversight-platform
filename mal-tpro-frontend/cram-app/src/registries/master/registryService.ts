@@ -177,13 +177,15 @@ export function cramSegmentScore(segment: string, mode: CustomerMode, perimeter:
 }
 
 export function perimeterLabel(perimeter: CompliancePerimeter): string {
-  return perimeter === "mal_bank" ? "MAL Bank · UAE NRA · CBUAE" : "Global Account · US NRA 2022 · FinCEN/OFAC";
+  // P2-US-3: updated to 2026 NRAs (NMLRA/NTFRA/NPFRA) — US Methodology
+  return perimeter === "mal_bank" ? "Mal Bank · UAE NRA · CBUAE" : "Global Account · US NRA 2026 · FinCEN/OFAC";
 }
 
 export function nraSourceForPerimeter(perimeter: CompliancePerimeter): string {
+  // P2-US-3: US Methodology is built on the 2026 National Risk Assessments (NMLRA/NTFRA/NPFRA)
   return perimeter === "mal_bank"
-    ? "UAE National Risk Assessment (2018/2024) · CBUAE AML Rulebook"
-    : "US National Money Laundering Risk Assessment (2022) · FinCEN · OFAC";
+    ? "UAE National Risk Assessment (2024) · CBUAE AML Rulebook"
+    : "US National Money Laundering/TF/PF Risk Assessments (2026) · FinCEN · OFAC";
 }
 
 export function productNamesForPerimeter(perimeter: CompliancePerimeter): string[] {

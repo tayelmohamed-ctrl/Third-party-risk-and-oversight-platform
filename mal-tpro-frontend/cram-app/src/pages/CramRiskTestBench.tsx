@@ -9,8 +9,8 @@ import { COUNTRIES, lookupCountry } from "../engine/data";
 import { activityDropdownGroupsForPerimeter, professionGroupsForEmployment } from "../config/activityRegisterOptions";
 import { buildAssessment } from "../engine/rerating";
 import { addAssessment } from "../store/assessmentStore";
-import { getPlatformUser, getPlatformUserId, hasOverrideCapability, setPlatformUser } from "../lib/authSession";
-import { PLATFORM_USERS, type PlatformUserId } from "../config/platformUsers";
+import { getPlatformUserId, setPlatformUser } from "../lib/authSession";
+import { PLATFORM_USERS, canOverride as checkCanOverride, PLATFORM_USER_BY_ID, type PlatformUserId } from "../config/platformUsers";
 import { apiPartnerSync, apiStartOnboarding, apiSimulateOscilarAlert, isApiAvailable } from "../lib/api";
 import {
   CFG, CONTROL_LABELS, CONTROL_OPTIONS, SEGMENT_OPTIONS, OWNERSHIP_LAYERS,
@@ -29,6 +29,7 @@ import KybChecklistPanel, { KybChecklistEmpty } from "../components/cram/KybChec
 import { inferKybProductsFromProductName } from "../config/kybDocumentMatrix";
 import type { KybCaseContext } from "../lib/kybChecklistBuilder";
 import RiskSummaryPanel from "../components/cramSuite/RiskSummaryPanel";
+import RiskVisualizationDashboard from "../components/cramSuite/RiskVisualizationDashboard";
 import RbmScoreBreakdown from "../components/rbm/RbmScoreBreakdown";
 import { usePerimeter } from "../context/PerimeterContext";
 import { scoreCaptureWithRbm } from "../lib/cramRbmBridge";
@@ -50,6 +51,33 @@ import {
   approverFromGt,
 } from "../components/cramSuite/CramWorkspaceSections";
 import type { EntityStructureInput } from "../engine/corporateStructureGraph";
+
+function AssessmentContextBanner({ perimeter, registryVersion, nraSource }: { perimeter: string; registryVersion: string; nraSource: string }) {
+  const isUs = perimeter === "global_account";
+  return (
+    <div className="aml-context-banner">
+      <div className="aml-context-banner__item">
+        <span className="aml-context-banner__label">License</span>
+        <span className="aml-context-banner__value">{isUs ? "US Global Account" : "Mal Bank UAE"}</span>
+      </div>
+      <div className="aml-context-banner__sep" />
+      <div className="aml-context-banner__item">
+        <span className="aml-context-banner__label">Methodology</span>
+        <span className="aml-context-banner__value">RBM Composite · {registryVersion}</span>
+      </div>
+      <div className="aml-context-banner__sep" />
+      <div className="aml-context-banner__item">
+        <span className="aml-context-banner__label">Scoring inputs</span>
+        <span className="aml-context-banner__value">Identity · Geography · Activity · Product · Use Case · Corridor · Screening</span>
+      </div>
+      <div className="aml-context-banner__sep" />
+      <div className="aml-context-banner__item">
+        <span className="aml-context-banner__label">Rules</span>
+        <span className="aml-context-banner__value">{isUs ? "US BSA/AML · FinCEN/OFAC · " : "UAE AML/CFT · CBUAE · "}{nraSource}</span>
+      </div>
+    </div>
+  );
+}
 
 const EMP_IND = [["Salaried employee", 1], ["Pensioner", 1], ["Student", 1], ["Self-employed", 2], ["Freelancer / consultant", 2], ["Business owner", 2], ["Unemployed (with activity)", 3]] as const;
 const EMP_ENT = [["Director / signatory", 1], ["Authorised manager", 2], ["Controlling person", 2], ["Not applicable", 1]] as const;
@@ -81,9 +109,9 @@ export default function CramRiskTestBench() {
       useCaseId: perimeter === "global_account" ? "operating_expenses" : "operating_expenses",
       ...(perimeter === "global_account"
         ? {
-          cres: "United States", nat: "United States", cbirth: "United States",
-          sow: "United States", sof: "United States",
-          opco: "United States", incco: "United States", uboco: "United States",
+          cres: "United States of America", nat: "United States of America", cbirth: "United States of America",
+          sow: "United States of America", sof: "United States of America",
+          opco: "United States of America", incco: "United States of America", uboco: "United States of America",
         }
         : {
           cres: "United Arab Emirates", nat: "India", cbirth: "India",
@@ -134,6 +162,7 @@ export default function CramRiskTestBench() {
     setKyc((s) => ({ ...s, [k]: v }));
 
   const [persona, setPersonaState] = useState<PlatformUserId>(() => getPlatformUserId());
+  const canOverride = useMemo(() => checkCanOverride(PLATFORM_USER_BY_ID[persona]), [persona]);
   const set = (k: string, v: string) => setF((s) => ({ ...s, [k]: v }));
   const setRel = (v: string) => setF((s) => ({
     ...s,
@@ -465,7 +494,7 @@ export default function CramRiskTestBench() {
       setSaveErr(true);
       return;
     }
-    if (f.mo && !hasOverrideCapability()) { setSaved("Blocked: MLRO access required for override (Tayel or Walid)."); setSaveErr(true); return; }
+    if (f.mo && !canOverride) { setSaved("Blocked: MLRO access required for override (Tayel or Walid)."); setSaveErr(true); return; }
     if (f.mo && f.moJust.trim().length < 20) { setSaved("Blocked: justification required (min 20 chars)."); setSaveErr(true); return; }
     const gate = computeGoldenThread(mode, input, result, controls, labels);
     if (gate.eddRequired && !ops.approved && gate.approval.cls !== "LOW") {
@@ -498,6 +527,11 @@ export default function CramRiskTestBench() {
 
   return (
     <div className="cram-bench-page">
+      <AssessmentContextBanner
+        perimeter={perimeter}
+        registryVersion={registryMeta().version}
+        nraSource={nraSourceForPerimeter(perimeter)}
+      />
       <div className="flex items-center gap-3 mb-4 flex-wrap">
         <div className="cram-bench-mode-toggle">
           {(["individual", "entity"] as CustomerMode[]).map((m) => (
@@ -565,56 +599,10 @@ export default function CramRiskTestBench() {
             riskConfidencePct={riskConfidencePct}
             trendDelta={trendDelta}
           >
-            <GamifiedSec section="kyc" title="KYC data quality" hint="FR-007 · completeness · verification · freshness">
-              <Row3>
-                <Sel label="Identity source" v={kyc.identitySource} set={(v) => setKycField("identitySource", v as KycQualityContext["identitySource"])}
-                  opts={["uae_pass", "emirates_id", "idsp", "document", "branch"]} />
-                <Sel label="Identity verified" v={kyc.identityVerified ? "yes" : "no"} set={(v) => setKycField("identityVerified", v === "yes")}
-                  opts={["yes", "no"]} />
-                <Sel label="Liveness pass" v={kyc.livenessPass ? "yes" : "no"} set={(v) => setKycField("livenessPass", v === "yes")}
-                  opts={["yes", "no"]} />
-              </Row3>
-              <Row3>
-                <Fld label="Document issued"><input type="date" className="input" value={kyc.documentIssuedAt} onChange={(e) => setKycField("documentIssuedAt", e.target.value)} /></Fld>
-                <Fld label="Last KYC refresh"><input type="date" className="input" value={kyc.lastKycRefreshAt} onChange={(e) => setKycField("lastKycRefreshAt", e.target.value)} /></Fld>
-                <Fld label="Screening completed"><input type="datetime-local" className="input" value={kyc.screeningCompletedAt.slice(0, 16)} onChange={(e) => setKycField("screeningCompletedAt", new Date(e.target.value).toISOString())} /></Fld>
-              </Row3>
-              <label className="flex items-center gap-2 text-[12px] text-muted cursor-pointer">
-                <input type="checkbox" checked={!!f.simulateIncomplete} onChange={(e) => setF((s) => ({ ...s, simulateIncomplete: e.target.checked }))} />
-                Simulate incomplete capture (GV-19 demo — clears customer ID & expected activity)
-              </label>
-              <div className={`text-[11px] mt-2 px-2 py-1.5 rounded ${dq.status === "READY" ? "bg-low/15 text-low" : "bg-hi/15 text-hi"}`}>
-                {dq.status === "READY" ? "✓ Data quality passed — scoring enabled" : `⛔ ${dq.summary}`}
-              </div>
-              {apiLive && (
-                <div className="mt-3 pt-3 border-t border-lineSoft space-y-2">
-                  <div className="text-[11px] text-muted">Phase 1b · Shufti KYC → Vital4 screening (live API)</div>
-                  <div className="flex gap-2 flex-wrap">
-                    <button type="button" className="btn btn-ghost text-[11px] px-3 py-1.5" onClick={startPartnerOnboarding}>
-                      Start partner onboarding
-                    </button>
-                    <button type="button" className="btn btn-ghost text-[11px] px-3 py-1.5" onClick={syncFromPartners}>
-                      Sync KYC + screening
-                    </button>
-                  </div>
-                  <div className="text-[11px] text-muted pt-1">Phase 2 · Oscilar TM → Vital4 mirror + CRAM feed</div>
-                  <div className="flex gap-2 flex-wrap">
-                    <button type="button" className="btn btn-ghost text-[11px] px-3 py-1.5" onClick={() => void simulateOscilarAlert(false)}>
-                      Simulate TM alert (high)
-                    </button>
-                    <button type="button" className="btn btn-ghost text-[11px] px-3 py-1.5" onClick={() => void simulateOscilarAlert(true)}>
-                      Simulate list hit (critical + V4 mirror)
-                    </button>
-                  </div>
-                  {partnerMsg && <div className="text-[11px] text-muted">{partnerMsg}</div>}
-                </div>
-              )}
-            </GamifiedSec>
-
             <GamifiedSec
               section="identity"
-              title="Identity & relationship"
-              hint={mode === "entity" ? "Legal person" : "Natural person"}
+              title="1 · Customer Identity"
+              hint={mode === "entity" ? "Legal person — entity type, ownership, UBO" : "Natural person — name, ID, relationship"}
               scoreBadge={sectionScoreBadge(result, "customerType")}
             >
               <Row3>
@@ -660,9 +648,52 @@ export default function CramRiskTestBench() {
               <CorporateStructureDiagram input={entityStructureInput} />
             )}
 
+            <GamifiedSec section="kyc" title="2 · Verification Results" hint="FR-007 · identity verification · liveness · document freshness · screening timestamp">
+              <div className="aml-source-row">
+                <span className="aml-source-badge">Source: Shufti KYC · Vital4 Screening · CRAM DQ Gate</span>
+              </div>
+              <Row3>
+                <Sel label="Identity source" v={kyc.identitySource} set={(v) => setKycField("identitySource", v as KycQualityContext["identitySource"])}
+                  opts={["uae_pass", "emirates_id", "idsp", "document", "branch"]} />
+                <Sel label="Identity verified" v={kyc.identityVerified ? "yes" : "no"} set={(v) => setKycField("identityVerified", v === "yes")}
+                  opts={["yes", "no"]} />
+                <Sel label="Liveness pass" v={kyc.livenessPass ? "yes" : "no"} set={(v) => setKycField("livenessPass", v === "yes")}
+                  opts={["yes", "no"]} />
+              </Row3>
+              <Row3>
+                <Fld label="Document issued"><input type="date" className="input" value={kyc.documentIssuedAt} onChange={(e) => setKycField("documentIssuedAt", e.target.value)} /></Fld>
+                <Fld label="Last KYC refresh"><input type="date" className="input" value={kyc.lastKycRefreshAt} onChange={(e) => setKycField("lastKycRefreshAt", e.target.value)} /></Fld>
+                <Fld label="Screening completed"><input type="datetime-local" className="input" value={kyc.screeningCompletedAt.slice(0, 16)} onChange={(e) => setKycField("screeningCompletedAt", new Date(e.target.value).toISOString())} /></Fld>
+              </Row3>
+              <label className="flex items-center gap-2 text-[12px] text-muted cursor-pointer">
+                <input type="checkbox" checked={!!f.simulateIncomplete} onChange={(e) => setF((s) => ({ ...s, simulateIncomplete: e.target.checked }))} />
+                Simulate incomplete capture (GV-19 demo — clears customer ID & expected activity)
+              </label>
+              <div className={`aml-dq-badge ${dq.status === "READY" ? "aml-dq-badge--pass" : "aml-dq-badge--fail"}`}>
+                {dq.status === "READY"
+                  ? "✓ Data quality gate passed — composite scoring enabled"
+                  : `⛔ DQ gate blocked · ${dq.summary}`}
+              </div>
+              {apiLive && (
+                <div className="mt-3 pt-3 border-t border-lineSoft space-y-2">
+                  <div className="text-[11px] text-muted">Phase 1b · Shufti KYC → Vital4 screening (live API)</div>
+                  <div className="flex gap-2 flex-wrap">
+                    <button type="button" className="btn btn-ghost text-[11px] px-3 py-1.5" onClick={startPartnerOnboarding}>Start partner onboarding</button>
+                    <button type="button" className="btn btn-ghost text-[11px] px-3 py-1.5" onClick={syncFromPartners}>Sync KYC + screening</button>
+                  </div>
+                  <div className="text-[11px] text-muted pt-1">Phase 2 · Oscilar TM → Vital4 mirror + CRAM feed</div>
+                  <div className="flex gap-2 flex-wrap">
+                    <button type="button" className="btn btn-ghost text-[11px] px-3 py-1.5" onClick={() => void simulateOscilarAlert(false)}>Simulate TM alert (high)</button>
+                    <button type="button" className="btn btn-ghost text-[11px] px-3 py-1.5" onClick={() => void simulateOscilarAlert(true)}>Simulate list hit (critical + V4 mirror)</button>
+                  </div>
+                  {partnerMsg && <div className="text-[11px] text-muted">{partnerMsg}</div>}
+                </div>
+              )}
+            </GamifiedSec>
+
             <GamifiedSec
               section="geography"
-              title="Geography"
+              title="3 · Geography"
               hint={mode === "entity" ? "Worst of opco · incorp · UBO · SoW · SoF · UN/US/UAE sanctions floors" : "Residence · birth · nationality · SoW · SoF · UN/US/UAE sanctions floors"}
               scoreBadge={sectionScoreBadge(result, "geography", 20)}
             >
@@ -677,32 +708,16 @@ export default function CramRiskTestBench() {
               </Row2>
             </GamifiedSec>
 
+            {/* ── 4 · Business Activity ─────────────────────────────── */}
             <GamifiedSec
               section="drivers"
-              title="Risk drivers"
-              hint="Screening · PEP · ISIC activity"
+              title="4 · Business Activity"
+              hint={mode === "individual" ? "Employment · profession · ISIC · nature of work" : "Entity ISIC · nature of business · 22% weight"}
               scoreBadge={sectionScoreBadge(result, "transaction")}
             >
-              <div className="cram-driver-grid">
-                <DriverChip icon="🏛️" label="PEP" value={f.pep} hot={f.pep !== "None"} />
-                <DriverChip icon="🚫" label="Sanctions" value={f.scrS} hot={f.scrS !== "Clear"} />
-                <DriverChip icon="📋" label="Watchlist" value={f.scrW} hot={f.scrW !== "Clear"} />
-                <DriverChip icon="📰" label="Adverse" value={f.scrA} hot={f.scrA !== "None"} />
-                <DriverChip icon="🔍" label="Investigations" value={isNewCustomer ? "N/A — new customer" : (INV_STR.find((s) => String(s[1]) === f.inv)?.[0] ?? f.inv)} hot={!isNewCustomer && +f.inv >= 2} />
-                <DriverChip icon="📄" label="STR / SAR" value={isNewCustomer ? "N/A — new customer" : (INV_STR.find((s) => String(s[1]) === f.str)?.[0] ?? f.str)} hot={!isNewCustomer && +f.str >= 2} />
-                <DriverChip icon="💼" label="Employment" value={empOpts.find((e) => String(e[1]) === f.emp)?.[0] ?? f.emp} />
-                <DriverChip icon="🏭" label="ISIC activity" value={f.activity.slice(0, 28) + (f.activity.length > 28 ? "…" : "")} />
+              <div className="aml-source-row">
+                <span className="aml-source-badge">Source: RAKEZ Activity Register · ISIC Rev.5 · {nraSourceForPerimeter(perimeter)}</span>
               </div>
-              <Row3>
-                <Sel label="PEP status" v={f.pep} set={(v) => set("pep", v)} opts={["None", "Domestic", "Foreign", "IO"]} />
-                <Sel label="Sanctions / TFS" v={f.scrS} set={(v) => set("scrS", v)} opts={["Clear", "Potential Match", "True Match"]} />
-                <Sel label="Watchlist" v={f.scrW} set={(v) => set("scrW", v)} opts={["Clear", "True Match"]} />
-              </Row3>
-              <Row3>
-                <Sel label="Adverse media" v={f.scrA} set={(v) => set("scrA", v)} opts={["None", "Potential", "True Match"]} />
-                <Sel label="Investigations" v={f.inv} set={(v) => set("inv", v)} optsV={INV_STR.map((s) => [String(s[1]), s[0]])} disabled={isNewCustomer} />
-                <Sel label="STR / SAR status" v={f.str} set={(v) => set("str", v)} optsV={INV_STR.map((s) => [String(s[1]), s[0]])} disabled={isNewCustomer} />
-              </Row3>
               <Row2>
                 <Sel label={mode === "individual" ? "Employment status" : "Authorised signatory role"} v={f.emp} set={setEmployment} optsV={empOpts.map((e) => [String(e[1]), e[0]])} />
                 <div className="text-[11px] text-muted self-end pb-2">{mode === "individual" ? "ISIC activity scored when self-employed (emp ≥ 2)" : "Entity ISIC drives nature-of-business factor (22%)"}</div>
@@ -730,6 +745,25 @@ export default function CramRiskTestBench() {
                   </div>
                 </Row2>
               )}
+              <div className="cram-driver-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
+                <DriverChip icon="💼" label="Employment" value={empOpts.find((e) => String(e[1]) === f.emp)?.[0] ?? f.emp} />
+                <DriverChip icon="🏭" label="ISIC activity" value={f.activity.slice(0, 32) + (f.activity.length > 32 ? "…" : "")} />
+              </div>
+            </GamifiedSec>
+
+            {/* ── 5 · Products & Use Cases ──────────────────────────── */}
+            <GamifiedSec
+              section="products"
+              title="5 · Products & Use Cases"
+              hint="Product · use case · service · channel — NRA product risk + typology-based use case scoring"
+              scoreBadge={sectionScoreBadge(result, "product")}
+            >
+              <div className="aml-source-row">
+                <span className="aml-source-badge">Source: {registryMeta().version} · {nraSourceForPerimeter(perimeter)}</span>
+                {input?.masterRegistryActivityId && (
+                  <span className="aml-source-badge">Activity: {input.masterRegistryActivityId}</span>
+                )}
+              </div>
               <Row3>
                 <Sel label="Product" v={f.prod} set={(v) => set("prod", v)} opts={productOptions} />
                 <Sel
@@ -747,20 +781,76 @@ export default function CramRiskTestBench() {
                 <Sel label="Initiation channel" v={f.initChan} set={(v) => set("initChan", v)} optsV={INITIATION_CHANNELS.map((c) => [String(c.score), c.label])} />
                 <Sel label="Delivery channel" v={f.delChan} set={(v) => set("delChan", v)} optsV={DELIVERY_CHANNELS.map((c) => [String(c.score), c.label])} />
               </Row2>
-              <div className="text-[10px] text-muted px-1">
-                Policy: {perimeterLabel(perimeter)} · {nraSourceForPerimeter(perimeter)} · {registryMeta().version}
-                {input?.masterRegistryActivityId && (
-                  <> · Activity registry: {input.masterRegistryActivityId}</>
-                )}
-                {f.cres && lookupCountry(f.cres, perimeter) && (
-                  <> · Residence firm {lookupCountry(f.cres, perimeter)!.firm.toFixed(2)} ({lookupCountry(f.cres, perimeter)!.band})</>
-                )}
-              </div>
               <div className="cram-driver-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
                 <DriverChip icon="📦" label="Product" value={f.prod.length > 22 ? f.prod.slice(0, 22) + "…" : f.prod} />
                 <DriverChip icon="🔄" label="Service" value={SVC.find((s) => String(s[1]) === f.svc)?.[0] ?? f.svc} />
                 <DriverChip icon="📱" label="Channel" value={DELIVERY_CHANNELS.find((c) => String(c.score) === f.delChan)?.label ?? f.delChan} />
               </div>
+            </GamifiedSec>
+
+            {/* ── 6 · Corridor Risk ─────────────────────────────────── */}
+            <GamifiedSec
+              section="corridor"
+              title="6 · Corridor Risk"
+              hint="Country risk scores per perimeter — residence · nationality · SoW · SoF · FATF · sanctions floors"
+              scoreBadge={sectionScoreBadge(result, "geography", 20)}
+            >
+              <div className="aml-source-row">
+                <span className="aml-source-badge">Source: countries.json · {perimeterLabel(perimeter)} · FATF · Basel AML Index 2024</span>
+              </div>
+              <div className="aml-corridor-table">
+                {[
+                  { label: mode === "entity" ? "Operating country" : "Residence", val: mode === "entity" ? f.opco : f.cres },
+                  { label: mode === "entity" ? "Incorporation" : "Nationality", val: mode === "entity" ? f.incco : f.nat },
+                  { label: mode === "entity" ? "UBO country" : "Country of birth", val: mode === "entity" ? f.uboco : f.cbirth },
+                  { label: "Source of wealth", val: f.sow },
+                  { label: "Source of funds", val: f.sof },
+                ].map(({ label, val }) => {
+                  const cr = val ? lookupCountry(val, perimeter) : null;
+                  if (!cr) return null;
+                  const bandClass = cr.band === "Prohibited" ? "aml-band--prohibited" : cr.band === "High" ? "aml-band--high" : cr.band === "Medium" ? "aml-band--medium" : "aml-band--low";
+                  return (
+                    <div key={label} className="aml-corridor-row">
+                      <span className="aml-corridor-label">{label}</span>
+                      <span className="aml-corridor-country">{val}</span>
+                      <span className={`aml-band-chip ${bandClass}`}>{cr.band}</span>
+                      <span className="aml-corridor-firm">{cr.firm.toFixed(2)}</span>
+                      {cr.fatf === 2 && <span className="aml-fatf-chip aml-fatf-chip--grey">FATF Grey</span>}
+                      {cr.fatf === 3 && <span className="aml-fatf-chip aml-fatf-chip--black">FATF Black</span>}
+                      {cr.sanctions > 0 && <span className="aml-fatf-chip aml-fatf-chip--sanctions">Sanctions</span>}
+                    </div>
+                  );
+                })}
+              </div>
+            </GamifiedSec>
+
+            {/* ── 7 · Screening & Risk Indicators ──────────────────── */}
+            <GamifiedSec
+              section="screening"
+              title="7 · Screening & Risk Indicators"
+              hint="PEP · sanctions / TFS · watchlist · adverse media · investigations · STR/SAR history"
+            >
+              <div className="aml-source-row">
+                <span className="aml-source-badge">Source: Vital4 · OFAC / UN / UAE TFS · FinCEN 314(a)</span>
+              </div>
+              <div className="cram-driver-grid">
+                <DriverChip icon="🏛️" label="PEP" value={f.pep} hot={f.pep !== "None"} />
+                <DriverChip icon="🚫" label="Sanctions" value={f.scrS} hot={f.scrS !== "Clear"} />
+                <DriverChip icon="📋" label="Watchlist" value={f.scrW} hot={f.scrW !== "Clear"} />
+                <DriverChip icon="📰" label="Adverse" value={f.scrA} hot={f.scrA !== "None"} />
+                <DriverChip icon="🔍" label="Investigations" value={isNewCustomer ? "N/A — new customer" : (INV_STR.find((s) => String(s[1]) === f.inv)?.[0] ?? f.inv)} hot={!isNewCustomer && +f.inv >= 2} />
+                <DriverChip icon="📄" label="STR / SAR" value={isNewCustomer ? "N/A — new customer" : (INV_STR.find((s) => String(s[1]) === f.str)?.[0] ?? f.str)} hot={!isNewCustomer && +f.str >= 2} />
+              </div>
+              <Row3>
+                <Sel label="PEP status" v={f.pep} set={(v) => set("pep", v)} opts={["None", "Domestic", "Foreign", "IO"]} />
+                <Sel label="Sanctions / TFS" v={f.scrS} set={(v) => set("scrS", v)} opts={["Clear", "Potential Match", "True Match"]} />
+                <Sel label="Watchlist" v={f.scrW} set={(v) => set("scrW", v)} opts={["Clear", "True Match"]} />
+              </Row3>
+              <Row3>
+                <Sel label="Adverse media" v={f.scrA} set={(v) => set("scrA", v)} opts={["None", "Potential", "True Match"]} />
+                <Sel label="Investigations" v={f.inv} set={(v) => set("inv", v)} optsV={INV_STR.map((s) => [String(s[1]), s[0]])} disabled={isNewCustomer} />
+                <Sel label="STR / SAR status" v={f.str} set={(v) => set("str", v)} optsV={INV_STR.map((s) => [String(s[1]), s[0]])} disabled={isNewCustomer} />
+              </Row3>
             </GamifiedSec>
 
             <GamifiedSec
@@ -849,11 +939,11 @@ export default function CramRiskTestBench() {
 
             <Card className="p-4">
               <div className="sec mb-2">Override & submit</div>
-              <Sel label="Signed-in user (RBAC)" v={persona} set={(v) => { setPlatformUser(v as PlatformUserId); setPersonaState(v as PlatformUserId); window.location.reload(); }} optsV={PLATFORM_USERS.map((u) => [u.id, `${u.name} — ${u.title}`])} />
-              <Sel label="Manual override" v={f.mo} set={(v) => set("mo", v)} opts={["", "Low", "Medium", "High"]} disabled={!hasOverrideCapability() || !gated.ready} />
+              <Sel label="Signed-in user (RBAC)" v={persona} set={(v) => { setPlatformUser(v as PlatformUserId); setPersonaState(v as PlatformUserId); }} optsV={PLATFORM_USERS.map((u) => [u.id, `${u.name} — ${u.title}`])} />
+              <Sel label="Manual override" v={f.mo} set={(v) => set("mo", v)} opts={["", "Low", "Medium", "High"]} disabled={!canOverride || !gated.ready} />
               {f.mo && (
                 <Fld label="Justification">
-                  <textarea className="input min-h-[60px]" value={f.moJust} onChange={(e) => set("moJust", e.target.value)} disabled={!hasOverrideCapability()} />
+                  <textarea className="input min-h-[60px]" value={f.moJust} onChange={(e) => set("moJust", e.target.value)} disabled={!canOverride} />
                 </Fld>
               )}
               <div className="flex gap-2 mt-3">
@@ -867,20 +957,64 @@ export default function CramRiskTestBench() {
 
         {benchView === "workbench" && (
           <div className="cram-bench-method-rail max-xl:hidden">
-            <CramMethodologyPanel
-              mode={mode}
-              boundary={boundary}
-              dq={dq}
-              result={result}
-              gt={gt}
-              variant="rail"
-            />
-            {gated.ready && rbmAssessment && (
-              <Card className="p-4 border border-ai/25 mt-3">
-                <div className="text-[10px] uppercase tracking-wide text-ai font-semibold mb-2">RBM breakdown</div>
-                <RbmScoreBreakdown result={rbmAssessment} />
-              </Card>
-            )}
+            {/* ── Live Risk Visualization Dashboard ──────────── */}
+            <div className="cram-viz-rail">
+              <div className="cram-viz-rail__header">
+                <span className="cram-viz-rail__title">Risk Visualization Dashboard</span>
+                <span className="cram-viz-rail__perimeter">{perimeterLabel(perimeter)}</span>
+              </div>
+              {gated.ready && riskSummary ? (
+                <>
+                  <RiskVisualizationDashboard summary={riskSummary} mode={mode} />
+                  {gt && (
+                    <div className="cram-viz-residual">
+                      <div className="cram-viz-residual__label">Residual — management info only · does not change treatment</div>
+                      <div className="cram-viz-residual__row">
+                        <span className="cram-viz-residual__score">{gt.residual.residualScore.toFixed(2)}</span>
+                        <span className="cram-viz-residual__band" data-band={String(gt.residual.residualLevel).toLowerCase()}>{String(gt.residual.residualLevel)}</span>
+                      </div>
+                      <div className="cram-viz-residual__meta">Effectiveness {Math.round(gt.residual.effectiveness * 100)}% · {gt.residual.appetiteText}</div>
+                      {gt.residual.controlGap && (
+                        <div className="cram-viz-residual__gap">Control gap — strengthen EDD / monitoring</div>
+                      )}
+                    </div>
+                  )}
+                  {rbmAssessment && (
+                    <div className="cram-viz-rbm">
+                      <div className="cram-viz-rbm__label">RBM composite · {registryMeta().version}</div>
+                      <div className="cram-viz-rbm__sub">{nraSourceForPerimeter(perimeter)}</div>
+                      <RbmScoreBreakdown result={rbmAssessment} />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="cram-viz-rail__placeholder">
+                  <div className="cram-viz-rail__placeholder-icon">📊</div>
+                  <div className="cram-viz-rail__placeholder-title">Awaiting data quality gate</div>
+                  <div className="cram-viz-rail__placeholder-body">
+                    Complete identity, KYC, and geography fields to unlock live risk visualisation — radar chart, factor bars, and residual adjustment will appear here.
+                  </div>
+                  <div className="cram-viz-rail__placeholder-dq">
+                    {dq.issues.slice(0, 4).map((issue) => (
+                      <div key={`${issue.code}-${issue.field}`} className="cram-viz-rail__dq-issue">· {issue.message}</div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ── Compact methodology rail below ─────────────── */}
+            <details className="cram-viz-method-details mt-3">
+              <summary className="cram-viz-method-details__toggle">Six-factor methodology</summary>
+              <CramMethodologyPanel
+                mode={mode}
+                boundary={boundary}
+                dq={dq}
+                result={result}
+                gt={gt}
+                variant="rail"
+              />
+            </details>
           </div>
         )}
 
@@ -922,7 +1056,7 @@ export default function CramRiskTestBench() {
               )}
 
               <Card className="p-4">
-                <div className="text-[10px] uppercase tracking-wide text-faint mb-2">Residual (control-adjusted)</div>
+                <div className="text-[10px] uppercase tracking-wide text-faint mb-2">Residual — management info only · does not change treatment</div>
                 <div className="flex justify-between items-center">
                   <span className="font-mono text-2xl font-bold">{gt!.residual.residualScore.toFixed(2)}</span>
                   <span className="pill text-[11px]">{String(gt!.residual.residualLevel)}</span>
@@ -978,7 +1112,7 @@ function Sel({ label, v, set, opts, optsV, groups, disabled }: {
               </optgroup>
             ))
           : optsV
-            ? optsV.map(([val, lbl]) => <option key={val} value={val}>{lbl}</option>)
+            ? optsV.map(([val, lbl]) => <option key={`${val}-${lbl}`} value={val}>{lbl}</option>)
             : opts!.map((o) => <option key={o} value={o}>{o === "" ? "— none —" : o}</option>)}
       </select>
     </Fld>

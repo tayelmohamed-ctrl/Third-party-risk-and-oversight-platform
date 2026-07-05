@@ -26,6 +26,9 @@ export interface ResidualResult {
 
 const BAND_IDX: Record<string, number> = { Low: 0, LOW: 0, Medium: 1, MEDIUM: 1, High: 2, HIGH: 2, Prohibited: 3, PROHIBITED: 3 };
 
+// UAE Methodology §3.1 & US Methodology §3.1: Low ≤1.5000, Medium ≤2.1500, High >2.1500
+// NOTE: residual band is for management-information display only — it does NOT drive CDD/EDD
+// treatment, approval authority, or review cadence. Those are driven by inherentLevel exclusively.
 function bandFromScore(score: number): Band {
   if (score <= CFG.bands.mediumFloor) return "Low";
   if (score <= CFG.bands.highFloor) return "Medium";

@@ -405,7 +405,7 @@ function MethodologyHeader({
         <p className="cram-method__hero-lead">
           {perimeter === "mal_bank"
             ? "CBUAE-aligned · UAE NRA · Master Risk Registries · golden thread · non-dilution overrides"
-            : "US BaaS/MSB · US NRA 2022 · Master Risk Registries · FinCEN/OFAC · golden thread"}
+            : "US BaaS/MSB · US NRA 2026 · Master Risk Registries · FinCEN/OFAC · golden thread"}
         </p>
       )}
       <div className="cram-method__hero-meta">

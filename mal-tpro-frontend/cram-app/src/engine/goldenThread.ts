@@ -212,11 +212,22 @@ export function computeGoldenThread(
   const rating = result.finalRating;
   const edd = eddRequired(rating, input, result);
   const auth = authority(rating, edd, input, result, perimeter);
-  const reviewMonths = rating === "Prohibited"
-    ? null
-    : profile.reviewCycles.find((r) => r.band === rating)?.months
-      ?? profile.reviewCycles.find((r) => r.band === "Medium")?.months
-      ?? 36;
+  // P0-2: inherent rating (result.finalRating) drives ALL treatment decisions: CDD/EDD level,
+  // approval authority, review cadence, monitoring intensity. The residual band (computed below)
+  // is management-information only and is never read for any treatment output.
+  // P0-3 / A-3: policyProfiles.ts is the single canonical source for review periods.
+  // Fail-closed: if a band is not found in the profile, return null (no auto-scheduled review)
+  // rather than silently defaulting — forces manual scheduling, which is the conservative outcome.
+  // A-4: UAE §13 "very high" sub-tier (6-month review) — TODO(compliance-confirm): confirm exact
+  // trigger condition from UAE Methodology §13 footnote before enabling. Currently placeholder = false.
+  const isVeryHighSubTier = perimeter === "mal_bank" && rating === "High" && false; // TODO §13
+  const reviewMonths: number | null = rating === "Prohibited"
+    ? (perimeter === "global_account"
+        ? (profile.reviewCycles.find((r) => r.band === "Prohibited")?.months ?? 6)
+        : null)
+    : isVeryHighSubTier
+      ? 6  // UAE Methodology §13 "very high" sub-tier
+      : (profile.reviewCycles.find((r) => r.band === rating)?.months ?? null);
   let nextReviewDate: string | null = null;
   if (reviewMonths && reviewFrom) {
     const d = new Date(reviewFrom);

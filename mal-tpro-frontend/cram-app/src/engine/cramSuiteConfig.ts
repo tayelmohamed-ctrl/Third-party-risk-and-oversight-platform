@@ -54,10 +54,14 @@ export const CONTROL_OPTIONS = [
 ] as const;
 
 export const CFG = {
-  reviewMonths: { Low: 60, Medium: 36, High: 12, Prohibited: 0 } as Record<FinalRating, number>,
+  // UAE Methodology §13: Low max 36mo, Medium max 24mo, High max 12mo — used as fallback only;
+  // golden thread uses policyProfiles reviewCycles for perimeter-specific values.
+  reviewMonths: { Low: 36, Medium: 24, High: 12, Prohibited: 0 } as Record<FinalRating, number>,
   controlWeights: { cdd: 20, sow: 15, mon: 20, scr: 15, edd: 15, ovs: 15 },
   residual: { maxReduction: 40, oneBandCap: 1, gapThreshold: 66, appetite: "Medium" as Band },
-  bands: { mediumFloor: 1.5, highFloor: 2.0 },
+  // UAE Methodology §3.1 & US Methodology §3.1 — threshold table (identical in both docs):
+  // Low ≤1.5000 · Medium >1.5000 and ≤2.1500 · High >2.1500
+  bands: { mediumFloor: 1.5, highFloor: 2.15 },
   expectedAed: {
     1: { single: 50_000, monthly: 50_000 },
     2: { single: 250_000, monthly: 250_000 },

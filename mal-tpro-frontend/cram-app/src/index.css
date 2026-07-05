@@ -989,3 +989,128 @@ h1,h2,h3,h4,.font-display { font-family: "Outfit", sans-serif; }
 .cram-method-rail-audit__row { display: flex; justify-content: space-between; color: #A7ACDB; }
 .cram-method-rail-audit__row strong { color: #F8F6FE; }
 
+/* ── Assessment Context Banner ─────────────────────────────── */
+.aml-context-banner {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0;
+  background: rgba(30, 34, 60, 0.7); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px; padding: 0.5rem 0.85rem; margin-bottom: 1rem; font-size: 11px;
+}
+.aml-context-banner__item { display: flex; flex-direction: column; gap: 1px; padding: 0.25rem 0.75rem; }
+.aml-context-banner__label { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #6E7899; }
+.aml-context-banner__value { font-size: 11px; color: #C8CCF8; font-weight: 500; }
+.aml-context-banner__sep { width: 1px; background: rgba(255,255,255,0.1); align-self: stretch; margin: 0.25rem 0; }
+@media (max-width: 700px) {
+  .aml-context-banner { flex-direction: column; }
+  .aml-context-banner__sep { width: 100%; height: 1px; margin: 0; }
+}
+
+/* ── Source attribution row ────────────────────────────────── */
+.aml-source-row { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.aml-source-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: #8F9BB8; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px; padding: 0.15rem 0.45rem;
+}
+
+/* ── Corridor Risk table ────────────────────────────────────── */
+.aml-corridor-table { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.5rem; }
+.aml-corridor-row {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  padding: 0.4rem 0.6rem; background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06); border-radius: 6px; font-size: 11px;
+}
+.aml-corridor-label { font-size: 10px; font-weight: 600; color: #6E7899; min-width: 110px; }
+.aml-corridor-country { color: #C8CCF8; font-weight: 500; min-width: 140px; }
+.aml-corridor-firm { font-size: 10px; color: #8F9BB8; font-variant-numeric: tabular-nums; }
+
+/* ── Band chips ─────────────────────────────────────────────── */
+.aml-band-chip {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  border-radius: 4px; padding: 0.15rem 0.45rem; flex-shrink: 0;
+}
+.aml-band--low     { background: rgba(47, 216, 166, 0.12); color: #2FD8A6; border: 1px solid rgba(47,216,166,0.25); }
+.aml-band--medium  { background: rgba(246, 166, 35, 0.12); color: #F6A623; border: 1px solid rgba(246,166,35,0.25); }
+.aml-band--high    { background: rgba(255, 100, 80, 0.12); color: #FF6450; border: 1px solid rgba(255,100,80,0.25); }
+.aml-band--prohibited { background: rgba(220, 40, 40, 0.18); color: #FF3B3B; border: 1px solid rgba(220,40,40,0.35); }
+
+/* ── FATF / sanctions chips ─────────────────────────────────── */
+.aml-fatf-chip {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+  border-radius: 4px; padding: 0.15rem 0.45rem; flex-shrink: 0;
+}
+.aml-fatf-chip--grey       { background: rgba(200,180,60,0.15); color: #D4B800; border: 1px solid rgba(200,180,60,0.3); }
+.aml-fatf-chip--black      { background: rgba(220,40,40,0.18); color: #FF3B3B; border: 1px solid rgba(220,40,40,0.35); }
+.aml-fatf-chip--sanctions  { background: rgba(180,40,220,0.15); color: #C86CFF; border: 1px solid rgba(180,40,220,0.3); }
+
+/* ── Data quality gate badge ────────────────────────────────── */
+.aml-dq-badge {
+  font-size: 11px; font-weight: 600; border-radius: 6px; padding: 0.45rem 0.75rem;
+  margin-top: 0.5rem; border: 1px solid;
+}
+.aml-dq-badge--pass { color: #2FD8A6; border-color: rgba(47,216,166,0.3); background: rgba(47,216,166,0.07); }
+.aml-dq-badge--fail { color: #FF6450; border-color: rgba(255,100,80,0.3); background: rgba(255,100,80,0.07); }
+
+/* ── Risk Visualization Rail (workbench right column) ──────── */
+.cram-viz-rail {
+  background: linear-gradient(165deg, rgba(10,14,36,0.96), rgba(6,10,28,0.98));
+  border: 1px solid rgba(57,185,237,0.2);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.cram-viz-rail__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(57,185,237,0.06);
+}
+.cram-viz-rail__title {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8F9BB8;
+}
+.cram-viz-rail__perimeter {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: #39B9ED; background: rgba(57,185,237,0.12); border: 1px solid rgba(57,185,237,0.25);
+  border-radius: 4px; padding: 0.1rem 0.4rem;
+}
+
+/* Residual strip */
+.cram-viz-residual {
+  padding: 0.65rem 0.85rem; border-top: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.025);
+}
+.cram-viz-residual__label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.07em; color: #6E7899; font-weight: 700; }
+.cram-viz-residual__row { display: flex; align-items: baseline; gap: 0.6rem; margin: 0.25rem 0; }
+.cram-viz-residual__score { font-size: 22px; font-weight: 800; font-family: monospace; color: #F8F6FE; }
+.cram-viz-residual__band {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; border-radius: 5px;
+  padding: 0.15rem 0.55rem; border: 1px solid;
+}
+.cram-viz-residual__band[data-band="low"]    { color: #2FD8A6; border-color: rgba(47,216,166,0.35); background: rgba(47,216,166,0.1); }
+.cram-viz-residual__band[data-band="medium"] { color: #F6A623; border-color: rgba(246,166,35,0.35); background: rgba(246,166,35,0.1); }
+.cram-viz-residual__band[data-band="high"]   { color: #FF6450; border-color: rgba(255,100,80,0.35); background: rgba(255,100,80,0.1); }
+.cram-viz-residual__band[data-band="prohibited"] { color: #FF3B3B; border-color: rgba(220,40,40,0.45); background: rgba(220,40,40,0.15); }
+.cram-viz-residual__meta { font-size: 10px; color: #6E7899; }
+.cram-viz-residual__gap { font-size: 10px; color: #F6A623; margin-top: 0.3rem; background: rgba(246,166,35,0.08); border: 1px solid rgba(246,166,35,0.2); border-radius: 4px; padding: 0.25rem 0.5rem; }
+
+/* RBM strip */
+.cram-viz-rbm { padding: 0.65rem 0.85rem; border-top: 1px solid rgba(255,255,255,0.06); }
+.cram-viz-rbm__label { font-size: 10px; font-weight: 700; color: #39B9ED; text-transform: uppercase; letter-spacing: 0.06em; }
+.cram-viz-rbm__sub { font-size: 9px; color: #6E7899; margin-bottom: 0.5rem; }
+
+/* Placeholder when DQ gate blocked */
+.cram-viz-rail__placeholder {
+  padding: 1.5rem 1rem; text-align: center;
+}
+.cram-viz-rail__placeholder-icon { font-size: 2rem; margin-bottom: 0.5rem; opacity: 0.4; }
+.cram-viz-rail__placeholder-title { font-size: 12px; font-weight: 700; color: #8F9BB8; margin-bottom: 0.4rem; }
+.cram-viz-rail__placeholder-body { font-size: 11px; color: #6E7899; line-height: 1.5; margin-bottom: 0.75rem; }
+.cram-viz-rail__placeholder-dq { text-align: left; }
+.cram-viz-rail__dq-issue { font-size: 10px; color: #FF6450; padding: 0.15rem 0; }
+
+/* Collapsible methodology below visualization */
+.cram-viz-method-details { overflow: hidden; }
+.cram-viz-method-details__toggle {
+  cursor: pointer; font-size: 11px; font-weight: 600; color: #6E7899; padding: 0.4rem 0.2rem;
+  user-select: none; list-style: none;
+}
+.cram-viz-method-details__toggle:hover { color: #A7ACDB; }
+.cram-viz-method-details[open] .cram-viz-method-details__toggle { color: #C8CCF8; }
+

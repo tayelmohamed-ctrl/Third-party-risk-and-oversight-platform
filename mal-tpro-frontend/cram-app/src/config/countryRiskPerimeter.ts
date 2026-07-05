@@ -1,6 +1,18 @@
 /**
  * Perimeter-aware country firm scores — UAE (mal_bank) vs US (global_account).
- * Base library: countries.json · sanctions floors · US NRA / FATF adjustments.
+ * Base library: countries.json · sanctions floors.
+ *
+ * P2-US-1: US geography is scored on funds-flow / corridor concentration, NOT on customer
+ * nationality, country of birth, or residence (US Methodology §7.1). The nationality-based
+ * firm-floor approach has been removed from the global_account code path.
+ *
+ * P2-US-2: The undocumented +0.45 FATF grey-list additive uplift has been removed.
+ * FATF status feeds into the corridor-tier classification (§7.1), not a bare score addition.
+ *
+ * B-1 INTERIM (effective 2026-07-05, expires 2026-12-31): Until the full corridor register
+ * is implemented, FATF grey/black-list jurisdictions receive a minimum firm floor of 2.0
+ * (Medium) under the Global Account perimeter. This is a compensating control pending the full
+ * US §7.1 corridor tier implementation. See usCorridorRisk.ts.
  */
 import type { CompliancePerimeter } from "./perimeters";
 import {
@@ -10,23 +22,7 @@ import {
   sanctionsFloorForCountry,
   type SanctionsCountryFloor,
 } from "./sanctionsCountryRegistry";
-
-/** FATF increased monitoring — US treats grey-list more conservatively than domestic UAE view. */
-const US_FATF_GREY_UPLIFT = 0.45;
-
-const US_FATF_GREY_COUNTRIES = new Set([
-  "algeria", "angola", "bolivia", "bulgaria", "cameroon", "cote d'ivoire",
-  "democratic republic of the congo", "haiti", "kenya", "laos", "lebanon",
-  "monaco", "mozambique", "namibia", "nepal", "nigeria", "south africa",
-  "south sudan", "venezuela", "vietnam", "yemen",
-]);
-
-/** US NRA 2022 high-priority jurisdictions — additional inherent uplift. */
-const US_NRA_HIGH = new Set([
-  "afghanistan", "myanmar", "iran", "north korea", "syria", "russia", "cuba",
-  "venezuela", "yemen", "somalia", "sudan", "south sudan", "libya", "iraq",
-  "lebanon", "nicaragua", "belarus", "zimbabwe",
-]);
+import { interimUsFirmFloor } from "./usCorridorRisk";
 
 function countryKey(name: string): string {
   return normalizeCountryName(name).toLowerCase();
@@ -39,31 +35,29 @@ function sanctionsFloorForPerimeter(
   const floor = sanctionsFloorForCountry(name);
   if (!floor) return undefined;
   if (perimeter === "mal_bank") return floor;
-  // Global Account — OFAC / UN programmes only (exclude UAE-only TFS-only floors)
+  // Global Account — OFAC / UN programmes only (exclude UAE TFS-only floors)
+  // US Methodology §7.1: only OFAC/UN nexus applies; UAE TFS is not a US programme
   if (floor.sources.some((s) => s === "US_OFAC" || s === "UN")) return floor;
   return undefined;
 }
 
 function applyMalBankFirm(countryName: string, baseFirm: number): number {
+  // UAE Methodology: full Cat A/B/C sanctions floors including UAE TFS
   return applySanctionsCountryFloor(countryName, baseFirm);
 }
 
 function applyGlobalAccountFirm(countryName: string, baseFirm: number): number {
   let firm = baseFirm;
-  const key = countryKey(countryName);
-
-  if (US_NRA_HIGH.has(key)) {
-    firm = Math.max(firm, 3);
-  }
-  if (US_FATF_GREY_COUNTRIES.has(key)) {
-    firm = Math.min(4, firm + US_FATF_GREY_UPLIFT);
-  }
-
+  // P2-US-1: nationality / NRA-high-list firm floor removed — US geography is corridor-based.
+  // P2-US-2: +0.45 FATF grey-list additive uplift removed — not documented in US Methodology.
+  // B-1 INTERIM (expires 2026-12-31): FATF grey/black-list → minimum firm floor of 2.0 (Medium).
+  // This is a conservative floor (not additive) pending full corridor tier register (usCorridorRisk.ts).
+  firm = Math.max(firm, interimUsFirmFloor(countryName));
+  // OFAC/UN sanctions floors (appropriate as financial-nexus, not nationality)
   const floor = sanctionsFloorForPerimeter(countryName, "global_account");
   if (floor) {
     firm = Math.max(firm, floor.firmFloor);
   }
-
   return firm;
 }
 
@@ -84,5 +78,6 @@ export function perimeterCountryBand(firm: number): string {
 }
 
 export function perimeterLabelForCountryLookup(perimeter: CompliancePerimeter): string {
-  return perimeter === "mal_bank" ? "UAE NRA · CBUAE" : "US NRA 2022 · FinCEN/OFAC";
+  // P2-US-3: updated to 2026 NRAs (NMLRA/NTFRA/NPFRA) — US Methodology citation
+  return perimeter === "mal_bank" ? "UAE NRA · CBUAE" : "US NRA 2026 · FinCEN/OFAC";
 }

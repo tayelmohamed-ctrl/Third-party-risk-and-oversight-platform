@@ -21,15 +21,20 @@ export interface SanctionsCountryFloor {
 /** Alias → canonical country name in the library */
 export const COUNTRY_NAME_ALIASES: Record<string, string> = {
   "iran, islamic republic of": "Iran",
-  "korea, democratic people's republic of": "North Korea",
   "korea, democratic people’s republic of": "North Korea",
   "syrian arab republic": "Syria",
   "russian federation": "Russia",
-  "côte d'ivoire": "Cote D'ivoire",
-  "cote d'ivoire": "Cote D'ivoire",
+  "côte d’ivoire": "Cote D’ivoire",
+  "cote d’ivoire": "Cote D’ivoire",
   "democratic republic of the congo": "Democratic Republic of the Congo",
   "dr congo": "Democratic Republic of the Congo",
   "congo, dem. rep.": "Democratic Republic of the Congo",
+  // Short-form aliases for common country names
+  "united states": "United States of America",
+  "usa": "United States of America",
+  "uk": "United Kingdom and Channel Islands",
+  "united kingdom": "United Kingdom and Channel Islands",
+  "gb": "United Kingdom and Channel Islands",
 };
 
 export const SANCTIONS_COUNTRY_FLOORS: SanctionsCountryFloor[] = [

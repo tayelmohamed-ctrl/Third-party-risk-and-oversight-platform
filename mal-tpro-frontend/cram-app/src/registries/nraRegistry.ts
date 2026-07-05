@@ -1,6 +1,6 @@
 /**
  * NRA sector registry — delegates to Master Risk Registry (single source of truth).
- * MAL Bank → UAE NRA · Global Account → US NRA 2022
+ * Mal Bank → UAE NRA (2024) · Global Account → US NRA 2026 (NMLRA/NTFRA/NPFRA)
  */
 import type { CompliancePerimeter } from "../config/perimeters";
 import type { RiskBand } from "../engine/rbm/types";

@@ -16,7 +16,7 @@ import {
   VerificationStatusBlock,
 } from "./CramWorkspaceSections";
 
-export type CramSectionKey = "kyc" | "identity" | "geography" | "drivers" | "controls";
+export type CramSectionKey = "kyc" | "identity" | "geography" | "drivers" | "controls" | "products" | "corridor" | "screening";
 
 export function CramGamifiedShell({
   mode,

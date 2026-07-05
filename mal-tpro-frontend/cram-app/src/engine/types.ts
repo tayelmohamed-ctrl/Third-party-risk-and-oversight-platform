@@ -116,6 +116,12 @@ export interface ScoreInput {
   sofName: string;
   incorpName?: string;
   uboName?: string;
+  /** UAE Methodology §7.2 / B-3: expected transaction corridor firm score (0–4).
+   *  If undefined, cram.ts proxies with max(sowFirm, sofFirm) pending full corridor model. */
+  corridorFirm?: number;
+  /** UAE Methodology §7.2 / B-3: digital geolocation risk signal (0–4 firm equiv).
+   *  If undefined, cram.ts defaults to Medium (2) — conservative pending capture field. */
+  digitalGeoFirm?: number;
   // product/service/channel
   productScore: Score;
   serviceScore: Score;

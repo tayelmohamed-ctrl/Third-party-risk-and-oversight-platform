@@ -5,7 +5,7 @@
     "approvalStatus": "approved",
     "lastModified": "2026-07-04",
     "approvedBy": "Head of Compliance",
-    "sourceDocument": "Mal ERA 2026 · UAE NRA 2018/2024 · US NRA 2022 · CBUAE AML Rulebook · FinCEN MSB",
+    "sourceDocument": "Mal ERA 2026 · UAE NRA 2018/2024 · US NRA 2024 · CBUAE AML Rulebook · FinCEN MSB",
     "reviewDate": "2026-07-04"
   },
   "businessActivities": [
@@ -15,9 +15,9 @@
       "isicCodes": ["4672", "4773", "3211", "4649"],
       "keywords": ["precious metal", "precious metals", "gold", "silver", "bullion", "jewellery", "jewelry", "diamond", "non-manufactured precious"],
       "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "UAE NRA — DNFBP dealers in precious metals/stones (High inherent risk)" },
-      "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2022 — dealers in precious metals, stones, and jewels" },
+      "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2024 — dealers in precious metals, stones, and jewels" },
       "riskRationale": "Portable high-value commodities · TBML · sanctions/PF · cash-for-gold typologies",
-      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "UAE NRA DNFBP · US NRA 2022 · ISIC typology 4672"
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "UAE NRA DNFBP · US NRA 2024 · ISIC typology 4672"
     },
     {
       "id": "ACT-MSB",
@@ -25,7 +25,7 @@
       "isicCodes": ["6619", "6612", "6419"],
       "keywords": ["money service", "money transmission", "remittance", "currency exchange", "hawala", "msb"],
       "uae": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "UAE NRA — illegal MVTS / hawala Very High" },
-      "us": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2022 — MSB top national priority" },
+      "us": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2024 — MSB top national priority" },
       "riskRationale": "Third-party funds movement · cross-border · nested MSB typologies",
       "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "ISIC typology · UAE/US NRA"
     },
@@ -35,7 +35,7 @@
       "isicCodes": ["6611", "6619"],
       "keywords": ["crypto", "virtual asset", "bitcoin", "blockchain", "vasp", "token"],
       "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "UAE VARA / CBUAE VASP expectations" },
-      "us": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2022 — VASP Very High" },
+      "us": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2024 — VASP Very High" },
       "riskRationale": "Virtual asset exposure · anonymity · sanctions evasion",
       "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "ISIC typology · FATF R.15"
     },
@@ -75,7 +75,7 @@
       "isicCodes": ["6201", "6202", "6209"],
       "keywords": ["software", "information technology", "computer programming", "it consulting"],
       "uae": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "UAE NRA — software/IT low inherent" },
-      "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "US NRA 2022 — technology low" },
+      "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "US NRA 2024 — technology low" },
       "riskRationale": "Low inherent · monitor nested MSB/VA",
       "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "UAE/US NRA · ISIC 62"
     },
