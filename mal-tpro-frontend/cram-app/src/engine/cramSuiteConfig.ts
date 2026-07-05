@@ -1,5 +1,6 @@
-// CRAM Suite config — aligned with MAL CBUAE-weighted model (Individual + Entity Appendix B)
+// CRAM Suite config — aligned with Mal CBUAE-weighted model (Individual + Entity Appendix B)
 import type { Band, FinalRating, Score } from "./types";
+import { policyProfileForPerimeter, reviewMonthsForBand } from "../registries/policyProfiles";
 
 export type CustomerMode = "individual" | "entity";
 export type ControlKey = "cdd" | "sow" | "mon" | "scr" | "edd" | "ovs";
@@ -54,9 +55,17 @@ export const CONTROL_OPTIONS = [
 ] as const;
 
 export const CFG = {
-  // UAE Methodology §13: Low max 36mo, Medium max 24mo, High max 12mo — used as fallback only;
-  // golden thread uses policyProfiles reviewCycles for perimeter-specific values.
-  reviewMonths: { Low: 36, Medium: 24, High: 12, Prohibited: 0 } as Record<FinalRating, number>,
+  // A-3: Derived from policyProfiles (single source of truth). Do not hardcode here.
+  // UAE §13: Prohibited has no periodic review — exit/decline applies; no KYC refresh date set.
+  reviewMonths: (() => {
+    const p = policyProfileForPerimeter("mal_bank");
+    return {
+      Low: reviewMonthsForBand(p, "Low"),
+      Medium: reviewMonthsForBand(p, "Medium"),
+      High: reviewMonthsForBand(p, "High"),
+      Prohibited: 0,
+    } as Record<FinalRating, number>;
+  })(),
   controlWeights: { cdd: 20, sow: 15, mon: 20, scr: 15, edd: 15, ovs: 15 },
   residual: { maxReduction: 40, oneBandCap: 1, gapThreshold: 66, appetite: "Medium" as Band },
   // UAE Methodology §3.1 & US Methodology §3.1 — threshold table (identical in both docs):

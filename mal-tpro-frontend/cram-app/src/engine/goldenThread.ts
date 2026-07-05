@@ -228,6 +228,9 @@ export function computeGoldenThread(
     : isVeryHighSubTier
       ? 6  // UAE Methodology §13 "very high" sub-tier
       : (profile.reviewCycles.find((r) => r.band === rating)?.months ?? null);
+  // C-2: reviewMonths and nextReviewDate are computed client-side at assessment time.
+  // No persistent review-schedule store exists — dates are not saved to a backend.
+  // Displayed value is informational only; scheduling is the compliance team's responsibility.
   let nextReviewDate: string | null = null;
   if (reviewMonths && reviewFrom) {
     const d = new Date(reviewFrom);

@@ -136,7 +136,11 @@ export async function buildCountryRiskWorkbook() {
   [36, 10, 10, 12, 12, 14, 14, 28, 12, 14].forEach((w, i) => { ws.getColumn(i + 1).width = w; });
 
   addReadmeSheet(wb, logo, "Country Risk Workbook", [
-    ["Formula", "Overall = ROUND(FATF×30% + Basel×35% + Sanctions×30% + Safe Haven×5%, 2)"],
+    // B-7 — INTERIM four-factor model: FATF 30% / Basel 35% / Sanctions 30% / Safe Haven 5%.
+    // This composite is undocumented in the finalised UAE §8-pillar or US §7.1 methodology.
+    // It is applied to BOTH perimeters as an interim control pending the full B-4 eight-pillar
+    // UAE country library.  Owner: MLRO.  Review/replace target: 2026-12-31.
+    ["Formula", "Overall = ROUND(FATF×30% + Basel×35% + Sanctions×30% + Safe Haven×5%, 2)  [INTERIM — B-7, expires 2026-12-31]"],
     ["Firm override", "Column I holds library firm_score including sanctions floors and grey-list overrides"],
     ["Edit", "Yellow pillar cells (B–E) recalculate overall rating; compare with firm override column"],
   ], ["Country Risk", "Readme"]);

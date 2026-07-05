@@ -9,10 +9,10 @@
  * P2-US-2: The undocumented +0.45 FATF grey-list additive uplift has been removed.
  * FATF status feeds into the corridor-tier classification (§7.1), not a bare score addition.
  *
- * B-1 INTERIM (effective 2026-07-05, expires 2026-12-31): Until the full corridor register
- * is implemented, FATF grey/black-list jurisdictions receive a minimum firm floor of 2.0
- * (Medium) under the Global Account perimeter. This is a compensating control pending the full
- * US §7.1 corridor tier implementation. See usCorridorRisk.ts.
+ * B-1 — Interim mitigant live — full B-1 corridor register still open, expires 2026-12-31.
+ * FATF grey/black-list jurisdictions receive a minimum firm floor of 2.0 (Medium) under
+ * Global Account. Conservative floor (not additive), superseded when full corridor
+ * tier register is wired per US Methodology §7.1. See usCorridorRisk.ts.
  */
 import type { CompliancePerimeter } from "./perimeters";
 import {

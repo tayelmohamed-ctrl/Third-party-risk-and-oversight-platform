@@ -106,16 +106,16 @@ export const METHODOLOGY_ALIGNMENT: AlignmentRow[] = [
   {
     id: "review-low",
     domain: "Review frequency — Low (§14 / policy profile)",
-    cbuaeReference: "Maximum 36 months (CBUAE §14); MAL Bank policy 60 months",
-    implementation: "Golden thread uses policyProfiles: mal_bank 60 mo · global_account 36 mo",
+    cbuaeReference: "Maximum 36 months (CBUAE §14)",
+    implementation: "Golden thread uses policyProfiles: mal_bank 36 mo · global_account 36 mo",
     status: "aligned",
-    notes: "Perimeter-aware review cycles via policyProfileForPerimeter in computeGoldenThread.",
+    notes: "Perimeter-aware review cycles via policyProfileForPerimeter in computeGoldenThread. CFG.reviewMonths derived from policyProfiles (A-3).",
   },
   {
     id: "review-medium",
     domain: "Review frequency — Medium (§14 / policy profile)",
-    cbuaeReference: "Maximum 24 months (CBUAE §14); MAL Bank policy 36 months",
-    implementation: "Golden thread: mal_bank 36 mo · global_account 24 mo",
+    cbuaeReference: "Maximum 24 months (CBUAE §14)",
+    implementation: "Golden thread: mal_bank 24 mo · global_account 24 mo",
     status: "aligned",
   },
   {

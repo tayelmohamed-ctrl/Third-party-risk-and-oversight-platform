@@ -95,7 +95,7 @@ export interface CorridorTierEntry {
   reviewDate: string; // ISO date — when this entry was last reviewed
 }
 
-// Stub — to be replaced with full register (B-1)
+// Interim mitigant live — full B-1 corridor register still open, expires 2026-12-31.
 export const US_CORRIDOR_TIER_REGISTER: CorridorTierEntry[] = [];
 
 /** Resolve firm floor for a given counterparty jurisdiction under the interim B-1 model. */

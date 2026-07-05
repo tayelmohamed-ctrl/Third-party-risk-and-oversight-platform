@@ -108,6 +108,10 @@ export interface ScoreInput {
   nationalityFirm: number;
   birthFirm: number;
   sowFirm: number;
+  // C-1 BACKLOG: When the customer is a freelancer using a regulated platform (Upwork, Freelancer.com,
+  // Fiverr), the platform itself is a documented SoW/SoF channel and should be treated as Medium (2)
+  // rather than High (3) in the sowFirm/sofFirm capture, provided the platform is licenced and the
+  // customer can evidence regular platform payouts.  UI guidance ticket: pending.
   sofFirm: number;
   residenceName: string;
   nationalityName?: string;
