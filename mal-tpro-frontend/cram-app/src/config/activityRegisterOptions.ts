@@ -6,6 +6,8 @@ import isicLookup from "../data/isic_activity_lookup.json";
 import professionGuidance from "../data/isic_profession_guidance.json";
 import riskThemes from "../data/isic_risk_themes.json";
 import { NATURE_OF_BUSINESS, PROFESSIONS } from "../engine/data";
+import { RAKEZ_ACTIVITIES, rakezRegisterStats } from "../engine/rakezActivityRegister";
+import type { CompliancePerimeter } from "./perimeters";
 import {
   isProfessionCompatibleWithEmployment,
   suggestedActivitiesForProfession,
@@ -31,12 +33,30 @@ export const PROFESSION_CSV_OPTIONS = [...PROFESSIONS]
   .sort((a, b) => a.name.localeCompare(b.name))
   .map((p) => p.name);
 
-/** Activity dropdown — all 6 typologies + 169 NOB + 12 theme clusters (187 selectable). */
+/** Activity dropdown — typologies + NOB + themes; RAKEZ FZ (mal_bank only). */
 export const ACTIVITY_DROPDOWN_GROUPS = [
   { label: `High-risk typologies (ISIC shortcuts · ${TYPOLOGY_OPTIONS.length})`, options: TYPOLOGY_OPTIONS },
   { label: `Nature of business register (${NATURE_OF_BUSINESS_OPTIONS.length})`, options: NATURE_OF_BUSINESS_OPTIONS },
   { label: `Risk theme clusters (${RISK_THEME_OPTIONS.length})`, options: RISK_THEME_OPTIONS },
 ] as const;
+
+const RAKEZ_ACTIVITY_OPTIONS = [...new Set(RAKEZ_ACTIVITIES.map((r) => r.activity_name))].sort();
+
+/** Perimeter-aware activity dropdown — RAKEZ excluded for global_account. */
+export function activityDropdownGroupsForPerimeter(perimeter: CompliancePerimeter) {
+  const base = [
+    { label: `High-risk typologies (ISIC shortcuts · ${TYPOLOGY_OPTIONS.length})`, options: [...TYPOLOGY_OPTIONS] },
+    { label: `Nature of business register (${NATURE_OF_BUSINESS_OPTIONS.length})`, options: [...NATURE_OF_BUSINESS_OPTIONS] },
+    { label: `Risk theme clusters (${RISK_THEME_OPTIONS.length})`, options: [...RISK_THEME_OPTIONS] },
+  ];
+  if (perimeter === "mal_bank") {
+    return [
+      { label: `RAKEZ Free Zone register (${RAKEZ_ACTIVITY_OPTIONS.length})`, options: RAKEZ_ACTIVITY_OPTIONS },
+      ...base,
+    ];
+  }
+  return base;
+}
 
 /** Profession dropdown — 16 AML guidance profiles + 736 profession.csv entries. */
 export const PROFESSION_DROPDOWN_GROUPS = [
@@ -48,10 +68,11 @@ export const LIBRARY_COUNTS = {
   typologies: TYPOLOGY_OPTIONS.length,
   professionGuidance: PROFESSION_GUIDANCE_OPTIONS.length,
   riskThemes: RISK_THEME_OPTIONS.length,
-    natureOfBusiness: NATURE_OF_BUSINESS_OPTIONS.length,
-    professions: PROFESSION_CSV_OPTIONS.length,
-    entityLegalTypes: 28,
-  } as const;
+  natureOfBusiness: NATURE_OF_BUSINESS_OPTIONS.length,
+  professions: PROFESSION_CSV_OPTIONS.length,
+  entityLegalTypes: 28,
+  rakezFreeZone: rakezRegisterStats().total,
+} as const;
 
 /** Filter profession dropdown groups by employment status (1=salaried … 3=atypical). */
 export function professionGroupsForEmployment(employmentScore: number) {

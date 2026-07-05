@@ -1060,3 +1060,35 @@ export async function apiCreateEvidenceExport(body: {
     headers: getAuthHeaders(),
   });
 }
+
+// ── Executive approval notifications ──
+
+export interface ApprovalNotifyPayload {
+  decisionId: string;
+  perimeter: "global_account" | "mal_bank";
+  category: string;
+  action: "approve" | "reject" | "escalate";
+  entity: string;
+  reason: string;
+  primaryRole: string;
+  notifyRoles: string[];
+  recipients: { role: string; email: string; status: string }[];
+}
+
+export interface ApprovalNotifyResult {
+  ok: boolean;
+  decisionId: string;
+  queued: { role: string; email: string; status: "queued" }[];
+  skipped: { role: string; email: string; status: "skipped_no_email" }[];
+  message: string;
+}
+
+export async function apiQueueApprovalNotify(
+  body: ApprovalNotifyPayload,
+): Promise<ApprovalNotifyResult> {
+  return req("/approvals/notify", {
+    method: "POST",
+    body: JSON.stringify(body),
+    headers: getAuthHeaders(),
+  });
+}

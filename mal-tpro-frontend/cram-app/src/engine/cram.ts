@@ -2,7 +2,7 @@
 // AI prepares; humans decide. Non-dilution: final = most restrictive.
 import type { ScoreInput, ScoreResult, FactorOut, OverrideHit, Band, Boundary, FinalRating, Score, ProductServicePillar, ChannelPillar, BehaviourGateResult, PepGateResult } from "./types";
 import { resolveBehaviourGate, suggestBehaviourStatus, type BehaviourStatus } from "../config/behaviourGate";
-import { pepAuditShare, resolvePepGate } from "../config/pepGate";
+import { pepAuditShare, pepOverrideRationale, resolvePepGate } from "../config/pepGate";
 import { firmToScore, clampScore, SANCTIONS_A } from "./data";
 import {
   uboRiskScore, activityDeviationScore, isMaterialActivityDeviation, activityDeviationLabel,
@@ -15,14 +15,14 @@ import {
 } from "./activityRisk";
 import { CUSTOMER_TYPE_WEIGHTS, ACTIVITY_LIBRARY_VERSION } from "../config/activityRiskConfig";
 import { entityTypeNpoFlag, entityTypeProhibited } from "../config/entityLegalTypes";
-import { getFactorWeights, DEFAULT_FACTOR_WEIGHTS } from "../config/runtimeConfig";
+import { getFactorWeightsForInput, getFactorWeights, DEFAULT_FACTOR_WEIGHTS } from "../config/runtimeConfig";
 import { bandFromScore } from "../config/bandBoundaries";
 
 // Six-factor weights (sum = 1.0). Product + service (25%) apply via worst-of pillar — see productServicePillar.
 export const FACTOR_WEIGHTS = DEFAULT_FACTOR_WEIGHTS;
 
-export function activeFactorWeights() {
-  return getFactorWeights();
+export function activeFactorWeights(input?: import("./types").ScoreInput) {
+  return getFactorWeightsForInput(input);
 }
 
 /** Combined product & service pillar weight — non-dilution: max(product, service) × this weight */
@@ -48,15 +48,15 @@ export function channelCombinedScore(initiation: Score, delivery: Score): Score 
   return clampScore(Math.max(initiation, delivery)) as Score;
 }
 
-function buildChannelFactors(initiation: Score, delivery: Score): {
+function buildChannelFactors(initiation: Score, delivery: Score, fw = getFactorWeightsForInput()): {
   factors: FactorOut[];
   pillar: ChannelPillar;
 } {
   const combined = channelCombinedScore(initiation, delivery);
   const drivenBy: "initiation" | "delivery" = delivery > initiation ? "delivery" : "initiation";
-  const chWeight = channelCombinedWeight();
-  const chInitW = channelInitAuditWeight();
-  const chDelW = channelDeliveryAuditWeight();
+  const chWeight = fw.channel;
+  const chInitW = chWeight / 2;
+  const chDelW = chWeight / 2;
   const contribution = combined * chWeight;
   const pillar: ChannelPillar = {
     initiationScore: initiation,
@@ -120,13 +120,12 @@ export function productServiceCombinedScore(product: Score, service: Score): Sco
   return clampScore(Math.max(product, service)) as Score;
 }
 
-function buildProductServiceFactors(product: Score, service: Score): {
+function buildProductServiceFactors(product: Score, service: Score, fw = getFactorWeightsForInput()): {
   factors: FactorOut[];
   pillar: ProductServicePillar;
 } {
   const combined = productServiceCombinedScore(product, service);
   const drivenBy: "product" | "service" = service > product ? "service" : "product";
-  const fw = getFactorWeights();
   const psWeight = fw.product + fw.service;
   const contribution = combined * psWeight;
   const pillar: ProductServicePillar = {
@@ -226,6 +225,7 @@ function snapshotActivityResolutions(
 
 export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"): ScoreResult {
   const i = normalizeScoreInput(raw);
+  const perimeter = i.masterRegistryPerimeter ?? "mal_bank";
   const uboScore = uboRiskScore(i.legalForm, i.uboStatus, i.uboLayers);
   const deviationScore = activityDeviationScore(i.expectedMonthlyBand, i.actualMonthlyBand);
 
@@ -239,11 +239,13 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
         providedIsicCode: i.providedIsicCode,
         entityTypeScore: i.entityTypeScore,
         selfEmployed: i.selfEmployed ?? (+i.employmentScore >= 2),
+        perimeter,
       })
     : snapshotActivityResolutions(mode, i.professionScore, i.natureOfBusinessScore);
 
-  const profScore = activityScores.professionScore;
-  const nobScore = activityScores.natureOfBusinessScore;
+  // Pre-computed registry scores from captureToScoreInput — do not re-resolve without registry
+  const profScore = i.professionScore;
+  const nobScore = i.natureOfBusinessScore;
   const w = CUSTOMER_TYPE_WEIGHTS[mode];
 
   // Customer-type factor — PEP excluded (gate only via OVR-008/016)
@@ -262,17 +264,20 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
 
   const product = clampScore(i.productScore) as Score;
   const service = clampScore(i.serviceScore) as Score;
-  const { factors: psFactors, pillar: productServicePillar } = buildProductServiceFactors(product, service);
+  const fw = getFactorWeightsForInput(i);
+  const { factors: psFactors, pillar: productServicePillar } = buildProductServiceFactors(product, service, fw);
   const initiation = clampScore(i.initiationChannelScore) as Score;
   const delivery = clampScore(i.deliveryChannelScore) as Score;
-  const { factors: chFactors, pillar: channelPillar } = buildChannelFactors(initiation, delivery);
+  const { factors: chFactors, pillar: channelPillar } = buildChannelFactors(initiation, delivery, fw);
   const behaviourGate = buildBehaviourGate(i);
+  const isNewCustomer = i.lifecycle === "New";
+  const investigationsForTxn = isNewCustomer ? (1 as Score) : i.investigationsScore;
+  const strsForTxn = isNewCustomer ? (1 as Score) : i.strsScore;
   // Transaction factor — TM observed data + light behaviour uplift (gate drives review/override — §12.6)
   const transaction = clampScore(Math.max(
-    i.actualMonthlyBand, i.investigationsScore, i.strsScore, behaviourGate.transactionUplift,
+    i.actualMonthlyBand, investigationsForTxn, strsForTxn, behaviourGate.transactionUplift,
   ));
 
-  const fw = getFactorWeights();
   const factors: FactorOut[] = [
     { key: "customerType", name: "Customer-type risk", weight: fw.customerType, score: customerType, contribution: customerType * fw.customerType },
     {
@@ -282,7 +287,9 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
       score: 1,
       contribution: 0,
       countsInComposite: false,
-      compositeNote: "Resolved after composite — CBUAE Art. 15(14)",
+      compositeNote: perimeter === "global_account"
+        ? "Resolved after composite — FinCEN/BSA PEP"
+        : "Resolved after composite — CBUAE Art. 15(14)",
     },
     { key: "geography", name: "Geography / country risk", weight: fw.geography, score: geography, contribution: geography * fw.geography },
     ...psFactors,
@@ -293,9 +300,10 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   const composite = factors.reduce((a, f) => a + f.contribution, 0);
   const mathBand = bandFor(composite, boundary);
 
-  const pepGateRaw = resolvePepGate(i.pep, { mathBand, input: i });
+  const pepGateRaw = resolvePepGate(i.pep, { mathBand, input: i }, perimeter);
   const pepGate: PepGateResult = {
     ...pepGateRaw,
+    regulatoryBasis: pepGateRaw.regulatoryBasis ?? pepGateRaw.cbuaeBasis,
     auditShare: pepAuditShare(i.pep, mode, pepGateRaw.score),
   };
   const pepFactorIdx = factors.findIndex((f) => f.key === "pep");
@@ -307,7 +315,7 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
       compositeNote: pepGate.overrideId
         ? `${pepGate.overrideId} ${pepGate.overrideHigh ? "High" : "Medium"} floor — not in composite`
         : pepGate.gateType === "identify"
-          ? `${pepGate.cbuaeBasis} — not in composite`
+          ? `${pepGate.regulatoryBasis ?? pepGate.cbuaeBasis} — not in composite`
           : "Clear — no PEP floor",
     };
   }
@@ -342,7 +350,13 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   if (i.watchlist === "True Match") overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: "Internal watchlist true match" });
   if (geoFirmMax >= 4 || SANCTIONS_A.includes(i.residenceName) || SANCTIONS_A.includes(i.sofName))
     overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: "Category-A sanctioned-country nexus" });
-  if (i.pep === "Foreign") overrides.push({ id: "OVR-008", cls: "HIGH", why: "Foreign PEP — CBUAE Art. 15(14) First · automatic enhanced measures" });
+  if (i.pep === "Foreign") {
+    overrides.push({
+      id: "OVR-008",
+      cls: "HIGH",
+      why: pepOverrideRationale("Foreign", true, perimeter) || "Foreign PEP — automatic enhanced measures",
+    });
+  }
   if (i.adverse === "True Match") overrides.push({ id: "OVR-009", cls: "HIGH", why: "Material adverse media" });
   if (firmToScore(geoFirmMax) === 3 && geoFirmMax < 4) overrides.push({ id: "OVR-011", cls: "HIGH", why: "High-risk country exposure" });
   if (activityScores.activityResolution.prohibited)
@@ -353,13 +367,20 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
     overrides.push({ id: "OVR-NPO", cls: "HIGH", why: "NPO — EDD & Head of Compliance approval (Policy 8.2)" });
   if (nobScore >= 3) overrides.push({ id: "OVR-012", cls: "HIGH", why: "High-risk nature of business" });
   if ((i.pep === "Domestic" || i.pep === "IO") && pepGateRaw.relationshipHighRisk) {
-    const label = i.pep === "IO" ? "International-organization PEP" : "Domestic PEP";
-    overrides.push({ id: "OVR-016", cls: "MEDIUM", why: `${label} — high-risk business relationship (CBUAE Art. 15 Second)` });
+    overrides.push({
+      id: "OVR-016",
+      cls: "MEDIUM",
+      why: pepOverrideRationale(i.pep, true, perimeter) || `${i.pep === "IO" ? "International-organization PEP" : "Domestic PEP"} — high-risk relationship`,
+    });
   }
   if (pepGateRaw.crossBorderExposure && (i.pep === "Domestic" || i.pep === "IO")) {
-    profileNotes.push("Cross-border exposure — domestic/IO PEP may require Art. 15(b–d) measures · Mohsen OS-TM-022");
+    profileNotes.push(
+      perimeter === "global_account"
+        ? "Cross-border exposure — domestic/IO PEP enhanced due diligence (FinCEN CDD Rule)"
+        : "Cross-border exposure — domestic/IO PEP may require Art. 15(b–d) measures · Mohsen OS-TM-022",
+    );
   }
-  if (i.strsScore >= 3 || i.investigationsScore >= 3)
+  if (!isNewCustomer && (i.strsScore >= 3 || i.investigationsScore >= 3))
     overrides.push({ id: "OVR-010", cls: "HIGH", why: "STR/SAR filed or confirmed suspicion" });
   if (behaviourGate.overrideHigh) {
     overrides.push({ id: "OVR-020", cls: "HIGH", why: `Expected-vs-actual behaviour override: ${behaviourGate.label} (Policy §12.6)` });

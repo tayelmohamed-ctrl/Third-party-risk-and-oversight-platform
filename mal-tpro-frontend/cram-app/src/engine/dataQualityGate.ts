@@ -10,12 +10,23 @@ import { behaviourStatusFromCapture, suggestBehaviourStatus } from "../config/be
 import { segmentScoreFor } from "./cramSuiteConfig";
 import { scoreCustomer } from "./cram";
 import { normalizeScoreInput } from "./normalizeInput";
+import {
+  cramActivityScore,
+  cramProductScore,
+  cramSegmentScore,
+  cramUseCaseScore,
+  lookupBusinessActivity,
+  lookupProduct,
+  MASTER_REGISTRY_VERSION,
+} from "../registries/master/registryService";
 import type {
   AdverseResult, Band, Boundary, CustomerLegalForm, PepStatus,
   Score, ScoreInput, ScoreResult, ScreenResult, UboVerificationStatus,
 } from "./types";
 
 export type CustomerMode = "individual" | "entity";
+
+import type { CompliancePerimeter } from "../config/perimeters";
 
 /** Raw capture — empty string means "not provided" (not defaulted). */
 export interface AssessmentCapture {
@@ -61,6 +72,12 @@ export interface AssessmentCapture {
   adverse: AdverseResult | "";
   entityType?: string;
   manualOverride?: "" | Band;
+  /** Regulatory perimeter — drives Master Registry jurisdiction (UAE vs US). */
+  compliancePerimeter?: CompliancePerimeter;
+  /** Payment purpose / use case ID from Master Use Case Registry. */
+  useCaseId?: string;
+  /** Corridor ID from Master Corridor Registry (optional geography uplift). */
+  corridorId?: string;
 }
 
 export interface KycQualityContext {
@@ -127,8 +144,8 @@ function baselineScore(b: string): Score {
   return 1;
 }
 
-function firm(name: string): number {
-  return lookupCountry(name)?.firm ?? NaN;
+function firm(name: string, perimeter: CompliancePerimeter = "mal_bank"): number {
+  return lookupCountry(name, perimeter)?.firm ?? NaN;
 }
 
 /** KYC verification & freshness checks (shared by capture and snapshot validation). */
@@ -247,6 +264,8 @@ export function validateDataQuality(
 ): DataQualityVerdict {
   const issues: DataQualityIssue[] = [];
   const missing: string[] = [];
+  const perimeter = capture.compliancePerimeter ?? "mal_bank";
+  const countryFirm = (name: string) => firm(name, perimeter);
 
   const req = (field: keyof AssessmentCapture | string, value: string | undefined, label: string) => {
     if (isBlank(value)) {
@@ -319,7 +338,7 @@ export function validateDataQuality(
     req("birthCountry", capture.birthCountry, "Country of birth");
     req("sowCountry", capture.sowCountry, "Source-of-wealth country");
     req("sofCountry", capture.sofCountry, "Source-of-funds country");
-    if (!isBlank(capture.residenceCountry) && Number.isNaN(firm(capture.residenceCountry))) {
+    if (!isBlank(capture.residenceCountry) && Number.isNaN(countryFirm(capture.residenceCountry))) {
       issues.push({ code: "UNMAPPED_COUNTRY", field: "residenceCountry", message: "Residence country not in library — remediation required", severity: "blocking" });
     }
   } else {
@@ -356,6 +375,7 @@ export function validateDataQuality(
 
 /** Build ScoreInput only from validated capture (no silent defaults). */
 export function captureToScoreInput(capture: AssessmentCapture): ScoreInput {
+  const perimeter = capture.compliancePerimeter ?? "mal_bank";
   const selfEmployed = capture.mode === "individual" && +capture.employment >= 2;
   const resolved = resolveCustomerTypeActivityScores({
     mode: capture.mode,
@@ -364,18 +384,45 @@ export function captureToScoreInput(capture: AssessmentCapture): ScoreInput {
     providedIsicCode: capture.providedIsicCode || undefined,
     entityTypeScore: capture.mode === "entity" ? entityTypeScore(capture.entityType) : undefined,
     selfEmployed,
+    perimeter,
   });
-  const cr = (n: string) => lookupCountry(n)!.firm;
+  const cr = (n: string) => lookupCountry(n, perimeter)!.firm;
   const prodObj = PRODUCTS.find((p) => p.name === capture.product);
+  const legacyProductScore = (prodObj ? baselineScore(prodObj.baseline) : 2) as Score;
   const isEntity = capture.mode === "entity";
+  const isNewCustomer = capture.lifecycle === "New";
+
+  const registryActivity = lookupBusinessActivity(
+    capture.activity,
+    perimeter,
+    capture.providedIsicCode || undefined,
+  );
+  const natureOfBusinessScore = cramActivityScore(
+    capture.activity,
+    perimeter,
+    capture.providedIsicCode || undefined,
+    resolved.natureOfBusinessScore,
+  );
+  const professionScore = capture.mode === "entity"
+    ? resolved.professionScore
+    : (selfEmployed
+      ? cramActivityScore(capture.activity, perimeter, capture.providedIsicCode || undefined, resolved.professionScore)
+      : resolved.professionScore);
+
+  const productScore = cramProductScore(capture.product, perimeter, legacyProductScore);
+  const serviceScore = capture.useCaseId
+    ? cramUseCaseScore(capture.useCaseId, perimeter, +capture.service as Score)
+    : (+capture.service as Score);
+  const segmentScore = cramSegmentScore(capture.segment, capture.mode, perimeter, segmentScoreFor(capture.segment));
+
   const geoRes = isEntity ? capture.opcoCountry : capture.residenceCountry;
 
   return {
     segment: capture.segment,
     lifecycle: capture.lifecycle,
     employmentScore: (+capture.employment || 1) as Score,
-    professionScore: resolved.professionScore,
-    natureOfBusinessScore: resolved.natureOfBusinessScore,
+    professionScore,
+    natureOfBusinessScore,
     customerMode: capture.mode,
     declaredProfession: capture.mode === "individual" ? capture.profession : undefined,
     declaredActivity: capture.activity,
@@ -384,7 +431,7 @@ export function captureToScoreInput(capture: AssessmentCapture): ScoreInput {
     entityTypeScore: isEntity ? entityTypeScore(capture.entityType) : undefined,
     declaredEntityType: isEntity ? capture.entityType : undefined,
     pep: capture.pep as PepStatus,
-    segmentScore: segmentScoreFor(capture.segment),
+    segmentScore,
     expectedMonthlyBand: +capture.expectedMonthlyBand as Score,
     actualMonthlyBand: +capture.actualMonthlyBand as Score,
     legalForm: (capture.legalForm || "natural") as CustomerLegalForm,
@@ -403,8 +450,8 @@ export function captureToScoreInput(capture: AssessmentCapture): ScoreInput {
     sofName: capture.sofCountry,
     incorpName: isEntity ? capture.incorpCountry : undefined,
     uboName: isEntity ? capture.uboCountry : undefined,
-    productScore: (prodObj ? baselineScore(prodObj.baseline) : 2) as Score,
-    serviceScore: +capture.service as Score,
+    productScore,
+    serviceScore,
     initiationChannelScore: initiationScoreFromCapture(capture.initChannel || capture.channel || "2"),
     deliveryChannelScore: deliveryScoreFromCapture(capture.deliveryChannel || capture.interface || "2"),
     behaviourStatus: behaviourStatusFromCapture(
@@ -415,12 +462,16 @@ export function captureToScoreInput(capture: AssessmentCapture): ScoreInput {
         capture.lifecycle,
       ),
     ),
-    investigationsScore: +capture.investigations as Score,
-    strsScore: +capture.strs as Score,
+    investigationsScore: isNewCustomer ? 1 : (+capture.investigations as Score),
+    strsScore: isNewCustomer ? 1 : (+capture.strs as Score),
     sanctions: capture.sanctions as ScreenResult,
     watchlist: capture.watchlist as "Clear" | "True Match",
     adverse: capture.adverse as AdverseResult,
     manualOverride: capture.manualOverride,
+    masterRegistryVersion: MASTER_REGISTRY_VERSION,
+    masterRegistryActivityId: registryActivity?.entry.id,
+    masterRegistryProductId: lookupProduct(capture.product, perimeter)?.entry.id,
+    masterRegistryPerimeter: perimeter,
   };
 }
 

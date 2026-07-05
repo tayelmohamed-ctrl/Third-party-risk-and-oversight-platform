@@ -64,6 +64,8 @@ export interface PepGateResult {
   approvalNote: string;
   relationshipHighRisk: boolean;
   crossBorderExposure: boolean;
+  /** Regulatory citation for audit trail (perimeter-aware) */
+  regulatoryBasis?: string;
   cbuaeBasis: string;
   /** Legacy share — shown for audit; not in composite */
   auditShare?: number;
@@ -147,6 +149,11 @@ export interface ScoreInput {
   /** Entity legal type label — 28-form register (CRAM Suite) */
   declaredEntityType?: string;
   selfEmployed?: boolean;
+  /** Master Risk Registry audit trail (optional — set by captureToScoreInput). */
+  masterRegistryVersion?: string;
+  masterRegistryActivityId?: string;
+  masterRegistryProductId?: string;
+  masterRegistryPerimeter?: import("../config/perimeters").CompliancePerimeter;
 }
 
 export interface ScoreResult {

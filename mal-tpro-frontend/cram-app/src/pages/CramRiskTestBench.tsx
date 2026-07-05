@@ -5,8 +5,8 @@ import {
 } from "../engine/dataQualityGate";
 import type { Boundary, PepStatus, Score, ScreenResult, AdverseResult, CustomerLegalForm, UboVerificationStatus } from "../engine/types";
 import { MONTHLY_BAND_LABEL } from "../engine/activityProfile";
-import { COUNTRIES, NATURE_OF_BUSINESS, PRODUCTS } from "../engine/data";
-import { ACTIVITY_DROPDOWN_GROUPS, professionGroupsForEmployment } from "../config/activityRegisterOptions";
+import { COUNTRIES, lookupCountry } from "../engine/data";
+import { activityDropdownGroupsForPerimeter, professionGroupsForEmployment } from "../config/activityRegisterOptions";
 import { buildAssessment } from "../engine/rerating";
 import { addAssessment } from "../store/assessmentStore";
 import { getPlatformUser, getPlatformUserId, hasOverrideCapability, setPlatformUser } from "../lib/authSession";
@@ -29,12 +29,26 @@ import KybChecklistPanel, { KybChecklistEmpty } from "../components/cram/KybChec
 import { inferKybProductsFromProductName } from "../config/kybDocumentMatrix";
 import type { KybCaseContext } from "../lib/kybChecklistBuilder";
 import RiskSummaryPanel from "../components/cramSuite/RiskSummaryPanel";
+import RbmScoreBreakdown from "../components/rbm/RbmScoreBreakdown";
+import { usePerimeter } from "../context/PerimeterContext";
+import { scoreCaptureWithRbm } from "../lib/cramRbmBridge";
+import { corridorFilterToRegistryId } from "../lib/rbmCorridorMap";
+import { allUseCases, defaultProductNameForPerimeter, nraSourceForPerimeter, perimeterLabel, productNamesForPerimeter, registryMeta } from "../registries/master/registryService";
+import { nraRegistryForPerimeter } from "../registries/nraRegistry";
 import CorporateStructureDiagram from "../components/cramSuite/CorporateStructureDiagram";
 import CramMethodologyPanel from "../components/cramSuite/CramMethodologyPanel";
+import TestBenchDecisionBox, { type RecordedBenchDecision } from "../components/cramSuite/TestBenchDecisionBox";
+import OverrideRiskAcceptancePanel from "../components/cramSuite/OverrideRiskAcceptancePanel";
+import { buildDecisionFrame } from "../lib/cramDecisionFrame";
 import {
   CramGamifiedShell, GamifiedSec, DriverChip, ControlStars,
   sectionScoreBadge, controlsScoreBadge,
 } from "../components/cramSuite/CramGamifiedLayout";
+import {
+  computeRiskConfidence,
+  computeTrendDelta,
+  approverFromGt,
+} from "../components/cramSuite/CramWorkspaceSections";
 import type { EntityStructureInput } from "../engine/corporateStructureGraph";
 
 const EMP_IND = [["Salaried employee", 1], ["Pensioner", 1], ["Student", 1], ["Self-employed", 2], ["Freelancer / consultant", 2], ["Business owner", 2], ["Unemployed (with activity)", 3]] as const;
@@ -54,6 +68,34 @@ export default function CramRiskTestBench() {
   const [ops, setOps] = useState<HandoffOps>({ checks: {}, approved: false, approvedBy: "", approvedAt: "", deployed: false, deployedAt: "" });
   const [approverInput, setApproverInput] = useState("");
   const [sig, setSig] = useState("");
+  const [poaOnFile, setPoaOnFile] = useState(true);
+  const [deviceIpCaptured, setDeviceIpCaptured] = useState(false);
+  const [benchDecision, setBenchDecision] = useState<RecordedBenchDecision | null>(null);
+  const { perimeter, corridor } = usePerimeter();
+
+  useEffect(() => {
+    const prod = defaultProductNameForPerimeter(perimeter);
+    setF((s) => ({
+      ...s,
+      prod,
+      useCaseId: perimeter === "global_account" ? "operating_expenses" : "operating_expenses",
+      ...(perimeter === "global_account"
+        ? {
+          cres: "United States", nat: "United States", cbirth: "United States",
+          sow: "United States", sof: "United States",
+          opco: "United States", incco: "United States", uboco: "United States",
+        }
+        : {
+          cres: "United Arab Emirates", nat: "India", cbirth: "India",
+          sow: "United Arab Emirates", sof: "Germany",
+          opco: "United Arab Emirates", incco: "United Arab Emirates", uboco: "United Arab Emirates",
+        }),
+    }));
+    setKyc((k) => ({
+      ...k,
+      identitySource: perimeter === "global_account" ? "document" : "emirates_id",
+    }));
+  }, [perimeter]);
 
   const [f, setF] = useState({
     name: "Omar Khalid", id: "ACT00005", rel: "Existing", event: "Periodic review",
@@ -67,7 +109,8 @@ export default function CramRiskTestBench() {
     activity: "Information technology (including manufacturing, trade and repair of computers, peripheral equipment and software)",
     profession: "Computer Engineer",
     isicCode: "",
-    prod: PRODUCTS[1]?.name || "",
+    prod: "",
+    useCaseId: "operating_expenses",
     svc: "2", initChan: "1", delChan: "2", behaviour: "moderately_above", inv: "1", str: "1", mo: "" as "" | "Low" | "Medium" | "High", moJust: "",
     simulateIncomplete: false,
   });
@@ -92,6 +135,11 @@ export default function CramRiskTestBench() {
 
   const [persona, setPersonaState] = useState<PlatformUserId>(() => getPlatformUserId());
   const set = (k: string, v: string) => setF((s) => ({ ...s, [k]: v }));
+  const setRel = (v: string) => setF((s) => ({
+    ...s,
+    rel: v,
+    ...(v === "New" ? { inv: "1", str: "1" } : {}),
+  }));
   const setCtrl = (k: ControlKey, v: number) => setControls((c) => ({ ...c, [k]: v as ControlInputs[ControlKey] }));
 
   function switchMode(m: CustomerMode) {
@@ -155,6 +203,16 @@ export default function CramRiskTestBench() {
     () => professionGroupsForEmployment(+f.emp),
     [f.emp],
   );
+  const activityGroups = useMemo(
+    () => activityDropdownGroupsForPerimeter(perimeter),
+    [perimeter],
+  );
+  const countryOptions = useMemo(
+    () => [...COUNTRIES].sort((a, b) => a.country.localeCompare(b.country)).map((c) => c.country),
+    [],
+  );
+  const productOptions = useMemo(() => productNamesForPerimeter(perimeter), [perimeter]);
+  const isNewCustomer = f.rel === "New";
   const professionMismatch = mode === "individual" && f.profession
     && !isProfessionCompatibleWithEmployment(f.profession, +f.emp);
   const entityMeta = mode === "entity" ? entityLegalTypeSummary(f.entityType) : null;
@@ -174,6 +232,9 @@ export default function CramRiskTestBench() {
     segment: f.seg,
     lifecycle: f.rel === "Existing" ? "Existing" : "New",
     mode,
+    compliancePerimeter: perimeter,
+    useCaseId: f.useCaseId,
+    corridorId: corridor !== "all" ? corridorFilterToRegistryId(perimeter, corridor) : undefined,
     residenceCountry: f.cres,
     nationalityCountry: f.nat,
     birthCountry: f.cbirth,
@@ -197,14 +258,14 @@ export default function CramRiskTestBench() {
     initChannel: f.initChan,
     deliveryChannel: f.delChan,
     behaviour: f.behaviour,
-    investigations: f.inv,
-    strs: f.str,
+    investigations: isNewCustomer ? "1" : f.inv,
+    strs: isNewCustomer ? "1" : f.str,
     sanctions: f.scrS,
     watchlist: f.scrW as "Clear" | "True Match",
     adverse: f.scrA,
     entityType: f.entityType,
     manualOverride: f.mo,
-  }), [f, mode]);
+  }), [f, mode, perimeter, corridor, isNewCustomer]);
 
   const gated = useMemo(() => scoreWithDataQualityGate(capture, kyc, boundary), [capture, kyc, boundary]);
   const dq = gated.verdict;
@@ -224,6 +285,45 @@ export default function CramRiskTestBench() {
   const riskSummary = useMemo(
     () => (input && result && gt ? buildRiskAssessmentSummary(mode, input, result, gt) : null),
     [mode, input, result, gt],
+  );
+
+  const rbmAssessment = useMemo(
+    () => (gated.ready ? scoreCaptureWithRbm(capture, perimeter, corridor, f.useCaseId) : null),
+    [gated.ready, capture, perimeter, corridor, f.useCaseId],
+  );
+
+  const nraRegistry = useMemo(() => nraRegistryForPerimeter(perimeter), [perimeter]);
+
+  const decisionFrame = useMemo(
+    () => buildDecisionFrame(capture, kyc, dq, gt, riskSummary, { poaOnFile, deviceIpCaptured }, {
+      manualOverride: f.mo,
+      overrideJustification: f.moJust,
+      approvedBy: ops.approvedBy,
+      approvedAt: ops.approvedAt,
+    }),
+    [capture, kyc, dq, gt, riskSummary, poaOnFile, deviceIpCaptured, f.mo, f.moJust, ops.approvedBy, ops.approvedAt],
+  );
+
+  const evidenceCompletenessPct = useMemo(() => {
+    const required = decisionFrame.evidenceItems.filter((i) => i.requiredForApprove);
+    if (!required.length) return 100;
+    const complete = required.filter((i) => i.status === "complete").length;
+    return Math.round((complete / required.length) * 100);
+  }, [decisionFrame]);
+
+  const riskConfidencePct = useMemo(
+    () => computeRiskConfidence(
+      evidenceCompletenessPct,
+      dq.status === "READY",
+      f.scrS === "Clear" && f.scrW === "Clear",
+      gated.ready && !!result,
+    ),
+    [evidenceCompletenessPct, dq.status, f.scrS, f.scrW, gated.ready, result],
+  );
+
+  const trendDelta = useMemo(
+    () => computeTrendDelta(result, +f.expected),
+    [result, f.expected],
   );
 
   const kybContext = useMemo<KybCaseContext | null>(() => {
@@ -317,7 +417,7 @@ export default function CramRiskTestBench() {
       const ob = await apiStartOnboarding({
         customerId: f.id || "ACT-NEW",
         customerName: f.name || "(unnamed)",
-        licenseRegion: "UAE",
+        licenseRegion: perimeter === "global_account" ? "US" : "UAE",
         mode,
         subject: {
           type: mode === "entity" ? "entity" : "individual",
@@ -344,7 +444,7 @@ export default function CramRiskTestBench() {
       const alert = await apiSimulateOscilarAlert({
         customerId: f.id,
         customerName: f.name || f.id,
-        licenseRegion: "UAE",
+        licenseRegion: perimeter === "global_account" ? "US" : "UAE",
         listHit,
         severity: listHit ? "critical" : "high",
         alertType: listHit ? "transaction_screening" : "transaction_monitoring",
@@ -415,7 +515,7 @@ export default function CramRiskTestBench() {
             CRAM Methodology
           </button>
         </div>
-        <AiTag color="#39B9ED">CBUAE-aligned · golden thread wired</AiTag>
+        <AiTag color="#39B9ED">{perimeterLabel(perimeter)} · golden thread wired</AiTag>
         <span className="text-[11px] text-muted ml-auto">Inherent → obligations → controls → residual → TM deploy</span>
       </div>
 
@@ -460,6 +560,10 @@ export default function CramRiskTestBench() {
             screeningSanctions={f.scrS}
             screeningWatchlist={f.scrW}
             partnerMsg={partnerMsg}
+            decisionFrame={gated.ready ? decisionFrame : null}
+            evidenceCompletenessPct={evidenceCompletenessPct}
+            riskConfidencePct={riskConfidencePct}
+            trendDelta={trendDelta}
           >
             <GamifiedSec section="kyc" title="KYC data quality" hint="FR-007 · completeness · verification · freshness">
               <Row3>
@@ -516,7 +620,7 @@ export default function CramRiskTestBench() {
               <Row3>
                 <Fld label="Customer name"><input className="input" value={f.name} onChange={(e) => set("name", e.target.value)} /></Fld>
                 <Fld label="Customer ID"><input className="input" value={f.id} onChange={(e) => set("id", e.target.value)} /></Fld>
-                <Sel label="Relationship" v={f.rel} set={(v) => set("rel", v)} opts={["New", "Existing"]} />
+                <Sel label="Relationship" v={f.rel} set={setRel} opts={["New", "Existing"]} />
               </Row3>
               <Row3>
                 <Sel label="Assessment event" v={f.event} set={(v) => set("event", v)} opts={EVENTS} />
@@ -563,13 +667,13 @@ export default function CramRiskTestBench() {
               scoreBadge={sectionScoreBadge(result, "geography", 20)}
             >
               <Row3>
-                <Sel label={mode === "entity" ? "Operating country" : "Country of residence"} v={mode === "entity" ? f.opco : f.cres} set={(v) => set(mode === "entity" ? "opco" : "cres", v)} opts={COUNTRIES.map((x) => x.country)} />
-                <Sel label={mode === "entity" ? "Incorporation country" : "Country of birth"} v={mode === "entity" ? f.incco : f.cbirth} set={(v) => set(mode === "entity" ? "incco" : "cbirth", v)} opts={COUNTRIES.map((x) => x.country)} />
-                <Sel label={mode === "entity" ? "UBO country" : "Primary nationality"} v={mode === "entity" ? f.uboco : f.nat} set={(v) => set(mode === "entity" ? "uboco" : "nat", v)} opts={COUNTRIES.map((x) => x.country)} />
+                <Sel label={mode === "entity" ? "Operating country" : "Country of residence"} v={mode === "entity" ? f.opco : f.cres} set={(v) => set(mode === "entity" ? "opco" : "cres", v)} opts={countryOptions} />
+                <Sel label={mode === "entity" ? "Incorporation country" : "Country of birth"} v={mode === "entity" ? f.incco : f.cbirth} set={(v) => set(mode === "entity" ? "incco" : "cbirth", v)} opts={countryOptions} />
+                <Sel label={mode === "entity" ? "UBO country" : "Primary nationality"} v={mode === "entity" ? f.uboco : f.nat} set={(v) => set(mode === "entity" ? "uboco" : "nat", v)} opts={countryOptions} />
               </Row3>
               <Row2>
-                <Sel label="Source-of-wealth country" v={f.sow} set={(v) => set("sow", v)} opts={COUNTRIES.map((x) => x.country)} />
-                <Sel label="Source-of-funds country" v={f.sof} set={(v) => set("sof", v)} opts={COUNTRIES.map((x) => x.country)} />
+                <Sel label="Source-of-wealth country" v={f.sow} set={(v) => set("sow", v)} opts={countryOptions} />
+                <Sel label="Source-of-funds country" v={f.sof} set={(v) => set("sof", v)} opts={countryOptions} />
               </Row2>
             </GamifiedSec>
 
@@ -584,8 +688,8 @@ export default function CramRiskTestBench() {
                 <DriverChip icon="🚫" label="Sanctions" value={f.scrS} hot={f.scrS !== "Clear"} />
                 <DriverChip icon="📋" label="Watchlist" value={f.scrW} hot={f.scrW !== "Clear"} />
                 <DriverChip icon="📰" label="Adverse" value={f.scrA} hot={f.scrA !== "None"} />
-                <DriverChip icon="🔍" label="Investigations" value={INV_STR.find((s) => String(s[1]) === f.inv)?.[0] ?? f.inv} hot={+f.inv >= 2} />
-                <DriverChip icon="📄" label="STR / SAR" value={INV_STR.find((s) => String(s[1]) === f.str)?.[0] ?? f.str} hot={+f.str >= 2} />
+                <DriverChip icon="🔍" label="Investigations" value={isNewCustomer ? "N/A — new customer" : (INV_STR.find((s) => String(s[1]) === f.inv)?.[0] ?? f.inv)} hot={!isNewCustomer && +f.inv >= 2} />
+                <DriverChip icon="📄" label="STR / SAR" value={isNewCustomer ? "N/A — new customer" : (INV_STR.find((s) => String(s[1]) === f.str)?.[0] ?? f.str)} hot={!isNewCustomer && +f.str >= 2} />
                 <DriverChip icon="💼" label="Employment" value={empOpts.find((e) => String(e[1]) === f.emp)?.[0] ?? f.emp} />
                 <DriverChip icon="🏭" label="ISIC activity" value={f.activity.slice(0, 28) + (f.activity.length > 28 ? "…" : "")} />
               </div>
@@ -596,8 +700,8 @@ export default function CramRiskTestBench() {
               </Row3>
               <Row3>
                 <Sel label="Adverse media" v={f.scrA} set={(v) => set("scrA", v)} opts={["None", "Potential", "True Match"]} />
-                <Sel label="Investigations" v={f.inv} set={(v) => set("inv", v)} optsV={INV_STR.map((s) => [String(s[1]), s[0]])} />
-                <Sel label="STR / SAR status" v={f.str} set={(v) => set("str", v)} optsV={INV_STR.map((s) => [String(s[1]), s[0]])} />
+                <Sel label="Investigations" v={f.inv} set={(v) => set("inv", v)} optsV={INV_STR.map((s) => [String(s[1]), s[0]])} disabled={isNewCustomer} />
+                <Sel label="STR / SAR status" v={f.str} set={(v) => set("str", v)} optsV={INV_STR.map((s) => [String(s[1]), s[0]])} disabled={isNewCustomer} />
               </Row3>
               <Row2>
                 <Sel label={mode === "individual" ? "Employment status" : "Authorised signatory role"} v={f.emp} set={setEmployment} optsV={empOpts.map((e) => [String(e[1]), e[0]])} />
@@ -607,11 +711,11 @@ export default function CramRiskTestBench() {
                 {mode === "individual" ? (
                   <>
                     <Sel label="Profession / occupation" v={f.profession} set={setProfession} groups={professionGroups} />
-                    <Sel label="Self-employed activity (ISIC)" v={f.activity} set={(v) => set("activity", v)} groups={[...ACTIVITY_DROPDOWN_GROUPS]} />
+                    <Sel label="Self-employed activity (ISIC)" v={f.activity} set={(v) => set("activity", v)} groups={activityGroups} />
                   </>
                 ) : (
                   <>
-                    <Sel label="Registered business activity (ISIC Rev.5)" v={f.activity} set={(v) => set("activity", v)} groups={[...ACTIVITY_DROPDOWN_GROUPS]} />
+                    <Sel label="Registered business activity (ISIC Rev.5)" v={f.activity} set={(v) => set("activity", v)} groups={activityGroups} />
                     <Fld label="ISIC code (optional)"><input className="input mono" placeholder="e.g. 6419" value={f.isicCode} onChange={(e) => set("isicCode", e.target.value)} /></Fld>
                   </>
                 )}
@@ -627,14 +731,31 @@ export default function CramRiskTestBench() {
                 </Row2>
               )}
               <Row3>
-                <Sel label="Product" v={f.prod} set={(v) => set("prod", v)} opts={PRODUCTS.map((p) => p.name)} />
+                <Sel label="Product" v={f.prod} set={(v) => set("prod", v)} opts={productOptions} />
+                <Sel
+                  label="Reason of payment (use case)"
+                  v={f.useCaseId}
+                  set={(v) => set("useCaseId", v)}
+                  optsV={allUseCases().map((u) => {
+                    const j = perimeter === "global_account" ? u.us : u.uae;
+                    return [u.id, `${u.useCaseName} (${j.rating})`];
+                  })}
+                />
                 <Sel label="Service" v={f.svc} set={(v) => set("svc", v)} optsV={SVC.map((s) => [String(s[1]), s[0]])} />
-                <Sel label="Initiation channel" v={f.initChan} set={(v) => set("initChan", v)} optsV={INITIATION_CHANNELS.map((c) => [String(c.score), c.label])} />
               </Row3>
               <Row2>
+                <Sel label="Initiation channel" v={f.initChan} set={(v) => set("initChan", v)} optsV={INITIATION_CHANNELS.map((c) => [String(c.score), c.label])} />
                 <Sel label="Delivery channel" v={f.delChan} set={(v) => set("delChan", v)} optsV={DELIVERY_CHANNELS.map((c) => [String(c.score), c.label])} />
-                <div className="text-[11px] text-muted self-end pb-2">Channel pillar uses max(initiation, delivery) × 10% — sub-scores shown for audit</div>
               </Row2>
+              <div className="text-[10px] text-muted px-1">
+                Policy: {perimeterLabel(perimeter)} · {nraSourceForPerimeter(perimeter)} · {registryMeta().version}
+                {input?.masterRegistryActivityId && (
+                  <> · Activity registry: {input.masterRegistryActivityId}</>
+                )}
+                {f.cres && lookupCountry(f.cres, perimeter) && (
+                  <> · Residence firm {lookupCountry(f.cres, perimeter)!.firm.toFixed(2)} ({lookupCountry(f.cres, perimeter)!.band})</>
+                )}
+              </div>
               <div className="cram-driver-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
                 <DriverChip icon="📦" label="Product" value={f.prod.length > 22 ? f.prod.slice(0, 22) + "…" : f.prod} />
                 <DriverChip icon="🔄" label="Service" value={SVC.find((s) => String(s[1]) === f.svc)?.[0] ?? f.svc} />
@@ -667,6 +788,84 @@ export default function CramRiskTestBench() {
         </div>
 
         {benchView === "workbench" && (
+          <div className="cram-bench-decision-col sticky top-[84px] space-y-3.5 max-lg:static">
+            <TestBenchDecisionBox
+              frame={decisionFrame}
+              disabled={!gated.ready}
+              recorded={benchDecision}
+              onRecordDecision={setBenchDecision}
+              customerName={f.name}
+              customerId={f.id}
+              rating={result?.finalRating ? String(result.finalRating) : "—"}
+              requiredAction={gt?.dueDiligence ?? "—"}
+              approver={approverFromGt(gt)}
+              confidencePct={riskConfidencePct}
+              evidenceItems={decisionFrame.evidenceItems}
+              evidenceCompletenessPct={evidenceCompletenessPct}
+            />
+
+            {!gated.ready ? (
+              <Card className="p-4 border border-hi/30 bg-hi/5">
+                <div className="text-[10px] uppercase tracking-wide text-hi font-semibold">Assessment blocked</div>
+                <div className="font-display font-bold text-2xl mt-1 text-hi">BLOCKED</div>
+                <div className="text-[12px] text-muted mt-2">Workflow: <b className="text-ink">{dq.workflowState}</b> — no composite computed (FR-007)</div>
+                <ul className="text-[11px] mt-3 space-y-1.5 m-0 pl-4">
+                  {dq.issues.slice(0, 8).map((issue) => (
+                    <li key={`${issue.code}-${issue.field}`} className="text-muted">{issue.message}</li>
+                  ))}
+                </ul>
+              </Card>
+            ) : (
+              <>
+                <OverrideRiskAcceptancePanel records={decisionFrame.riskAcceptance} />
+                <HandoffPanel
+                  gt={gt!} ops={ops} approverInput={approverInput}
+                  onToggleCheck={(id, checked) => setOps((o) => ({ ...o, checks: { ...o.checks, [id]: checked } }))}
+                  onApprove={() => {
+                    if (!approverInput.trim()) return;
+                    setOps((o) => ({
+                      ...o, approved: true,
+                      approvedBy: `${approverInput.trim()} — ${gt!.approval.who.replace(" required", "")}`,
+                      approvedAt: new Date().toISOString().slice(0, 16).replace("T", " "),
+                    }));
+                  }}
+                  onDeploy={() => setOps((o) => ({ ...o, deployed: true, deployedAt: new Date().toISOString().slice(0, 16).replace("T", " ") }))}
+                  onApproverChange={setApproverInput}
+                />
+              </>
+            )}
+
+            <Card className="p-4">
+              <div className="sec mb-2">Evidence simulation</div>
+              <label className="flex items-center gap-2 text-[12px] text-muted cursor-pointer mb-2">
+                <input type="checkbox" checked={poaOnFile} onChange={(e) => setPoaOnFile(e.target.checked)} />
+                PoA on file
+              </label>
+              <label className="flex items-center gap-2 text-[12px] text-muted cursor-pointer">
+                <input type="checkbox" checked={deviceIpCaptured} onChange={(e) => setDeviceIpCaptured(e.target.checked)} />
+                Device / IP captured
+              </label>
+            </Card>
+
+            <Card className="p-4">
+              <div className="sec mb-2">Override & submit</div>
+              <Sel label="Signed-in user (RBAC)" v={persona} set={(v) => { setPlatformUser(v as PlatformUserId); setPersonaState(v as PlatformUserId); window.location.reload(); }} optsV={PLATFORM_USERS.map((u) => [u.id, `${u.name} — ${u.title}`])} />
+              <Sel label="Manual override" v={f.mo} set={(v) => set("mo", v)} opts={["", "Low", "Medium", "High"]} disabled={!hasOverrideCapability() || !gated.ready} />
+              {f.mo && (
+                <Fld label="Justification">
+                  <textarea className="input min-h-[60px]" value={f.moJust} onChange={(e) => set("moJust", e.target.value)} disabled={!hasOverrideCapability()} />
+                </Fld>
+              )}
+              <div className="flex gap-2 mt-3">
+                <button className="btn flex-1" onClick={submit} disabled={!gated.ready}>Submit assessment</button>
+                <button className="btn btn-ghost" onClick={() => setBoundary(boundary === "calculator" ? "cram" : "calculator")}>Boundary</button>
+              </div>
+              {saved && <div className={`text-[11px] mt-2 px-2 py-1 rounded ${saveErr ? "bg-hi/15 text-hi" : "bg-low/15 text-low"}`}>{saved}</div>}
+            </Card>
+          </div>
+        )}
+
+        {benchView === "workbench" && (
           <div className="cram-bench-method-rail max-xl:hidden">
             <CramMethodologyPanel
               mode={mode}
@@ -676,93 +875,85 @@ export default function CramRiskTestBench() {
               gt={gt}
               variant="rail"
             />
+            {gated.ready && rbmAssessment && (
+              <Card className="p-4 border border-ai/25 mt-3">
+                <div className="text-[10px] uppercase tracking-wide text-ai font-semibold mb-2">RBM breakdown</div>
+                <RbmScoreBreakdown result={rbmAssessment} />
+              </Card>
+            )}
           </div>
         )}
 
+        {benchView === "methodology" && (
         <div className="cram-bench-sidebar sticky top-[84px] space-y-3.5 max-lg:static">
+          <TestBenchDecisionBox
+            frame={decisionFrame}
+            disabled={!gated.ready}
+            recorded={benchDecision}
+            onRecordDecision={setBenchDecision}
+            customerName={f.name}
+            customerId={f.id}
+            rating={result?.finalRating ? String(result.finalRating) : "—"}
+            requiredAction={gt?.dueDiligence ?? "—"}
+            approver={approverFromGt(gt)}
+            confidencePct={riskConfidencePct}
+            evidenceItems={decisionFrame.evidenceItems}
+            evidenceCompletenessPct={evidenceCompletenessPct}
+          />
           {!gated.ready ? (
             <Card className="p-4 border border-hi/30 bg-hi/5">
-              <div className="text-[10px] uppercase tracking-wide text-hi font-semibold">Assessment blocked</div>
-              <div className="font-display font-bold text-2xl mt-1 text-hi">BLOCKED</div>
-              <div className="text-[12px] text-muted mt-2">Workflow: <b className="text-ink">{dq.workflowState}</b> — no composite computed (FR-007)</div>
-              <ul className="text-[11px] mt-3 space-y-1.5 m-0 pl-4">
-                {dq.issues.slice(0, 8).map((issue) => (
-                  <li key={`${issue.code}-${issue.field}`} className="text-muted">{issue.message}</li>
-                ))}
-              </ul>
-              {dq.missingFields.length > 0 && (
-                <div className="text-[10px] text-faint mt-3 mono">Missing: {dq.missingFields.join(", ")}</div>
-              )}
+              <div className="text-[10px] uppercase tracking-wide text-hi font-semibold">Supporting detail</div>
+              <p className="text-[12px] text-muted mt-2 m-0">Complete mandatory fields to unlock RBM breakdown and residual view.</p>
             </Card>
           ) : (
             <>
-          {riskSummary && <RiskSummaryPanel summary={riskSummary} mode={mode} />}
+              {riskSummary && <RiskSummaryPanel summary={riskSummary} mode={mode} />}
 
-          <Card className="p-4">
-            <div className="text-[10px] uppercase tracking-wide text-faint mb-2">Residual (control-adjusted)</div>
-            <div className="flex justify-between items-center">
-              <span className="font-mono text-2xl font-bold">{gt!.residual.residualScore.toFixed(2)}</span>
-              <span className="pill text-[11px]">{String(gt!.residual.residualLevel)}</span>
-            </div>
-            <div className="text-[11px] text-muted mt-1">Effectiveness {Math.round(gt!.residual.effectiveness * 100)}% · {gt!.residual.appetiteText}</div>
-            {gt!.residual.controlGap && (
-              <div className="text-[11px] mt-2 px-2 py-1 rounded bg-med/15 text-med">Control gap — strengthen EDD / monitoring</div>
-            )}
-          </Card>
+              {rbmAssessment && (
+                <Card className="p-4 border border-ai/25">
+                  <div className="text-[10px] uppercase tracking-wide text-ai font-semibold mb-1">
+                    RBM composite · {registryMeta().version}
+                  </div>
+                  <div className="text-[11px] text-muted mb-3">
+                    Product + business activity (NRA) + use case + corridor — {nraSourceForPerimeter(perimeter)}
+                  </div>
+                  <RbmScoreBreakdown result={rbmAssessment} />
+                </Card>
+              )}
 
-          <HandoffPanel
-            gt={gt!} ops={ops} approverInput={approverInput}
-            onToggleCheck={(id, checked) => setOps((o) => ({ ...o, checks: { ...o.checks, [id]: checked } }))}
-            onApprove={() => {
-              if (!approverInput.trim()) return;
-              setOps((o) => ({
-                ...o, approved: true,
-                approvedBy: `${approverInput.trim()} — ${gt!.approval.who.replace(" required", "")}`,
-                approvedAt: new Date().toISOString().slice(0, 16).replace("T", " "),
-              }));
-            }}
-            onDeploy={() => setOps((o) => ({ ...o, deployed: true, deployedAt: new Date().toISOString().slice(0, 16).replace("T", " ") }))}
-            onApproverChange={setApproverInput}
-          />
+              <Card className="p-4">
+                <div className="text-[10px] uppercase tracking-wide text-faint mb-2">Residual (control-adjusted)</div>
+                <div className="flex justify-between items-center">
+                  <span className="font-mono text-2xl font-bold">{gt!.residual.residualScore.toFixed(2)}</span>
+                  <span className="pill text-[11px]">{String(gt!.residual.residualLevel)}</span>
+                </div>
+                <div className="text-[11px] text-muted mt-1">Effectiveness {Math.round(gt!.residual.effectiveness * 100)}% · {gt!.residual.appetiteText}</div>
+                {gt!.residual.controlGap && (
+                  <div className="text-[11px] mt-2 px-2 py-1 rounded bg-med/15 text-med">Control gap — strengthen EDD / monitoring</div>
+                )}
+              </Card>
 
-          {kybContext ? (
-            <KybChecklistPanel context={kybContext} compact />
-          ) : mode === "entity" ? (
-            <KybChecklistEmpty />
-          ) : null}
+              {kybContext ? (
+                <KybChecklistPanel context={kybContext} compact />
+              ) : mode === "entity" ? (
+                <KybChecklistEmpty />
+              ) : null}
+
+              <Card className="p-4">
+                <div className="sec mb-2">Override & gate flags</div>
+                <div className="space-y-1">
+                  {gt!.gates.flags.map((fl) => (
+                    <div key={fl.name} className="flex justify-between text-[11px] py-1 border-b border-lineSoft">
+                      <span className="text-muted">{fl.name}</span>
+                      <span className={fl.status === "PROHIBIT" ? "text-hi" : fl.on ? "text-med" : "text-low"}>{fl.status}</span>
+                    </div>
+                  ))}
+                </div>
+              </Card>
             </>
           )}
-
-          <Card className="p-4">
-            <div className="sec mb-2">Override & submit</div>
-            <Sel label="Signed-in user (RBAC)" v={persona} set={(v) => { setPlatformUser(v as PlatformUserId); setPersonaState(v as PlatformUserId); window.location.reload(); }} optsV={PLATFORM_USERS.map((u) => [u.id, `${u.name} — ${u.title}`])} />
-            <Sel label="Manual override" v={f.mo} set={(v) => set("mo", v)} opts={["", "Low", "Medium", "High"]} disabled={!hasOverrideCapability() || !gated.ready} />
-            {f.mo && (
-              <Fld label="Justification">
-                <textarea className="input min-h-[60px]" value={f.moJust} onChange={(e) => set("moJust", e.target.value)} disabled={!hasOverrideCapability()} />
-              </Fld>
-            )}
-            <div className="flex gap-2 mt-3">
-              <button className="btn flex-1" onClick={submit} disabled={!gated.ready}>Submit assessment</button>
-              <button className="btn btn-ghost" onClick={() => setBoundary(boundary === "calculator" ? "cram" : "calculator")}>Boundary</button>
-            </div>
-            {saved && <div className={`text-[11px] mt-2 px-2 py-1 rounded ${saveErr ? "bg-hi/15 text-hi" : "bg-low/15 text-low"}`}>{saved}</div>}
-          </Card>
-
-          {gated.ready && gt && (
-          <Card className="p-4">
-            <div className="sec mb-2">Override & gate flags</div>
-            <div className="space-y-1">
-              {gt.gates.flags.map((fl) => (
-                <div key={fl.name} className="flex justify-between text-[11px] py-1 border-b border-lineSoft">
-                  <span className="text-muted">{fl.name}</span>
-                  <span className={fl.status === "PROHIBIT" ? "text-hi" : fl.on ? "text-med" : "text-low"}>{fl.status}</span>
-                </div>
-              ))}
-            </div>
-          </Card>
-          )}
         </div>
+        )}
       </div>
     </div>
   );

@@ -1,13 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { resolveActivityRisk, resolveProfessionRisk } from "../src/engine/activityRisk";
-
-import { describe, expect, it } from "vitest";
-import { resolveActivityRisk, resolveProfessionRisk } from "../src/engine/activityRisk";
 import {
   LIBRARY_COUNTS, PROFESSION_GUIDANCE_OPTIONS, TYPOLOGY_OPTIONS,
 } from "../src/config/activityRegisterOptions";
 import professionGuidance from "../src/data/isic_profession_guidance.json";
 import isicLookup from "../src/data/isic_activity_lookup.json";
+import { rakezRegisterStats } from "../src/engine/rakezActivityRegister";
 
 describe("ISIC activity risk — individual & entity", () => {
   it("loads full typology and profession guidance libraries", () => {
@@ -32,6 +30,24 @@ describe("ISIC activity risk — individual & entity", () => {
       const floor = row.indicative_aml_risk === "High" ? 3 : row.indicative_aml_risk === "Medium" ? 2 : 1;
       expect(r.score).toBeGreaterThanOrEqual(floor);
     }
+  });
+  it("loads RAKEZ free zone register", () => {
+    const stats = rakezRegisterStats();
+    expect(stats.total).toBeGreaterThan(1200);
+    expect(stats.high).toBeGreaterThan(100);
+  });
+
+  it("resolves RAKEZ FZ accounting activity via register", () => {
+    const r = resolveActivityRisk("Accounting & Bookkeeping", "entity", undefined, "7412-02");
+    expect(r.code).not.toBe("?");
+    expect(r.basis).toContain("RAKEZ FZ");
+    expect(r.score).toBeGreaterThanOrEqual(2);
+  });
+
+  it("resolves RAKEZ FZ diesel fuel trading as medium/high", () => {
+    const r = resolveActivityRisk("Diesel Fuel Trading", "entity", undefined, "514111");
+    expect(r.basis).toContain("RAKEZ");
+    expect(r.score).toBeGreaterThanOrEqual(2);
   });
   it("resolves MSB typology to ISIC 6619 High", () => {
     const r = resolveActivityRisk("money services business remittance", "entity");

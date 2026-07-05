@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, ratingColor } from "../ui";
 import type { RiskAssessmentSummary, RiskImpact } from "../../engine/riskExplainability";
 import type { CustomerMode } from "../../engine/cramSuiteConfig";
@@ -25,12 +26,26 @@ export default function RiskSummaryPanel({
   mode: CustomerMode;
 }) {
   const rating = summary.overallRiskRating;
+  const [showCharts, setShowCharts] = useState(false);
   const increases = summary.drivers.filter((d) => d.impact === "increase" || d.impact === "floor");
   const decreases = summary.drivers.filter((d) => d.impact === "decrease");
 
   return (
     <div className="space-y-3">
-      <RiskVisualizationDashboard summary={summary} mode={mode} />
+      <Card className="p-3">
+        <button
+          type="button"
+          className="text-[11px] font-semibold text-muted hover:text-ink w-full text-left"
+          onClick={() => setShowCharts((v) => !v)}
+        >
+          {showCharts ? "▾ Hide scoring charts" : "▸ Show scoring charts (radar / factor bars)"}
+        </button>
+        {showCharts && (
+          <div className="mt-3">
+            <RiskVisualizationDashboard summary={summary} mode={mode} />
+          </div>
+        )}
+      </Card>
 
       <Card className="p-4 bg-ink text-[#EDF1F4]">
         <div className="text-[10px] uppercase tracking-wide text-[#8F9BAA]">Overall risk assessment</div>
@@ -53,7 +68,8 @@ export default function RiskSummaryPanel({
         </div>
 
         <div className="grid grid-cols-2 gap-2 mt-4 text-[11px]">
-          <Out k="Inherent rating" v={summary.inherentRating} />
+          <Out k="Math band (composite)" v={summary.inherentRating} />
+          <Out k="Final rating" v={summary.finalRating} />
           <Out k="CDD / EDD level" v={summary.dueDiligence} />
           <Out k="EDD requirement" v={summary.eddRequired ? "Yes — mandatory" : "No"} />
           <Out k="Approval authority" v={summary.approvalAuthority} />
@@ -205,7 +221,7 @@ export default function RiskSummaryPanel({
                 <td />
                 <td />
                 <td className="pt-2 mono">{summary.inherentScore.toFixed(3)}</td>
-                <td className="pt-2 text-faint">→ {summary.inherentRating}</td>
+                <td className="pt-2 text-faint">→ {summary.mathBand} · final {summary.finalRating}</td>
               </tr>
             </tfoot>
           </table>

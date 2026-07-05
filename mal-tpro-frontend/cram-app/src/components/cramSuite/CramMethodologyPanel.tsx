@@ -6,7 +6,17 @@ import type { GoldenThreadResult } from "../../engine/goldenThread";
 import { OVERRIDES } from "../../engine/data";
 import { OUTCOMES } from "../../engine/cram";
 import { boundarySetLabel } from "../../config/modelProvenance";
-import { exportCramMethodologyDocument } from "../../lib/cramMethodologyExport";
+import { usePerimeter } from "../../context/PerimeterContext";
+import {
+  MASTER_REGISTRY_VERSION,
+  nraSourceForPerimeter,
+  perimeterLabel,
+  registryMeta,
+} from "../../registries/master/registryService";
+import {
+  cramMethodologyDocForPerimeter,
+  exportCramMethodologyDocument,
+} from "../../lib/cramMethodologyExport";
 import {
   exportMalProductRiskWorkbook,
   exportMalServiceRiskWorkbook,
@@ -17,7 +27,7 @@ import {
   type MethodologyWorkbookKind,
   type ReferenceListWorkbookKind,
 } from "../../lib/cramRiskWorkbookExport";
-import { METHODOLOGY_DOCUMENT } from "../../config/cramMethodologyDocument";
+import { policyProfileForPerimeter } from "../../registries/policyProfiles";
 import {
   AUDIENCE_INTROS,
   METHODOLOGY_PIPELINE,
@@ -46,29 +56,68 @@ export default function CramMethodologyPanel({
   gt,
   variant = "explorer",
 }: Props) {
+  const { perimeter } = usePerimeter();
   const [audience, setAudience] = useState<MethodologyAudience>("regulator");
   const [exporting, setExporting] = useState(false);
   const [exportingKind, setExportingKind] = useState<string | null>(null);
   const snap = useMemo(() => buildMethodologySnapshot(boundary), [boundary]);
   const ctBreakdown = useMemo(() => customerTypeBreakdown(mode), [mode]);
   const factorRows = useMemo(() => factorRowsFromResult(result, boundary), [result, boundary]);
+  const methodologyDoc = useMemo(() => cramMethodologyDocForPerimeter(perimeter), [perimeter]);
+  const policyProfile = useMemo(() => policyProfileForPerimeter(perimeter), [perimeter]);
+  const reviewLegend = useMemo(() => {
+    const cycles = policyProfile.reviewCycles.filter((c) => ["Low", "Medium", "High"].includes(c.band));
+    return cycles.map((c) => `${c.band} ${c.months}`).join(" · ");
+  }, [policyProfile]);
 
   if (variant === "rail") {
     return (
-      <div className="cram-method cram-method--rail">
-        <MethodologyHeader mode={mode} snap={snap} compact />
-        <PipelineTrack dq={dq} result={result} compact />
-        <FactorMini rows={factorRows} boundary={boundary} result={result} />
-        <div className="cram-method__footnote">
-          Non-dilution: final = max(composite band, override floor). PEP excluded from composite.
+      <div className="cram-method cram-method--rail cram-method--analyst">
+        <div className="cram-method-rail-simple">
+          <h3 className="cram-method-rail-simple__title">Methodology</h3>
+          <ul className="cram-method-rail-simple__tags">
+            <li>{perimeter === "global_account" ? "US Global Account" : "UAE MAL Bank"}</li>
+            <li>{perimeter === "global_account" ? "FinCEN aligned" : "CBUAE aligned"}</li>
+            <li>{perimeter === "global_account" ? "OFAC compliant" : "UAE NRA aligned"}</li>
+            <li>6-factor model</li>
+            <li>Version 7.1</li>
+          </ul>
         </div>
+        <PipelineTrack dq={dq} result={result} compact timeline />
+        <FactorMini rows={factorRows} boundary={boundary} result={result} />
+        {gt && (
+          <div className="cram-method-rail-audit">
+            <div className="cram-method-rail-audit__row">
+              <span>Residual</span>
+              <strong>{gt.residual.residualScore.toFixed(2)} · {String(gt.residual.residualLevel)}</strong>
+            </div>
+          </div>
+        )}
+        <details className="cram-method-tech-details">
+          <summary>Technical details</summary>
+          <div className="cram-method-tech-details__body">
+            <div className="cram-method__hero-meta">
+              <span className="cram-method__meta-chip mono">{methodologyDoc.modelVersionId}</span>
+              <span className="cram-method__meta-chip mono">{MASTER_REGISTRY_VERSION}</span>
+              <span className="cram-method__meta-chip">{boundarySetLabel(boundary)}</span>
+            </div>
+            <p className="cram-method-tech-details__note">{nraSourceForPerimeter(perimeter)}</p>
+            <p className="cram-method-tech-details__note">{registryMeta().sourceDocument}</p>
+          </div>
+        </details>
       </div>
     );
   }
 
   return (
     <div className="cram-method cram-method--explorer">
-      <MethodologyHeader mode={mode} snap={snap} />
+      <MethodologyHeader mode={mode} snap={snap} perimeter={perimeter} />
+
+      <div className="cram-method__registry-banner">
+        <span className="cram-method__meta-chip">{perimeterLabel(perimeter)}</span>
+        <span className="cram-method__meta-chip mono">Master Registry {MASTER_REGISTRY_VERSION}</span>
+        <span className="text-[11px] text-muted">{nraSourceForPerimeter(perimeter)}</span>
+      </div>
 
       <div className="cram-method__export-section">
         <div className="cram-method__export-row">
@@ -79,7 +128,7 @@ export default function CramMethodologyPanel({
             onClick={async () => {
               setExporting(true);
               try {
-                await exportCramMethodologyDocument();
+                await exportCramMethodologyDocument(perimeter);
               } finally {
                 setExporting(false);
               }
@@ -88,7 +137,7 @@ export default function CramMethodologyPanel({
             {exporting ? "Downloading…" : "Download full methodology"}
           </button>
           <span className="cram-method__export-meta mono">
-            {METHODOLOGY_DOCUMENT.modelVersionId} · Mal_Customer_Risk_Assessment_Methodology_v1_0.docx · Excel workbooks with live formulas
+            {methodologyDoc.modelVersionId} · {methodologyDoc.filename} · Excel workbooks with live formulas
           </span>
         </div>
 
@@ -104,9 +153,9 @@ export default function CramMethodologyPanel({
               : []),
           ];
           if (!items.length) return null;
-          const title = group === "product" ? "Product & service"
+          const title = group === "product" ? `Product & service · ${perimeter === "mal_bank" ? "UAE" : "US"} ratings`
             : group === "country" ? "Country risk pillars"
-            : group === "customer" ? "Customer profile"
+            : group === "customer" ? `Customer profile · ${perimeter === "mal_bank" ? "CBUAE" : "FinCEN/BSA"}`
             : "Operations";
           return (
             <div key={group} className="cram-method__export-group">
@@ -131,7 +180,7 @@ export default function CramMethodologyPanel({
                       }
                     }}
                   >
-                    {exportingKind === item.kind ? "Exporting…" : `${item.label} (Excel)`}
+                    {exportingKind === item.kind ? "Exporting…" : `${item.label} (Registry)`}
                   </button>
                 ))}
               </div>
@@ -195,7 +244,12 @@ export default function CramMethodologyPanel({
         )}
         <div className="cram-method__rules-grid">
           <RuleCard title="Worst-of pillars" items={["Product & service → max(product, service)", "Channel → max(initiation, delivery)", "Geography → max(country attributes)"]} />
-          <RuleCard title="PEP treatment (CBUAE Art. 15(14))" items={["PEP score excluded from composite", "Foreign PEP → OVR-008 High floor · automatic EDD", "Domestic / IO PEP → identify first; OVR-016 only when high-risk relationship or cross-border"]} />
+          <RuleCard
+            title={perimeter === "global_account" ? "PEP treatment (FinCEN / BSA)" : "PEP treatment (CBUAE Art. 15(14))"}
+            items={perimeter === "global_account"
+              ? ["PEP score excluded from composite", "Foreign PEP → OVR-008 High floor · FinCEN CDD Rule EDD", "Domestic / IO PEP → identify + enhanced monitoring when high-risk relationship"]
+              : ["PEP score excluded from composite", "Foreign PEP → OVR-008 High floor · automatic EDD", "Domestic / IO PEP → identify first; OVR-016 only when high-risk relationship or cross-border"]}
+          />
         </div>
       </section>
 
@@ -292,8 +346,8 @@ export default function CramMethodologyPanel({
           </div>
         </div>
         <div className="cram-method__gt-grid">
-          <GtCard title="Review cycle" value={gt ? (gt.reviewMonths ? `${gt.reviewMonths} months` : "N/A") : "—"} sub="Low 60 · Medium 36 · High 12" />
-          <GtCard title="Due diligence" value={gt?.dueDiligence ?? "—"} sub={gt?.eddRequired ? "EDD path active" : "Standard path"} />
+          <GtCard title="Review cycle" value={gt ? (gt.reviewMonths ? `${gt.reviewMonths} months` : "N/A") : "—"} sub={reviewLegend} />
+          <GtCard title="Due diligence" value={gt?.dueDiligence ?? "—"} sub={gt?.eddRequired ? "EDD — High rating only" : "Standard CDD path"} />
           <GtCard title="Approval" value={gt?.approval.who ?? "—"} sub={gt?.approval.cls ?? ""} />
           <GtCard title="Residual" value={gt ? gt.residual.residualScore.toFixed(2) : "—"} sub={gt ? `${Math.round(gt.residual.effectiveness * 100)}% control effectiveness` : "Set controls §04"} />
         </div>
@@ -333,11 +387,14 @@ function MethodologyHeader({
   mode,
   snap,
   compact,
+  perimeter,
 }: {
   mode: CustomerMode;
   snap: ReturnType<typeof buildMethodologySnapshot>;
   compact?: boolean;
+  perimeter: import("../../config/perimeters").CompliancePerimeter;
 }) {
+  const methodologyDoc = cramMethodologyDocForPerimeter(perimeter);
   return (
     <header className={`cram-method__hero ${compact ? "cram-method__hero--compact" : ""}`}>
       <div className="cram-method__hero-badge">CRAM Methodology</div>
@@ -346,48 +403,81 @@ function MethodologyHeader({
       </h2>
       {!compact && (
         <p className="cram-method__hero-lead">
-          CBUAE-aligned · golden thread · non-dilution overrides · ISIC Rev.5 activity libraries
+          {perimeter === "mal_bank"
+            ? "CBUAE-aligned · UAE NRA · Master Risk Registries · golden thread · non-dilution overrides"
+            : "US BaaS/MSB · US NRA 2022 · Master Risk Registries · FinCEN/OFAC · golden thread"}
         </p>
       )}
       <div className="cram-method__hero-meta">
-        <span className="cram-method__meta-chip mono">{snap.modelVersionId}</span>
-        <span className="cram-method__meta-chip">{snap.activityLibrary}</span>
+        <span className="cram-method__meta-chip mono">{methodologyDoc.modelVersionId}</span>
+        <span className="cram-method__meta-chip">{perimeterLabel(perimeter)}</span>
+        <span className="cram-method__meta-chip mono">{MASTER_REGISTRY_VERSION}</span>
         <span className="cram-method__meta-chip">{boundarySetLabel(snap.boundary)}</span>
       </div>
     </header>
   );
 }
 
+const PIPELINE_SHORT: Record<string, string> = {
+  dq: "Data Quality",
+  map: "Library Resolution",
+  composite: "Six Factors",
+  override: "Overrides",
+  golden: "Golden Thread",
+  residual: "Residual",
+};
+
+const PIPELINE_NUM = ["①", "②", "③", "④", "⑤", "⑥"];
+
 function PipelineTrack({
   dq,
   result,
   compact,
+  timeline,
 }: {
   dq: DataQualityVerdict;
   result: ScoreResult | null;
   compact?: boolean;
+  timeline?: boolean;
 }) {
   return (
-    <section className={`cram-method__pipeline ${compact ? "cram-method__pipeline--compact" : ""}`}>
-      {!compact && <div className="cram-method__pipeline-label">Scoring quest · live case progress</div>}
-      <div className="cram-method__pipeline-track">
+    <section className={`cram-method__pipeline ${compact ? "cram-method__pipeline--compact" : ""} ${timeline ? "cram-method__pipeline--timeline" : ""}`}>
+      {!compact && !timeline && <div className="cram-method__pipeline-label">Scoring quest · live case progress</div>}
+      {timeline && <div className="cram-method__pipeline-label">Calculation flow</div>}
+      <div className={`cram-method__pipeline-track ${timeline ? "cram-method__pipeline-track--timeline" : ""}`}>
         {METHODOLOGY_PIPELINE.map((step, i) => {
           const status = pipelineStepStatus(step.id, dq, result);
+          const title = timeline ? (PIPELINE_SHORT[step.id] ?? step.title) : step.title;
           return (
-            <div key={step.id} className={`cram-method__quest cram-method__quest--${status}`}>
-              <div className="cram-method__quest-node">
-                <span className="cram-method__quest-icon">{step.icon}</span>
-                <span className="cram-method__quest-num">{step.step}</span>
-              </div>
-              {!compact && (
-                <div className="cram-method__quest-body">
-                  <div className="cram-method__quest-title">{step.title}</div>
-                  <div className="cram-method__quest-code">{step.code}</div>
-                  <div className="cram-method__quest-detail">{step.detail}</div>
-                </div>
+            <div key={step.id} className={`cram-method__quest cram-method__quest--${status} ${timeline ? "cram-method__quest--timeline" : ""}`}>
+              {timeline ? (
+                <>
+                  <div className="cram-method__timeline-node">
+                    <span className="cram-method__timeline-num">{PIPELINE_NUM[i]}</span>
+                    <span className="cram-method__timeline-title">{title}</span>
+                    <span className={`cram-method__timeline-status cram-method__timeline-status--${status}`}>
+                      {status === "done" ? "Done" : status === "active" ? "Active" : "Pending"}
+                    </span>
+                  </div>
+                  {i < METHODOLOGY_PIPELINE.length - 1 && <div className="cram-method__timeline-arrow" aria-hidden>↓</div>}
+                </>
+              ) : (
+                <>
+                  <div className="cram-method__quest-node">
+                    <span className="cram-method__quest-icon">{step.icon}</span>
+                    <span className="cram-method__quest-num">{step.step}</span>
+                  </div>
+                  {!compact && (
+                    <div className="cram-method__quest-body">
+                      <div className="cram-method__quest-title">{title}</div>
+                      <div className="cram-method__quest-code">{step.code}</div>
+                      <div className="cram-method__quest-detail">{step.detail}</div>
+                    </div>
+                  )}
+                  {compact && !timeline && <div className="cram-method__quest-mini">{title}</div>}
+                  {i < METHODOLOGY_PIPELINE.length - 1 && !timeline && <div className="cram-method__quest-line" aria-hidden />}
+                </>
               )}
-              {compact && <div className="cram-method__quest-mini">{step.title}</div>}
-              {i < METHODOLOGY_PIPELINE.length - 1 && <div className="cram-method__quest-line" aria-hidden />}
             </div>
           );
         })}

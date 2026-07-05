@@ -26,7 +26,7 @@ export function buildLibraryVersionsSnapshot(): LibraryVersionsSnapshot {
     modelVersionId: getActiveModelVersionId(),
     countries: { count: COUNTRIES.length, source: "country_risk.csv" },
     professions: { count: PROFESSIONS.length, source: "professions.json" },
-    products: { count: PRODUCTS.length, source: "products.json" },
+    products: { count: PRODUCTS.length, source: "master_registry.json" },
     activityLibrary: ACTIVITY_LIBRARY_VERSION,
     overrideRules: { count: OVERRIDES.length, version: getActiveModelVersionId() },
     factorWeights: getFactorWeights(),

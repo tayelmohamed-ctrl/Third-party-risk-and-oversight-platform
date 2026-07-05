@@ -27,7 +27,7 @@ const NAV = [
     { to: "/exam-pack", label: "Examination Pack", icon: Package, agent: "jana" as const },
   ]},
   { section: "Control", items: [
-    { to: "/activity-register", label: "ISIC Activity Register", icon: ScrollText, agent: "sayed" as const },
+    { to: "/activity-register", label: "Activity Register", icon: ScrollText, agent: "sayed" as const },
     { to: "/validation", label: "Model Validation", icon: Scale, agent: "sayed" as const },
     { to: "/audit", label: "Audit Log", icon: ClipboardList },
     { to: "/retention", label: "Records & Retention", icon: Archive },
@@ -55,7 +55,7 @@ const TITLES: Record<string, [string, string]> = {
   "/training": ["AML Training Register", "Staff completion · examiner evidence · CBUAE & FFIEC"],
   "/examination": ["FFIEC Examination Matrix", "Procedure readiness · live evidence · audit pack prep"],
   "/validation": ["Model Validation", "Independent validation · back-test · outcome analysis"],
-  "/activity-register": ["ISIC Activity Register", "Individual & entity · libraries · methodology · live resolver"],
+  "/activity-register": ["Activity Register", "Account type · searchable activity · corridor-aware ISIC risk score"],
 };
 
 export default function Layout() {

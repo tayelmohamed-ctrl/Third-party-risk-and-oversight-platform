@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Moon, Sun, ArrowLeftRight } from "lucide-react";
 import { usePlatformTheme } from "../context/PlatformThemeContext";
+import { PerimeterSwitch } from "./dashboard/executive/PerimeterBar";
 import clsx from "clsx";
 
 type Props = {
@@ -58,6 +59,14 @@ export default function PlatformChrome({ variant }: Props) {
       <span className="opacity-40" aria-hidden>
         |
       </span>
+      {!onPartner && (
+        <>
+          <PerimeterSwitch compact />
+          <span className="opacity-40 max-lg:hidden" aria-hidden>
+            |
+          </span>
+        </>
+      )}
       <button
         type="button"
         className={clsx(linkClass, "border-none cursor-pointer bg-transparent font-inherit")}

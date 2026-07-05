@@ -4,11 +4,15 @@ import countries from "../data/countries.json";
 import professions from "../data/professions.json";
 import nob from "../data/nature_of_business.json";
 import isic from "../data/isic.json";
-import products from "../data/products.json";
 import overrides from "../data/override_rules.json";
 import ruleLib from "../data/isic_rule_library.json";
+import { allProducts } from "../registries/master/registryService";
+import type { CompliancePerimeter } from "../config/perimeters";
 import {
-  applySanctionsCountryFloor,
+  applyPerimeterCountryFirm,
+  perimeterCountryBand,
+} from "../config/countryRiskPerimeter";
+import {
   firmScoreToBand,
   normalizeCountryName,
   SANCTIONS_COUNTRY_FLOORS,
@@ -19,13 +23,13 @@ export { SANCTIONS_COUNTRY_FLOORS, sanctionsFloorForCountry, firmScoreToBand } f
 
 export interface Country { country: string; firm: number; band: string; fatf: number; basel: number; sanctions: number; }
 
-function enrichCountry(raw: Country): Country {
-  const firm = applySanctionsCountryFloor(raw.country, raw.firm);
+function enrichCountry(raw: Country, perimeter: CompliancePerimeter = "mal_bank"): Country {
+  const firm = applyPerimeterCountryFirm(raw.country, raw.firm, perimeter);
   const floor = sanctionsFloorForCountry(raw.country);
   return {
     ...raw,
     firm,
-    band: firmScoreToBand(firm),
+    band: perimeterCountryBand(firm),
     sanctions: floor ? Math.max(raw.sanctions, 3) : raw.sanctions,
   };
 }
@@ -36,11 +40,21 @@ export interface Isic { code: string; level: string; title: string; rating: stri
 export interface Product { name: string; baseline: string; }
 export interface OverrideRule { id: string; trigger: string; outcome: string; priority: string; }
 
-export const COUNTRIES = (countries as Country[]).map(enrichCountry);
+const RAW_COUNTRIES = countries as Country[];
+export const COUNTRIES = RAW_COUNTRIES.map((c) => enrichCountry(c, "mal_bank"));
 export const PROFESSIONS = professions as Profession[];
 export const NATURE_OF_BUSINESS = nob as Activity[];
 export const ISIC = isic as Isic[];
-export const PRODUCTS = products as Product[];
+function ratingToBaseline(rating: string): string {
+  if (rating === "Very High" || rating === "High" || rating === "Prohibited") return "High";
+  if (rating === "Medium") return "Medium";
+  return "Low";
+}
+
+export const PRODUCTS: Product[] = allProducts().map((p) => ({
+  name: p.productName,
+  baseline: ratingToBaseline(p.uae.rating),
+}));
 export const OVERRIDES = overrides as OverrideRule[];
 export const RULE_LIB = (ruleLib as { rules: { rule_id: string; risk_score: string; keyword_regex: string; risk_theme: string }[] }).rules;
 
@@ -48,10 +62,18 @@ export const RULE_LIB = (ruleLib as { rules: { rule_id: string; risk_score: stri
 export const SANCTIONS_A = ["Iran", "Iran, Islamic Republic of", "North Korea", "Korea, Democratic People's Republic of", "Syria", "Syrian Arab Republic"];
 
 const cMap = new Map(COUNTRIES.map((c) => [c.country.toLowerCase(), c]));
-export function lookupCountry(name: string): Country | undefined {
+const rawMap = new Map(RAW_COUNTRIES.map((c) => [c.country.toLowerCase(), c]));
+
+export function lookupCountry(name: string, perimeter: CompliancePerimeter = "mal_bank"): Country | undefined {
   if (!name) return undefined;
   const canonical = normalizeCountryName(name);
-  return cMap.get(canonical.toLowerCase()) ?? cMap.get(name.toLowerCase());
+  const key = canonical.toLowerCase();
+  if (perimeter === "mal_bank") {
+    return cMap.get(key) ?? cMap.get(name.toLowerCase());
+  }
+  const raw = rawMap.get(key) ?? rawMap.get(name.toLowerCase());
+  if (!raw) return undefined;
+  return enrichCountry(raw, "global_account");
 }
 
 export function lookupProfession(name: string): number {

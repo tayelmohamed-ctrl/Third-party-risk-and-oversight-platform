@@ -1,168 +1,382 @@
-import { useMemo, useState } from "react";
-import { Card, Sec } from "../components/ui";
-import { ACTIVITY_RISK_CONFIG, registerStats, type CustomerMode } from "../config/activityRiskConfig";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
-  ACTIVITY_DROPDOWN_GROUPS, LIBRARY_COUNTS, PROFESSION_GUIDANCE_OPTIONS, TYPOLOGY_OPTIONS,
-} from "../config/activityRegisterOptions";
-import { ISIC, RULE_LIB } from "../engine/data";
-import { resolveActivityRisk, resolveProfessionRisk } from "../engine/activityRisk";
-import { ENTITY_LEGAL_TYPES } from "../config/entityLegalTypes";
-import isicLookup from "../data/isic_activity_lookup.json";
-import professionGuidance from "../data/isic_profession_guidance.json";
-import riskThemes from "../data/isic_risk_themes.json";
+  CheckCircle2, ChevronRight, Globe2, Building2, User, Briefcase,
+  Package, Route, Target, Activity,
+} from "lucide-react";
+import { Card, RatingPill } from "../components/ui";
+import ActivitySearchCombobox from "../components/activityRegister/ActivitySearchCombobox";
+import RbmScoreBreakdown from "../components/rbm/RbmScoreBreakdown";
+import StructuredActivityPanel from "../components/rbm/StructuredActivityPanel";
+import type { ActivityRegisterOption } from "../lib/activityRegisterIndex";
+import type { CompliancePerimeter, CorridorFilter } from "../config/perimeters";
+import {
+  corridorOptionsForPerimeter,
+  isCorridorValidForPerimeter,
+  PERIMETERS,
+} from "../config/perimeters";
+import type { CustomerMode } from "../config/activityRiskConfig";
+import { policyProfileForPerimeter } from "../registries/policyProfiles";
+import {
+  corridorsForPerimeter,
+  defaultProductForPerimeter,
+  USE_CASE_REGISTRY,
+} from "../registries/rbmRegistries";
+import { scoreFromActivityRegister } from "../engine/rbm/scoreRbm";
+import { corridorFilterToRegistryId } from "../lib/rbmCorridorMap";
+import { demoActualBehaviourMismatch } from "../engine/rbm/behaviourEngine";
+import { rakezRegisterStats } from "../engine/rakezActivityRegister";
+
+const STEPS = [
+  { n: 1, title: "Product & policy" },
+  { n: 2, title: "Business activity" },
+  { n: 3, title: "Use case" },
+  { n: 4, title: "Corridor" },
+  { n: 5, title: "Risk result" },
+] as const;
 
 export default function ActivityRiskRegister() {
-  const [mode, setMode] = useState<CustomerMode>("individual");
-  const [query, setQuery] = useState("money services business remittance");
-  const [isicCode, setIsicCode] = useState("");
+  const [perimeter, setPerimeter] = useState<CompliancePerimeter>("mal_bank");
+  const [corridor, setCorridor] = useState<CorridorFilter>("UAE");
+  const [corridorId, setCorridorId] = useState("uae_uae");
+  const [mode, setMode] = useState<CustomerMode>("entity");
+  const [activity, setActivity] = useState<ActivityRegisterOption | null>(null);
+  const [useCaseId, setUseCaseId] = useState("operating_expenses");
+  const [showBehaviourDemo, setShowBehaviourDemo] = useState(false);
+  const [showMethodology, setShowMethodology] = useState(false);
 
-  const stats = registerStats();
-  const config = ACTIVITY_RISK_CONFIG[mode];
-  const preview = useMemo(() => {
-    const activity = resolveActivityRisk(query, mode, isicCode || undefined);
-    const profession = resolveProfessionRisk(mode === "individual" ? query : "Director");
-    return { activity, profession };
-  }, [query, mode, isicCode]);
+  const policy = useMemo(() => policyProfileForPerimeter(perimeter), [perimeter]);
+  const product = useMemo(() => defaultProductForPerimeter(perimeter), [perimeter]);
+  const corridorOptions = useMemo(() => corridorOptionsForPerimeter(perimeter), [perimeter]);
+  const corridorRegistry = useMemo(() => corridorsForPerimeter(perimeter), [perimeter]);
+  const rakezStats = rakezRegisterStats();
+
+  useEffect(() => {
+    if (perimeter === "mal_bank") {
+      setCorridor("UAE");
+      setCorridorId("uae_uae");
+      setActivity(null);
+    } else if (!isCorridorValidForPerimeter(perimeter, corridor)) {
+      setCorridor("all");
+      setCorridorId("us_global");
+      setActivity(null);
+    }
+  }, [perimeter, corridor]);
+
+  useEffect(() => {
+    setCorridorId(corridorFilterToRegistryId(perimeter, corridor));
+  }, [perimeter, corridor]);
+
+  const assessment = useMemo(() => {
+    if (!activity) return null;
+    return scoreFromActivityRegister({
+      perimeter,
+      mode,
+      activityLabel: activity.label,
+      isicCode: activity.isicCode,
+      rakezCode: activity.rakezCode,
+      useCaseId,
+      corridorId,
+      productId: product.id,
+      actualBehaviour: showBehaviourDemo ? demoActualBehaviourMismatch() : undefined,
+    });
+  }, [activity, perimeter, mode, useCaseId, corridorId, product.id, showBehaviourDemo]);
+
+  const stepComplete = {
+    1: true,
+    2: !!activity,
+    3: !!activity && !!useCaseId,
+    4: !!activity && !!corridorId,
+    5: !!assessment,
+  };
+
+  const selectedCorridor = corridorRegistry.find((c) => c.id === corridorId);
 
   return (
-    <div>
-      <div className="flex gap-2 mb-4 flex-wrap">
-        {(["individual", "entity"] as CustomerMode[]).map((m) => (
-          <button key={m} type="button"
-            className={`px-4 py-2 rounded-xl text-[12px] font-semibold capitalize border ${mode === m ? "bg-ai/20 border-ai text-ink" : "border-line text-muted"}`}
-            onClick={() => setMode(m)}>
-            {m === "individual" ? "Individual (NP)" : "Entity (LP/MER)"}
-          </button>
-        ))}
-      </div>
+    <div className="act-reg">
+      <header className="act-reg__hero">
+        <div>
+          <h1 className="act-reg__title">Activity & Risk Register</h1>
+          <p className="act-reg__lead">
+            Multi-factor risk-based methodology — product, structured business activity, use case, corridor, and policy profile.
+            ISIC is one input (~5% of activity logic).
+          </p>
+        </div>
+        <div className="act-reg__meta">
+          <span className="act-reg__meta-chip">{policy.label}</span>
+          <span className="act-reg__meta-chip">RBM {policy.version}</span>
+          {perimeter === "mal_bank" && (
+            <span className="act-reg__meta-chip">RAKEZ · {rakezStats.total}</span>
+          )}
+        </div>
+      </header>
 
-      <div className="grid grid-cols-3 gap-3 mb-5 max-lg:grid-cols-1">
-        {Object.entries(stats).map(([k, v]) => (
-          <Card key={k} className="p-3">
-            <div className="text-[10px] text-faint uppercase">{k.replace(/([A-Z])/g, " $1")}</div>
-            <div className="font-mono font-bold text-lg">{v}</div>
-          </Card>
+      <nav className="act-reg__steps" aria-label="Workflow steps">
+        {STEPS.map((s) => (
+          <div
+            key={s.n}
+            className={`act-reg__step ${stepComplete[s.n] ? "act-reg__step--done" : ""} ${s.n === 5 && assessment ? "act-reg__step--current" : ""}`}
+          >
+            <span className="act-reg__step-num">{stepComplete[s.n] ? "✓" : s.n}</span>
+            <span>{s.title}</span>
+          </div>
         ))}
-      </div>
+      </nav>
 
-      <div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
-        <Card className="p-4">
-          <Sec>Methodology — {config.segmentLabel}</Sec>
-          <p className="text-[12px] text-muted m-0 mb-3">Library <b className="mono text-ink">{config.libraryVersion}</b> · segment <b>{config.segmentCode}</b></p>
-          <div className="text-[11px] font-semibold mb-1">Resolution order</div>
-          <ol className="text-[11px] text-muted m-0 pl-4 mb-4">{config.resolutionOrder.map((s) => <li key={s}>{s}</li>)}</ol>
-          <div className="text-[11px] font-semibold mb-1">Customer-type parameters</div>
-          <div className="space-y-2">
-            {config.parameters.map((p) => (
-              <div key={p.key} className="flex justify-between gap-2 py-1.5 border-b border-lineSoft text-[11px]">
-                <span>{p.label}</span>
-                <span className="text-muted shrink-0">{(p.weightInCustomerType * 100).toFixed(0)}%</span>
+      <div className="act-reg__layout act-reg__layout--wide">
+        <div className="act-reg__main">
+          {/* Step 1 — Product & policy */}
+          <Card className="act-reg__panel">
+            <PanelHead n={1} title="Product & regulatory profile" hint="Loads policy rules, thresholds, and product risk independently" />
+            <div className="act-reg__account-grid">
+              {(Object.keys(PERIMETERS) as CompliancePerimeter[]).map((p) => {
+                const def = PERIMETERS[p];
+                const active = perimeter === p;
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`act-reg__account-card ${active ? "act-reg__account-card--on" : ""}`}
+                    onClick={() => setPerimeter(p)}
+                  >
+                    {p === "global_account" ? <Globe2 size={20} /> : <Building2 size={20} />}
+                    <span className="act-reg__account-label">{def.label}</span>
+                    <span className="act-reg__account-sub">{def.subtitle}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="rbm-product-card mt-4">
+              <div className="flex items-start gap-2">
+                <Package size={16} className="text-ai shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-[12px] font-semibold">{product.name}</div>
+                  <div className="text-[10px] text-muted mt-0.5">
+                    License {product.license} · Cross-border {product.crossBorderPct}% · Product risk {product.inherentScore}/100 ({product.inherentBand})
+                  </div>
+                  <div className="text-[10px] text-faint mt-1">{product.rationale}</div>
+                </div>
+                <RatingPill rating={product.inherentBand} />
               </div>
-            ))}
-          </div>
-          <p className="text-[10px] text-faint mt-3 m-0">Prohibition: {config.prohibitionSource}</p>
-        </Card>
+            </div>
 
-        <Card className="p-4">
-          <Sec>Live resolver preview</Sec>
-          <div className="space-y-2 mb-3">
-            <label className="field-label">Activity / profession text</label>
-            <input className="input" value={query} onChange={(e) => setQuery(e.target.value)} />
-            <label className="field-label">ISIC code (optional)</label>
-            <input className="input mono" value={isicCode} onChange={(e) => setIsicCode(e.target.value)} placeholder="6419" />
-          </div>
-          <div className="rounded-xl bg-panel2 p-3 text-[11px] space-y-2">
-            <div><span className="text-faint">ISIC</span> <b>{preview.activity.code}</b> · {preview.activity.title}</div>
-            <div className="text-muted">{preview.activity.basis}</div>
-            <div>Score <b>{preview.activity.score}/3</b> · {preview.activity.rating} · {preview.activity.cddEdd}</div>
-            {preview.activity.matchedRules.length > 0 && <div className="mono text-[10px]">Rules: {preview.activity.matchedRules.join(", ")}</div>}
-            {mode === "individual" && (
-              <div className="pt-2 border-t border-lineSoft">
-                Profession score <b>{preview.profession.score}/3</b> · {preview.profession.basis}
+            <div className="mt-3 px-3 py-2 rounded-lg bg-panel2 text-[10px] text-muted">
+              <span className="text-faint uppercase font-semibold">Policy loaded · </span>
+              {policy.regulator} · EDD triggers: {policy.eddTriggers.length} · Monitoring scenarios: {policy.monitoringScenarios.length}
+            </div>
+
+            <div className="act-reg__mode-row mt-4">
+              <span className="field-label mb-0">Customer type</span>
+              <div className="flex gap-2">
+                {(["individual", "entity"] as CustomerMode[]).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    className={`act-reg__mode-btn ${mode === m ? "act-reg__mode-btn--on" : ""}`}
+                    onClick={() => setMode(m)}
+                  >
+                    {m === "individual" ? <User size={14} /> : <Briefcase size={14} />}
+                    {m === "individual" ? "Individual" : "Business / entity"}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </Card>
+
+          {/* Step 2 — Business activity */}
+          <Card className="act-reg__panel">
+            <PanelHead n={2} title="Business activity" hint="Select from register — resolves to structured risk object, not ISIC-only" icon={<Activity size={16} />} />
+            <ActivitySearchCombobox
+              perimeter={perimeter}
+              value={activity}
+              onChange={setActivity}
+              placeholder={
+                perimeter === "mal_bank"
+                  ? "Search RAKEZ activities, ISIC classes, typologies…"
+                  : "Search ISIC activities, typologies, nature of business…"
+              }
+            />
+            {assessment?.activity && (
+              <div className="mt-4">
+                <StructuredActivityPanel activity={assessment.activity} />
               </div>
             )}
-          </div>
-        </Card>
-      </div>
+          </Card>
 
-      <Sec>Reference registers</Sec>
-      <p className="text-[11px] text-muted m-0 mb-3">
-        Libraries loaded: {LIBRARY_COUNTS.typologies} typologies · {LIBRARY_COUNTS.professionGuidance} profession guidance ·{" "}
-        {LIBRARY_COUNTS.riskThemes} risk themes · {LIBRARY_COUNTS.natureOfBusiness} nature-of-business · {ISIC.length} ISIC codes · {RULE_LIB.length} rules
-      </p>
-      <div className="grid grid-cols-2 gap-4 max-lg:grid-cols-1">
-        <Card className="p-4">
-          <h3 className="m-0 mb-2 text-sm font-display">Typology shortcuts ({TYPOLOGY_OPTIONS.length})</h3>
-          <div className="max-h-48 overflow-y-auto text-[11px] space-y-2">
-            {(isicLookup as { activity: string; primary_isic: string; aml_rating: string; risk_score: string }[]).map((r) => (
-              <div key={r.activity} className="py-1 border-b border-lineSoft">
-                <b>{r.activity}</b> → ISIC {r.primary_isic} · {r.aml_rating} ({r.risk_score})
-              </div>
-            ))}
-          </div>
-        </Card>
-        <Card className="p-4">
-          <h3 className="m-0 mb-2 text-sm font-display">Profession guidance ({PROFESSION_GUIDANCE_OPTIONS.length})</h3>
-          <div className="max-h-48 overflow-y-auto text-[11px] space-y-2">
-            {(professionGuidance as { profession_customer_profile: string; indicative_aml_risk: string }[]).map((r) => (
-              <div key={r.profession_customer_profile} className="py-1 border-b border-lineSoft">
-                {r.profession_customer_profile} · <b>{r.indicative_aml_risk}</b>
-              </div>
-            ))}
-          </div>
-        </Card>
-        <Card className="p-4">
-          <h3 className="m-0 mb-2 text-sm font-display">Risk theme clusters ({LIBRARY_COUNTS.riskThemes})</h3>
-          <div className="max-h-48 overflow-y-auto text-[11px] space-y-2">
-            {(riskThemes as { risk_theme_activity_cluster: string; indicative_aml_risk: string }[]).map((r) => (
-              <div key={r.risk_theme_activity_cluster} className="py-1 border-b border-lineSoft">
-                {r.risk_theme_activity_cluster} · <b>{r.indicative_aml_risk}</b>
-              </div>
-            ))}
-          </div>
-        </Card>
-        <Card className="p-4">
-          <h3 className="m-0 mb-2 text-sm font-display">
-            {mode === "entity" ? `Entity legal types (${ENTITY_LEGAL_TYPES.length})` : "Activity dropdown coverage"}
-          </h3>
-          {mode === "entity" ? (
-            <div className="max-h-64 overflow-y-auto text-[11px] space-y-1">
-              {ENTITY_LEGAL_TYPES.map((e) => (
-                <div key={e.name} className="py-1 border-b border-lineSoft flex justify-between gap-2">
-                  <span className="min-w-0">{e.name}</span>
-                  <span className={`shrink-0 font-mono ${e.prohibited ? "text-proh" : e.score >= 3 ? "text-hi" : e.score === 1 ? "text-low" : "text-med"}`}>
-                    {e.score}{e.prohibited ? " PROH" : ""}
-                  </span>
-                </div>
+          {/* Step 3 — Use case */}
+          <Card className={`act-reg__panel ${!activity ? "act-reg__panel--disabled" : ""}`}>
+            <PanelHead n={3} title="Intended use case" hint="Payment purpose registry — not free-text reason for payment" icon={<Target size={16} />} />
+            <div className="act-reg__applic-grid">
+              {USE_CASE_REGISTRY.map((uc) => (
+                <button
+                  key={uc.id}
+                  type="button"
+                  disabled={!activity}
+                  className={`act-reg__applic-card ${useCaseId === uc.id ? "act-reg__applic-card--on" : ""}`}
+                  onClick={() => setUseCaseId(uc.id)}
+                >
+                  <Target size={16} className="shrink-0 mt-0.5" />
+                  <div className="text-left flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold text-[12px]">{uc.label}</span>
+                      <RatingPill rating={uc.inherentBand} />
+                    </div>
+                    <div className="text-[11px] text-muted mt-0.5">{uc.description}</div>
+                    <div className="text-[10px] text-faint mt-1">
+                      {uc.velocity} velocity · Third party {uc.thirdParty ? "Yes" : "No"} · Cross-border {uc.crossBorder}
+                    </div>
+                  </div>
+                </button>
               ))}
             </div>
-          ) : (
-          <div className="text-[11px] space-y-1">
-            {ACTIVITY_DROPDOWN_GROUPS.map((g) => (
-              <div key={g.label} className="py-1 border-b border-lineSoft">{g.label}</div>
-            ))}
-            <div className="text-faint pt-1">Full ISIC Rev.5 ({ISIC.length} codes) resolved via ISIC code field or title match at scoring.</div>
-          </div>
+          </Card>
+
+          {/* Step 4 — Corridor */}
+          <Card className={`act-reg__panel ${!activity ? "act-reg__panel--disabled" : ""}`}>
+            <PanelHead n={4} title="Payment corridor" hint="Corridor risk engine — sanctions, AML index, nested risk, correspondent exposure" icon={<Route size={16} />} />
+            {perimeter === "global_account" && (
+              <div className="mb-3">
+                <label className="field-label" htmlFor="corridor-select">Partner corridor filter</label>
+                <select
+                  id="corridor-select"
+                  className="input max-w-xs"
+                  value={corridor}
+                  onChange={(e) => setCorridor(e.target.value as CorridorFilter)}
+                >
+                  {corridorOptions.map((c) => (
+                    <option key={c.id} value={c.id}>{c.label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className="grid gap-2 sm:grid-cols-2">
+              {corridorRegistry.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  disabled={!activity}
+                  className={`act-reg__corridor-card ${corridorId === c.id ? "act-reg__corridor-card--on" : ""}`}
+                  onClick={() => setCorridorId(c.id)}
+                >
+                  <div className="text-[12px] font-semibold">{c.label}</div>
+                  <div className="text-[10px] text-muted mt-1">
+                    Sanctions {c.sanctionsScore} · AML {c.amlIndex} · FATF {c.fatfStatus}
+                  </div>
+                  <div className="flex items-center justify-between mt-2">
+                    <span className="font-mono text-[13px] font-bold">{c.finalScore}/100</span>
+                    <RatingPill rating={c.finalBand} />
+                  </div>
+                </button>
+              ))}
+            </div>
+            {selectedCorridor && (
+              <p className="text-[10px] text-muted mt-3 m-0">{selectedCorridor.monitoringNote}</p>
+            )}
+          </Card>
+
+          {/* Behaviour demo */}
+          {activity && (
+            <Card className="act-reg__panel">
+              <label className="flex items-center gap-2 cursor-pointer text-[12px]">
+                <input
+                  type="checkbox"
+                  checked={showBehaviourDemo}
+                  onChange={(e) => setShowBehaviourDemo(e.target.checked)}
+                />
+                Simulate expected vs actual behaviour mismatch (TM uplift demo)
+              </label>
+              {showBehaviourDemo && assessment?.behaviourDeviations && assessment.behaviourDeviations.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {assessment.behaviourDeviations.map((d) => (
+                    <div key={d.dimension} className="text-[11px] px-2 py-1.5 rounded-lg bg-med/10 border border-med/20">
+                      <span className="font-semibold">{d.dimension}</span>: expected {d.expected} · actual {d.actual}
+                      <span className="text-med ml-1">(+{d.scoreUplift})</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
           )}
-        </Card>
-        <Card className="p-4">
-          <h3 className="m-0 mb-2 text-sm font-display">ISIC mapping sample ({ISIC.length} total)</h3>
-          <div className="max-h-48 overflow-y-auto text-[11px] font-mono space-y-1">
-            {ISIC.filter((i) => i.level === "Class").slice(0, 15).map((i) => (
-              <div key={i.code}>{i.code} · {i.rating} ({i.score}) · {i.title.slice(0, 50)}…</div>
-            ))}
-          </div>
-        </Card>
-        <Card className="p-4">
-          <h3 className="m-0 mb-2 text-sm font-display">Rule library ({RULE_LIB.length} rules)</h3>
-          <div className="max-h-48 overflow-y-auto text-[11px] space-y-1">
-            {RULE_LIB.map((r) => (
-              <div key={r.rule_id}><b>{r.rule_id}</b> · {r.risk_theme} · score {r.risk_score}</div>
-            ))}
-          </div>
-        </Card>
+        </div>
+
+        {/* Step 5 — Result */}
+        <aside className="act-reg__result">
+          <Card className="act-reg__result-card p-0 overflow-hidden sticky top-[84px]">
+            <div className="act-reg__result-head">
+              <CheckCircle2 size={18} />
+              <span>Composite risk assessment</span>
+            </div>
+
+            {!assessment ? (
+              <div className="p-5 text-[12px] text-muted">
+                Complete steps 1–4 for a fully explainable RBM score.
+                <ul className="mt-3 pl-4 space-y-1 m-0">
+                  <li>Select product & policy profile</li>
+                  <li>Pick a structured business activity</li>
+                  <li>Choose intended use case</li>
+                  <li>Select payment corridor</li>
+                </ul>
+              </div>
+            ) : (
+              <div className="p-5">
+                <RbmScoreBreakdown result={assessment} />
+                {assessment.prohibited && (
+                  <div className="mt-3 text-[11px] px-3 py-2 rounded-lg bg-proh/15 text-proh border border-proh/30">
+                    Prohibited — reject / exit per policy override
+                  </div>
+                )}
+              </div>
+            )}
+          </Card>
+
+          <button
+            type="button"
+            className="act-reg__method-toggle"
+            onClick={() => setShowMethodology((v) => !v)}
+          >
+            {showMethodology ? "Hide" : "Show"} methodology architecture
+            <ChevronRight size={14} className={showMethodology ? "rotate-90" : ""} />
+          </button>
+
+          {showMethodology && (
+            <Card className="p-4 text-[11px] text-muted">
+              <div className="font-semibold text-ink mb-2">RBM pipeline</div>
+              <pre className="text-[10px] mono m-0 whitespace-pre-wrap leading-relaxed">
+{`Customer → Product → Business Activity → Use Case
+         → Corridor → Delivery → Expected Behaviour
+                    ↓
+           Inherent Risk Engine
+                    ↓
+           Rules & Overrides
+                    ↓
+           Residual Risk (− controls)
+                    ↓
+        Monitoring · EDD · Review frequency`}
+              </pre>
+              <p className="mt-3 mb-0 text-[10px]">
+                Policy: {policy.label} ·{" "}
+                <Link to="/regulatory-management" className="text-ai hover:underline">Regulatory Management →</Link>
+              </p>
+            </Card>
+          )}
+        </aside>
       </div>
-      <p className="text-[11px] text-muted mt-4">Full methodology: docs/06-ACTIVITY-RISK-ISIC.md · config: src/config/activityRiskConfig.ts</p>
+    </div>
+  );
+}
+
+function PanelHead({ n, title, hint, icon }: { n: number; title: string; hint: string; icon?: React.ReactNode }) {
+  return (
+    <div className="act-reg__panel-head">
+      <span className="act-reg__panel-num">{n}</span>
+      <div className="flex-1">
+        <h2 className="act-reg__panel-title flex items-center gap-1.5">
+          {icon}
+          {title}
+        </h2>
+        <p className="act-reg__panel-hint">{hint}</p>
+      </div>
     </div>
   );
 }

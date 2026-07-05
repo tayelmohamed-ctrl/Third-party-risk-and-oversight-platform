@@ -1,0 +1,151 @@
+{
+  "meta": {
+    "version": "MRR-2026.07.1",
+    "effectiveDate": "2026-07-01",
+    "approvalStatus": "approved",
+    "lastModified": "2026-07-04",
+    "approvedBy": "Head of Compliance",
+    "sourceDocument": "Mal ERA 2026 · UAE NRA 2018/2024 · US NRA 2022 · CBUAE AML Rulebook · FinCEN MSB",
+    "reviewDate": "2026-07-04"
+  },
+  "businessActivities": [
+    {
+      "id": "ACT-PREC-METALS",
+      "activityName": "Precious metals dealers",
+      "isicCodes": ["4672", "4773", "3211", "4649"],
+      "keywords": ["precious metal", "precious metals", "gold", "silver", "bullion", "jewellery", "jewelry", "diamond", "non-manufactured precious"],
+      "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "UAE NRA — DNFBP dealers in precious metals/stones (High inherent risk)" },
+      "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2022 — dealers in precious metals, stones, and jewels" },
+      "riskRationale": "Portable high-value commodities · TBML · sanctions/PF · cash-for-gold typologies",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "UAE NRA DNFBP · US NRA 2022 · ISIC typology 4672"
+    },
+    {
+      "id": "ACT-MSB",
+      "activityName": "Money services businesses",
+      "isicCodes": ["6619", "6612", "6419"],
+      "keywords": ["money service", "money transmission", "remittance", "currency exchange", "hawala", "msb"],
+      "uae": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "UAE NRA — illegal MVTS / hawala Very High" },
+      "us": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2022 — MSB top national priority" },
+      "riskRationale": "Third-party funds movement · cross-border · nested MSB typologies",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "ISIC typology · UAE/US NRA"
+    },
+    {
+      "id": "ACT-CRYPTO",
+      "activityName": "Crypto-related services",
+      "isicCodes": ["6611", "6619"],
+      "keywords": ["crypto", "virtual asset", "bitcoin", "blockchain", "vasp", "token"],
+      "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "UAE VARA / CBUAE VASP expectations" },
+      "us": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA 2022 — VASP Very High" },
+      "riskRationale": "Virtual asset exposure · anonymity · sanctions evasion",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "ISIC typology · FATF R.15"
+    },
+    {
+      "id": "ACT-CASINO",
+      "activityName": "Casinos",
+      "isicCodes": ["9200"],
+      "keywords": ["casino", "gambling", "betting", "gaming"],
+      "uae": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "UAE — gambling prohibited domestically; foreign exposure Very High" },
+      "us": { "rating": "Very High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA — casinos/gaming Very High" },
+      "riskRationale": "Cash-intensive · high velocity funds",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "ISIC 9200 typology"
+    },
+    {
+      "id": "ACT-AUTO-DEALER",
+      "activityName": "Auto dealers",
+      "isicCodes": ["4781", "4661"],
+      "keywords": ["auto dealer", "motor vehicle", "used automobile", "car dealer"],
+      "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "UAE NRA — high-value movable assets" },
+      "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA — auto dealers high-risk" },
+      "riskRationale": "High-value assets · third-party payments · export resale",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "ISIC typology 4781"
+    },
+    {
+      "id": "ACT-CONVENIENCE",
+      "activityName": "Convenience retail",
+      "isicCodes": ["4711", "4719"],
+      "keywords": ["convenience", "grocery", "retail sale", "supermarket"],
+      "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "UAE NRA — retail medium; EDD if cash-intensive" },
+      "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "US NRA — retail medium" },
+      "riskRationale": "Cash intensity dependent · tobacco/fuel uplift possible",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "ISIC typology 4711"
+    },
+    {
+      "id": "ACT-SOFTWARE",
+      "activityName": "Software / IT services",
+      "isicCodes": ["6201", "6202", "6209"],
+      "keywords": ["software", "information technology", "computer programming", "it consulting"],
+      "uae": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "UAE NRA — software/IT low inherent" },
+      "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "US NRA 2022 — technology low" },
+      "riskRationale": "Low inherent · monitor nested MSB/VA",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "UAE/US NRA · ISIC 62"
+    },
+    {
+      "id": "ACT-OIL-GAS",
+      "activityName": "Oil & gas / extractive",
+      "isicCodes": ["0610", "0620", "0910", "06", "09"],
+      "keywords": ["petroleum", "oil", "gas", "extractive", "crude", "support activities for petroleum"],
+      "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "UAE NRA — extractives High · TBML" },
+      "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA — oil/gas High" },
+      "riskRationale": "Trade finance · government contracts · PEP exposure",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "UAE NRA extractives"
+    },
+    {
+      "id": "ACT-REAL-ESTATE",
+      "activityName": "Real estate agents",
+      "isicCodes": ["6810", "6820"],
+      "keywords": ["real estate", "property broker", "realty"],
+      "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "UAE NRA — real estate DNFBP High" },
+      "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA — real estate High" },
+      "riskRationale": "Investment ML · opaque ownership",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "UAE/US NRA DNFBP"
+    },
+    {
+      "id": "ACT-WHOLESALE-TRADE",
+      "activityName": "Import / export / wholesale trade",
+      "isicCodes": ["4610", "4620", "4630", "46"],
+      "keywords": ["import", "export", "wholesale trade", "trading"],
+      "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": true, "rationale": "UAE NRA — trade Medium-High · TBML monitoring" },
+      "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "US NRA — trade finance/TBML High" },
+      "riskRationale": "Trade-based ML · dual-use goods",
+      "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastReviewDate": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "UAE/US NRA trade sector"
+    }
+  ],
+  "products": [
+    { "id": "PRD-BASIC-CA", "productName": "Basic Current/Savings Account", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "CBUAE domestic current account" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Standard deposit account" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-PAYROLL", "productName": "Salary/Payroll Account", "uae": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Salary credit domestic" }, "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Payroll low velocity" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-DEBIT", "productName": "Debit Card", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Card medium fraud exposure" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Card medium" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-CREDIT-CARD", "productName": "Credit / Virtual Card", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Credit medium-high" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": false, "rationale": "US credit higher fraud" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-DOM-TRANSFER", "productName": "Domestic Transfers / Instant Payments", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Domestic AED" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Domestic ACH" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-INTL-TRANSFER", "productName": "International Transfers / Remittances", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Cross-border remittance" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "MSB cross-border" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment · US MSB", "reviewDate": "2026-07-04" },
+    { "id": "PRD-WALLET", "productName": "Wallet / Stored Value", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Stored value high velocity" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "MSB stored value" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-VIBAN", "productName": "Virtual Accounts / Virtual IBANs", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Virtual IBAN nested risk" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "BaaS virtual account" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Global Account product assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-MERCHANT", "productName": "Merchant Acquiring / Payment Gateway", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Merchant acquiring" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Payment gateway" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-OPEN-BANKING", "productName": "Open Banking / API Access", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "API controlled scope" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Open banking medium" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-TRADE-FIN", "productName": "Trade Finance / Invoice Finance", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Trade finance TBML" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Trade finance High" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal Product Risk Assessment", "reviewDate": "2026-07-04" },
+    { "id": "PRD-CRYPTO", "productName": "Crypto / Virtual Asset Exposure", "uae": { "rating": "Prohibited", "cramScore": 3, "eddRequired": true, "rationale": "Prohibited/restricted" }, "us": { "rating": "Prohibited", "cramScore": 3, "eddRequired": true, "rationale": "Restricted VASP" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Mal prohibited list", "reviewDate": "2026-07-04" },
+    { "id": "PRD-UAE-CURRENT", "productName": "UAE Current Account", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "MAL Bank domestic AED" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "N/A — UAE product" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "MAL Bank product register", "reviewDate": "2026-07-04" },
+    { "id": "PRD-GLOBAL-ACCOUNT", "productName": "Global Account", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Cross-border BaaS" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "US MSB BaaS programme" }, "weight": 1, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Global Account Zenus programme", "reviewDate": "2026-07-04" }
+  ],
+  "useCases": [
+    { "id": "payroll", "useCaseName": "Payroll", "uae": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Salary domestic recurring" }, "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Payroll low risk" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Transaction purpose catalog", "reviewDate": "2026-07-04" },
+    { "id": "marketplace_settlement", "useCaseName": "Marketplace Settlement", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Third-party high velocity" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Marketplace nested payments" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Transaction purpose catalog", "reviewDate": "2026-07-04" },
+    { "id": "trade_finance", "useCaseName": "Trade Finance", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "TBML typology" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "Trade finance US High" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Transaction purpose catalog", "reviewDate": "2026-07-04" },
+    { "id": "operating_expenses", "useCaseName": "Operating Expenses", "uae": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Vendor payments routine" }, "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Opex low" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Transaction purpose catalog", "reviewDate": "2026-07-04" },
+    { "id": "investment_treasury", "useCaseName": "Investment / Treasury", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": true, "rationale": "Treasury lumpy flows" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": true, "rationale": "Investment flows" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Transaction purpose catalog", "reviewDate": "2026-07-04" }
+  ],
+  "corridors": [
+    { "id": "uae_uae", "originCountry": "UAE", "destinationCountry": "UAE", "fatfStatus": "Normal", "sanctionsStatus": "Clear", "uae": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "CBUAE domestic" }, "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "N/A" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Corridor EWRA", "reviewDate": "2026-07-04" },
+    { "id": "uae_uk", "originCountry": "UAE", "destinationCountry": "UK", "fatfStatus": "Normal", "sanctionsStatus": "Clear", "uae": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "FATF member corridor" }, "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Allied corridor" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Corridor EWRA", "reviewDate": "2026-07-04" },
+    { "id": "uae_pk", "originCountry": "UAE", "destinationCountry": "PK", "fatfStatus": "Enhanced monitoring", "sanctionsStatus": "Enhanced", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": true, "rationale": "PK NRA typologies" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": true, "rationale": "Remittance corridor" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "PK typology library", "reviewDate": "2026-07-04" },
+    { "id": "uae_high_risk", "originCountry": "UAE", "destinationCountry": "High Risk Jurisdiction", "fatfStatus": "Grey List / Enhanced", "sanctionsStatus": "High", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "EDD mandatory" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "High-risk jurisdiction" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "Corridor EWRA", "reviewDate": "2026-07-04" },
+    { "id": "us_global", "originCountry": "US", "destinationCountry": "Global", "fatfStatus": "Variable", "sanctionsStatus": "Screening required", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": true, "rationale": "Cross-border" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "FinCEN MSB global corridors" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "US BaaS corridor assessment", "reviewDate": "2026-07-04" }
+  ],
+  "customerTypes": [
+    { "id": "CT-RETAIL", "segment": "Retail", "mode": "individual", "uae": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Retail NP" }, "us": { "rating": "Low", "cramScore": 1, "eddRequired": false, "rationale": "Retail NP" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "CRAM Appendix B", "reviewDate": "2026-07-04" },
+    { "id": "CT-AFFLUENT", "segment": "Affluent", "mode": "individual", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Affluent NP" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Affluent NP" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "CRAM Appendix B", "reviewDate": "2026-07-04" },
+    { "id": "CT-HNW", "segment": "HNW", "mode": "individual", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "HNW EDD typical" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "HNW EDD" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "CRAM Appendix B", "reviewDate": "2026-07-04" },
+    { "id": "CT-SME", "segment": "SME", "mode": "entity", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "SME LP" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "SME" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "CRAM Appendix B", "reviewDate": "2026-07-04" },
+    { "id": "CT-CORP", "segment": "Corporate", "mode": "entity", "uae": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Corporate LP" }, "us": { "rating": "Medium", "cramScore": 2, "eddRequired": false, "rationale": "Corporate" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "CRAM Appendix B", "reviewDate": "2026-07-04" },
+    { "id": "CT-FI", "segment": "FI", "mode": "entity", "uae": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "FI correspondent risk" }, "us": { "rating": "High", "cramScore": 3, "eddRequired": true, "rationale": "FI High" }, "version": "1.0.0", "effectiveDate": "2026-07-01", "approvalStatus": "approved", "lastModified": "2026-07-04", "approvedBy": "MLRO", "sourceDocument": "CRAM Appendix B", "reviewDate": "2026-07-04" }
+  ]
+}

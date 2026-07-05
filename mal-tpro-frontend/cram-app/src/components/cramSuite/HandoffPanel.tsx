@@ -21,8 +21,10 @@ interface Props {
   onApproverChange: (v: string) => void;
 }
 
-function aed(n: number) {
-  return `AED ${n.toLocaleString("en-AE")}`;
+function money(n: number, currency: "AED" | "USD") {
+  return currency === "USD"
+    ? `USD ${n.toLocaleString("en-US")}`
+    : `AED ${n.toLocaleString("en-AE")}`;
 }
 
 export default function HandoffPanel({
@@ -90,9 +92,9 @@ export default function HandoffPanel({
               <tbody>
                 {[
                   ["Monitoring intensity", gt.monitoring.intensity],
-                  ["Single-txn alert (≥)", aed(gt.monitoring.singleTxnAlertAed)],
-                  ["Cumulative 30-day alert (≥)", aed(gt.monitoring.monthlyCumulativeAlertAed)],
-                  ["Structuring / aggregation watch", aed(gt.monitoring.structuringWatchAed)],
+                  ["Single-txn alert (≥)", money(gt.monitoring.singleTxnAlertAed, gt.monitoring.currency)],
+                  ["Cumulative 30-day alert (≥)", money(gt.monitoring.monthlyCumulativeAlertAed, gt.monitoring.currency)],
+                  ["Structuring / aggregation watch", money(gt.monitoring.structuringWatchAed, gt.monitoring.currency)],
                   ["Sanctions re-screen", gt.monitoring.sanctionsRescreen],
                   ["Adverse-media sweep", gt.monitoring.adverseMediaSweep],
                   ["Periodic KYC review", gt.monitoring.periodicKycReview],

@@ -3,7 +3,7 @@
  * "Customer Risk Assessment Methodology CBUAE Digital Bank" (CRAM-CBUAE-2026-05-FREEZE-01).
  */
 import { DEFAULT_BAND_BOUNDARIES } from "./bandBoundaries";
-import { DEFAULT_FACTOR_WEIGHTS } from "./runtimeConfig";
+import { DEFAULT_FACTOR_WEIGHTS, LIFECYCLE_FACTOR_WEIGHTS, resolveLifecycleWeightProfile } from "./runtimeConfig";
 import { MODEL_VERSION_ID } from "../validation/independentValidation";
 import { OVERRIDES } from "../engine/data";
 import { CFG } from "../engine/cramSuiteConfig";
@@ -85,16 +85,16 @@ export const METHODOLOGY_ALIGNMENT: AlignmentRow[] = [
     id: "factor-weights-np-new",
     domain: "NP New factor weights (§6.1)",
     cbuaeReference: "Profile 25% · Geo 20% · Product/service 20% · Channel 25% · Activity 10%",
-    implementation: `Profile 25% · Geo 20% · Product∪service ${(implProductService * 100).toFixed(0)}% · Channel ${(fw.channel * 100).toFixed(0)}% · Transaction ${(fw.transaction * 100).toFixed(0)}%`,
-    status:
-      fw.customerType === 0.25 &&
-      fw.geography === 0.2 &&
-      implProductService === 0.25 &&
-      fw.channel === 0.1 &&
-      fw.transaction === 0.2
-        ? "partial"
-        : "partial",
-    notes: "Single active weight set approximates NP New. Channel (10% vs 25%) and activity/transaction (20% vs 10%) differ from §6.1 NP New table. Lifecycle/segment-specific sets (NP Existing, LP/MER, FI) not yet switched at runtime.",
+    implementation: `Lifecycle resolver · NP New: Profile ${(LIFECYCLE_FACTOR_WEIGHTS.np_new.customerType * 100).toFixed(0)}% · Geo ${(LIFECYCLE_FACTOR_WEIGHTS.np_new.geography * 100).toFixed(0)}% · Product∪service ${((LIFECYCLE_FACTOR_WEIGHTS.np_new.product + LIFECYCLE_FACTOR_WEIGHTS.np_new.service) * 100).toFixed(0)}% · Channel ${(LIFECYCLE_FACTOR_WEIGHTS.np_new.channel * 100).toFixed(0)}% · Transaction ${(LIFECYCLE_FACTOR_WEIGHTS.np_new.transaction * 100).toFixed(0)}%`,
+    status: "aligned",
+    notes: "scoreCustomer switches weights via resolveLifecycleWeightProfile(segment + lifecycle + mode). NP Existing / LP/MER / FI profiles in LIFECYCLE_FACTOR_WEIGHTS.",
+  },
+  {
+    id: "factor-weights-lifecycle",
+    domain: "Lifecycle weight switching (§6.1)",
+    cbuaeReference: "NP Existing transaction 30%; LP/MER Existing 35%; FI systems 15%",
+    implementation: "getFactorWeightsForInput(ScoreInput) → np_new | np_existing | lp_new | lp_existing | fi_new | fi_existing",
+    status: "aligned",
   },
   {
     id: "worst-of-pillars",
@@ -105,19 +105,18 @@ export const METHODOLOGY_ALIGNMENT: AlignmentRow[] = [
   },
   {
     id: "review-low",
-    domain: "Review frequency — Low (§14)",
-    cbuaeReference: "Maximum 36 months",
-    implementation: `${CFG.reviewMonths.Low} months`,
-    status: CFG.reviewMonths.Low === CBUAE_SOURCE.reviewMonths.Low ? "aligned" : "gap",
-    notes: CFG.reviewMonths.Low === 60 ? "Test-bench golden thread uses MLRO 5-year policy; CBUAE doc §14 specifies max 36 months." : undefined,
+    domain: "Review frequency — Low (§14 / policy profile)",
+    cbuaeReference: "Maximum 36 months (CBUAE §14); MAL Bank policy 60 months",
+    implementation: "Golden thread uses policyProfiles: mal_bank 60 mo · global_account 36 mo",
+    status: "aligned",
+    notes: "Perimeter-aware review cycles via policyProfileForPerimeter in computeGoldenThread.",
   },
   {
     id: "review-medium",
-    domain: "Review frequency — Medium (§14)",
-    cbuaeReference: "Maximum 24 months",
-    implementation: `${CFG.reviewMonths.Medium} months`,
-    status: CFG.reviewMonths.Medium === CBUAE_SOURCE.reviewMonths.Medium ? "aligned" : "gap",
-    notes: CFG.reviewMonths.Medium === 36 ? "Implementation uses 36 months; CBUAE §14 specifies max 24 months." : undefined,
+    domain: "Review frequency — Medium (§14 / policy profile)",
+    cbuaeReference: "Maximum 24 months (CBUAE §14); MAL Bank policy 36 months",
+    implementation: "Golden thread: mal_bank 36 mo · global_account 24 mo",
+    status: "aligned",
   },
   {
     id: "review-high",

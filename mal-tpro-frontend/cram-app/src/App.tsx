@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import CramWorkspace from "./pages/CramWorkspace";
@@ -7,7 +8,6 @@ import InvestigationHub from "./pages/InvestigationHub";
 import Reporting from "./pages/Reporting";
 import Governance from "./pages/Governance";
 import ModelValidation from "./pages/ModelValidation";
-import ActivityRiskRegister from "./pages/ActivityRiskRegister";
 import ReRating from "./pages/ReRating";
 import Feeds from "./pages/Feeds";
 import RegulatoryManagement from "./pages/RegulatoryManagement";
@@ -22,6 +22,16 @@ import Login from "./pages/Login";
 import AuthCallback from "./pages/AuthCallback";
 import PartnerPlatformPage from "./pages/PartnerPlatformPage";
 import KybChecklistCentre from "./pages/KybChecklistCentre";
+
+const ActivityRiskRegister = lazy(() => import("./pages/ActivityRiskRegister"));
+
+function PageFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[40vh] text-muted text-sm">
+      Loading…
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -46,7 +56,7 @@ export default function App() {
         <Route path="exam-pack" element={<ExamPack />} />
         <Route path="retention" element={<Retention />} />
         <Route path="validation" element={<ModelValidation />} />
-        <Route path="activity-register" element={<ActivityRiskRegister />} />
+        <Route path="activity-register" element={<Suspense fallback={<PageFallback />}><ActivityRiskRegister /></Suspense>} />
         <Route path="regulatory" element={<RegulatoryManagement />} />
         <Route path="screening" element={<Screening />} />
       </Route>

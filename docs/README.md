@@ -9,6 +9,7 @@ Central index for repo-level and product documentation.
 | [../SETUP.md](../SETUP.md) | **Clone & run** on a new machine |
 | [branching.md](./branching.md) | Git branch strategy |
 | [contributing.md](./contributing.md) | PR workflow & conventions |
+| [fincrime-os/README.md](./fincrime-os/README.md) | **Perimeter governance** — Global Account vs MAL Bank docs index |
 
 ## FinCrime OS (CRAM app)
 

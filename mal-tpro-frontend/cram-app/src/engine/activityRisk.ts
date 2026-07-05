@@ -11,9 +11,16 @@ import {
   clampScore,
 } from "./data";
 import { typologyProfessionScore } from "./professionRiskIntelligence";
+import type { CompliancePerimeter } from "../config/perimeters";
 import type { CustomerMode } from "../config/activityRiskConfig";
 import { ACTIVITY_LIBRARY_VERSION } from "../config/activityRiskConfig";
 import type { Score } from "./types";
+import {
+  matchRakezActivity,
+  RAKEZ_REGISTER_VERSION,
+  scoreFromRakezEntry,
+  type RakezActivityEntry,
+} from "./rakezActivityRegister";
 
 export interface ActivityLookupRow {
   activity: string;
@@ -132,6 +139,8 @@ export function resolveActivityRisk(
   declaredText: string,
   mode: CustomerMode = "individual",
   providedIsicCode?: string,
+  providedRakezCode?: string,
+  perimeter: CompliancePerimeter = "mal_bank",
 ): ActivityResolution {
   const text = declaredText?.trim() ?? "";
   const matchedRules: string[] = [];
@@ -176,6 +185,34 @@ export function resolveActivityRisk(
   const rules = ruleMatches(text);
   if (rules.ids.length) matchedRules.push(...rules.ids);
 
+  function applyRakezMatch(rakez: RakezActivityEntry) {
+    if (rakez.prohibited) {
+      prohibited = true;
+      baseScore = 3;
+      rating = "Prohibited";
+      basis = `RAKEZ FZ prohibited: ${rakez.activity_name} (${rakez.rakez_code})`;
+      cddEdd = "Reject / Exit";
+      theme = rakez.risk_theme;
+      title = rakez.isic_title;
+      code = rakez.isic_code !== "?" ? rakez.isic_code : rakez.rakez_code;
+      level = rakez.isic_level;
+      remediationRequired = false;
+      if (rakez.matched_rules) matchedRules.push(...rakez.matched_rules.split("; ").filter(Boolean));
+      return;
+    }
+    code = rakez.isic_code !== "?" ? rakez.isic_code : rakez.rakez_code;
+    level = rakez.isic_level;
+    title = rakez.isic_title !== "Unresolved — manual ISIC mapping" ? rakez.isic_title : rakez.activity_name;
+    theme = rakez.risk_theme || rakez.activity_group;
+    rating = rakez.aml_rating;
+    baseScore = scoreFromRakezEntry(rakez);
+    basis = `RAKEZ FZ ${rakez.rakez_code}: ${rakez.activity_name} → ${rakez.mapping_basis}`;
+    cddEdd = rakez.cdd_edd || legendCdd(baseScore);
+    suggestedControls = `RAKEZ ${rakez.licence_type} · ${rakez.activity_group} · ISIC ${code}`;
+    remediationRequired = rakez.isic_code === "?";
+    if (rakez.matched_rules) matchedRules.push(...rakez.matched_rules.split("; ").filter(Boolean));
+  }
+
   // 1. Provided ISIC code
   if (providedIsicCode) {
     const hit = findIsicByCode(providedIsicCode);
@@ -192,7 +229,15 @@ export function resolveActivityRisk(
     }
   }
 
-  // 2. Typology shortcut
+  // 2. RAKEZ Free Zone register (UAE FZ licence — mal_bank only)
+  if (perimeter === "mal_bank" && (code === "?" || remediationRequired)) {
+    const rakez = matchRakezActivity(text, providedRakezCode);
+    if (rakez) {
+      applyRakezMatch(rakez);
+    }
+  }
+
+  // 3. Typology shortcut
   if (code === "?" || remediationRequired) {
     const typo = matchTypology(text);
     if (typo) {
@@ -209,7 +254,7 @@ export function resolveActivityRisk(
     }
   }
 
-  // 3. Title match
+  // 4. Title match
   if (code === "?" || remediationRequired) {
     const hit = titleMatchIsic(text);
     if (hit) {
@@ -225,7 +270,7 @@ export function resolveActivityRisk(
     }
   }
 
-  // 4. Legacy nature_of_business (incl. prohibition 4)
+  // 5. Legacy nature_of_business (incl. prohibition 4)
   const legacy = legacyNatureOfBusiness(text);
   if (legacy) {
     if (legacy.score >= 4) {
@@ -243,7 +288,7 @@ export function resolveActivityRisk(
     }
   }
 
-  // 5. Theme fallback
+  // 6. Theme fallback
   if (code === "?" && !legacy) {
     const th = matchTheme(text);
     if (th) {
@@ -350,8 +395,10 @@ export function resolveCustomerTypeActivityScores(opts: {
   declaredProfession: string;
   declaredActivity: string;
   providedIsicCode?: string;
+  providedRakezCode?: string;
   entityTypeScore?: Score;
   selfEmployed?: boolean;
+  perimeter?: CompliancePerimeter;
 }): {
   professionScore: Score;
   natureOfBusinessScore: Score;
@@ -372,13 +419,19 @@ export function resolveCustomerTypeActivityScores(opts: {
         libraryVersion: ACTIVITY_LIBRARY_VERSION,
       }
     : resolveProfessionRisk(opts.declaredProfession || opts.declaredActivity);
-  const activityResolution = resolveActivityRisk(opts.declaredActivity, opts.mode, opts.providedIsicCode);
+  const perimeter = opts.perimeter ?? "mal_bank";
+  const activityResolution = resolveActivityRisk(
+    opts.declaredActivity,
+    opts.mode,
+    opts.providedIsicCode,
+    opts.providedRakezCode,
+    perimeter,
+  );
 
   if (opts.mode === "entity") {
-    const entityBump = opts.entityTypeScore ?? 2;
     return {
       professionScore: professionResolution.score,
-      natureOfBusinessScore: clampScore(Math.max(activityResolution.score, entityBump)) as Score,
+      natureOfBusinessScore: activityResolution.score,
       activityResolution,
       professionResolution,
     };

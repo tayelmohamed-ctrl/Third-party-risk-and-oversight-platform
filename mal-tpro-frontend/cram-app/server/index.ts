@@ -33,6 +33,7 @@ import { registerExamPackRoutes } from "./routes/examPack";
 import { registerGovernanceRoutes } from "./routes/governance";
 import { registerCtrRoutes } from "./routes/ctr";
 import { registerRetentionRoutes } from "./routes/retention";
+import { registerApprovalRoutes } from "./routes/approvals";
 import { seedExaminationIfEmpty } from "./examination/orchestrator";
 import { seedOpenItemsIfEmpty } from "./governance/openItemsStore";
 import { seedConfigVersionsIfEmpty, loadAllActiveConfigIntoRuntime } from "./config/configStore";
@@ -241,6 +242,7 @@ registerExamPackRoutes(app);
 registerGovernanceRoutes(app);
 registerCtrRoutes(app);
 registerRetentionRoutes(app);
+registerApprovalRoutes(app);
 
 async function bootstrap() {
   await connectDb();

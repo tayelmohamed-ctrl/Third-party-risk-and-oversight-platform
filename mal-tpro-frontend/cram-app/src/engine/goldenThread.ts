@@ -3,9 +3,9 @@ import type { ScoreInput, ScoreResult, FinalRating, Band } from "./types";
 import { isMaterialActivityDeviation, activityDeviationScore } from "./activityProfile";
 import { CFG, resolveDueDiligenceLevel, type ControlInputs, type CustomerMode } from "./cramSuiteConfig";
 import { pepTriggersEnhancedMeasures } from "../config/pepGate";
+import type { CompliancePerimeter } from "../config/perimeters";
+import { policyProfileForPerimeter } from "../registries/policyProfiles";
 import { OUTCOMES } from "./cram";
-import { professionTriggersEdd } from "./professionRiskIntelligence";
-import { entityTypeRequiresEdd } from "../config/entityLegalTypes";
 import { computeResidual, gatesFromResult, type ResidualResult } from "./residualLayer";
 
 export interface EddWorkflowItem {
@@ -16,6 +16,7 @@ export interface EddWorkflowItem {
 
 export interface MonitoringProfile {
   intensity: string;
+  currency: "AED" | "USD";
   singleTxnAlertAed: number;
   monthlyCumulativeAlertAed: number;
   structuringWatchAed: number;
@@ -53,44 +54,39 @@ function eddRequired(
   rating: FinalRating,
   input: ScoreInput,
   result: ScoreResult,
-  residual: ResidualResult,
-  pepAny: boolean,
-  mode: CustomerMode,
 ): boolean {
   if (rating === "Prohibited") return true;
-  const dev = activityDeviationScore(input.expectedMonthlyBand ?? 1, input.actualMonthlyBand ?? 1);
-  const highNature = (result.activityResolution?.score ?? 0) >= 3;
-  const highProfession = mode === "individual" && (result.professionResolution?.score ?? 0) >= 3;
-  const typologyEdd = mode === "individual" && professionTriggersEdd(input.declaredProfession ?? "");
-  const entityEdd = mode === "entity" && entityTypeRequiresEdd(input.declaredEntityType);
-
-  return (
-    rating === "High" ||
-    pepTriggersEnhancedMeasures(input.pep, result.mathBand, input) ||
-    input.adverse === "True Match" ||
-    input.watchlist === "True Match" ||
-    highNature || highProfession || typologyEdd || entityEdd ||
-    result.overrides.some((o) => o.cls === "HIGH" || o.cls === "PROHIBITED") ||
-    (input.legalForm !== "natural" && input.uboStatus !== "verified") ||
-    isMaterialActivityDeviation(input.expectedMonthlyBand ?? 1, input.actualMonthlyBand ?? 1) ||
-    result.behaviourGate?.overrideHigh ||
-    result.behaviourGate?.gateType === "flag" ||
-    dev >= 2 ||
-    input.investigationsScore >= 3 ||
-    input.strsScore >= 3 ||
-    input.serviceScore >= 3 ||
-    residual.controlGap
-  );
+  return rating === "High";
 }
 
-function authority(rating: FinalRating, edd: boolean, input: ScoreInput, result: ScoreResult): ApprovalAuthority {
-  if (rating === "Prohibited") return { who: "MLRO + Financial Crime Committee", cls: "PROHIBITED" };
-  if (input.pep === "Foreign" || edd) return { who: "MLRO sign-off required", cls: "HIGH" };
-  if (rating === "High") return { who: "Head of Compliance / MLRO", cls: "HIGH" };
-  if (input.pep === "Domestic" || input.pep === "IO") {
-    return { who: "Identify PEP · standard CDD unless high-risk relationship (Art. 15 Second)", cls: "LOW" };
+function authority(
+  rating: FinalRating,
+  edd: boolean,
+  input: ScoreInput,
+  result: ScoreResult,
+  perimeter: CompliancePerimeter,
+): ApprovalAuthority {
+  if (rating === "Prohibited") {
+    return {
+      who: perimeter === "global_account" ? "US CO / MLRO + BaaS partner" : "MLRO + Financial Crime Committee",
+      cls: "PROHIBITED",
+    };
   }
-  if (rating === "Medium") return { who: "Branch / team lead + Compliance", cls: "MEDIUM" };
+  if (input.pep === "Foreign" || edd) {
+    return { who: perimeter === "global_account" ? "US CO / MLRO sign-off" : "MLRO sign-off required", cls: "HIGH" };
+  }
+  if (rating === "High") {
+    return { who: perimeter === "global_account" ? "US CO / MLRO" : "Head of Compliance / MLRO", cls: "HIGH" };
+  }
+  if (input.pep === "Domestic" || input.pep === "IO") {
+    const pepNote = perimeter === "global_account"
+      ? "Identify PEP · FinCEN CDD Rule"
+      : "Identify PEP · standard CDD unless high-risk relationship (Art. 15 Second)";
+    return { who: pepNote, cls: "LOW" };
+  }
+  if (rating === "Medium") {
+    return { who: perimeter === "global_account" ? "Operations / Compliance" : "Branch / team lead + Compliance", cls: "MEDIUM" };
+  }
   return { who: "Relationship manager (auto)", cls: "LOW" };
 }
 
@@ -101,6 +97,7 @@ function eddWorkflowItems(
   residual: ResidualResult,
   pepAny: boolean,
   mode: CustomerMode,
+  perimeter: CompliancePerimeter,
 ): EddWorkflowItem[] {
   const items: EddWorkflowItem[] = [];
   const weak = residual.controlRows.filter((c) => c.rating < 2).map((c) => c.label);
@@ -115,7 +112,7 @@ function eddWorkflowItems(
     return items;
   }
 
-  if (eddRequired(rating, input, result, residual, pepAny, mode)) {
+  if (eddRequired(rating, input, result)) {
     items.push({ id: "e_sow", required: true, text: "Corroborate source of funds & source of wealth with documentary evidence" });
     items.push({ id: "e_approval", required: true, text: "Obtain senior management / MLRO approval to establish or continue the relationship" });
     items.push({ id: "e_mon", required: true, text: "Apply enhanced ongoing monitoring at the reduced thresholds below" });
@@ -127,10 +124,12 @@ function eddWorkflowItems(
       items.push({
         id: "e_pep_id",
         required: true,
-        text: "Confirm sufficient measures to identify domestic or international-organization PEP per CBUAE Art. 15(14) Second",
+        text: perimeter === "global_account"
+          ? "Confirm PEP identification and enhanced monitoring per FinCEN CDD Rule"
+          : "Confirm sufficient measures to identify domestic or international-organization PEP per CBUAE Art. 15(14) Second",
       });
     }
-    if (pepTriggersEnhancedMeasures(input.pep, result.mathBand, input)) {
+    if (pepTriggersEnhancedMeasures(input.pep, result.mathBand, input, perimeter)) {
       items.push({ id: "e_pep2", required: false, text: "Screen close associates / family and establish ultimate source of wealth" });
     }
   }
@@ -172,18 +171,22 @@ function monitoringProfile(
   reviewMonths: number | null,
   nextReview: string | null,
   controlGap: boolean,
+  perimeter: CompliancePerimeter,
   behReview = false,
 ): MonitoringProfile {
-  const ex = CFG.expectedAed[input.expectedMonthlyBand ?? 1] ?? CFG.expectedAed[2];
+  const currency = perimeter === "global_account" ? "USD" : "AED";
+  const expectedTable = perimeter === "global_account" ? CFG.expectedUsd : CFG.expectedAed;
+  const ex = expectedTable[input.expectedMonthlyBand ?? 1] ?? expectedTable[2];
   let tol = rating === "Low" ? 1.5 : rating === "Medium" ? 1.25 : 1.0;
   const dev = activityDeviationScore(input.expectedMonthlyBand ?? 1, input.actualMonthlyBand ?? 1);
   if (dev >= 2 || behReview) tol *= 0.8;
   if (controlGap) tol *= 0.85;
 
   const pepAny = input.pep !== "None";
-  const pepEnhanced = pepTriggersEnhancedMeasures(input.pep, result.mathBand, input);
+  const pepEnhanced = pepTriggersEnhancedMeasures(input.pep, result.mathBand, input, perimeter);
   return {
     intensity: rating === "High" ? "Enhanced" : rating === "Medium" ? "Standard" : pepEnhanced ? "Standard" : "Baseline",
+    currency,
     singleTxnAlertAed: Math.round(ex.single * tol),
     monthlyCumulativeAlertAed: Math.round(ex.monthly * tol),
     structuringWatchAed: Math.round(ex.single * tol * 0.9),
@@ -201,13 +204,19 @@ export function computeGoldenThread(
   controlLabels: Record<import("./cramSuiteConfig").ControlKey, string>,
   reviewFrom?: Date,
 ): GoldenThreadResult {
+  const perimeter = input.masterRegistryPerimeter ?? "mal_bank";
+  const profile = policyProfileForPerimeter(perimeter);
   const gates = gatesFromResult(result, input);
   const residual = computeResidual(result.composite, result.finalRating, controls, controlLabels, gates);
   const pepAny = gates.pepAny;
   const rating = result.finalRating;
-  const edd = eddRequired(rating, input, result, residual, pepAny, mode);
-  const auth = authority(rating, edd, input, result);
-  const reviewMonths = rating === "Prohibited" ? null : CFG.reviewMonths[rating];
+  const edd = eddRequired(rating, input, result);
+  const auth = authority(rating, edd, input, result, perimeter);
+  const reviewMonths = rating === "Prohibited"
+    ? null
+    : profile.reviewCycles.find((r) => r.band === rating)?.months
+      ?? profile.reviewCycles.find((r) => r.band === "Medium")?.months
+      ?? 36;
   let nextReviewDate: string | null = null;
   if (reviewMonths && reviewFrom) {
     const d = new Date(reviewFrom);
@@ -217,9 +226,9 @@ export function computeGoldenThread(
 
   const monitoring = rating === "Prohibited"
     ? null
-    : monitoringProfile(rating, input, result, reviewMonths, nextReviewDate, residual.controlGap, result.behaviourGate?.reviewRequired);
+    : monitoringProfile(rating, input, result, reviewMonths, nextReviewDate, residual.controlGap, perimeter, result.behaviourGate?.reviewRequired);
 
-  const eddItems = eddWorkflowItems(rating, input, result, residual, pepAny, mode);
+  const eddItems = eddWorkflowItems(rating, input, result, residual, pepAny, mode, perimeter);
   const dd = resolveDueDiligenceLevel(rating, edd, pepAny);
   const outcome = OUTCOMES[rating];
 

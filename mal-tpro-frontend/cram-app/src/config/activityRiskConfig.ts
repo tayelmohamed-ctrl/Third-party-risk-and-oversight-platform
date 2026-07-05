@@ -3,6 +3,7 @@
  * Bound to model version CRAM-CBUAE-2026-05-FREEZE-01 · docs/06-ACTIVITY-RISK-ISIC.md
  */
 import type { Score } from "../engine/types";
+import { rakezRegisterStats, RAKEZ_REGISTER_VERSION } from "../engine/rakezActivityRegister";
 import { entityTypeScore as scoreFromRegister } from "./entityLegalTypes";
 
 export type CustomerMode = "individual" | "entity";
@@ -46,6 +47,7 @@ export const ACTIVITY_RISK_CONFIG: Record<CustomerMode, ModeActivityConfig> = {
     ],
     resolutionOrder: [
       "Provided ISIC code → isic_aml_mapping (830)",
+      "RAKEZ Free Zone register (1,275) → ISIC-mapped FZ licence activities",
       "Typology shortcut → isic_activity_lookup (6)",
       "Title match → isic_aml_mapping",
       "Legacy nature_of_business.csv (169) — prohibition score 4",
@@ -71,6 +73,7 @@ export const ACTIVITY_RISK_CONFIG: Record<CustomerMode, ModeActivityConfig> = {
     ],
     resolutionOrder: [
       "Provided ISIC code → isic_aml_mapping (830)",
+      "RAKEZ Free Zone register (1,275) → ISIC-mapped FZ licence activities",
       "Typology shortcut → isic_activity_lookup (MSB · casino · crypto · precious metals · auto · convenience)",
       "Title match → isic_aml_mapping",
       "Legacy nature_of_business.csv — prohibition score 4",
@@ -92,9 +95,12 @@ export function entityTypeScore(label: string | undefined): Score {
 }
 
 export function registerStats() {
+  const rakez = rakezRegisterStats();
   return {
     libraryVersion: ACTIVITY_LIBRARY_VERSION,
+    rakezRegisterVersion: RAKEZ_REGISTER_VERSION,
     isicMappingRows: 830,
+    rakezFreeZoneActivities: rakez.total,
     typologyShortcuts: 6,
     ruleLibraryRules: 18,
     professionGuidanceRows: 16,

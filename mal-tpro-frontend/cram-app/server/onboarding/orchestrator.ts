@@ -25,27 +25,36 @@ import type {
   OnboardingCaseRecord, OnboardingState, PartnerSyncPayload,
   ShuftiWebhookPayload, StartOnboardingRequest,
 } from "./types";
+import { perimeterFromLicenseRegion } from "../../src/config/perimeters";
+import type { CompliancePerimeter } from "../../src/config/perimeters";
+import { defaultProductNameForPerimeter } from "../../src/registries/master/registryService";
 
 function defaultCapture(req: StartOnboardingRequest): Partial<AssessmentCapture> {
   const sub = req.subject;
+  const perimeter: CompliancePerimeter = perimeterFromLicenseRegion(req.licenseRegion);
+  const isUs = perimeter === "global_account";
+  const homeCountry = isUs ? "United States" : "United Arab Emirates";
+  const secondaryCountry = isUs ? "United States" : "India";
+  const sofCountry = isUs ? "United States" : "Germany";
   return {
     customerId: req.customerId,
     customerName: req.customerName,
     segment: req.mode === "entity" ? "SME" : "Retail",
     lifecycle: "New",
     mode: req.mode,
-    residenceCountry: sub.country ?? "United Arab Emirates",
-    nationalityCountry: sub.nationality ?? "United Arab Emirates",
-    birthCountry: sub.nationality ?? "United Arab Emirates",
-    sowCountry: sub.country ?? "United Arab Emirates",
-    sofCountry: sub.country ?? "United Arab Emirates",
-    opcoCountry: sub.country ?? "United Arab Emirates",
-    incorpCountry: sub.country ?? "United Arab Emirates",
-    uboCountry: sub.country ?? "United Arab Emirates",
+    compliancePerimeter: perimeter,
+    residenceCountry: sub.country ?? homeCountry,
+    nationalityCountry: sub.nationality ?? secondaryCountry,
+    birthCountry: sub.nationality ?? secondaryCountry,
+    sowCountry: sub.country ?? homeCountry,
+    sofCountry: sofCountry,
+    opcoCountry: sub.country ?? homeCountry,
+    incorpCountry: sub.country ?? homeCountry,
+    uboCountry: sub.nationality ?? secondaryCountry,
     activity: req.mode === "entity" ? "General trading" : "Information technology (including manufacturing, trade and repair of computers, peripheral equipment and software)",
     profession: req.mode === "individual" ? "Employee" : "",
     providedIsicCode: "",
-    product: "Current account",
+    product: defaultProductNameForPerimeter(perimeter),
     pep: "",
     expectedMonthlyBand: "2",
     actualMonthlyBand: "2",
@@ -95,6 +104,7 @@ function fullCapture(
     customerName: ob.customerName,
     mode: ob.mode,
     lifecycle: "New" as const,
+    compliancePerimeter: perimeterFromLicenseRegion(ob.licenseRegion),
   };
   return merged as AssessmentCapture;
 }

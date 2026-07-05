@@ -1,20 +1,52 @@
-/** Official CRAM methodology document — served from Vite public/. */
-export const CRAM_METHODOLOGY_DOCX_URL = "/Mal_Customer_Risk_Assessment_Methodology_v1_0.docx";
-export const CRAM_METHODOLOGY_DOCX_FILENAME = "Mal_Customer_Risk_Assessment_Methodology_v1_0.docx";
+/** Official CRAM methodology documents — served from Vite public/. */
+import type { CompliancePerimeter } from "../config/perimeters";
 
-export async function exportCramMethodologyDocument(): Promise<void> {
-  const res = await fetch(CRAM_METHODOLOGY_DOCX_URL);
+export interface CramMethodologyDoc {
+  url: string;
+  filename: string;
+  modelVersionId: string;
+  label: string;
+}
+
+export const CRAM_METHODOLOGY_UAE: CramMethodologyDoc = {
+  url: "/Mal_Customer_Risk_Assessment_Methodology_v1_0.docx",
+  filename: "Mal_Customer_Risk_Assessment_Methodology_v1_0.docx",
+  modelVersionId: "CRAM-CBUAE-2026-05-FREEZE-01",
+  label: "CBUAE Digital Bank CRAM",
+};
+
+export const CRAM_METHODOLOGY_US: CramMethodologyDoc = {
+  url: "/Mal-CRAM-US-01_Customer_Risk_Assessment_Methodology_US_v1.0.docx",
+  filename: "Mal-CRAM-US-01_Customer_Risk_Assessment_Methodology_US_v1.0.docx",
+  modelVersionId: "Mal-CRAM-US-01",
+  label: "US BaaS/MSB CRAM",
+};
+
+/** @deprecated Use CRAM_METHODOLOGY_UAE — kept for backward-compatible imports */
+export const CRAM_METHODOLOGY_DOCX_URL = CRAM_METHODOLOGY_UAE.url;
+/** @deprecated Use CRAM_METHODOLOGY_UAE — kept for backward-compatible imports */
+export const CRAM_METHODOLOGY_DOCX_FILENAME = CRAM_METHODOLOGY_UAE.filename;
+
+export function cramMethodologyDocForPerimeter(perimeter: CompliancePerimeter): CramMethodologyDoc {
+  return perimeter === "global_account" ? CRAM_METHODOLOGY_US : CRAM_METHODOLOGY_UAE;
+}
+
+export async function exportCramMethodologyDocument(
+  perimeter: CompliancePerimeter = "mal_bank",
+): Promise<void> {
+  const { url, filename } = cramMethodologyDocForPerimeter(perimeter);
+  const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`Methodology document not found (${res.status})`);
   }
   const blob = await res.blob();
-  const url = URL.createObjectURL(blob);
+  const objectUrl = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = CRAM_METHODOLOGY_DOCX_FILENAME;
+  anchor.href = objectUrl;
+  anchor.download = filename;
   anchor.rel = "noopener";
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(objectUrl);
 }

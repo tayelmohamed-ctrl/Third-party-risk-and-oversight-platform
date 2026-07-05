@@ -1,0 +1,45 @@
+[
+  {
+    "id": "global_account_us",
+    "name": "Global Account",
+    "perimeter": "global_account",
+    "license": "US MSB",
+    "settlement": ["Cross Border", "Virtual IBAN"],
+    "virtualIban": true,
+    "currencies": [
+      { "code": "USD", "enabled": true, "primary": true },
+      { "code": "EUR", "enabled": true },
+      { "code": "AED", "enabled": false }
+    ],
+    "correspondentBanking": true,
+    "swift": true,
+    "domesticClearing": false,
+    "cash": "No",
+    "crossBorderPct": 100,
+    "inherentScore": 72,
+    "inherentBand": "Medium High",
+    "monitoringRules": ["TM-214 Cross-border velocity", "TM-301 Third-party beneficiary", "TM-402 Nested payment chain"],
+    "rationale": "US MSB BaaS · 100% cross-border · SWIFT · virtual IBAN · correspondent exposure"
+  },
+  {
+    "id": "mal_uae_current",
+    "name": "UAE Current Account",
+    "perimeter": "mal_bank",
+    "license": "CBUAE",
+    "settlement": ["Domestic Clearing"],
+    "virtualIban": false,
+    "currencies": [{ "code": "AED", "enabled": true, "primary": true }],
+    "correspondentBanking": false,
+    "swift": false,
+    "domesticClearing": true,
+    "cash": "Possible",
+    "crossBorderPct": 15,
+    "cheque": true,
+    "salary": true,
+    "tradeFinance": "Optional",
+    "inherentScore": 48,
+    "inherentBand": "Medium",
+    "monitoringRules": ["TM-101 Domestic salary pattern", "TM-118 Cheque fraud", "TM-205 Optional trade finance"],
+    "rationale": "CBUAE domestic current account · AED primary · optional cross-border"
+  }
+]

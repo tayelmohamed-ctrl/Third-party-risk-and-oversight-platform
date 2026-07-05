@@ -6,6 +6,9 @@ import AgentAiTag from "../components/agents/AgentAiTag";
 import EwraRegulatoryPack from "../components/cram/EwraRegulatoryPack";
 import CorridorEwraWorkflow from "../components/cram/CorridorEwraWorkflow";
 import DriveLink from "../components/cram/DriveLink";
+import { usePerimeter } from "../context/PerimeterContext";
+import { licenseProfileForPerimeter, PERIMETERS } from "../config/perimeters";
+import { sourcesForPerimeter } from "../config/regulatorySources";
 import {
   CRAM_CATALOGUE, DRIVE_FOLDER_ORDER, DRIVE_FOLDERS,
   STATUS_STYLE, type DriveFolderKey,
@@ -28,13 +31,22 @@ const KANBAN = ["Identified", "Mapped", "Implemented", "Tested", "Evidenced"] as
 
 export default function RegulatoryManagement() {
   const location = useLocation();
+  const { perimeter } = usePerimeter();
+  const activeLicense = licenseProfileForPerimeter(perimeter);
+  const perimeterSources = useMemo(() => sourcesForPerimeter(perimeter), [perimeter]);
+  const perimeterDef = PERIMETERS[perimeter];
   const locState = location.state as { tab?: TabId; corridorView?: "pipeline" | "corridors" | "countries" | "riskLibrary" } | null;
   const initialTab = locState?.tab;
   const [tab, setTab] = useState<TabId>(initialTab ?? "regulations");
   const [jurisdiction, setJurisdiction] = useState<string>("all");
-  const [licenseFilter, setLicenseFilter] = useState<string>("all");
+  const [licenseFilter, setLicenseFilter] = useState<string>(activeLicense);
   const [monitor, setMonitor] = useState<RegulatoryMonitorStatus | null>(null);
   const [monitorBusy, setMonitorBusy] = useState(false);
+
+  useEffect(() => {
+    setLicenseFilter(activeLicense);
+    setJurisdiction(perimeter === "mal_bank" ? "UAE" : "US");
+  }, [activeLicense, perimeter]);
 
   useEffect(() => {
     void apiRegulatoryMonitor().then(setMonitor).catch(() => setMonitor(null));
@@ -72,8 +84,12 @@ export default function RegulatoryManagement() {
   return (
     <div>
       <AgentBanner agent="sayed" title="Regulatory Management — browse · track · impact · remediation">
-        Sayed monitors <b>12 authoritative sources weekly</b> (CBUAE, UAE FIU, FATF, FinCEN, OFAC, FFIEC, Zenus BaaS)
-        for both license paths — UAE community bank and US MSB BaaS under Zenus. Changes feed Signal Feeds and the obligation register.
+        Sayed monitors <b>{perimeterSources.length} authoritative sources weekly</b> for{" "}
+        <b>{perimeterDef.label}</b> ({perimeterDef.subtitle}).
+        {perimeter === "mal_bank"
+          ? " CBUAE rulebook, UAE FIU, FATF, and UAE TFS programmes."
+          : " FinCEN, OFAC, FFIEC, BSA/MSB guidance, and Zenus BaaS addendum."}
+        {" "}Changes feed Signal Feeds and the obligation register.
       </AgentBanner>
 
       {/* Sayed weekly monitor */}
@@ -95,7 +111,7 @@ export default function RegulatoryManagement() {
         <div className="grid grid-cols-4 gap-3 max-md:grid-cols-2 text-[11px]">
           <div className="p-2.5 rounded-lg bg-panel2 border border-lineSoft">
             <div className="text-faint text-[10px] uppercase">Sources</div>
-            <div className="font-display text-lg font-bold">{monitor?.sourcesTotal ?? 12}</div>
+            <div className="font-display text-lg font-bold">{perimeterSources.length}</div>
           </div>
           <div className="p-2.5 rounded-lg bg-panel2 border border-lineSoft">
             <div className="text-faint text-[10px] uppercase">Last check</div>
@@ -123,15 +139,23 @@ export default function RegulatoryManagement() {
             Backup — {monitor.channels.backup.join(", ")} · Notify — {monitor.notifyTo} via {monitor.channels.notify.join(", ")}
           </div>
         )}
-        {monitor?.lastRun?.results?.some((r) => r.status === "changed" || r.status === "error") && (
+        {monitor?.lastRun?.results && (
           <div className="mt-3 pt-3 border-t border-lineSoft space-y-1">
-            {monitor.lastRun.results.filter((r) => r.status === "changed" || r.status === "error").map((r) => (
+            {monitor.lastRun.results
+              .filter((r) => perimeterSources.some((s) => s.id === r.sourceId))
+              .filter((r) => r.status === "changed" || r.status === "error")
+              .map((r) => (
               <div key={r.sourceId} className={`text-[11px] ${r.status === "changed" ? "text-hi" : "text-med"}`}>
                 {r.status === "changed" ? "● Changed" : "● Error"} — {r.name}
                 {r.error ? ` (${r.error})` : ""}
               </div>
             ))}
             <Link to="/feeds" className="text-[11px] text-ai hover:underline block mt-1">View in Signal Feeds →</Link>
+          </div>
+        )}
+        {!monitor?.lastRun?.results?.some((r) => perimeterSources.some((s) => s.id === r.sourceId) && (r.status === "changed" || r.status === "error")) && monitor?.lastRun?.results && (
+          <div className="mt-3 pt-3 border-t border-lineSoft text-[11px] text-muted">
+            No changes or errors on {perimeterDef.label} sources in the last check.
           </div>
         )}
       </Card>

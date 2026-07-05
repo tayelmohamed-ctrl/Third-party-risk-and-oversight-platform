@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthProvider'
 import { PlatformThemeProvider } from './context/PlatformThemeContext'
+import { PerimeterProvider } from './context/PerimeterContext'
 import App from './App'
 import './index.css'
 import './styles/platform-light.css'
@@ -12,7 +13,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <PlatformThemeProvider>
       <BrowserRouter>
         <AuthProvider>
-          <App />
+          <PerimeterProvider>
+            <App />
+          </PerimeterProvider>
         </AuthProvider>
       </BrowserRouter>
     </PlatformThemeProvider>

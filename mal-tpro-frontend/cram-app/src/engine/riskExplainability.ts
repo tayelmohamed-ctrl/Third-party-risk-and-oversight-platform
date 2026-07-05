@@ -33,8 +33,11 @@ export interface FactorTransparencyRow {
 
 export interface RiskAssessmentSummary {
   inherentScore: number;
+  /** Math band from composite score (pre-override) */
   inherentRating: FinalRating;
   mathBand: string;
+  /** Final rating after override floors */
+  finalRating: FinalRating;
   overallRiskRating: FinalRating;
   residualScore: number;
   residualRating: string;
@@ -130,8 +133,9 @@ export function buildRiskAssessmentSummary(
 
   return {
     inherentScore: result.composite,
-    inherentRating: result.finalRating,
+    inherentRating: result.mathBand,
     mathBand: result.mathBand,
+    finalRating: result.finalRating,
     overallRiskRating: result.finalRating,
     residualScore: gt.residual.residualScore,
     residualRating: String(gt.residual.residualLevel),
@@ -217,7 +221,7 @@ function buildRiskDrivers(
         detail: `${et.rationale} · score ${et.score}/4`,
         impact: et.prohibited ? "floor" : et.score >= 3 ? "increase" : et.score === 1 ? "decrease" : "neutral",
         score: Math.min(et.score, 3),
-        policyRef: et.prohibited ? "OVR-006 · Unregulated MSB prohibition" : "Entity legal-form register · 10% customer-type weight",
+        policyRef: et.prohibited ? "OVR-006 · Unregulated MSB prohibition" : "Entity legal-form register · 11.9% customer-type weight",
       });
     }
   }
@@ -285,12 +289,29 @@ function buildRiskDrivers(
   d.push({
     id: "adv", label: "Adverse media",
     detail: input.adverse === "None" ? "No material adverse media" : input.adverse,
-    impact: input.adverse === "True Match" ? "increase" : "neutral",
+    impact: input.adverse === "True Match" ? "floor" : input.adverse === "Potential" ? "increase" : "neutral",
     policyRef: "OVR-009",
   });
 
-  if (input.investigationsScore >= 3 || input.strsScore >= 3) {
+  if (input.lifecycle === "New") {
+    d.push({
+      id: "str_na",
+      label: "STR / SAR / investigations",
+      detail: "N/A at onboarding — excluded from transaction factor until relationship established",
+      impact: "neutral",
+      policyRef: "Lifecycle · New customer",
+    });
+  } else if (input.investigationsScore >= 3 || input.strsScore >= 3) {
     d.push({ id: "str", label: "STR / investigation", detail: "Confirmed suspicion or active investigation", impact: "floor", policyRef: "OVR-010" });
+  } else if (input.investigationsScore >= 2 || input.strsScore >= 2) {
+    d.push({
+      id: "str_review",
+      label: "STR / investigation — under review",
+      detail: `Investigations ${input.investigationsScore}/3 · STR/SAR ${input.strsScore}/3`,
+      impact: "increase",
+      score: Math.max(input.investigationsScore, input.strsScore),
+      policyRef: "Transaction factor · lifecycle events",
+    });
   }
 
   if (input.legalForm !== "natural" && input.uboStatus !== "verified") {

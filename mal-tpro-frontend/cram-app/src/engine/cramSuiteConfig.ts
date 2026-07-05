@@ -63,6 +63,11 @@ export const CFG = {
     2: { single: 250_000, monthly: 250_000 },
     3: { single: 500_000, monthly: 500_000 },
   },
+  expectedUsd: {
+    1: { single: 15_000, monthly: 15_000 },
+    2: { single: 75_000, monthly: 75_000 },
+    3: { single: 150_000, monthly: 150_000 },
+  },
 };
 
 export function dueDiligenceLevel(rating: FinalRating, pepAny: boolean): string {

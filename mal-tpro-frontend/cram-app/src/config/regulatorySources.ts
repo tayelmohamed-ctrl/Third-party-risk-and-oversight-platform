@@ -3,6 +3,8 @@
  * Each source maps to catalogue regulation IDs and license profile(s).
  */
 import type { LicenseProfileId } from "./licenseProfiles";
+import type { CompliancePerimeter } from "./perimeters";
+import { licenseProfileForPerimeter } from "./perimeters";
 
 export type RegulatorySourceCheckMethod = "http-head" | "http-get-hash";
 export type RegulatorySourceChannel = "rss-primary" | "drive-version" | "http-backup";
@@ -208,8 +210,16 @@ export const REGULATORY_SOURCES: RegulatorySource[] = [
   },
 ];
 
+export function rssFeedsForLicense(profile: LicenseProfileId): RegulatoryRssFeed[] {
+  return REGULATORY_RSS_FEEDS.filter((f) => f.licenseProfiles.includes(profile) || f.licenseProfiles.includes("GROUP"));
+}
+
 export function sourcesForLicense(profile: LicenseProfileId): RegulatorySource[] {
-  return REGULATORY_SOURCES.filter((s) => s.licenseProfiles.includes(profile));
+  return REGULATORY_SOURCES.filter((s) => s.licenseProfiles.includes(profile) || s.licenseProfiles.includes("GROUP"));
+}
+
+export function sourcesForPerimeter(perimeter: CompliancePerimeter): RegulatorySource[] {
+  return sourcesForLicense(licenseProfileForPerimeter(perimeter));
 }
 
 export function sourceById(id: string): RegulatorySource | undefined {
