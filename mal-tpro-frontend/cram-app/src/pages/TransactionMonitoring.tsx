@@ -13,7 +13,8 @@ import ruleLibrary from "../data/oscilar_rule_library.json";
 import { SCREENING_AUTHORITY, SCREENING_SLA } from "../config/partnerIntegration";
 import { apiTmAlerts, type TmAlertRecord } from "../lib/api";
 import TmReadinessPanel from "../components/tm/TmReadinessPanel";
-import PaymentPurposeGuidancePanel from "../components/tm/PaymentPurposeGuidancePanel";
+import PaymentPurposeGuidancePanel, { type PanelTab } from "../components/tm/PaymentPurposeGuidancePanel";
+import { exportTransactionPurposeCatalogPdf } from "../lib/transactionPurposeCatalogPdf";
 
 type TabId = "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "purpose" | "readiness";
 
@@ -27,25 +28,48 @@ const TABS: { id: TabId; label: string; hint: string }[] = [
   { id: "readiness", label: "Pre-impl readiness", hint: "BRD gates · alert & screening rules" },
 ];
 
-const TAB_ACCENT: Record<TabId, string> = {
-  programme: "#A953DF",
-  scoring:   "#39B9ED",
-  workflow:  "#7C6CF7",
-  cases:     "#F6A623",
-  monitoring:"#2FD8A6",
-  purpose:   "#F6A623",
-  readiness: "#39B9ED",
-};
+/**
+ * Navigation cards — every card maps to real content. Cards 01–07 open a
+ * top-level tab; cards 08–14 deep-link into the Purpose panel's sub-views.
+ * Metric values are the true counts from the live catalogue/config.
+ */
+type IllustKey =
+  | "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "purpose" | "readiness"
+  | "C2C" | "C2B" | "B2C" | "B2B" | "Mal2Mal" | "corridors" | "typologies";
 
-const TAB_METRIC: Record<TabId, string> = {
-  programme: "3 sections",
-  scoring:   "4 tiers",
-  workflow:  "7 steps",
-  cases:     "7 stages",
-  monitoring:"40 rules",
-  purpose:   "5 flows",
-  readiness: "14 gates",
-};
+interface TmCardDef {
+  num: string;
+  title: string;
+  desc: string;
+  value: string;
+  unit: string;
+  accent: string;
+  illust: IllustKey;
+  tab: TabId;
+  sub?: PanelTab;
+}
+
+const CARDS: TmCardDef[] = [
+  // Row 1
+  { num: "01", title: "Screening Programme", desc: "Scope, authority, coverage and screening operations", value: "3",  unit: "Topics",    accent: "#A953DF", illust: "programme",  tab: "programme" },
+  { num: "02", title: "Scoring Model",       desc: "Alert tiers, dimensions and risk scoring logic",       value: "4",  unit: "Tiers",     accent: "#39B9ED", illust: "scoring",    tab: "scoring" },
+  { num: "03", title: "Workflow",            desc: "End-to-end workflow from alert to closure",            value: "7",  unit: "Steps",     accent: "#7C6CF7", illust: "workflow",   tab: "workflow" },
+  { num: "04", title: "Alerts & Cases",      desc: "SLA, ownership, queues and case management",           value: "7",  unit: "Stages",    accent: "#F6A623", illust: "cases",      tab: "cases" },
+  { num: "05", title: "TM Rule Library",     desc: "Oscilar rules — transfers & cards (with logic)",       value: "40", unit: "Rules",     accent: "#2FD8A6", illust: "monitoring", tab: "monitoring" },
+  { num: "06", title: "Purpose Codes",       desc: "Accept, condition, eliminate — PDF guide",             value: "80", unit: "Codes",     accent: "#E8B84B", illust: "purpose",    tab: "purpose", sub: "overview" },
+  // Row 2
+  { num: "07", title: "Pre-Impl Readiness",  desc: "BRD gates · alert & screening rules readiness",        value: "7",  unit: "Gates",     accent: "#39B9ED", illust: "readiness",  tab: "readiness" },
+  { num: "08", title: "C2C",                 desc: "Individual → Individual (off-us)",                     value: "14", unit: "Scenarios", accent: "#A953DF", illust: "C2C",        tab: "purpose", sub: "C2C" },
+  { num: "09", title: "C2B",                 desc: "Individual → Business",                                value: "16", unit: "Scenarios", accent: "#7C6CF7", illust: "C2B",        tab: "purpose", sub: "C2B" },
+  { num: "10", title: "B2C",                 desc: "Business → Individual",                                value: "16", unit: "Scenarios", accent: "#39B9ED", illust: "B2C",        tab: "purpose", sub: "B2C" },
+  { num: "11", title: "B2B",                 desc: "Business → Business",                                  value: "20", unit: "Scenarios", accent: "#8E7CF0", illust: "B2B",        tab: "purpose", sub: "B2B" },
+  { num: "12", title: "Mal2Mal",             desc: "On-us (Mal → Mal)",                                    value: "14", unit: "Scenarios", accent: "#2FD8A6", illust: "Mal2Mal",    tab: "purpose", sub: "Mal2Mal" },
+  { num: "13", title: "Corridor Guidance",   desc: "Countries, corridors and risk expectations",          value: "6",  unit: "Corridors", accent: "#39B9ED", illust: "corridors",  tab: "purpose", sub: "corridors" },
+  { num: "14", title: "Country Typologies",  desc: "EWRAs, typologies and country risk insights",          value: "7",  unit: "Countries", accent: "#FF5C77", illust: "typologies", tab: "purpose", sub: "typologies" },
+];
+
+const ROW1 = CARDS.slice(0, 6);
+const ROW2 = CARDS.slice(6);
 
 const SEV_STYLE: Record<string, string> = {
   critical: "bg-proh/25 text-[#ff7ea0]",
@@ -65,6 +89,17 @@ export default function TransactionMonitoring() {
   const [channel, setChannel] = useState<PaymentChannel | "all">("all");
   const [category, setCategory] = useState<string>("all");
   const [query, setQuery] = useState("");
+  // Presentation-only navigation state for the illustrated card grid + detail panel.
+  const [activeCard, setActiveCard] = useState<string>("01");
+  const [purposeSub, setPurposeSub] = useState<PanelTab>("overview");
+  const [panelOpen, setPanelOpen] = useState(true);
+
+  function openCard(c: TmCardDef) {
+    setActiveCard(c.num);
+    setTab(c.tab);
+    if (c.tab === "purpose") setPurposeSub(c.sub ?? "overview");
+    setPanelOpen(true);
+  }
 
   const rules = ruleLibrary.rules as OscilarTmRule[];
 
@@ -85,6 +120,8 @@ export default function TransactionMonitoring() {
     card: rules.filter((r) => r.channel === "card" || r.channel === "both").length,
   }), [rules]);
 
+  const activeDef = CARDS.find((c) => c.num === activeCard) ?? CARDS[0];
+
   return (
     <div>
       <AgentBanner agent="mohsen" title="Transaction monitoring & screening — investigator guide">
@@ -92,49 +129,58 @@ export default function TransactionMonitoring() {
         with the right rules deployed. Transaction screening list hits always mirror to Vital4; TM alerts feed CRAM re-rating.
       </AgentBanner>
 
-      {/* Numbered illustration card grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mt-4 mb-2">
-        {TABS.map((t, i) => (
-          <TmCard
-            key={t.id}
-            num={String(i + 1).padStart(2, "0")}
-            title={t.label}
-            illustration={getTmIllust(t.id)}
-            accent={TAB_ACCENT[t.id]}
-            metric={TAB_METRIC[t.id]}
-            active={tab === t.id}
-            onClick={() => setTab(t.id)}
-          />
+      {/* Header action */}
+      <div className="flex items-center justify-end -mt-1 mb-3.5">
+        <button
+          type="button"
+          onClick={() => void exportTransactionPurposeCatalogPdf()}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-semibold text-white transition-all hover:opacity-90 shadow-[0_4px_16px_rgba(169,83,223,.25)]"
+          style={{ background: "linear-gradient(90deg,#A953DF,#7C6CF7)" }}
+          title="Download the full transaction purpose & screening guide (PDF)"
+        >
+          <svg width="13" height="13" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+            <path d="M6 1v7M3.5 5.5 6 8l2.5-2.5M2 10h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Download full PDF guide
+        </button>
+      </div>
+
+      {/* Row 1 — 6 primary sections */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-2.5">
+        {ROW1.map((c) => (
+          <TmCard key={c.num} def={c} active={activeCard === c.num} onClick={() => openCard(c)} />
+        ))}
+      </div>
+      {/* Row 2 — readiness + purpose-flow deep links */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 mb-4">
+        {ROW2.map((c) => (
+          <TmCard key={c.num} def={c} active={activeCard === c.num} onClick={() => openCard(c)} />
         ))}
       </div>
 
-      {/* Content detail panel */}
-      <TmDetailPanel
-        tabIdx={TABS.findIndex((t) => t.id === tab) + 1}
-        title={TABS.find((t) => t.id === tab)?.label ?? ""}
-        hint={TABS.find((t) => t.id === tab)?.hint ?? ""}
-        accent={TAB_ACCENT[tab]}
-        illustration={getTmIllust(tab)}
-      >
-        {tab === "programme" && <ProgrammeTab />}
-        {tab === "scoring" && <ScoringTab />}
-        {tab === "workflow" && <WorkflowTab />}
-        {tab === "cases" && <CasesTab />}
-        {tab === "monitoring" && (
-          <MonitoringTab
-            rules={filteredRules}
-            stats={stats}
-            channel={channel}
-            setChannel={setChannel}
-            category={category}
-            setCategory={setCategory}
-            query={query}
-            setQuery={setQuery}
-          />
-        )}
-        {tab === "purpose" && <PaymentPurposeGuidancePanel />}
-        {tab === "readiness" && <TmReadinessPanel />}
-      </TmDetailPanel>
+      {/* Expandable detail panel */}
+      {panelOpen && (
+        <TmDetailPanel def={activeDef} onClose={() => setPanelOpen(false)}>
+          {activeDef.tab === "programme" && <ProgrammeTab />}
+          {activeDef.tab === "scoring" && <ScoringTab />}
+          {activeDef.tab === "workflow" && <WorkflowTab />}
+          {activeDef.tab === "cases" && <CasesTab />}
+          {activeDef.tab === "monitoring" && (
+            <MonitoringTab
+              rules={filteredRules}
+              stats={stats}
+              channel={channel}
+              setChannel={setChannel}
+              category={category}
+              setCategory={setCategory}
+              query={query}
+              setQuery={setQuery}
+            />
+          )}
+          {activeDef.tab === "readiness" && <TmReadinessPanel />}
+          {activeDef.tab === "purpose" && <PaymentPurposeGuidancePanel defaultTab={purposeSub} key={purposeSub} />}
+        </TmDetailPanel>
+      )}
 
       <Card className="p-4 mt-5 text-[11px] text-muted">
         <div className="flex flex-wrap gap-4 items-center">
@@ -495,65 +541,56 @@ function StatCard({ label, value, c }: { label: string; value: string; c?: strin
 
 // ─── Numbered illustration card ───────────────────────────────────────────────
 
-function TmCard({
-  num, title, illustration, accent, metric, active, onClick,
-}: {
-  num: string;
-  title: string;
-  illustration: ReactNode;
-  accent: string;
-  metric: string;
-  active: boolean;
-  onClick: () => void;
-}) {
+function TmCard({ def, active, onClick }: { def: TmCardDef; active: boolean; onClick: () => void }) {
+  const { num, title, desc, value, unit, accent } = def;
   return (
     <button
       type="button"
       onClick={onClick}
       className={[
-        "group relative flex flex-col text-left rounded-2xl border overflow-hidden cursor-pointer",
+        "group relative flex flex-col text-left rounded-2xl border overflow-hidden cursor-pointer p-3",
         "transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A953DF]",
         active
-          ? "border-[#A953DF]/55 shadow-[0_0_36px_rgba(169,83,223,.15)] scale-[1.015]"
-          : "border-[#26285C] hover:border-[#A953DF]/30 hover:scale-[1.01]",
+          ? "shadow-[0_0_36px_rgba(169,83,223,.18)] scale-[1.02] z-10"
+          : "border-[#22254f] hover:border-[#A953DF]/35 hover:-translate-y-0.5",
       ].join(" ")}
-      style={{ background: active ? "#100f28" : "#0A1130", minHeight: "190px" }}
+      style={{
+        background: active
+          ? "linear-gradient(160deg,#171436 0%,#0d0f2e 70%)"
+          : "linear-gradient(160deg,#0d1030 0%,#0A0E28 100%)",
+        borderColor: active ? `${accent}88` : undefined,
+        minHeight: "168px",
+      }}
     >
-      {/* Top accent line when active */}
+      {/* Active top accent */}
       {active && (
-        <span
-          aria-hidden
-          className="absolute inset-x-0 top-0 h-[2px]"
-          style={{ background: `linear-gradient(90deg,transparent,${accent} 50%,transparent)` }}
-        />
+        <span aria-hidden className="absolute inset-x-0 top-0 h-[2px]" style={{ background: `linear-gradient(90deg,transparent,${accent},transparent)` }} />
       )}
-      {/* Number */}
-      <span
-        className="absolute top-3 left-3 font-display text-[11px] font-black tabular-nums leading-none"
-        style={{ color: active ? accent : "#A7ACDB", opacity: active ? 1 : 0.45 }}
-      >
-        {num}
-      </span>
-      {/* Illustration */}
-      <div className="flex-1 flex items-center justify-center pt-8 pb-1">
-        <div
-          className="transition-transform duration-200"
-          style={{ transform: active ? "scale(1.07)" : undefined }}
+      {/* Number + illustration */}
+      <div className="flex items-start justify-between">
+        <span
+          className="font-display text-[12px] font-black tabular-nums leading-none mt-0.5"
+          style={{ color: active ? accent : "#5f6499" }}
         >
-          {illustration}
+          {num}
+        </span>
+        <div className="transition-transform duration-200 group-hover:scale-105" style={{ transform: active ? "scale(1.05)" : undefined }}>
+          {getTmIllust(def.illust, 50)}
         </div>
       </div>
-      {/* Title + metric */}
-      <div className="px-3 pb-3 pt-0.5">
-        <div
-          className="text-[10.5px] font-bold font-display leading-tight"
-          style={{ color: active ? "white" : "#C4C8F0" }}
-        >
+      {/* Title + description */}
+      <div className="mt-1.5 flex-1">
+        <div className="text-[11.5px] font-bold font-display leading-tight" style={{ color: active ? "#ffffff" : "#D6D9F5" }}>
           {title}
         </div>
-        <div className="text-[9px] mt-0.5 font-semibold" style={{ color: accent, opacity: 0.75 }}>
-          {metric}
+        <div className="text-[9.5px] mt-1 leading-snug line-clamp-2" style={{ color: "#8489bd" }}>
+          {desc}
         </div>
+      </div>
+      {/* Metric */}
+      <div className="mt-2 pt-2 border-t border-[#20234a] flex items-baseline gap-1.5">
+        <span className="font-display text-[16px] font-bold leading-none tabular-nums" style={{ color: active ? "#fff" : "#C4C8F0" }}>{value}</span>
+        <span className="text-[9px] font-semibold uppercase tracking-wide" style={{ color: accent }}>{unit}</span>
       </div>
     </button>
   );
@@ -561,52 +598,63 @@ function TmCard({
 
 // ─── Content detail panel ─────────────────────────────────────────────────────
 
-function TmDetailPanel({
-  tabIdx, title, hint, accent, illustration, children,
-}: {
-  tabIdx: number;
-  title: string;
-  hint: string;
-  accent: string;
-  illustration: ReactNode;
-  children: ReactNode;
-}) {
+function TmDetailPanel({ def, onClose, children }: { def: TmCardDef; onClose: () => void; children: ReactNode }) {
+  const { num, title, desc, value, unit, accent } = def;
   return (
-    <div className="rounded-2xl border border-[#26285C] overflow-hidden mt-2">
-      {/* Header bar */}
+    <div
+      className="rounded-2xl border overflow-hidden mt-1 transition-all duration-200"
+      style={{ borderColor: `${accent}55`, boxShadow: `0 0 40px ${accent}1f` }}
+    >
+      {/* Header band */}
       <div
-        className="flex items-center gap-3 px-5 py-4 border-b border-[#1e2156]"
+        className="relative flex items-center gap-4 px-5 py-4 border-b border-[#1e2156]"
         style={{ background: "linear-gradient(135deg,#0c1233 0%,#181c48 100%)" }}
       >
         {/* Ghost number */}
         <span
           aria-hidden
-          className="font-display text-[48px] font-black leading-none select-none shrink-0 -mr-1"
-          style={{ color: accent, opacity: 0.12 }}
+          className="font-display text-[46px] font-black leading-none select-none shrink-0 tabular-nums"
+          style={{ color: accent, opacity: 0.9 }}
         >
-          {String(tabIdx).padStart(2, "0")}
+          {num}
         </span>
-        {/* Small illustration */}
+        {/* Illustration tile */}
         <div
-          className="shrink-0 opacity-75"
-          style={{ transform: "scale(0.7)", transformOrigin: "center center", marginLeft: "-8px", marginRight: "-8px" }}
+          className="shrink-0 w-14 h-14 rounded-xl grid place-items-center"
+          style={{ background: `${accent}14`, boxShadow: `inset 0 0 0 1px ${accent}33` }}
         >
-          {illustration}
+          {getTmIllust(def.illust, 40)}
         </div>
-        {/* Title / hint */}
+        {/* Title / description */}
         <div className="min-w-0">
-          <div className="font-display text-[15px] font-bold text-white leading-tight">{title}</div>
-          <div className="text-[11px] text-[#A7ACDB] mt-0.5">{hint}</div>
+          <div className="font-display text-[16px] font-bold text-white leading-tight">{title}</div>
+          <div className="text-[11px] text-[#A7ACDB] mt-0.5">{desc}</div>
         </div>
-        {/* Accent dot */}
-        <div
-          className="ml-auto w-2 h-2 rounded-full shrink-0 shadow-[0_0_8px_currentColor]"
-          style={{ background: accent, color: accent }}
-        />
+        {/* Metric chip */}
+        <div className="ml-auto text-right shrink-0 hidden sm:block">
+          <div className="font-display text-[20px] font-bold leading-none tabular-nums" style={{ color: accent }}>{value}</div>
+          <div className="text-[9px] uppercase tracking-wide text-[#6E72A6] mt-0.5">{unit}</div>
+        </div>
+        {/* Close */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="shrink-0 w-8 h-8 rounded-lg grid place-items-center text-[#8A8FC0] hover:text-white hover:bg-white/10 transition"
+          aria-label="Collapse panel"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+          </svg>
+        </button>
       </div>
       {/* Content */}
-      <div className="p-4 pt-5">
+      <div className="p-4 pt-5" style={{ background: "#080d22" }}>
         {children}
+      </div>
+      {/* Footer note */}
+      <div className="px-5 py-2.5 border-t border-[#1e2156] flex items-center gap-2 text-[10px] text-[#6E72A6]" style={{ background: "#0a0f26" }}>
+        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: accent }} />
+        All frameworks are continuously updated in line with regulatory changes and internal risk assessments.
       </div>
     </div>
   );
@@ -614,16 +662,31 @@ function TmDetailPanel({
 
 // ─── Illustration dispatcher ──────────────────────────────────────────────────
 
-function getTmIllust(id: TabId): JSX.Element {
-  switch (id) {
-    case "programme":  return <IllustScreening />;
-    case "scoring":    return <IllustScoring />;
-    case "workflow":   return <IllustWorkflow />;
-    case "cases":      return <IllustCases />;
-    case "monitoring": return <IllustRules />;
-    case "purpose":    return <IllustPurpose />;
-    case "readiness":  return <IllustReadiness />;
-  }
+function getTmIllust(key: IllustKey, size = 68): JSX.Element {
+  const svg = (() => {
+    switch (key) {
+      case "programme":  return <IllustScreening />;
+      case "scoring":    return <IllustScoring />;
+      case "workflow":   return <IllustWorkflow />;
+      case "cases":      return <IllustCases />;
+      case "monitoring": return <IllustRules />;
+      case "purpose":    return <IllustPurpose />;
+      case "readiness":  return <IllustReadiness />;
+      case "C2C":        return <IllustC2C />;
+      case "C2B":        return <IllustC2B />;
+      case "B2C":        return <IllustB2C />;
+      case "B2B":        return <IllustB2B />;
+      case "Mal2Mal":    return <IllustMal2Mal />;
+      case "corridors":  return <IllustCorridors />;
+      case "typologies": return <IllustTypologies />;
+    }
+  })();
+  if (size === 68) return svg;
+  return (
+    <div style={{ width: size, height: size, display: "grid", placeItems: "center" }}>
+      <div style={{ transform: `scale(${size / 68})` }}>{svg}</div>
+    </div>
+  );
 }
 
 // ─── SVG Illustrations ────────────────────────────────────────────────────────
@@ -771,6 +834,144 @@ function IllustReadiness() {
       {/* Row 3 - pending */}
       <circle cx="25" cy="64" r="4" fill="none" stroke="#39B9ED" strokeOpacity="0.45" strokeWidth="1.5"/>
       <line x1="39" y1="64" x2="55" y2="64" stroke="#39B9ED" strokeOpacity="0.35" strokeWidth="1.5"/>
+    </svg>
+  );
+}
+
+/** Two people (customer to customer). */
+function IllustC2C() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Left person */}
+      <circle cx="22" cy="26" r="8" fill="#A953DF" fillOpacity="0.85"/>
+      <path d="M8 52 C8 42 16 38 22 38 C28 38 36 42 36 52 Z" fill="#A953DF" fillOpacity="0.55"/>
+      {/* Right person */}
+      <circle cx="58" cy="26" r="8" fill="#A953DF" fillOpacity="0.55"/>
+      <path d="M44 52 C44 42 52 38 58 38 C64 38 72 42 72 52 Z" fill="#A953DF" fillOpacity="0.35"/>
+      {/* Exchange arrows */}
+      <path d="M31 60 H49" stroke="#7C6CF7" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M46 57 L50 60 L46 63" fill="none" stroke="#7C6CF7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M49 68 H31" stroke="#7C6CF7" strokeWidth="2" strokeLinecap="round" strokeOpacity="0.6"/>
+      <path d="M34 65 L30 68 L34 71" fill="none" stroke="#7C6CF7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" strokeOpacity="0.6"/>
+    </svg>
+  );
+}
+
+/** Person to shopping cart (customer to business). */
+function IllustC2B() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Person */}
+      <circle cx="20" cy="26" r="7.5" fill="#7C6CF7" fillOpacity="0.85"/>
+      <path d="M8 50 C8 41 15 37 20 37 C25 37 32 41 32 50 Z" fill="#7C6CF7" fillOpacity="0.5"/>
+      {/* Arrow */}
+      <path d="M34 40 H46" stroke="#7C6CF7" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M43 37 L47 40 L43 43" fill="none" stroke="#7C6CF7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* Cart */}
+      <path d="M50 30 H54 L58 50 H70" stroke="#7C6CF7" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M56 38 H72 L70 48 H58 Z" fill="#7C6CF7" fillOpacity="0.22" stroke="#7C6CF7" strokeWidth="1.8"/>
+      <circle cx="60" cy="56" r="3" fill="#7C6CF7" fillOpacity="0.7"/>
+      <circle cx="69" cy="56" r="3" fill="#7C6CF7" fillOpacity="0.7"/>
+    </svg>
+  );
+}
+
+/** Briefcase to person (business to customer). */
+function IllustB2C() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Briefcase */}
+      <rect x="8" y="30" width="30" height="22" rx="3" fill="#39B9ED" fillOpacity="0.20" stroke="#39B9ED" strokeWidth="2"/>
+      <path d="M17 30 V26 A3 3 0 0 1 20 23 H26 A3 3 0 0 1 29 26 V30" fill="none" stroke="#39B9ED" strokeWidth="2"/>
+      <line x1="8" y1="40" x2="38" y2="40" stroke="#39B9ED" strokeOpacity="0.5" strokeWidth="1.5"/>
+      {/* Arrow */}
+      <path d="M40 41 H52" stroke="#39B9ED" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M49 38 L53 41 L49 44" fill="none" stroke="#39B9ED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* Person */}
+      <circle cx="62" cy="30" r="7.5" fill="#39B9ED" fillOpacity="0.8"/>
+      <path d="M50 54 C50 45 57 41 62 41 C67 41 74 45 74 54 Z" fill="#39B9ED" fillOpacity="0.45"/>
+    </svg>
+  );
+}
+
+/** Two buildings (business to business). */
+function IllustB2B() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Left building */}
+      <rect x="10" y="20" width="24" height="44" rx="2" fill="#8E7CF0" fillOpacity="0.22" stroke="#8E7CF0" strokeWidth="2"/>
+      <rect x="15" y="26" width="5" height="5" fill="#8E7CF0" fillOpacity="0.7"/>
+      <rect x="24" y="26" width="5" height="5" fill="#8E7CF0" fillOpacity="0.7"/>
+      <rect x="15" y="36" width="5" height="5" fill="#8E7CF0" fillOpacity="0.55"/>
+      <rect x="24" y="36" width="5" height="5" fill="#8E7CF0" fillOpacity="0.55"/>
+      <rect x="15" y="46" width="5" height="5" fill="#8E7CF0" fillOpacity="0.4"/>
+      <rect x="24" y="46" width="5" height="5" fill="#8E7CF0" fillOpacity="0.4"/>
+      {/* Right building */}
+      <rect x="46" y="30" width="24" height="34" rx="2" fill="#8E7CF0" fillOpacity="0.14" stroke="#8E7CF0" strokeWidth="2"/>
+      <rect x="51" y="36" width="5" height="5" fill="#8E7CF0" fillOpacity="0.6"/>
+      <rect x="60" y="36" width="5" height="5" fill="#8E7CF0" fillOpacity="0.6"/>
+      <rect x="51" y="46" width="5" height="5" fill="#8E7CF0" fillOpacity="0.45"/>
+      <rect x="60" y="46" width="5" height="5" fill="#8E7CF0" fillOpacity="0.45"/>
+      {/* Link arrows */}
+      <path d="M36 58 H44" stroke="#8E7CF0" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M41 55 L45 58 L41 61" fill="none" stroke="#8E7CF0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+/** Bank columns (Mal to Mal, on-us). */
+function IllustMal2Mal() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Roof */}
+      <path d="M40 14 L66 28 H14 Z" fill="#2FD8A6" fillOpacity="0.25" stroke="#2FD8A6" strokeWidth="2" strokeLinejoin="round"/>
+      {/* Columns */}
+      <rect x="20" y="30" width="5" height="26" fill="#2FD8A6" fillOpacity="0.6"/>
+      <rect x="31" y="30" width="5" height="26" fill="#2FD8A6" fillOpacity="0.6"/>
+      <rect x="44" y="30" width="5" height="26" fill="#2FD8A6" fillOpacity="0.6"/>
+      <rect x="55" y="30" width="5" height="26" fill="#2FD8A6" fillOpacity="0.6"/>
+      {/* Base */}
+      <rect x="14" y="58" width="52" height="6" rx="2" fill="#2FD8A6" fillOpacity="0.35"/>
+      {/* On-us circular arrow */}
+      <path d="M36 42 a4 4 0 1 1 4 4" fill="none" stroke="#39B9ED" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M40 42 l0 4 l3 -1" fill="none" stroke="#39B9ED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+/** Globe with shield (corridor guidance). */
+function IllustCorridors() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Globe */}
+      <circle cx="34" cy="36" r="22" fill="#39B9ED" fillOpacity="0.10" stroke="#39B9ED" strokeWidth="2"/>
+      <ellipse cx="34" cy="36" rx="9" ry="22" fill="none" stroke="#39B9ED" strokeOpacity="0.5" strokeWidth="1.4"/>
+      <line x1="12" y1="36" x2="56" y2="36" stroke="#39B9ED" strokeOpacity="0.5" strokeWidth="1.4"/>
+      <line x1="16" y1="25" x2="52" y2="25" stroke="#39B9ED" strokeOpacity="0.35" strokeWidth="1.2"/>
+      <line x1="16" y1="47" x2="52" y2="47" stroke="#39B9ED" strokeOpacity="0.35" strokeWidth="1.2"/>
+      {/* Corridor arc */}
+      <path d="M22 44 Q40 20 50 30" fill="none" stroke="#A953DF" strokeWidth="2" strokeDasharray="3 3" strokeLinecap="round"/>
+      {/* Shield */}
+      <path d="M58 42 L70 46 V56 C70 63 64 67 58 70 C52 67 46 63 46 56 V46 Z" fill="#39B9ED" fillOpacity="0.2" stroke="#39B9ED" strokeWidth="2"/>
+      <path d="M53 56 L57 60 L64 51" fill="none" stroke="#2FD8A6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+/** Globe with alert (country typologies). */
+function IllustTypologies() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Globe */}
+      <circle cx="36" cy="38" r="24" fill="#FF5C77" fillOpacity="0.08" stroke="#FF5C77" strokeWidth="2"/>
+      <ellipse cx="36" cy="38" rx="10" ry="24" fill="none" stroke="#FF5C77" strokeOpacity="0.4" strokeWidth="1.4"/>
+      <line x1="12" y1="38" x2="60" y2="38" stroke="#FF5C77" strokeOpacity="0.4" strokeWidth="1.4"/>
+      <line x1="16" y1="26" x2="56" y2="26" stroke="#FF5C77" strokeOpacity="0.3" strokeWidth="1.2"/>
+      <line x1="16" y1="50" x2="56" y2="50" stroke="#FF5C77" strokeOpacity="0.3" strokeWidth="1.2"/>
+      {/* Alert badge */}
+      <circle cx="60" cy="22" r="12" fill="#FF5C77"/>
+      <rect x="58.5" y="15" width="3" height="8" rx="1.5" fill="white"/>
+      <circle cx="60" cy="27" r="1.8" fill="white"/>
     </svg>
   );
 }

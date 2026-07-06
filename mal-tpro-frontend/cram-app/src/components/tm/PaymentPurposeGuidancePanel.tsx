@@ -23,10 +23,10 @@ const TIER_STYLE: Record<string, string> = {
   High: "bg-proh/20 text-[#ff7ea0]",
 };
 
-type PanelTab = "overview" | PurposeFlowId | "corridors" | "typologies";
+export type PanelTab = "overview" | PurposeFlowId | "corridors" | "typologies";
 
-export default function PaymentPurposeGuidancePanel() {
-  const [tab, setTab] = useState<PanelTab>("overview");
+export default function PaymentPurposeGuidancePanel({ defaultTab }: { defaultTab?: PanelTab } = {}) {
+  const [tab, setTab] = useState<PanelTab>(defaultTab ?? "overview");
   const [downloading, setDownloading] = useState(false);
   const [msg, setMsg] = useState("");
   const [expanded, setExpanded] = useState<string | null>("C2C-01");
