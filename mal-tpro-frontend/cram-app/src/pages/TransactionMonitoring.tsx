@@ -1,6 +1,7 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Card, Sec, AiTag } from "../components/ui";
+import { exportGlobalAccountTmWorkbook, exportMalBankTmWorkbook } from "../lib/tmScreeningWorkbookBuilder";
 import AgentBanner from "../components/agents/AgentBanner";
 import AgentAiTag from "../components/agents/AgentAiTag";
 import {
@@ -114,6 +115,30 @@ export default function TransactionMonitoring() {
           <Link to="/screening" className="text-ai hover:underline ml-auto">Vital4 disposition queue →</Link>
           <Link to="/investigation" className="text-ai hover:underline">Investigation Hub →</Link>
           <Link to="/feeds" className="text-ai hover:underline">Signal feeds →</Link>
+        </div>
+        <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-line">
+          <button
+            type="button"
+            onClick={() => exportGlobalAccountTmWorkbook()}
+            className="btn btn-ghost text-[11px] px-3 py-1.5 flex items-center gap-1.5"
+            title="Download Global Account TM & Screening Library (US / FinCEN / BSA)"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M6 1v7M3.5 5.5 6 8l2.5-2.5M2 10h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Global Account TM Library
+          </button>
+          <button
+            type="button"
+            onClick={() => exportMalBankTmWorkbook()}
+            className="btn btn-ghost text-[11px] px-3 py-1.5 flex items-center gap-1.5"
+            title="Download Mal Bank TM & Screening Library (UAE / CBUAE)"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M6 1v7M3.5 5.5 6 8l2.5-2.5M2 10h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Mal Bank TM Library
+          </button>
         </div>
       </Card>
     </div>
