@@ -1,6 +1,7 @@
 import { useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "../components/ui";
+import { FolderOpen } from "lucide-react";
 import AgentBanner from "../components/agents/AgentBanner";
 import DriveLink from "../components/cram/DriveLink";
 import EwraRegulatoryPack from "../components/cram/EwraRegulatoryPack";
@@ -19,41 +20,67 @@ export default function CramWorkspace() {
   return (
     <div>
       {/* Google Drive master repository */}
-      <Card className="p-4 mb-4">
-        <div className="text-sm font-display font-semibold mb-1">Google Drive — master repository</div>
-        <div className="text-[10.5px] text-faint mb-3">Regulations · controls · workflows · evidence</div>
+      <div
+        className="p-5 rounded-2xl border border-[#26285C] mb-4"
+        style={{ background: "linear-gradient(135deg,#0c1233 0%,#181c48 100%)" }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#A953DF]/15 text-[#A953DF]">
+            <FolderOpen size={18} />
+          </div>
+          <div>
+            <div className="font-display text-[15px] font-bold text-white">Google Drive — master repository</div>
+            <div className="text-[11px] text-[#A7ACDB] mt-0.5">Regulations · controls · workflows · evidence</div>
+          </div>
+        </div>
         <div className="grid grid-cols-3 gap-3 max-lg:grid-cols-1">
-            {DRIVE_FOLDER_ORDER.map((key) => {
-              const f = DRIVE_FOLDERS[key];
-              return (
-                <a
-                  key={key}
-                  href={f.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block p-3 rounded-xl border border-line bg-panel2 hover:border-ai hover:bg-panel3 transition"
-                >
-                  <div className="text-[12px] font-semibold text-ink">{f.label}</div>
-                  <div className="text-[10.5px] text-muted mt-1 leading-snug">{f.description}</div>
-                  <div className="text-[10px] text-ai mt-2 mono truncate">{f.url}</div>
-                </a>
-              );
-            })}
+          {DRIVE_FOLDER_ORDER.map((key) => {
+            const f = DRIVE_FOLDERS[key];
+            return (
+              <a
+                key={key}
+                href={f.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group block p-4 rounded-2xl border border-[#26285C] bg-[#0A1130] hover:border-[#A953DF]/40 hover:shadow-[0_6px_28px_rgba(0,0,0,.3)] hover:scale-[1.005] transition-all duration-200"
+              >
+                <div className="text-[12px] font-semibold text-white">{f.label}</div>
+                <div className="text-[10.5px] text-[#A7ACDB] mt-1 leading-snug">{f.description}</div>
+                <div className="text-[10px] text-[#A953DF] mt-2.5 mono truncate opacity-70 group-hover:opacity-100">{f.url}</div>
+              </a>
+            );
+          })}
         </div>
-      </Card>
+      </div>
 
-      <Card className="p-4 mb-4">
-        <div className="text-[11.5px] text-muted">Obligation coverage</div>
-        <div className="h-2.5 rounded-md bg-panel3 overflow-hidden flex w-full max-w-[280px] mt-2">
-          <i className="block h-full bg-low" style={{ width: `${covPct}%` }} />
-          <i className="block h-full bg-hi" style={{ width: `${100 - covPct}%` }} />
+      {/* Obligation coverage */}
+      <div className="p-4 rounded-2xl border border-[#26285C] bg-[#10103C] mb-4">
+        <div className="flex items-end gap-6 mb-3 flex-wrap">
+          <div>
+            <div className="text-[9.5px] text-[#6E72A6] uppercase tracking-wide font-semibold">Obligation coverage</div>
+            <div className="font-display text-[28px] font-bold text-white leading-none mt-1">{covPct}%</div>
+          </div>
+          <div className="flex gap-5 pb-0.5">
+            <div>
+              <div className="text-[9px] text-[#6E72A6] uppercase tracking-wide">Covered</div>
+              <div className="font-display text-[16px] font-bold text-[#2FD8A6]">{coverage.covered}</div>
+            </div>
+            <div>
+              <div className="text-[9px] text-[#6E72A6] uppercase tracking-wide">Partial</div>
+              <div className="font-display text-[16px] font-bold text-[#F6A623]">{coverage.partial}</div>
+            </div>
+            <div>
+              <div className="text-[9px] text-[#6E72A6] uppercase tracking-wide">Uncovered</div>
+              <div className="font-display text-[16px] font-bold text-[#FF5C77]">{coverage.uncovered}</div>
+            </div>
+          </div>
         </div>
-        <div className="text-[11px] text-muted mt-1.5">
-          {coverage.obligations} obligations · <span className="text-low">{coverage.covered} covered</span>
-          {" · "}<span className="text-med">{coverage.partial} partial</span>
-          {" · "}<span className="text-hi">{coverage.uncovered} uncovered</span>
+        <div className="h-2.5 rounded-full overflow-hidden flex w-full">
+          <i className="block h-full" style={{ width: `${covPct}%`, background: "linear-gradient(90deg,#2FD8A6,#39B9ED)" }} />
+          <i className="block h-full bg-[#FF5C77]/40" style={{ width: `${100 - covPct}%` }} />
         </div>
-      </Card>
+        <div className="text-[10.5px] text-[#A7ACDB] mt-2">{coverage.obligations} total obligations tracked · UAE &amp; US perimeters</div>
+      </div>
 
       <AgentBanner agent="sayed" title="Sayed keeps the CRAM honest">
         CBUAE notice 2026/14 (virtual-asset travel rule) is <b>uncovered</b>. I propose mapping it to control{" "}

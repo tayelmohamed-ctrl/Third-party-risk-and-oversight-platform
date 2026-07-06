@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Card, Sec, AiTag } from "../components/ui";
 import { exportGlobalAccountTmWorkbook, exportMalBankTmWorkbook } from "../lib/tmScreeningWorkbookBuilder";
+import { ModuleCard, ModuleGrid, type LucideIcon } from "../components/modern/ModernUI";
+import { ShieldCheck, TrendingUp, GitBranch, Bell, BookOpen, Tag, ClipboardCheck } from "lucide-react";
 import AgentBanner from "../components/agents/AgentBanner";
 import AgentAiTag from "../components/agents/AgentAiTag";
 import {
@@ -26,6 +28,16 @@ const TABS: { id: TabId; label: string; hint: string }[] = [
   { id: "purpose", label: "Purpose codes", hint: "Accept · conditional · eliminate · PDF" },
   { id: "readiness", label: "Pre-impl readiness", hint: "BRD gates · alert & screening rules" },
 ];
+
+const TAB_ICONS: Record<TabId, { Icon: LucideIcon; iconBg: string; meta: string; badge: string }> = {
+  programme:  { Icon: ShieldCheck,    iconBg: "#A953DF", meta: "3 sections", badge: "Active" },
+  scoring:    { Icon: TrendingUp,     iconBg: "#39B9ED", meta: "4 tiers",    badge: "v2.1" },
+  workflow:   { Icon: GitBranch,      iconBg: "#7C6CF7", meta: "7 steps",    badge: "Live" },
+  cases:      { Icon: Bell,           iconBg: "#F6A623", meta: "7 stages",   badge: "SLA" },
+  monitoring: { Icon: BookOpen,       iconBg: "#2FD8A6", meta: "40 rules",   badge: "Active" },
+  purpose:    { Icon: Tag,            iconBg: "#A953DF", meta: "5 flows",    badge: "Catalog" },
+  readiness:  { Icon: ClipboardCheck, iconBg: "#39B9ED", meta: "14 items",   badge: "Gates" },
+};
 
 const SEV_STYLE: Record<string, string> = {
   critical: "bg-proh/25 text-[#ff7ea0]",
@@ -68,25 +80,28 @@ export default function TransactionMonitoring() {
   return (
     <div>
       <AgentBanner agent="mohsen" title="Transaction monitoring & screening — investigator guide">
-        Everything investigators need to verify Oscilar covers <b>all MAL app payments</b> — transfers and cards —
+        Everything investigators need to verify Oscilar covers <b>all Mal app payments</b> — transfers and cards —
         with the right rules deployed. Transaction screening list hits always mirror to Vital4; TM alerts feed CRAM re-rating.
       </AgentBanner>
 
-      <div className="flex gap-2 flex-wrap mt-4 mb-4">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setTab(t.id)}
-            className={`px-3 py-2 rounded-lg text-[12px] font-semibold border transition ${
-              tab === t.id ? "bg-ai/20 border-ai text-ink" : "border-line text-muted hover:bg-panel2"
-            }`}
-          >
-            {t.label}
-            <span className="block text-[10px] font-normal text-faint mt-0.5">{t.hint}</span>
-          </button>
-        ))}
-      </div>
+      <ModuleGrid cols={4}>
+        {TABS.map((t) => {
+          const { Icon, iconBg, meta, badge } = TAB_ICONS[t.id];
+          return (
+            <ModuleCard
+              key={t.id}
+              icon={<Icon size={20} />}
+              iconBg={iconBg}
+              title={t.label}
+              desc={t.hint}
+              meta={meta}
+              badge={badge}
+              active={tab === t.id}
+              onClick={() => setTab(t.id)}
+            />
+          );
+        })}
+      </ModuleGrid>
 
       {tab === "programme" && <ProgrammeTab />}
       {tab === "scoring" && <ScoringTab />}

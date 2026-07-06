@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Card, Sec, AiTag } from "../components/ui";
+import { ModuleCard, ModuleGrid } from "../components/modern/ModernUI";
+import { FileText, FilePen, Receipt } from "lucide-react";
 import AgentBanner from "../components/agents/AgentBanner";
 import AgentAiTag from "../components/agents/AgentAiTag";
 import {
@@ -298,20 +300,28 @@ export default function Reporting() {
         <Stat n={String(draftStats.total)} l="Live filing drafts" c="text-ai" />
       </div>
 
-      <div className="flex gap-2 mb-4">
-        <button type="button" onClick={() => setView("templates")}
-          className={`px-4 py-2 rounded-lg text-[12px] font-semibold border ${view === "templates" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
-          Template library
-        </button>
-        <button type="button" onClick={() => { setView("drafts"); void refreshDrafts(); }}
-          className={`px-4 py-2 rounded-lg text-[12px] font-semibold border ${view === "drafts" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
-          STR/SAR drafts ({strSarDraftStats.total})
-        </button>
-        <button type="button" onClick={() => { setView("ctr"); void refreshCtr(); }}
-          className={`px-4 py-2 rounded-lg text-[12px] font-semibold border ${view === "ctr" ? "bg-ai/20 border-ai" : "border-line text-muted"}`}>
-          US CTR queue ({ctrStats.pending + ctrStats.draftCreated})
-        </button>
-      </div>
+      <ModuleGrid cols={3}>
+        <ModuleCard
+          icon={<FileText size={20} />} iconBg="#A953DF"
+          title="Template library" desc="UAE · US filing templates"
+          meta={`${stats.total} templates`} badge="Active"
+          active={view === "templates"} onClick={() => setView("templates")}
+        />
+        <ModuleCard
+          icon={<FilePen size={20} />} iconBg="#39B9ED"
+          title="STR/SAR drafts" desc="Jana · MLRO approve & file"
+          meta={`${strSarDraftStats.total} drafts`} badge="goAML"
+          badgeVariant="cyan"
+          active={view === "drafts"} onClick={() => { setView("drafts"); void refreshDrafts(); }}
+        />
+        <ModuleCard
+          icon={<Receipt size={20} />} iconBg="#F6A623"
+          title="US CTR queue" desc="FinCEN Form 104 · ≥ $10k cash"
+          meta={`${ctrStats.pending + ctrStats.draftCreated} pending`} badge="FinCEN"
+          badgeVariant="medium"
+          active={view === "ctr"} onClick={() => { setView("ctr"); void refreshCtr(); }}
+        />
+      </ModuleGrid>
 
       <Card className="p-3 mb-4 text-[11px] text-muted flex flex-wrap gap-4">
         <span><b className="text-ink">UAE FIU:</b> {FIU_ROUTING.UAE.system} · {FIU_ROUTING.UAE.regulator}</span>

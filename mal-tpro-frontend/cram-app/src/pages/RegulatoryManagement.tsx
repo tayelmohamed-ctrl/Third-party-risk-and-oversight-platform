@@ -1,6 +1,8 @@
 import { useMemo, useState, useEffect, Fragment } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Card } from "../components/ui";
+import { ModuleCard, ModuleGrid, type LucideIcon } from "../components/modern/ModernUI";
+import { ScrollText, Shield, GitMerge, Lock, LayoutGrid, Globe } from "lucide-react";
 import AgentBanner from "../components/agents/AgentBanner";
 import AgentAiTag from "../components/agents/AgentAiTag";
 import EwraRegulatoryPack from "../components/cram/EwraRegulatoryPack";
@@ -26,6 +28,15 @@ const TABS: { id: TabId; label: string; folder: DriveFolderKey }[] = [
   { id: "heatmap", label: "Risk heat map", folder: "evidenceRisk" },
   { id: "corridors", label: "Corridor EWRA", folder: "evidenceRisk" },
 ];
+
+const TAB_ICONS: Record<TabId, { Icon: LucideIcon; iconBg: string; meta: string; badge: string }> = {
+  regulations: { Icon: ScrollText, iconBg: "#39B9ED", meta: "Sources",  badge: "Live" },
+  controls:    { Icon: Shield,     iconBg: "#A953DF", meta: "KANBAN",   badge: "Active" },
+  workflows:   { Icon: GitMerge,   iconBg: "#7C6CF7", meta: "Index",    badge: "Modules" },
+  evidence:    { Icon: Lock,       iconBg: "#2FD8A6", meta: "Drive",    badge: "Secure" },
+  heatmap:     { Icon: LayoutGrid, iconBg: "#F6A623", meta: "8 cells",  badge: "EWRA" },
+  corridors:   { Icon: Globe,      iconBg: "#FF5C77", meta: "UAE + US", badge: "EWRA" },
+};
 
 const KANBAN = ["Identified", "Mapped", "Implemented", "Tested", "Evidenced"] as const;
 
@@ -206,21 +217,24 @@ export default function RegulatoryManagement() {
       </Card>
 
       {/* Tabs */}
-      <div className="flex gap-2 flex-wrap mb-4">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setTab(t.id)}
-            className={`px-3 py-2 rounded-lg text-[12px] font-semibold border transition ${
-              tab === t.id ? "bg-ai/20 border-ai text-ink" : "border-line text-muted hover:bg-panel2"
-            }`}
-          >
-            {t.label}
-            <span className="block text-[10px] font-normal text-faint mt-0.5">{DRIVE_FOLDERS[t.folder].label}</span>
-          </button>
-        ))}
-      </div>
+      <ModuleGrid cols={3}>
+        {TABS.map((t) => {
+          const { Icon, iconBg, meta, badge } = TAB_ICONS[t.id];
+          return (
+            <ModuleCard
+              key={t.id}
+              icon={<Icon size={20} />}
+              iconBg={iconBg}
+              title={t.label}
+              desc={DRIVE_FOLDERS[t.folder].label}
+              meta={meta}
+              badge={badge}
+              active={tab === t.id}
+              onClick={() => setTab(t.id)}
+            />
+          );
+        })}
+      </ModuleGrid>
 
       {tab === "regulations" && (
         <Card>

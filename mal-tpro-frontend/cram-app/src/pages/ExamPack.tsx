@@ -66,28 +66,34 @@ export default function ExamPack() {
       {msg && <Card className="p-3 mt-4 text-[12px]">{msg}</Card>}
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-4 mt-4">
-        <Card className="p-4 space-y-3">
-          <div className="text-[10px] text-faint uppercase font-semibold">Generate pack</div>
-          <label className="block text-[11px]">
-            Sample size (max 50)
+        <div className="p-5 rounded-2xl border border-[#26285C] space-y-4" style={{ background: "linear-gradient(135deg,#0c1233 0%,#181c48 100%)" }}>
+          <div className="text-[10px] text-[#6E72A6] uppercase tracking-[0.12em] font-semibold">Generate pack</div>
+          <label className="block text-[11.5px] text-[#A7ACDB]">
+            Sample size <span className="text-[#6E72A6]">(max 50)</span>
             <input
               type="number"
               min={1}
               max={50}
-              className="input w-full mt-1"
+              className="input w-full mt-2"
               value={sampleSize}
               disabled={!canGenerate}
               onChange={(e) => setSampleSize(Number(e.target.value))}
             />
           </label>
-          <button type="button" className="btn w-full text-[11px]" disabled={busy || !canGenerate} onClick={() => void handleGenerate()}>
+          <button
+            type="button"
+            className="w-full py-2.5 px-4 rounded-xl text-[12px] font-semibold border border-transparent text-white transition-all"
+            style={{ background: canGenerate && !busy ? "linear-gradient(90deg,#A953DF,#7C6CF7)" : "rgba(169,83,223,0.25)" }}
+            disabled={busy || !canGenerate}
+            onClick={() => void handleGenerate()}
+          >
             {busy ? "Generating…" : `Generate ${sampleSize}-customer pack`}
           </button>
           {!canGenerate && (
-            <p className="text-[10px] text-muted m-0">MLRO/Reviewer access required.</p>
+            <p className="text-[10px] text-[#6E72A6] m-0">MLRO/Reviewer access required.</p>
           )}
           <Link to="/examination" className="btn btn-ghost w-full text-[11px]">FFIEC matrix →</Link>
-        </Card>
+        </div>
 
         <div className="space-y-4">
           {pack && (
@@ -114,9 +120,9 @@ export default function ExamPack() {
                   { l: "Training", v: `${pack.programme.trainingCompletionPct}%` },
                   { l: "Exam readiness", v: `${pack.programme.examinationReadiness}/100` },
                 ].map((s) => (
-                  <div key={s.l} className="p-2 rounded-lg bg-panel2 text-[11px]">
-                    <div className="text-faint text-[9px] uppercase">{s.l}</div>
-                    <div className="font-semibold truncate">{s.v}</div>
+                  <div key={s.l} className="p-3 rounded-xl border border-[#26285C] bg-[#10103C] text-[11px]">
+                    <div className="text-[9px] text-[#6E72A6] uppercase tracking-wide font-semibold">{s.l}</div>
+                    <div className="font-display font-bold text-white mt-0.5 truncate">{s.v}</div>
                   </div>
                 ))}
               </div>

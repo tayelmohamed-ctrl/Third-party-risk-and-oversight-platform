@@ -1,7 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import AgentBanner from "../components/agents/AgentBanner";
 import AgentAiTag from "../components/agents/AgentAiTag";
 import { Card } from "../components/ui";
+import { ModuleCard, ModuleGrid } from "../components/modern/ModernUI";
+import { Building2, Package, Globe } from "lucide-react";
 import KybChecklistPanel from "../components/cram/KybChecklistPanel";
 import { KYB_DEMO_CASES, type KybCaseContext } from "../lib/kybChecklistBuilder";
 import { MAL_KYB_GUIDELINES } from "../config/kybDocumentMatrix";
@@ -10,6 +12,12 @@ const KYB_CASE_HINTS: Record<string, string> = {
   ACT00033: "Standard UAE business account — simple checklist.",
   ACT00021: "Same core KYB, plus financing + EDD for metals/DMCC.",
   "ACT-US-8812": "Same EDD depth, but driven by Zenus/global account + foreign branch structure.",
+};
+
+const KYB_CASE_CARDS: Record<string, { icon: ReactNode; iconBg: string; badge: string }> = {
+  ACT00033:    { icon: <Building2 size={20} />, iconBg: "#39B9ED", badge: "UAE" },
+  ACT00021:    { icon: <Package size={20} />,   iconBg: "#F6A623", badge: "DMCC" },
+  "ACT-US-8812": { icon: <Globe size={20} />,   iconBg: "#A953DF", badge: "US" },
 };
 
 export default function KybChecklistCentre() {
@@ -41,17 +49,25 @@ export default function KybChecklistCentre() {
         <p className="text-[10px] text-faint mt-2 mb-0">{MAL_KYB_GUIDELINES.footerNotice}</p>
       </Card>
 
-      <div className="flex gap-2 flex-wrap mb-4">
-        {KYB_DEMO_CASES.map((c) => (
-          <CaseTab
-            key={c.customerId}
-            label={c.customerName}
-            hint={KYB_CASE_HINTS[c.customerId] ?? ""}
-            active={active?.customerId === c.customerId}
-            onClick={() => setActiveId(c.customerId)}
-          />
-        ))}
-      </div>
+      <ModuleGrid cols={3}>
+        {KYB_DEMO_CASES.map((c) => {
+          const card = KYB_CASE_CARDS[c.customerId] ?? { icon: <Building2 size={20} />, iconBg: "#39B9ED", badge: "KYB" };
+          return (
+            <ModuleCard
+              key={c.customerId}
+              icon={card.icon}
+              iconBg={card.iconBg}
+              title={c.customerName}
+              desc={KYB_CASE_HINTS[c.customerId] ?? ""}
+              meta={c.customerId}
+              badge={card.badge}
+              badgeVariant="cyan"
+              active={active?.customerId === c.customerId}
+              onClick={() => setActiveId(c.customerId)}
+            />
+          );
+        })}
+      </ModuleGrid>
 
       {active && <KybChecklistPanel context={active} />}
 

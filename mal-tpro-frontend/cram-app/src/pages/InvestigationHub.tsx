@@ -232,20 +232,22 @@ export default function InvestigationHub() {
         </Card>
 
         <div>
-          <div className="flex gap-4 items-center flex-wrap p-4 border border-line rounded-2xl mb-4" style={{ background: "linear-gradient(120deg,#0c1233,#1a1c52)" }}>
-            <div>
-              <div className="font-display text-lg font-semibold">{active.title}</div>
-              <div className="text-muted text-[11.5px] mt-0.5">
+          <div className="flex gap-4 items-center flex-wrap p-5 border border-[#26285C] rounded-2xl mb-4" style={{ background: "linear-gradient(135deg,#0c1233 0%,#181c48 100%)" }}>
+            <div className="min-w-0">
+              <div className="font-display text-[17px] font-bold text-white leading-tight">{active.title}</div>
+              <div className="text-[#A7ACDB] text-[11.5px] mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
                 <span className="mono">{active.caseNumber}</span>
-                {" · "}{active.customerName}
-                {" · "}<span className="mono">{active.customerId}</span>
-                {active.craRating && <> · CRA <RatingPill rating={active.craRating as "High" | "Medium" | "Low"} /></>}
-                {active.ruleId && <> · <span className="mono">{active.ruleId}</span></>}
+                <span>·</span>
+                <span>{active.customerName}</span>
+                <span>·</span>
+                <span className="mono">{active.customerId}</span>
+                {active.craRating && <><span>·</span><span>CRA</span><RatingPill rating={active.craRating as "High" | "Medium" | "Low"} /></>}
+                {active.ruleId && <><span>·</span><span className="mono">{active.ruleId}</span></>}
               </div>
             </div>
-            <div className="ml-auto text-right">
-              <div className="text-[10px] text-faint uppercase tracking-[0.08em]">SLA remaining</div>
-              <div className={`font-display text-xl font-bold ${active.slaDueAt && new Date(active.slaDueAt) < new Date() ? "text-hi" : "text-med"}`}>
+            <div className="ml-auto text-right shrink-0">
+              <div className="text-[10px] text-[#6E72A6] uppercase tracking-[0.08em] font-medium">SLA remaining</div>
+              <div className={`font-display text-[22px] font-bold leading-none mt-0.5 ${active.slaDueAt && new Date(active.slaDueAt) < new Date() ? "text-[#FF5C77]" : "text-[#F6A623]"}`}>
                 {slaRemaining(active.slaDueAt)}
               </div>
             </div>
@@ -262,12 +264,32 @@ export default function InvestigationHub() {
             <Link to="/audit" className="text-ai hover:underline font-semibold">Audit log →</Link>
           </Card>
 
-          <div className="flex items-stretch my-4 overflow-x-auto">
+          <div className="flex items-start my-4 overflow-x-auto gap-0 relative">
+            {/* Connecting line */}
+            <div className="absolute top-5 left-5 right-5 h-px bg-[#26285C] -z-0" />
             {STEPS.map((s, i) => (
-              <div key={i} onClick={() => void handleAdvance(i)} className="flex-1 min-w-[100px] cursor-pointer relative">
-                <div className={`w-[46px] h-[46px] rounded-full grid place-items-center mx-auto mono text-[13px] transition border-2 ${i === cur ? "bg-ai text-white border-ai shadow-[0_0_18px_rgba(124,108,247,.5)]" : i <= active.pipelineStep ? "border-low text-low bg-low/5" : "border-line text-muted bg-panel"}`}>{s[0]}</div>
-                <div className="text-center text-[11px] mt-1.5 font-semibold font-display">{s[1]}</div>
-                <div className="text-center text-[10px] text-faint mt-0.5 px-1.5">{s[2]}</div>
+              <div
+                key={i}
+                role="button"
+                tabIndex={0}
+                onClick={() => void handleAdvance(i)}
+                onKeyDown={(e) => e.key === "Enter" && void handleAdvance(i)}
+                className="flex-1 min-w-[90px] cursor-pointer relative z-10 flex flex-col items-center gap-1.5 group"
+              >
+                <div className={[
+                  "w-10 h-10 rounded-full grid place-items-center mx-auto mono text-[13px] border-2 transition-all duration-200",
+                  i === cur
+                    ? "bg-[#A953DF] border-[#A953DF] text-white shadow-[0_0_20px_rgba(169,83,223,.45)]"
+                    : i <= active.pipelineStep
+                      ? "bg-[#2FD8A6]/10 border-[#2FD8A6] text-[#2FD8A6]"
+                      : "bg-[#0A1130] border-[#26285C] text-[#6E72A6] group-hover:border-[#A953DF]/40",
+                ].join(" ")}>
+                  {s[0]}
+                </div>
+                <div className={`text-center text-[10.5px] font-semibold font-display leading-tight ${i === cur ? "text-white" : i <= active.pipelineStep ? "text-[#2FD8A6]" : "text-[#A7ACDB]"}`}>
+                  {s[1]}
+                </div>
+                <div className="text-center text-[9.5px] text-[#6E72A6] px-1">{s[2]}</div>
               </div>
             ))}
           </div>

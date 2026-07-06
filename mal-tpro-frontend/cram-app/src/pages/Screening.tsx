@@ -95,17 +95,27 @@ export default function Screening() {
 
   return (
     <div>
-      <div className="flex gap-4 items-center flex-wrap p-4 border border-line rounded-2xl mb-4" style={{ background: "linear-gradient(120deg,#0c1233,#1a1c52)" }}>
-        <div>
-          <div className="font-display text-lg font-semibold">Vital4 disposition queue</div>
-          <div className="text-muted text-[11.5px] mt-0.5">
-            Sole screening authority · {queue.length} open · {breached} SLA breached
+      <div className="flex gap-4 items-center flex-wrap p-5 border border-[#26285C] rounded-2xl mb-4" style={{ background: "linear-gradient(135deg,#0c1233 0%,#181c48 100%)" }}>
+        <div className="min-w-0">
+          <div className="font-display text-[17px] font-bold text-white leading-tight">Vital4 disposition queue</div>
+          <div className="text-[#A7ACDB] text-[11.5px] mt-1">
+            Sole screening authority · {queue.length} open
+            {breached > 0 && <span className="text-[#FF5C77] ml-1">· {breached} SLA breached</span>}
           </div>
         </div>
-        <div className="ml-auto flex gap-4 text-right">
-          <Stat label="Potential" value={String(stats.potential)} />
-          <Stat label="Pending" value={String(stats.pending)} />
-          <Stat label="True match" value={String(stats.trueMatch)} c="#FF5C77" />
+        <div className="ml-auto flex gap-5 text-right shrink-0">
+          <div>
+            <div className="text-[10px] text-[#6E72A6] uppercase tracking-[0.08em] font-medium">Potential</div>
+            <div className="font-display text-[22px] font-bold text-white leading-none mt-0.5">{stats.potential}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-[#6E72A6] uppercase tracking-[0.08em] font-medium">Pending</div>
+            <div className="font-display text-[22px] font-bold text-white leading-none mt-0.5">{stats.pending}</div>
+          </div>
+          <div>
+            <div className="text-[10px] text-[#6E72A6] uppercase tracking-[0.08em] font-medium">True match</div>
+            <div className="font-display text-[22px] font-bold text-[#FF5C77] leading-none mt-0.5">{stats.trueMatch}</div>
+          </div>
         </div>
       </div>
 
