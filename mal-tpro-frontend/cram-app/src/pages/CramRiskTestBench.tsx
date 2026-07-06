@@ -551,6 +551,31 @@ export default function CramRiskTestBench() {
         </div>
         <AiTag color="#39B9ED">{perimeterLabel(perimeter)} · golden thread wired</AiTag>
         <span className="text-[11px] text-muted ml-auto">Inherent → obligations → controls → residual → TM deploy</span>
+        <div className="flex items-center gap-2">
+          <a
+            href="/CRAM_Risk_Architecture_Blueprint.pdf"
+            download="CRAM_Risk_Architecture_Blueprint.pdf"
+            className="btn btn-ghost text-[11px] px-3 py-1.5 flex items-center gap-1.5 no-underline"
+            title="Download system blueprint PDF"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M6 1v7M3.5 5.5 6 8l2.5-2.5M2 10h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Blueprint PDF
+          </a>
+          <a
+            href="https://claude.ai/code/artifact/4dd36068-9da3-4676-83c1-bf7c5ef0257f"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-ghost text-[11px] px-3 py-1.5 flex items-center gap-1.5 no-underline"
+            title="Open engine reference document"
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M5 2H2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7M7 1h4m0 0v4m0-4L5.5 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Engine Reference
+          </a>
+        </div>
       </div>
 
       <div className={`cram-bench-grid ${benchView === "methodology" ? "cram-bench-grid--methodology" : ""}`}>
