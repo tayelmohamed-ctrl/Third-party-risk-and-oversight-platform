@@ -1,9 +1,7 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { Card, Sec, AiTag } from "../components/ui";
 import { exportGlobalAccountTmWorkbook, exportMalBankTmWorkbook } from "../lib/tmScreeningWorkbookBuilder";
-import { ModuleCard, ModuleGrid, type LucideIcon } from "../components/modern/ModernUI";
-import { ShieldCheck, TrendingUp, GitBranch, Bell, BookOpen, Tag, ClipboardCheck } from "lucide-react";
 import AgentBanner from "../components/agents/AgentBanner";
 import AgentAiTag from "../components/agents/AgentAiTag";
 import {
@@ -29,14 +27,24 @@ const TABS: { id: TabId; label: string; hint: string }[] = [
   { id: "readiness", label: "Pre-impl readiness", hint: "BRD gates · alert & screening rules" },
 ];
 
-const TAB_ICONS: Record<TabId, { Icon: LucideIcon; iconBg: string; meta: string; badge: string }> = {
-  programme:  { Icon: ShieldCheck,    iconBg: "#A953DF", meta: "3 sections", badge: "Active" },
-  scoring:    { Icon: TrendingUp,     iconBg: "#39B9ED", meta: "4 tiers",    badge: "v2.1" },
-  workflow:   { Icon: GitBranch,      iconBg: "#7C6CF7", meta: "7 steps",    badge: "Live" },
-  cases:      { Icon: Bell,           iconBg: "#F6A623", meta: "7 stages",   badge: "SLA" },
-  monitoring: { Icon: BookOpen,       iconBg: "#2FD8A6", meta: "40 rules",   badge: "Active" },
-  purpose:    { Icon: Tag,            iconBg: "#A953DF", meta: "5 flows",    badge: "Catalog" },
-  readiness:  { Icon: ClipboardCheck, iconBg: "#39B9ED", meta: "14 items",   badge: "Gates" },
+const TAB_ACCENT: Record<TabId, string> = {
+  programme: "#A953DF",
+  scoring:   "#39B9ED",
+  workflow:  "#7C6CF7",
+  cases:     "#F6A623",
+  monitoring:"#2FD8A6",
+  purpose:   "#F6A623",
+  readiness: "#39B9ED",
+};
+
+const TAB_METRIC: Record<TabId, string> = {
+  programme: "3 sections",
+  scoring:   "4 tiers",
+  workflow:  "7 steps",
+  cases:     "7 stages",
+  monitoring:"40 rules",
+  purpose:   "5 flows",
+  readiness: "14 gates",
 };
 
 const SEV_STYLE: Record<string, string> = {
@@ -84,43 +92,49 @@ export default function TransactionMonitoring() {
         with the right rules deployed. Transaction screening list hits always mirror to Vital4; TM alerts feed CRAM re-rating.
       </AgentBanner>
 
-      <ModuleGrid cols={4}>
-        {TABS.map((t) => {
-          const { Icon, iconBg, meta, badge } = TAB_ICONS[t.id];
-          return (
-            <ModuleCard
-              key={t.id}
-              icon={<Icon size={20} />}
-              iconBg={iconBg}
-              title={t.label}
-              desc={t.hint}
-              meta={meta}
-              badge={badge}
-              active={tab === t.id}
-              onClick={() => setTab(t.id)}
-            />
-          );
-        })}
-      </ModuleGrid>
+      {/* Numbered illustration card grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 mt-4 mb-2">
+        {TABS.map((t, i) => (
+          <TmCard
+            key={t.id}
+            num={String(i + 1).padStart(2, "0")}
+            title={t.label}
+            illustration={getTmIllust(t.id)}
+            accent={TAB_ACCENT[t.id]}
+            metric={TAB_METRIC[t.id]}
+            active={tab === t.id}
+            onClick={() => setTab(t.id)}
+          />
+        ))}
+      </div>
 
-      {tab === "programme" && <ProgrammeTab />}
-      {tab === "scoring" && <ScoringTab />}
-      {tab === "workflow" && <WorkflowTab />}
-      {tab === "cases" && <CasesTab />}
-      {tab === "monitoring" && (
-        <MonitoringTab
-          rules={filteredRules}
-          stats={stats}
-          channel={channel}
-          setChannel={setChannel}
-          category={category}
-          setCategory={setCategory}
-          query={query}
-          setQuery={setQuery}
-        />
-      )}
-      {tab === "purpose" && <PaymentPurposeGuidancePanel />}
-      {tab === "readiness" && <TmReadinessPanel />}
+      {/* Content detail panel */}
+      <TmDetailPanel
+        tabIdx={TABS.findIndex((t) => t.id === tab) + 1}
+        title={TABS.find((t) => t.id === tab)?.label ?? ""}
+        hint={TABS.find((t) => t.id === tab)?.hint ?? ""}
+        accent={TAB_ACCENT[tab]}
+        illustration={getTmIllust(tab)}
+      >
+        {tab === "programme" && <ProgrammeTab />}
+        {tab === "scoring" && <ScoringTab />}
+        {tab === "workflow" && <WorkflowTab />}
+        {tab === "cases" && <CasesTab />}
+        {tab === "monitoring" && (
+          <MonitoringTab
+            rules={filteredRules}
+            stats={stats}
+            channel={channel}
+            setChannel={setChannel}
+            category={category}
+            setCategory={setCategory}
+            query={query}
+            setQuery={setQuery}
+          />
+        )}
+        {tab === "purpose" && <PaymentPurposeGuidancePanel />}
+        {tab === "readiness" && <TmReadinessPanel />}
+      </TmDetailPanel>
 
       <Card className="p-4 mt-5 text-[11px] text-muted">
         <div className="flex flex-wrap gap-4 items-center">
@@ -166,7 +180,7 @@ function ProgrammeTab() {
       <Card className="p-4">
         <AiTag color="#A953DF">For investigators</AiTag>
         <p className="text-[13px] text-muted mt-2 mb-0">
-          Use this tab in onboarding reviews and periodic audits. Confirm every payment rail in the MAL app
+          Use this tab in onboarding reviews and periodic audits. Confirm every payment rail in the Mal app
           is wired to Oscilar and that list hits are mirrored — never written directly to CRAM.
         </p>
       </Card>
@@ -476,5 +490,287 @@ function StatCard({ label, value, c }: { label: string; value: string; c?: strin
       <div className={`font-display text-xl font-bold ${c ?? ""}`}>{value}</div>
       <div className="text-[11px] text-muted">{label}</div>
     </Card>
+  );
+}
+
+// ─── Numbered illustration card ───────────────────────────────────────────────
+
+function TmCard({
+  num, title, illustration, accent, metric, active, onClick,
+}: {
+  num: string;
+  title: string;
+  illustration: ReactNode;
+  accent: string;
+  metric: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        "group relative flex flex-col text-left rounded-2xl border overflow-hidden cursor-pointer",
+        "transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#A953DF]",
+        active
+          ? "border-[#A953DF]/55 shadow-[0_0_36px_rgba(169,83,223,.15)] scale-[1.015]"
+          : "border-[#26285C] hover:border-[#A953DF]/30 hover:scale-[1.01]",
+      ].join(" ")}
+      style={{ background: active ? "#100f28" : "#0A1130", minHeight: "190px" }}
+    >
+      {/* Top accent line when active */}
+      {active && (
+        <span
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-[2px]"
+          style={{ background: `linear-gradient(90deg,transparent,${accent} 50%,transparent)` }}
+        />
+      )}
+      {/* Number */}
+      <span
+        className="absolute top-3 left-3 font-display text-[11px] font-black tabular-nums leading-none"
+        style={{ color: active ? accent : "#A7ACDB", opacity: active ? 1 : 0.45 }}
+      >
+        {num}
+      </span>
+      {/* Illustration */}
+      <div className="flex-1 flex items-center justify-center pt-8 pb-1">
+        <div
+          className="transition-transform duration-200"
+          style={{ transform: active ? "scale(1.07)" : undefined }}
+        >
+          {illustration}
+        </div>
+      </div>
+      {/* Title + metric */}
+      <div className="px-3 pb-3 pt-0.5">
+        <div
+          className="text-[10.5px] font-bold font-display leading-tight"
+          style={{ color: active ? "white" : "#C4C8F0" }}
+        >
+          {title}
+        </div>
+        <div className="text-[9px] mt-0.5 font-semibold" style={{ color: accent, opacity: 0.75 }}>
+          {metric}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+// ─── Content detail panel ─────────────────────────────────────────────────────
+
+function TmDetailPanel({
+  tabIdx, title, hint, accent, illustration, children,
+}: {
+  tabIdx: number;
+  title: string;
+  hint: string;
+  accent: string;
+  illustration: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div className="rounded-2xl border border-[#26285C] overflow-hidden mt-2">
+      {/* Header bar */}
+      <div
+        className="flex items-center gap-3 px-5 py-4 border-b border-[#1e2156]"
+        style={{ background: "linear-gradient(135deg,#0c1233 0%,#181c48 100%)" }}
+      >
+        {/* Ghost number */}
+        <span
+          aria-hidden
+          className="font-display text-[48px] font-black leading-none select-none shrink-0 -mr-1"
+          style={{ color: accent, opacity: 0.12 }}
+        >
+          {String(tabIdx).padStart(2, "0")}
+        </span>
+        {/* Small illustration */}
+        <div
+          className="shrink-0 opacity-75"
+          style={{ transform: "scale(0.7)", transformOrigin: "center center", marginLeft: "-8px", marginRight: "-8px" }}
+        >
+          {illustration}
+        </div>
+        {/* Title / hint */}
+        <div className="min-w-0">
+          <div className="font-display text-[15px] font-bold text-white leading-tight">{title}</div>
+          <div className="text-[11px] text-[#A7ACDB] mt-0.5">{hint}</div>
+        </div>
+        {/* Accent dot */}
+        <div
+          className="ml-auto w-2 h-2 rounded-full shrink-0 shadow-[0_0_8px_currentColor]"
+          style={{ background: accent, color: accent }}
+        />
+      </div>
+      {/* Content */}
+      <div className="p-4 pt-5">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─── Illustration dispatcher ──────────────────────────────────────────────────
+
+function getTmIllust(id: TabId): JSX.Element {
+  switch (id) {
+    case "programme":  return <IllustScreening />;
+    case "scoring":    return <IllustScoring />;
+    case "workflow":   return <IllustWorkflow />;
+    case "cases":      return <IllustCases />;
+    case "monitoring": return <IllustRules />;
+    case "purpose":    return <IllustPurpose />;
+    case "readiness":  return <IllustReadiness />;
+  }
+}
+
+// ─── SVG Illustrations ────────────────────────────────────────────────────────
+
+function IllustScreening() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Outer glass circle */}
+      <circle cx="34" cy="34" r="23" fill="#A953DF" fillOpacity="0.10" stroke="#A953DF" strokeWidth="2.5"/>
+      {/* Inner glow ring */}
+      <circle cx="34" cy="34" r="15" fill="#A953DF" fillOpacity="0.07"/>
+      {/* Person head */}
+      <circle cx="34" cy="28" r="7" fill="#A953DF" fillOpacity="0.85"/>
+      {/* Person body */}
+      <path d="M22 46 Q34 53 46 46" fill="#A953DF" fillOpacity="0.60"/>
+      {/* Handle */}
+      <line x1="52" y1="52" x2="65" y2="65" stroke="#7C6CF7" strokeWidth="5" strokeLinecap="round"/>
+      {/* Handle cap */}
+      <circle cx="65" cy="65" r="3" fill="#7C6CF7" fillOpacity="0.6"/>
+    </svg>
+  );
+}
+
+function IllustScoring() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Grid lines */}
+      <line x1="12" y1="22" x2="66" y2="22" stroke="#39B9ED" strokeOpacity="0.12" strokeWidth="1"/>
+      <line x1="12" y1="37" x2="66" y2="37" stroke="#39B9ED" strokeOpacity="0.12" strokeWidth="1"/>
+      <line x1="12" y1="52" x2="66" y2="52" stroke="#39B9ED" strokeOpacity="0.12" strokeWidth="1"/>
+      {/* Axes */}
+      <line x1="12" y1="14" x2="12" y2="64" stroke="#39B9ED" strokeOpacity="0.35" strokeWidth="1.5"/>
+      <line x1="12" y1="64" x2="68" y2="64" stroke="#39B9ED" strokeOpacity="0.35" strokeWidth="1.5"/>
+      {/* Area fill */}
+      <path d="M18,56 30,44 42,48 54,30 66,18 L66,64 L18,64 Z" fill="#39B9ED" fillOpacity="0.07"/>
+      {/* Trend line */}
+      <polyline points="18,56 30,44 42,48 54,30 66,18" fill="none" stroke="#39B9ED" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* Data points */}
+      <circle cx="30" cy="44" r="2.5" fill="#39B9ED"/>
+      <circle cx="54" cy="30" r="2.5" fill="#39B9ED"/>
+      <circle cx="66" cy="18" r="3" fill="#39B9ED" fillOpacity="0.8"/>
+      {/* Score badge */}
+      <rect x="51" y="7" width="22" height="14" rx="7" fill="#39B9ED" fillOpacity="0.85"/>
+      <text x="62" y="18" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">85</text>
+    </svg>
+  );
+}
+
+function IllustWorkflow() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Start capsule */}
+      <rect x="26" y="7" width="28" height="14" rx="7" fill="#7C6CF7" fillOpacity="0.80"/>
+      {/* Arrow to diamond */}
+      <line x1="40" y1="21" x2="40" y2="28" stroke="#7C6CF7" strokeOpacity="0.6" strokeWidth="1.5"/>
+      <path d="M37.5 26 L40 30 L42.5 26" fill="none" stroke="#7C6CF7" strokeWidth="1.5" strokeOpacity="0.6"/>
+      {/* Decision diamond */}
+      <path d="M40 32 L54 40 L40 48 L26 40 Z" fill="#7C6CF7" fillOpacity="0.22" stroke="#7C6CF7" strokeWidth="1.8"/>
+      {/* Right arrow from diamond */}
+      <line x1="54" y1="40" x2="62" y2="40" stroke="#7C6CF7" strokeOpacity="0.55" strokeWidth="1.5"/>
+      <path d="M60 37.5 L64 40 L60 42.5" fill="none" stroke="#7C6CF7" strokeWidth="1.5" strokeOpacity="0.55"/>
+      <rect x="64" y="33" width="11" height="14" rx="4" fill="#7C6CF7" fillOpacity="0.45"/>
+      {/* Down arrow from diamond */}
+      <line x1="40" y1="48" x2="40" y2="56" stroke="#7C6CF7" strokeOpacity="0.6" strokeWidth="1.5"/>
+      <path d="M37.5 54 L40 58 L42.5 54" fill="none" stroke="#7C6CF7" strokeWidth="1.5" strokeOpacity="0.6"/>
+      {/* End capsule */}
+      <rect x="26" y="58" width="28" height="14" rx="7" fill="#7C6CF7" fillOpacity="0.55"/>
+    </svg>
+  );
+}
+
+function IllustCases() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Pulse rings */}
+      <circle cx="40" cy="40" r="22" fill="#F6A623" fillOpacity="0.06"/>
+      <circle cx="40" cy="40" r="14" fill="#F6A623" fillOpacity="0.07"/>
+      {/* Bell body */}
+      <path d="M40 16 C29 16 23 25 23 36 L23 54 L57 54 L57 36 C57 25 51 16 40 16 Z" fill="#F6A623" fillOpacity="0.22" stroke="#F6A623" strokeWidth="2.5"/>
+      {/* Bell top knob */}
+      <circle cx="40" cy="16" r="3.5" fill="#F6A623" fillOpacity="0.7"/>
+      {/* Bell clapper */}
+      <rect x="34" y="54" width="12" height="6" rx="3" fill="#F6A623" fillOpacity="0.6"/>
+      {/* Notification badge */}
+      <circle cx="56" cy="24" r="11" fill="#FF5C77"/>
+      <text x="56" y="29" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">24</text>
+    </svg>
+  );
+}
+
+function IllustRules() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Left page */}
+      <path d="M10 20 L40 25 L40 68 L10 63 Z" fill="#2FD8A6" fillOpacity="0.18" stroke="#2FD8A6" strokeWidth="2"/>
+      {/* Right page */}
+      <path d="M40 25 L70 20 L70 63 L40 68 Z" fill="#2FD8A6" fillOpacity="0.10" stroke="#2FD8A6" strokeWidth="2"/>
+      {/* Spine */}
+      <line x1="40" y1="25" x2="40" y2="68" stroke="#2FD8A6" strokeWidth="2.5"/>
+      {/* Left page text lines */}
+      <line x1="16" y1="34" x2="36" y2="37" stroke="#2FD8A6" strokeOpacity="0.60" strokeWidth="1.5"/>
+      <line x1="16" y1="42" x2="36" y2="45" stroke="#2FD8A6" strokeOpacity="0.60" strokeWidth="1.5"/>
+      <line x1="16" y1="50" x2="36" y2="53" stroke="#2FD8A6" strokeOpacity="0.60" strokeWidth="1.5"/>
+      <line x1="16" y1="58" x2="30" y2="61" stroke="#2FD8A6" strokeOpacity="0.35" strokeWidth="1.5"/>
+      {/* Right page text lines */}
+      <line x1="44" y1="32" x2="64" y2="29" stroke="#2FD8A6" strokeOpacity="0.55" strokeWidth="1.5"/>
+      <line x1="44" y1="40" x2="64" y2="37" stroke="#2FD8A6" strokeOpacity="0.55" strokeWidth="1.5"/>
+      <line x1="44" y1="48" x2="64" y2="45" stroke="#2FD8A6" strokeOpacity="0.55" strokeWidth="1.5"/>
+      <line x1="44" y1="56" x2="58" y2="53" stroke="#2FD8A6" strokeOpacity="0.35" strokeWidth="1.5"/>
+    </svg>
+  );
+}
+
+function IllustPurpose() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Tag shape */}
+      <path d="M16 13 L52 13 L70 31 L70 60 L52 70 L16 70 L10 60 L10 23 Z" fill="#F6A623" fillOpacity="0.16" stroke="#F6A623" strokeWidth="2.5"/>
+      {/* Tag hole */}
+      <circle cx="22" cy="24" r="4" fill="none" stroke="#F6A623" strokeWidth="2"/>
+      {/* Text lines */}
+      <line x1="28" y1="37" x2="60" y2="37" stroke="#F6A623" strokeOpacity="0.70" strokeWidth="2"/>
+      <line x1="28" y1="47" x2="60" y2="47" stroke="#F6A623" strokeOpacity="0.50" strokeWidth="2"/>
+      <line x1="28" y1="57" x2="48" y2="57" stroke="#F6A623" strokeOpacity="0.35" strokeWidth="2"/>
+      {/* Checkmark */}
+      <path d="M52 55 L57 61 L68 47" fill="none" stroke="#2FD8A6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function IllustReadiness() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Clipboard board */}
+      <rect x="13" y="16" width="54" height="58" rx="6" fill="#39B9ED" fillOpacity="0.10" stroke="#39B9ED" strokeWidth="2"/>
+      {/* Clipboard clip */}
+      <rect x="27" y="10" width="26" height="14" rx="5" fill="#0A1130" stroke="#39B9ED" strokeWidth="2"/>
+      <rect x="31" y="13" width="18" height="7" rx="3.5" fill="#39B9ED" fillOpacity="0.35"/>
+      {/* Row 1 - done */}
+      <path d="M21 36 L26 42 L34 31" fill="none" stroke="#2FD8A6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="39" y1="37" x2="59" y2="37" stroke="#39B9ED" strokeOpacity="0.55" strokeWidth="1.5"/>
+      {/* Row 2 - done */}
+      <path d="M21 51 L26 57 L34 46" fill="none" stroke="#2FD8A6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="39" y1="52" x2="59" y2="52" stroke="#39B9ED" strokeOpacity="0.55" strokeWidth="1.5"/>
+      {/* Row 3 - pending */}
+      <circle cx="25" cy="64" r="4" fill="none" stroke="#39B9ED" strokeOpacity="0.45" strokeWidth="1.5"/>
+      <line x1="39" y1="64" x2="55" y2="64" stroke="#39B9ED" strokeOpacity="0.35" strokeWidth="1.5"/>
+    </svg>
   );
 }
