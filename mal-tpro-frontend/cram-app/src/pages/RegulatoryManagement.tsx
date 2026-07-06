@@ -213,6 +213,13 @@ export default function RegulatoryManagement() {
 
   const lastCheckLabel = monitor?.lastRunAt ? new Date(monitor.lastRunAt).toLocaleString() : "Pending";
 
+  // Perimeter-tailored source-watch header (presentation only).
+  const isUae = perimeter === "mal_bank";
+  const perimeterLicenses = LICENSE_PROFILES.filter((p) => p.id === activeLicense || p.id === "GROUP");
+  const primaryWatchLabel = isUae
+    ? "CBUAE rulebook & circulars, UAE FIU (goAML) RSS, and FATF guidance."
+    : "FinCEN (BSA/MSB) & OFAC feeds, FFIEC examination manual, and the Zenus BaaS addendum version (Drive).";
+
   const panelOpen = focusOpen !== null;
 
   return (
@@ -277,12 +284,12 @@ export default function RegulatoryManagement() {
         </div>
         <p className="text-[12px] text-muted mt-1 mb-3 max-w-3xl leading-relaxed">
           Automated check every Monday 09:00 UAE (05:00 UTC). Demo mode: every 6 hours.
-          <b className="text-ink"> Primary:</b> CBUAE &amp; FinCEN RSS, Zenus BaaS addendum version (Drive).
+          <b className="text-ink"> {perimeterDef.label} primary:</b> {primaryWatchLabel}
           <b className="text-ink"> Backup:</b> HTTP content hash on rulebooks and guidance pages.
           When changes are detected, Walid is notified via Slack and email.
         </p>
         <div className="flex flex-wrap gap-2">
-          {LICENSE_PROFILES.map((p) => (
+          {perimeterLicenses.map((p) => (
             <span key={p.id} className="pill text-[10px] bg-panel2 text-muted">{p.label} · {p.regulator}</span>
           ))}
         </div>
