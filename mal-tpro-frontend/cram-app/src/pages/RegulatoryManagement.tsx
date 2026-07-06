@@ -6,7 +6,8 @@ import {
   Rss, CalendarClock, Radar, Library, Landmark, ClipboardCheck,
   Search, Map as MapIcon, Wrench, FlaskConical, ShieldCheck,
   ChevronRight, X, ExternalLink, Download, Share2, FolderOpen,
-  Building2, RefreshCw, type LucideIcon,
+  Building2, RefreshCw, FileText, Users, Activity, Coins,
+  ShieldAlert, Scale, Info, type LucideIcon,
 } from "lucide-react";
 import AgentBanner from "../components/agents/AgentBanner";
 import AgentAiTag from "../components/agents/AgentAiTag";
@@ -53,12 +54,48 @@ const IMPL_META: { Icon: LucideIcon; accent: string }[] = [
   { Icon: ShieldCheck,   accent: "#7C6CF7" },
 ];
 
-const JURIS_META: Record<string, { Icon: LucideIcon; accent: string }> = {
-  UAE:           { Icon: Landmark,  accent: "#39B9ED" },
-  US:            { Icon: Landmark,  accent: "#A953DF" },
-  International: { Icon: Globe,     accent: "#2FD8A6" },
-  Group:         { Icon: Building2, accent: "#F6A623" },
+/**
+ * Regulatory domains — a presentational categorisation of the real catalogue.
+ * Each regulation is classified by keyword; counts are always derived from the
+ * live catalogue, tailored to the active perimeter (US vs UAE relevance).
+ */
+const DOMAIN_ORDER = [
+  "Banking & AML/CFT",
+  "Sanctions",
+  "Regulatory Reporting",
+  "Licensing & MSB",
+  "CDD & Ownership",
+  "Transaction Monitoring",
+  "Virtual Assets",
+  "Partner & Correspondent",
+  "Group Policy",
+] as const;
+type DomainKey = (typeof DOMAIN_ORDER)[number];
+
+const DOMAIN_META: Record<DomainKey, { Icon: LucideIcon; accent: string; short: string }> = {
+  "Banking & AML/CFT":       { Icon: Landmark,    accent: "#A953DF", short: "AML/CFT" },
+  "Sanctions":               { Icon: ShieldAlert, accent: "#FF5C77", short: "Sanctions" },
+  "Regulatory Reporting":    { Icon: FileText,    accent: "#39B9ED", short: "Reporting" },
+  "Licensing & MSB":         { Icon: Scale,       accent: "#F6A623", short: "Licensing" },
+  "CDD & Ownership":         { Icon: Users,       accent: "#2FD8A6", short: "CDD" },
+  "Transaction Monitoring":  { Icon: Activity,    accent: "#7C6CF7", short: "TM" },
+  "Virtual Assets":          { Icon: Coins,       accent: "#E8B84B", short: "VA" },
+  "Partner & Correspondent": { Icon: Building2,   accent: "#39B9ED", short: "Partner" },
+  "Group Policy":            { Icon: Shield,      accent: "#8E7CF0", short: "Policy" },
 };
+
+function classifyDomain(name: string, ref: string): DomainKey {
+  const s = `${name} ${ref}`.toLowerCase();
+  if (/travel rule|virtual|vasp/.test(s)) return "Virtual Assets";
+  if (/ofac|sanction|\btfs\b|targeted financial|recommendation 6/.test(s)) return "Sanctions";
+  if (/\bmsb\b|registration|licens/.test(s)) return "Licensing & MSB";
+  if (/transaction monitoring|thematic|scenario/.test(s)) return "Transaction Monitoring";
+  if (/sar|str|ctr|report|goaml|recommendation 20|form 111|form 104/.test(s)) return "Regulatory Reporting";
+  if (/beneficial|\bcdd\b|\bcip\b|due diligence|recommendation 10/.test(s)) return "CDD & Ownership";
+  if (/baas|partner|zenus|sponsor|correspondent|wolfsberg/.test(s)) return "Partner & Correspondent";
+  if (/policy/.test(s)) return "Group Policy";
+  return "Banking & AML/CFT";
+}
 
 export default function RegulatoryManagement() {
   const location = useLocation();
@@ -73,7 +110,7 @@ export default function RegulatoryManagement() {
   const [licenseFilter, setLicenseFilter] = useState<string>(activeLicense);
   const [monitor, setMonitor] = useState<RegulatoryMonitorStatus | null>(null);
   const [monitorBusy, setMonitorBusy] = useState(false);
-  const [focusOpen, setFocusOpen] = useState<number | null>(null); // presentational detail flyout
+  const [focusOpen, setFocusOpen] = useState<number | null>(0); // presentational docked detail panel
 
   useEffect(() => {
     setLicenseFilter(activeLicense);
@@ -123,14 +160,26 @@ export default function RegulatoryManagement() {
     CRAM_CATALOGUE.evidence.length,
   ], [gapRegs.length]);
 
-  // Coverage grouped by jurisdiction (real, derived).
-  const domainGroups = useMemo(
-    () => jurisdictions.map((j) => ({
-      juris: j,
-      count: CRAM_CATALOGUE.regulations.filter((r) => r.jurisdiction === j).length,
-    })),
-    [jurisdictions],
-  );
+  // Regulations relevant to the active perimeter (US = Global Account, UAE = Mal Bank).
+  const perimeterRegs = useMemo(() => {
+    const home = perimeter === "mal_bank" ? "UAE" : "US";
+    return CRAM_CATALOGUE.regulations.filter(
+      (r) => r.jurisdiction === home || r.jurisdiction === "International" || r.jurisdiction === "Group",
+    );
+  }, [perimeter]);
+
+  // Regulatory domains — counts derived from the perimeter's real regulations.
+  const domainGroups = useMemo(() => {
+    const counts = new Map<DomainKey, number>();
+    for (const r of perimeterRegs) {
+      const d = classifyDomain(r.name, r.ref);
+      counts.set(d, (counts.get(d) ?? 0) + 1);
+    }
+    return DOMAIN_ORDER.filter((d) => (counts.get(d) ?? 0) > 0).map((d) => ({
+      domain: d,
+      count: counts.get(d) ?? 0,
+    }));
+  }, [perimeterRegs]);
 
   const evidenceCurrent = useMemo(
     () => CRAM_CATALOGUE.evidence.filter((e) => ["verified", "current", "approved", "ready", "clear"].includes(e.status)).length,
@@ -164,8 +213,12 @@ export default function RegulatoryManagement() {
 
   const lastCheckLabel = monitor?.lastRunAt ? new Date(monitor.lastRunAt).toLocaleString() : "Pending";
 
+  const panelOpen = focusOpen !== null;
+
   return (
-    <div>
+    <div className="flex flex-col xl:flex-row gap-4 items-start">
+      {/* ── Main column ─────────────────────────────────────────── */}
+      <div className="flex-1 min-w-0 w-full">
       <AgentBanner agent="sayed" title="Regulatory Management — browse · track · impact · remediation">
         Sayed monitors <b>{perimeterSources.length} authoritative sources weekly</b> for{" "}
         <b>{perimeterDef.label}</b> ({perimeterDef.subtitle}).
@@ -176,28 +229,28 @@ export default function RegulatoryManagement() {
       </AgentBanner>
 
       {/* KPI hero row */}
-      <div className="grid grid-cols-4 gap-3 mt-4 mb-5 max-lg:grid-cols-2 max-sm:grid-cols-1">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 mt-4 mb-5 max-sm:grid-cols-1">
         <KpiCard
-          Icon={Rss} accent="#A953DF"
+          illustration={<RegIllustFeeds />} accent="#A953DF"
           title="Signal Feeds" sub="Regulatory & supervisory updates"
           value={String(perimeterSources.length)} unit="Active feeds"
           footer={`Last sync · ${lastCheckLabel}`}
         />
         <KpiCard
-          Icon={CalendarClock} accent="#39B9ED"
+          illustration={<RegIllustCheck />} accent="#39B9ED"
           title="Last Check" sub="Automated scan completion"
           value={lastCheckLabel} valueSize="sm"
           footer="Frequency · Monday 09:00 UAE"
         />
         <KpiCard
-          Icon={Radar} accent="#F6A623"
+          illustration={<RegIllustChanges />} accent="#F6A623"
           title="Changes Detected" sub="New / updated regulatory items"
           value={String(monitor?.pendingChanges ?? 0)} unit="Updates"
           valueColor={(monitor?.pendingChanges ?? 0) > 0 ? "#FF5C77" : "#2FD8A6"}
           footer="Feeds Signal Feeds + register"
         />
         <KpiCard
-          Icon={Library} accent="#7C6CF7"
+          illustration={<RegIllustCatalogue />} accent="#7C6CF7"
           title="Catalogued" sub="Unique regulatory obligations"
           value={String(CRAM_CATALOGUE.regulations.length)} unit="Regulations"
           footer={`Mapped controls · ${cov.obligations} obligations`}
@@ -259,12 +312,12 @@ export default function RegulatoryManagement() {
         )}
       </div>
 
-      {/* Regulatory coverage by jurisdiction */}
-      <SectionLabel>Regulatory coverage by jurisdiction</SectionLabel>
-      <div className="grid grid-cols-4 gap-2.5 mb-5 max-lg:grid-cols-2">
-        {domainGroups.map(({ juris, count }) => {
-          const m = JURIS_META[juris] ?? { Icon: Globe, accent: "#39B9ED" };
-          return <DomainChip key={juris} Icon={m.Icon} accent={m.accent} label={juris} count={count} />;
+      {/* Regulatory domains — tailored to the active perimeter */}
+      <SectionLabel hint={perimeter === "mal_bank" ? "CBUAE · UAE" : "US · FinCEN / OFAC"}>Regulatory domains</SectionLabel>
+      <div className="grid grid-cols-3 sm:grid-cols-4 xl:grid-cols-7 gap-2.5 mb-5 max-sm:grid-cols-2">
+        {domainGroups.map(({ domain, count }) => {
+          const m = DOMAIN_META[domain];
+          return <DomainChip key={domain} Icon={m.Icon} accent={m.accent} label={domain} count={count} />;
         })}
       </div>
 
@@ -489,9 +542,9 @@ export default function RegulatoryManagement() {
         {" · "}<Link to="/reporting" className="text-ai hover:underline">Reporting Centre</Link>
         {" · "}<Link to="/validation" className="text-ai hover:underline">Model Validation</Link>
       </Card>
-
-      {/* Focus-area detail flyout (presentation only) */}
-      {focusOpen !== null && (() => {
+      </div>
+      {/* ── Docked detail panel ─────────────────────────────────── */}
+      {panelOpen && focusOpen !== null && (() => {
         const f = FOCUS[focusOpen];
         const folder = DRIVE_FOLDERS[f.folder];
         const pct = f.total > 0 ? Math.round((f.current / f.total) * 100) : 0;
@@ -501,18 +554,20 @@ export default function RegulatoryManagement() {
         const riskLabel = gapsHere === 0 ? "Low" : gapsHere <= 2 ? "Medium" : "High";
         const riskColor = gapsHere === 0 ? "#2FD8A6" : gapsHere <= 2 ? "#F6A623" : "#FF5C77";
         return (
-          <FocusFlyout
-            focus={f}
-            folder={folder}
-            pct={pct}
-            riskLabel={riskLabel}
-            riskColor={riskColor}
-            updated={CRAM_CATALOGUE.updated}
-            jurisdictions={jurisdictions}
-            perimeterLabel={perimeterDef.subtitle}
-            gapsHere={gapsHere}
-            onClose={() => setFocusOpen(null)}
-          />
+          <aside className="w-full xl:w-[384px] shrink-0 xl:sticky xl:top-4">
+            <RegDetailPanel
+              focus={f}
+              folder={folder}
+              pct={pct}
+              riskLabel={riskLabel}
+              riskColor={riskColor}
+              updated={CRAM_CATALOGUE.updated}
+              owner={perimeterDef.approverLabel}
+              domains={domainGroups.map((d) => d.domain)}
+              perimeterLabel={perimeterDef.label}
+              onClose={() => setFocusOpen(null)}
+            />
+          </aside>
         );
       })()}
     </div>
@@ -521,10 +576,12 @@ export default function RegulatoryManagement() {
 
 // ─── Section label ────────────────────────────────────────────────────────────
 
-function SectionLabel({ children }: { children: ReactNode }) {
+function SectionLabel({ children, hint }: { children: ReactNode; hint?: string }) {
   return (
     <div className="flex items-center gap-2 mb-2.5 mt-1">
       <span className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#6E72A6]">{children}</span>
+      <Info size={11} className="text-[#4b4f7d]" />
+      {hint && <span className="text-[9.5px] text-[#4b4f7d] font-medium">{hint}</span>}
       <div className="h-px flex-1 bg-[#1e2156]" />
     </div>
   );
@@ -533,9 +590,9 @@ function SectionLabel({ children }: { children: ReactNode }) {
 // ─── KPI hero card ────────────────────────────────────────────────────────────
 
 function KpiCard({
-  Icon, accent, title, sub, value, unit, footer, valueColor, valueSize = "lg", action,
+  illustration, accent, title, sub, value, unit, footer, valueColor, valueSize = "lg", action,
 }: {
-  Icon: LucideIcon;
+  illustration: ReactNode;
   accent: string;
   title: string;
   sub: string;
@@ -548,26 +605,28 @@ function KpiCard({
 }) {
   return (
     <div
-      className="group relative flex flex-col p-4 rounded-2xl border border-[#26285C] overflow-hidden transition-all duration-200 hover:border-[#A953DF]/30 hover:shadow-[0_6px_28px_rgba(0,0,0,.32)]"
-      style={{ background: "linear-gradient(150deg,#0c1130 0%,#0A1130 60%)" }}
+      className="group relative flex flex-col p-4 rounded-2xl border border-[#26285C] overflow-hidden transition-all duration-200 hover:border-[#A953DF]/30 hover:shadow-[0_8px_30px_rgba(0,0,0,.35)] hover:-translate-y-0.5"
+      style={{ background: "linear-gradient(160deg,#111536 0%,#0A0E28 70%)" }}
     >
-      <span aria-hidden className="absolute inset-x-0 top-0 h-[2px] opacity-60" style={{ background: `linear-gradient(90deg,transparent,${accent},transparent)` }} />
-      <div className="flex items-start gap-3">
+      <span aria-hidden className="absolute inset-x-0 top-0 h-[2px] opacity-70" style={{ background: `linear-gradient(90deg,transparent,${accent},transparent)` }} />
+      {/* Soft glow behind illustration */}
+      <span aria-hidden className="absolute -top-4 -left-4 w-24 h-24 rounded-full blur-2xl opacity-20" style={{ background: accent }} />
+      <div className="relative flex items-start gap-3">
         <div
-          className="w-11 h-11 rounded-xl grid place-items-center shrink-0 transition-transform duration-200 group-hover:scale-105"
-          style={{ background: `${accent}1A`, color: accent, boxShadow: `inset 0 0 0 1px ${accent}33` }}
+          className="w-16 h-16 rounded-2xl grid place-items-center shrink-0 transition-transform duration-200 group-hover:scale-[1.06]"
+          style={{ background: `linear-gradient(150deg,${accent}26,${accent}0D)`, boxShadow: `inset 0 0 0 1px ${accent}2E` }}
         >
-          <Icon size={22} />
+          {illustration}
         </div>
         <div className="min-w-0 flex-1">
-          <div className="text-[12.5px] font-bold font-display text-white leading-tight">{title}</div>
+          <div className="text-[13px] font-bold font-display text-white leading-tight">{title}</div>
           <div className="text-[10px] text-[#8A8FC0] mt-0.5 leading-snug">{sub}</div>
         </div>
         {action && <div className="shrink-0">{action}</div>}
       </div>
       <div className="mt-3 flex items-baseline gap-1.5">
         <span
-          className={`font-display font-bold leading-none tabular-nums ${valueSize === "sm" ? "text-[15px]" : "text-[28px]"}`}
+          className={`font-display font-bold leading-none tabular-nums ${valueSize === "sm" ? "text-[15px]" : "text-[30px]"}`}
           style={{ color: valueColor ?? "white" }}
         >
           {value}
@@ -575,7 +634,9 @@ function KpiCard({
         {unit && <span className="text-[10.5px] text-[#8A8FC0] font-medium">{unit}</span>}
       </div>
       <div className="mt-2.5 pt-2.5 border-t border-[#1e2156] flex items-center gap-1.5 text-[10px] text-[#6E72A6]">
-        <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: accent }} />
+        <span className="w-3.5 h-3.5 rounded-full grid place-items-center shrink-0" style={{ background: `${accent}22` }}>
+          <span className="w-1.5 h-1.5 rounded-full" style={{ background: accent }} />
+        </span>
         {footer}
       </div>
     </div>
@@ -586,13 +647,18 @@ function KpiCard({
 
 function DomainChip({ Icon, accent, label, count }: { Icon: LucideIcon; accent: string; label: string; count: number }) {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-xl border border-[#26285C] bg-[#0A1130] transition-colors hover:border-[#A953DF]/25">
-      <div className="w-9 h-9 rounded-lg grid place-items-center shrink-0" style={{ background: `${accent}1A`, color: accent }}>
-        <Icon size={17} />
+    <div className="group flex flex-col gap-2 p-3 rounded-xl border border-[#22254f] bg-[#0A0E28] transition-all duration-200 hover:border-[#A953DF]/30 hover:-translate-y-0.5">
+      <div
+        className="w-9 h-9 rounded-lg grid place-items-center shrink-0 transition-transform group-hover:scale-105"
+        style={{ background: `linear-gradient(150deg,${accent}30,${accent}12)`, color: accent, boxShadow: `inset 0 0 0 1px ${accent}30` }}
+      >
+        <Icon size={16} />
       </div>
       <div className="min-w-0">
-        <div className="text-[11.5px] font-semibold text-[#C4C8F0] leading-tight truncate">{label}</div>
-        <div className="text-[10px] text-[#6E72A6] mt-0.5">{count} regulation{count === 1 ? "" : "s"}</div>
+        <div className="text-[10.5px] font-semibold text-[#D6D9F5] leading-tight">{label}</div>
+        <div className="text-[9.5px] mt-1 font-semibold" style={{ color: accent }}>
+          {count} regulation{count === 1 ? "" : "s"}
+        </div>
       </div>
     </div>
   );
@@ -629,8 +695,11 @@ function FocusCard({
       style={{ background: active ? "#100f28" : "#0A1130" }}
     >
       <div className="flex items-start gap-3">
-        <div className="w-11 h-11 rounded-xl grid place-items-center shrink-0" style={{ background: `${accent}1A`, color: accent }}>
-          <Icon size={21} />
+        <div
+          className="w-12 h-12 rounded-full grid place-items-center shrink-0"
+          style={{ background: `linear-gradient(150deg,${accent}33,${accent}12)`, color: accent, boxShadow: `inset 0 0 0 1px ${accent}33` }}
+        >
+          <Icon size={22} />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
@@ -658,14 +727,18 @@ function FocusCard({
 
 function ImplTile({ Icon, accent, label, count }: { Icon: LucideIcon; accent: string; label: string; count: number }) {
   return (
-    <div className="flex items-center gap-3 p-3.5 rounded-xl border border-[#26285C] bg-[#0A1130] transition-colors hover:border-[#A953DF]/25">
-      <div className="w-9 h-9 rounded-lg grid place-items-center shrink-0" style={{ background: `${accent}1A`, color: accent }}>
+    <div className="group relative flex items-center gap-3 p-3.5 rounded-xl border border-[#22254f] bg-[#0A0E28] transition-all duration-200 hover:border-[#A953DF]/30 hover:-translate-y-0.5">
+      <div
+        className="w-10 h-10 rounded-full grid place-items-center shrink-0"
+        style={{ background: `linear-gradient(150deg,${accent}33,${accent}12)`, color: accent, boxShadow: `inset 0 0 0 1px ${accent}30` }}
+      >
         <Icon size={17} />
       </div>
-      <div className="min-w-0">
-        <div className="text-[10px] text-[#8A8FC0] uppercase tracking-wide font-semibold truncate">{label}</div>
-        <div className="text-[20px] font-display font-bold text-white leading-none mt-0.5 tabular-nums">{count}</div>
+      <div className="min-w-0 flex-1">
+        <div className="text-[9.5px] text-[#8A8FC0] uppercase tracking-wide font-semibold truncate">{label}</div>
+        <div className="text-[22px] font-display font-bold text-white leading-none mt-0.5 tabular-nums">{count}</div>
       </div>
+      <ChevronRight size={14} className="text-[#3c4070] shrink-0 transition-transform group-hover:translate-x-0.5 group-hover:text-[#6E72A6]" />
     </div>
   );
 }
@@ -709,9 +782,9 @@ function TabPill({
   );
 }
 
-// ─── Focus detail flyout ──────────────────────────────────────────────────────
+// ─── Docked detail panel ──────────────────────────────────────────────────────
 
-interface FlyoutFocus {
+interface PanelFocus {
   idx: number;
   num: string;
   title: string;
@@ -723,120 +796,153 @@ interface FlyoutFocus {
   unit: string;
 }
 
-function FocusFlyout({
-  focus, folder, pct, riskLabel, riskColor, updated, jurisdictions, perimeterLabel, gapsHere, onClose,
+const PANEL_BADGE = ["Primary Library", "Controls Library", "Evidence Library"];
+const PANEL_SUBTABS: { id: "obligations" | "controls" | "evidence" | "changelog"; label: string }[] = [
+  { id: "obligations", label: "Obligations" },
+  { id: "controls", label: "Mapped Controls" },
+  { id: "evidence", label: "Evidence" },
+  { id: "changelog", label: "Change Log" },
+];
+
+function RegDetailPanel({
+  focus, folder, pct, riskLabel, riskColor, updated, owner, domains, perimeterLabel, onClose,
 }: {
-  focus: FlyoutFocus;
+  focus: PanelFocus;
   folder: { label: string; url: string; description: string };
   pct: number;
   riskLabel: string;
   riskColor: string;
   updated: string;
-  jurisdictions: string[];
+  owner: string;
+  domains: string[];
   perimeterLabel: string;
-  gapsHere: number;
   onClose: () => void;
 }) {
   const { Icon, accent } = focus;
+  const [subTab, setSubTab] = useState<"obligations" | "controls" | "evidence" | "changelog">("obligations");
 
-  // Top rows differ per focus area — all from the live catalogue.
+  const subCounts = {
+    obligations: CRAM_CATALOGUE.coverage.obligations,
+    controls: CRAM_CATALOGUE.coverage.controlsTotal,
+    evidence: CRAM_CATALOGUE.evidence.length,
+    changelog: CRAM_CATALOGUE.regulations.filter((r) => r.status === "gap").length,
+  };
+
   const rows: { a: string; b: string; status?: string }[] =
-    focus.idx === 0
+    subTab === "obligations"
       ? CRAM_CATALOGUE.regulations.slice(0, 6).map((r) => ({ a: r.name, b: r.ref, status: r.status }))
-      : focus.idx === 1
+      : subTab === "controls"
         ? CRAM_CATALOGUE.controls.slice(0, 6).map((c) => ({ a: `${c.id} · ${c.name}`, b: c.owner, status: c.status }))
-        : CRAM_CATALOGUE.evidence.slice(0, 6).map((e) => ({ a: e.name, b: e.type, status: e.status }));
+        : subTab === "evidence"
+          ? CRAM_CATALOGUE.evidence.slice(0, 6).map((e) => ({ a: e.name, b: e.type, status: e.status }))
+          : CRAM_CATALOGUE.regulations.filter((r) => r.status === "gap").map((r) => ({ a: r.name, b: r.ref, status: r.status }));
 
   return (
-    <>
-      {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/50 z-40 animate-[fadeIn_.15s_ease]"
-        onClick={onClose}
-        aria-hidden
-      />
-      {/* Drawer */}
-      <aside
-        className="fixed top-0 right-0 h-full w-[420px] max-w-[94vw] z-50 border-l border-[#26285C] overflow-y-auto"
-        style={{ background: "#070c1f" }}
-        role="dialog"
-        aria-label={`${focus.title} details`}
-      >
-        {/* Header */}
-        <div className="sticky top-0 z-10 px-5 pt-5 pb-4 border-b border-[#1e2156]" style={{ background: "linear-gradient(135deg,#0c1233 0%,#151a44 100%)" }}>
-          <div className="flex items-start gap-3">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="font-display text-[13px] font-black tabular-nums" style={{ color: accent }}>{focus.num}</span>
-              <h3 className="m-0 text-[16px] font-bold font-display text-white truncate">{focus.title}</h3>
-            </div>
-            <span className="ml-auto pill text-[9.5px] shrink-0" style={{ background: `${accent}22`, color: accent }}>
-              {folder.label.split("·").pop()?.trim() ?? "Library"}
-            </span>
-            <button type="button" onClick={onClose} className="shrink-0 w-7 h-7 rounded-lg grid place-items-center text-[#8A8FC0] hover:text-white hover:bg-white/10 transition">
-              <X size={16} />
-            </button>
+    <div
+      className="rounded-2xl border overflow-hidden xl:max-h-[calc(100vh-2rem)] flex flex-col"
+      style={{ borderColor: `${accent}55`, boxShadow: `0 0 40px ${accent}1f`, background: "#070c1f" }}
+      role="region"
+      aria-label={`${focus.title} details`}
+    >
+      {/* Header */}
+      <div className="px-5 pt-5 pb-4 border-b border-[#1e2156]" style={{ background: "linear-gradient(135deg,#0c1233 0%,#151a44 100%)" }}>
+        <div className="flex items-start gap-2">
+          <div className="flex items-baseline gap-2 min-w-0">
+            <span className="font-display text-[14px] font-black tabular-nums" style={{ color: accent }}>{focus.num}</span>
+            <h3 className="m-0 text-[15px] font-bold font-display text-white truncate">· {focus.title}</h3>
           </div>
-          <p className="text-[11px] text-[#A7ACDB] mt-2 mb-0 leading-relaxed">{folder.description}</p>
-          {/* Illustration band */}
-          <div className="mt-3 flex items-center justify-center py-3 rounded-xl border border-[#26285C]" style={{ background: `${accent}0D` }}>
-            <Icon size={44} style={{ color: accent, opacity: 0.85 }} />
+          <span className="ml-auto pill text-[9px] shrink-0 mt-0.5" style={{ background: `${accent}22`, color: accent }}>
+            {PANEL_BADGE[focus.idx] ?? "Library"}
+          </span>
+          <button type="button" onClick={onClose} className="shrink-0 w-7 h-7 rounded-lg grid place-items-center text-[#8A8FC0] hover:text-white hover:bg-white/10 transition" aria-label="Close panel">
+            <X size={15} />
+          </button>
+        </div>
+        <p className="text-[11px] text-[#A7ACDB] mt-2 mb-0 leading-relaxed">{folder.description}</p>
+        {/* Illustration band */}
+        <div className="mt-3 flex items-center justify-center py-4 rounded-xl border border-[#26285C] relative overflow-hidden" style={{ background: `linear-gradient(135deg,${accent}18,${accent}06)` }}>
+          <span aria-hidden className="absolute w-24 h-24 rounded-full blur-2xl opacity-25" style={{ background: accent }} />
+          <Icon size={46} style={{ color: accent }} className="relative" strokeWidth={1.6} />
+        </div>
+      </div>
+
+      <div className="p-5 space-y-4 overflow-y-auto">
+        {/* Meta grid */}
+        <div className="space-y-2.5">
+          <MetaRow label="Owner" value={owner} />
+          <MetaRow label="Last updated" value={updated} />
+          <MetaRow label={`Total ${focus.unit.toLowerCase()}`} value={String(focus.total)} />
+          <MetaRow label="Mapped" value={`${pct}% (${focus.current} / ${focus.total})`} />
+          <MetaRow label="Risk rating" value={riskLabel} valueColor={riskColor} dot />
+          <MetaRow label="Status" value="Active" valueColor="#2FD8A6" dot />
+          <MetaRow label="Perimeter" value={perimeterLabel} />
+        </div>
+
+        {/* Key domains */}
+        <div>
+          <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-2">Key domains</div>
+          <div className="flex flex-wrap gap-1.5">
+            {domains.slice(0, 8).map((d) => (
+              <span key={d} className="pill text-[9.5px] bg-panel2 text-[#C4C8F0] border border-[#26285C]">{d}</span>
+            ))}
           </div>
         </div>
 
-        <div className="p-5 space-y-5">
-          {/* Meta grid */}
-          <div className="space-y-2.5">
-            <MetaRow label="Perimeter" value={perimeterLabel} />
-            <MetaRow label="Last updated" value={updated} />
-            <MetaRow label={`Total ${focus.unit.toLowerCase()}`} value={String(focus.total)} />
-            <MetaRow label="Mapped" value={`${pct}% (${focus.current} / ${focus.total})`} />
-            <MetaRow label="Risk rating" value={riskLabel} valueColor={riskColor} dot />
-            <MetaRow label="Open gaps" value={String(gapsHere)} valueColor={gapsHere === 0 ? "#2FD8A6" : "#FF5C77"} />
-          </div>
+        {/* Sub-tabs */}
+        <div className="flex items-center gap-4 border-b border-[#1e2156]">
+          {PANEL_SUBTABS.map((t) => {
+            const on = subTab === t.id;
+            return (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => setSubTab(t.id)}
+                className={`relative pb-2 text-[11px] font-semibold transition ${on ? "text-white" : "text-[#6E72A6] hover:text-[#A7ACDB]"}`}
+              >
+                {t.label} <span className="text-[9.5px] text-[#6E72A6]">({subCounts[t.id]})</span>
+                {on && <span className="absolute inset-x-0 -bottom-px h-[2px] rounded-full" style={{ background: accent }} />}
+              </button>
+            );
+          })}
+        </div>
 
-          {/* Key domains */}
-          <div>
-            <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-2">Key domains</div>
-            <div className="flex flex-wrap gap-1.5">
-              {jurisdictions.map((j) => (
-                <span key={j} className="pill text-[10px] bg-panel2 text-[#C4C8F0] border border-[#26285C]">{j}</span>
-              ))}
-            </div>
+        {/* Top items */}
+        <div>
+          <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-2">
+            Top {PANEL_SUBTABS.find((t) => t.id === subTab)?.label.toLowerCase()}
           </div>
-
-          {/* Top items */}
-          <div>
-            <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-2">
-              Top {focus.unit.toLowerCase()}
-            </div>
-            <div className="rounded-xl border border-[#26285C] overflow-hidden">
-              {rows.map((r, i) => (
-                <div key={i} className="flex items-center gap-2 px-3 py-2.5 border-b border-[#191b46] last:border-0">
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[11.5px] font-semibold text-[#E6E8FA] truncate">{r.a}</div>
-                    <div className="text-[10px] text-[#6E72A6] truncate">{r.b}</div>
-                  </div>
-                  {r.status && (
-                    <span className={`pill text-[9px] shrink-0 ${STATUS_STYLE[r.status] ?? "bg-panel2 text-muted"}`}>{r.status}</span>
-                  )}
+          <div className="rounded-xl border border-[#26285C] overflow-hidden">
+            {rows.length === 0 ? (
+              <div className="px-3 py-4 text-[11px] text-[#6E72A6]">No items in this view.</div>
+            ) : rows.map((r, i) => (
+              <div key={i} className="flex items-center gap-2 px-3 py-2.5 border-b border-[#191b46] last:border-0">
+                <div className="min-w-0 flex-1">
+                  <div className="text-[11px] font-semibold text-[#E6E8FA] truncate">{r.a}</div>
+                  <div className="text-[9.5px] text-[#6E72A6] truncate">{r.b}</div>
                 </div>
-              ))}
-            </div>
+                {r.status && (
+                  <span className={`pill text-[9px] shrink-0 ${STATUS_STYLE[r.status] ?? "bg-panel2 text-muted"}`}>{r.status}</span>
+                )}
+              </div>
+            ))}
           </div>
+          <a href={folder.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10.5px] text-ai hover:underline mt-2">
+            View all {focus.total} {focus.unit.toLowerCase()} <ChevronRight size={12} />
+          </a>
+        </div>
 
-          {/* Quick actions */}
-          <div>
-            <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-2">Quick actions</div>
-            <div className="grid grid-cols-2 gap-2">
-              <FlyoutAction Icon={FolderOpen} href={folder.url} label="Open library" />
-              <FlyoutAction Icon={Download} href={folder.url} label="Export library" />
-              <FlyoutAction Icon={Share2} href={folder.url} label="Share" />
-              <FlyoutAction Icon={ExternalLink} href={folder.url} label="View in Drive" />
-            </div>
+        {/* Quick actions */}
+        <div>
+          <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-2">Quick actions</div>
+          <div className="grid grid-cols-2 gap-2">
+            <FlyoutAction Icon={FolderOpen} href={folder.url} label="Open library" />
+            <FlyoutAction Icon={Download} href={folder.url} label="Export library" />
+            <FlyoutAction Icon={Share2} href={folder.url} label="Share" />
+            <FlyoutAction Icon={ExternalLink} href={folder.url} label="View in Drive" />
           </div>
         </div>
-      </aside>
-    </>
+      </div>
+    </div>
   );
 }
 
@@ -844,7 +950,7 @@ function MetaRow({ label, value, valueColor, dot }: { label: string; value: stri
   return (
     <div className="flex items-center justify-between gap-3">
       <span className="text-[11px] text-[#8A8FC0]">{label}</span>
-      <span className="text-[11.5px] font-semibold flex items-center gap-1.5 text-right" style={{ color: valueColor ?? "#E6E8FA" }}>
+      <span className="text-[11px] font-semibold flex items-center gap-1.5 text-right" style={{ color: valueColor ?? "#E6E8FA" }}>
         {dot && <span className="w-1.5 h-1.5 rounded-full" style={{ background: valueColor }} />}
         {value}
       </span>
@@ -863,5 +969,70 @@ function FlyoutAction({ Icon, href, label }: { Icon: LucideIcon; href: string; l
       <Icon size={14} className="text-[#8A8FC0]" />
       {label}
     </a>
+  );
+}
+
+// ─── KPI illustrations ────────────────────────────────────────────────────────
+
+function RegIllustFeeds() {
+  return (
+    <svg viewBox="0 0 48 48" width={40} height={40} fill="none">
+      {/* Back sheet */}
+      <rect x="10" y="8" width="24" height="30" rx="3" fill="#A953DF" fillOpacity="0.18" stroke="#A953DF" strokeWidth="1.6"/>
+      {/* Front sheet */}
+      <rect x="15" y="12" width="24" height="30" rx="3" fill="#A953DF" fillOpacity="0.30" stroke="#A953DF" strokeWidth="1.6"/>
+      <line x1="20" y1="20" x2="34" y2="20" stroke="#c9a2ee" strokeWidth="1.6" strokeLinecap="round"/>
+      <line x1="20" y1="26" x2="34" y2="26" stroke="#c9a2ee" strokeOpacity="0.7" strokeWidth="1.6" strokeLinecap="round"/>
+      <line x1="20" y1="32" x2="29" y2="32" stroke="#c9a2ee" strokeOpacity="0.5" strokeWidth="1.6" strokeLinecap="round"/>
+      {/* RSS dot */}
+      <circle cx="18" cy="15.5" r="1.6" fill="#A953DF"/>
+    </svg>
+  );
+}
+
+function RegIllustCheck() {
+  return (
+    <svg viewBox="0 0 48 48" width={40} height={40} fill="none">
+      {/* Clipboard */}
+      <rect x="11" y="10" width="22" height="30" rx="3" fill="#39B9ED" fillOpacity="0.16" stroke="#39B9ED" strokeWidth="1.6"/>
+      <rect x="17" y="7" width="10" height="6" rx="2" fill="#0A0E28" stroke="#39B9ED" strokeWidth="1.6"/>
+      <path d="M15 20 l2.5 2.5 L22 18" fill="none" stroke="#2FD8A6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="25" y1="20" x2="30" y2="20" stroke="#7fd0f2" strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M15 28 l2.5 2.5 L22 26" fill="none" stroke="#2FD8A6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <line x1="25" y1="28" x2="30" y2="28" stroke="#7fd0f2" strokeOpacity="0.7" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Clock badge */}
+      <circle cx="34" cy="34" r="7" fill="#0A0E28" stroke="#39B9ED" strokeWidth="1.6"/>
+      <path d="M34 30.5 v3.5 l2.2 1.5" fill="none" stroke="#39B9ED" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+function RegIllustChanges() {
+  return (
+    <svg viewBox="0 0 48 48" width={40} height={40} fill="none">
+      {/* Radar rings */}
+      <circle cx="22" cy="26" r="15" fill="#F6A623" fillOpacity="0.08" stroke="#F6A623" strokeWidth="1.5"/>
+      <circle cx="22" cy="26" r="9" fill="none" stroke="#F6A623" strokeOpacity="0.5" strokeWidth="1.3"/>
+      <circle cx="22" cy="26" r="3.5" fill="#F6A623" fillOpacity="0.6"/>
+      {/* Sweep */}
+      <path d="M22 26 L34 18 A15 15 0 0 1 33 33 Z" fill="#F6A623" fillOpacity="0.18"/>
+      <line x1="22" y1="26" x2="34" y2="18" stroke="#F6A623" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Alert badge */}
+      <circle cx="37" cy="14" r="7" fill="#FF5C77"/>
+      <rect x="35.6" y="9.5" width="2.8" height="5.5" rx="1.4" fill="white"/>
+      <circle cx="37" cy="17.5" r="1.4" fill="white"/>
+    </svg>
+  );
+}
+
+function RegIllustCatalogue() {
+  return (
+    <svg viewBox="0 0 48 48" width={40} height={40} fill="none">
+      {/* Back folder */}
+      <path d="M7 15 h10 l3 3 h14 a2 2 0 0 1 2 2 v16 a2 2 0 0 1 -2 2 H7 a2 2 0 0 1 -2 -2 V17 a2 2 0 0 1 2 -2 Z" fill="#7C6CF7" fillOpacity="0.20" stroke="#7C6CF7" strokeWidth="1.5"/>
+      {/* Front folder */}
+      <path d="M11 22 h26 a2 2 0 0 1 2 2 l-2 14 a2 2 0 0 1 -2 2 H9 a2 2 0 0 1 -2 -2 l1.5 -14 a2 2 0 0 1 2 -2 Z" fill="#7C6CF7" fillOpacity="0.38" stroke="#7C6CF7" strokeWidth="1.5"/>
+      <line x1="14" y1="30" x2="30" y2="30" stroke="#b9aeff" strokeOpacity="0.6" strokeWidth="1.4" strokeLinecap="round"/>
+    </svg>
   );
 }
