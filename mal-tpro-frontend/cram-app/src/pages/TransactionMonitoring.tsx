@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback, type ReactNode } from "react";
+import { useMemo, useState, useEffect, useCallback, type ReactNode, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { Card, Sec, AiTag } from "../components/ui";
 import { exportGlobalAccountTmWorkbook, exportMalBankTmWorkbook } from "../lib/tmScreeningWorkbookBuilder";
@@ -16,7 +16,7 @@ import TmReadinessPanel from "../components/tm/TmReadinessPanel";
 import PaymentPurposeGuidancePanel, { type PanelTab } from "../components/tm/PaymentPurposeGuidancePanel";
 import { exportTransactionPurposeCatalogPdf } from "../lib/transactionPurposeCatalogPdf";
 
-type TabId = "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "purpose" | "readiness";
+type TabId = "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "purpose" | "readiness" | "onboarding" | "scenario";
 
 const TABS: { id: TabId; label: string; hint: string }[] = [
   { id: "programme", label: "Screening programme", hint: "Scope · authority · coverage" },
@@ -35,7 +35,7 @@ const TABS: { id: TabId; label: string; hint: string }[] = [
  */
 type IllustKey =
   | "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "purpose" | "readiness"
-  | "C2C" | "C2B" | "B2C" | "B2B" | "Mal2Mal" | "corridors" | "typologies";
+  | "C2C" | "C2B" | "B2C" | "B2B" | "Mal2Mal" | "corridors" | "typologies" | "onboarding" | "scenario";
 
 interface TmCardDef {
   num: string;
@@ -66,10 +66,14 @@ const CARDS: TmCardDef[] = [
   { num: "12", title: "Mal2Mal",             desc: "On-us (Mal → Mal)",                                    value: "14", unit: "Scenarios", accent: "#2FD8A6", illust: "Mal2Mal",    tab: "purpose", sub: "Mal2Mal" },
   { num: "13", title: "Corridor Guidance",   desc: "Countries, corridors and risk expectations",          value: "6",  unit: "Corridors", accent: "#39B9ED", illust: "corridors",  tab: "purpose", sub: "corridors" },
   { num: "14", title: "Country Typologies",  desc: "EWRAs, typologies and country risk insights",          value: "7",  unit: "Countries", accent: "#FF5C77", illust: "typologies", tab: "purpose", sub: "typologies" },
+  // Global Account · workflows & scenarios
+  { num: "15", title: "GA Onboarding CRR",   desc: "Global Account (Zenus) risk-rating onboarding workflow", value: "7",  unit: "Stages",    accent: "#3DC08B", illust: "onboarding", tab: "onboarding" },
+  { num: "16", title: "PEP / RCA · Zenus",   desc: "Scenario — high-risk-region client, funds from Zenus, Foreign-PEP / RCA", value: "4", unit: "Workflows", accent: "#C08CF0", illust: "scenario", tab: "scenario" },
 ];
 
 const ROW1 = CARDS.slice(0, 6);
-const ROW2 = CARDS.slice(6);
+const ROW2 = CARDS.slice(6, 14);
+const ROW3 = CARDS.slice(14);
 
 const SEV_STYLE: Record<string, string> = {
   critical: "bg-proh/25 text-[#ff7ea0]",
@@ -158,6 +162,17 @@ export default function TransactionMonitoring() {
         ))}
       </div>
 
+      {/* Global Account · workflows & scenarios */}
+      <div className="flex items-center gap-2 mb-2.5 mt-1">
+        <span className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#6E72A6]">Global Account · workflows & scenarios</span>
+        <div className="h-px flex-1 bg-[#1e2156]" />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 mb-4">
+        {ROW3.map((c) => (
+          <TmCard key={c.num} def={c} active={activeCard === c.num} onClick={() => openCard(c)} />
+        ))}
+      </div>
+
       {/* Expandable detail panel */}
       {panelOpen && (
         <TmDetailPanel def={activeDef} onClose={() => setPanelOpen(false)}>
@@ -178,6 +193,8 @@ export default function TransactionMonitoring() {
             />
           )}
           {activeDef.tab === "readiness" && <TmReadinessPanel />}
+          {activeDef.tab === "onboarding" && <OnboardingWorkflowTab />}
+          {activeDef.tab === "scenario" && <ScenarioPlaybookTab />}
           {activeDef.tab === "purpose" && <PaymentPurposeGuidancePanel defaultTab={purposeSub} key={purposeSub} />}
         </TmDetailPanel>
       )}
@@ -679,6 +696,8 @@ function getTmIllust(key: IllustKey, size = 68): JSX.Element {
       case "Mal2Mal":    return <IllustMal2Mal />;
       case "corridors":  return <IllustCorridors />;
       case "typologies": return <IllustTypologies />;
+      case "onboarding": return <IllustOnboarding />;
+      case "scenario": return <IllustScenario />;
     }
   })();
   if (size === 68) return svg;
@@ -973,5 +992,724 @@ function IllustTypologies() {
       <rect x="58.5" y="15" width="3" height="8" rx="1.5" fill="white"/>
       <circle cx="60" cy="27" r="1.8" fill="white"/>
     </svg>
+  );
+}
+
+/** Decision-tree with three terminal branches (onboarding CRR workflow). */
+function IllustOnboarding() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Root node */}
+      <rect x="30" y="8" width="20" height="12" rx="3" fill="#3DC08B" fillOpacity="0.18" stroke="#3DC08B" strokeWidth="2"/>
+      {/* Trunk + branches */}
+      <path d="M40 20 V30 M40 30 H16 M40 30 H64 M16 30 V44 M40 30 V44 M64 30 V44" stroke="#3DC08B" strokeOpacity="0.55" strokeWidth="1.6" strokeLinecap="round"/>
+      {/* Decline leaf */}
+      <rect x="6" y="44" width="20" height="14" rx="3" fill="#FF5C77" fillOpacity="0.16" stroke="#FF5C77" strokeWidth="2"/>
+      <line x1="13" y1="51" x2="19" y2="51" stroke="#FF5C77" strokeWidth="2" strokeLinecap="round"/>
+      {/* Review leaf */}
+      <rect x="30" y="44" width="20" height="14" rx="3" fill="#F6A623" fillOpacity="0.16" stroke="#F6A623" strokeWidth="2"/>
+      <circle cx="40" cy="51" r="3" fill="none" stroke="#F6A623" strokeWidth="2"/>
+      {/* Approve leaf */}
+      <rect x="54" y="44" width="20" height="14" rx="3" fill="#2FD8A6" fillOpacity="0.16" stroke="#2FD8A6" strokeWidth="2"/>
+      <path d="M60 51 L63 54 L68 48" fill="none" stroke="#2FD8A6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+// global_accounts_zenus_onboarding_v02 — the AS-IS deployed workflow (26 steps → 7 phases).
+// `flag` records the CRAM divergence for that phase (null = aligned). v04 corrects each ⚠.
+/** Person + shield with a PEP star (scenario playbook). */
+function IllustScenario() {
+  return (
+    <svg viewBox="0 0 80 80" width={68} height={68} fill="none">
+      {/* Person */}
+      <circle cx="28" cy="24" r="10" fill="#C08CF0" fillOpacity="0.18" stroke="#C08CF0" strokeWidth="2"/>
+      <path d="M12 58 C12 45 20 40 28 40 C36 40 44 45 44 58 Z" fill="#C08CF0" fillOpacity="0.12" stroke="#C08CF0" strokeWidth="2"/>
+      {/* Corridor arrow (funds from Zenus) */}
+      <path d="M46 30 H68" stroke="#39B9ED" strokeWidth="2" strokeDasharray="3 3" strokeLinecap="round"/>
+      <path d="M63 25 L68 30 L63 35" fill="none" stroke="#39B9ED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* PEP shield with star */}
+      <path d="M58 44 L70 48 V58 C70 65 64 69 58 72 C52 69 46 65 46 58 V48 Z" fill="#F6A623" fillOpacity="0.2" stroke="#F6A623" strokeWidth="2"/>
+      <path d="M58 52 l1.6 3.4 3.7 .4 -2.8 2.5 .8 3.6 -3.3 -1.9 -3.3 1.9 .8 -3.6 -2.8 -2.5 3.7 -.4 Z" fill="#F6A623"/>
+    </svg>
+  );
+}
+
+const ONBOARDING_PHASES: {
+  no: string; label: string; color: string; steps: string[]; flag: string | null;
+}[] = [
+  {
+    no: "01", label: "Entry & Screening", color: "#39B9ED", flag: null,
+    steps: [
+      "Step 1 — Derive geography inputs (residence, birth, nationality, source of wealth)",
+      "Step 2 — Vital4 API screening (full name, DOB, request ID)",
+      "Step 3 — Derive screening outputs (screened status, sanctions hit, match count, top-match score/type)",
+    ],
+  },
+  {
+    no: "02", label: "Geography Risk", color: "#2FD8A6",
+    flag: "US §7.1 is funds-flow only — score max(SoW, SoF[, opco]). Residence / birth / nationality must NOT be scored (override checks only).",
+    steps: [
+      "Step 4 — Geography lookups (parallel): residence · birth · nationality · source of wealth",
+      "Step 5 — Set geography lookup outputs (ratings, rankings, FIRMS overrides)",
+      "Step 6 — Calculate geography score (greatest of FIRMS overrides), rating & prohibited flag",
+    ],
+  },
+  {
+    no: "03", label: "Customer Type Risk", color: "#F6A623",
+    flag: "PEP must be a zero-weight gate and sanctions-match a prohibited override — not weighted here. UBO sub-factor (0.171) missing; residence-status & signatory-mandate are not CRAM CT factors.",
+    steps: [
+      "Step 7 — Derive CT inputs (segment, avg txn value, residence status, employment, profession, NOB, signatory mandate, PEP, sanction match)",
+      "Step 8 — Customer-type lookups (parallel): 9 lookups incl. PEP status + sanction screening match",
+      "Step 9 — Set CT lookup outputs, set NOB-prohibit flag",
+      "Step 10 — Calculate weighted customer-type score and rating",
+    ],
+  },
+  {
+    no: "04", label: "Product & Service Risk", color: "#FF8A3D",
+    flag: "Worst-of merge is correct, but weight is wrong: P&S pillar is 0.20 (product 0.12 + service 0.08), not 0.35.",
+    steps: [
+      "Step 11 — Derive inputs (product = international_payment_transfers · service = Digital Banking / Mobile App)",
+      "Step 12 — Product & service lookups (parallel)",
+      "Step 13 — Set product & service outputs",
+      "Step 14 — Calculate product score (greatest of product/service) and rating",
+    ],
+  },
+  {
+    no: "05", label: "Delivery Channel Risk", color: "#A953DF",
+    flag: "Channel is worst-of max(initiation, delivery), not a 50/50 average — and the weight is 0.20, not 0.10.",
+    steps: [
+      "Step 15 — Derive inputs (relationship initiation = E Channel · delivery method = E Channel)",
+      "Step 16 — Delivery-channel lookups (parallel): relationship initiation · delivery method",
+      "Step 17 — Set delivery-channel outputs",
+      "Step 18 — Calculate channel score (50/50 weighted average) and rating",
+    ],
+  },
+  {
+    no: "06", label: "Overall + Transaction / STR", color: "#7C6CF7",
+    flag: "Weights wrong (CT 35 / Geo 20 / Prod 35 / Ch 10) and the 10% transaction factor is absent from the composite — investigation/STR are used only as overrides.",
+    steps: [
+      "Step 19 — Overall risk score: Customer Type 35% · Geography 20% · Product 35% · Channel 10%",
+      "Step 20 — Derive investigation & STR inputs (counts = 0)",
+      "Step 21 — Investigation & STR lookups (parallel)",
+      "Step 22 — Set investigation & STR outputs (score / override)",
+    ],
+  },
+  {
+    no: "07", label: "Overrides · Prohibit · Route", color: "#8489bd",
+    flag: "Override set incomplete — missing adverse-media (OVR-009), high-risk country (OVR-011), high-risk NOB (OVR-012), watchlist (OVR-002). Routing bug: Low risk falls to the default → Review instead of Approve.",
+    steps: [
+      "Step 23 — Evaluate high-risk overrides (PEP, screening partial, investigation, STR)",
+      "Step 24 — Evaluate prohibit logic (screening=4 · Prohibited · NOB prohibit · geography prohibited)",
+      "Step 25 — Determine final rating, numeric band & decision",
+      "Step 26 — Route: prohibit→Decline · High→Review · Medium→Approve · else(default)→Review",
+    ],
+  },
+];
+
+const ONBOARDING_OUTCOMES: { code: string; label: string; pill: string; desc: string }[] = [
+  { code: "GA_CRR_Decline", label: "Decline", pill: "bg-hi/15 text-hi",   desc: "Prohibited — sanctions true match or prohibited geography." },
+  { code: "GA_CRR_Review",  label: "Review",  pill: "bg-med/15 text-med", desc: "High risk — MLRO / EDD review before approval." },
+  { code: "GA_CRR_Approve", label: "Approve", pill: "bg-low/15 text-low", desc: "Medium or low risk — approve with standard monitoring." },
+];
+
+function OnboardingWorkflowTab() {
+  const [sub, setSub] = useState<"crr" | "inbound" | "txn">("crr");
+  const tabCls = (on: boolean) =>
+    `px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition mono ${on ? "bg-ai/20 border-ai text-ai" : "border-line text-muted hover:bg-panel2"}`;
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2 flex-wrap">
+        <button type="button" onClick={() => setSub("crr")} className={tabCls(sub === "crr")}>
+          global_accounts_zenus_onboarding_v02
+        </button>
+        <button type="button" onClick={() => setSub("inbound")} className={tabCls(sub === "inbound")}>
+          global_accounts_inbound_screening
+        </button>
+        <button type="button" onClick={() => setSub("txn")} className={tabCls(sub === "txn")}>
+          global_accounts_transaction_screening
+        </button>
+      </div>
+      {sub === "crr" && <OnboardingCrrTab />}
+      {sub === "inbound" && <InboundScreeningTab />}
+      {sub === "txn" && <TransactionScreeningTab />}
+    </div>
+  );
+}
+
+function OnboardingCrrTab() {
+  const divergent = ONBOARDING_PHASES.filter((p) => p.flag).length;
+  return (
+    <div className="space-y-4">
+      <Card className="p-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          <AgentAiTag agent="sayed">Onboarding CRR · Zenus</AgentAiTag>
+          <span className="pill bg-med/15 text-med text-[10px]">as-is · pending remediation</span>
+          <span className="pill bg-panel2 text-muted text-[10px]">{divergent} CRAM gaps → see v04</span>
+        </div>
+        <p className="text-[12px] text-muted mt-2 mb-0">
+          <b className="text-ink mono">global_accounts_zenus_onboarding_v02</b> is the workflow currently deployed in Oscilar
+          at account opening — the 26 steps below, grouped into seven phases. It follows the correct entry / screening /
+          scoring skeleton, but scores the composite on the UAE model. Phases flagged <span className="text-med">⚠</span>
+          diverge from CRAM global-account (US) methodology; the corrected logic is in the{" "}
+          <b className="text-ink mono">global_accounts_inbound_screening</b> (v04) tab.
+        </p>
+      </Card>
+      <div className="space-y-2">
+        {ONBOARDING_PHASES.map((p) => (
+          <Card key={p.no} className="p-4 flex gap-4 items-start">
+            <div
+              className="w-10 h-10 rounded-full grid place-items-center mono text-sm font-bold shrink-0"
+              style={{ background: `${p.color}22`, border: `1px solid ${p.color}`, color: p.color }}
+            >
+              {p.no}
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="m-0 text-sm font-display">{p.label}</h3>
+              <ul className="text-[12px] text-muted mt-1.5 mb-0 pl-4 space-y-1">
+                {p.steps.map((s) => <li key={s}>{s}</li>)}
+              </ul>
+              {p.flag && (
+                <div className="mt-2 flex items-start gap-1.5 rounded-lg border border-med/30 bg-med/10 px-2.5 py-1.5">
+                  <span className="text-med text-[11px] leading-none mt-0.5">⚠</span>
+                  <span className="text-[11px] text-med">{p.flag}</span>
+                </div>
+              )}
+            </div>
+          </Card>
+        ))}
+      </div>
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">Terminal outcomes</div>
+        <div className="grid grid-cols-3 gap-2 max-sm:grid-cols-1">
+          {ONBOARDING_OUTCOMES.map((o) => (
+            <div key={o.code} className="p-3 rounded-lg bg-panel2 border border-lineSoft">
+              <div className="flex items-center gap-2">
+                <span className={`pill text-[10px] ${o.pill}`}>{o.label}</span>
+                <span className="mono text-[10px] text-muted truncate">{o.code}</span>
+              </div>
+              <p className="text-[11px] text-muted mt-1.5 mb-0">{o.desc}</p>
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+const V04_WEIGHTS: { profile: string; ct: string; geo: string; prod: string; svc: string; ch: string; txn: string; hot?: boolean }[] = [
+  { profile: "np_new · individual, new",  ct: "0.25", geo: "0.25", prod: "0.12", svc: "0.08", ch: "0.20", txn: "0.10", hot: true },
+  { profile: "np_existing",               ct: "0.20", geo: "0.20", prod: "0.09", svc: "0.06", ch: "0.15", txn: "0.30" },
+  { profile: "lp_new · SME/corp, new",    ct: "0.25", geo: "0.20", prod: "0.12", svc: "0.08", ch: "0.15", txn: "0.20", hot: true },
+  { profile: "lp_existing",               ct: "0.20", geo: "0.15", prod: "0.09", svc: "0.06", ch: "0.10", txn: "0.40" },
+];
+
+const V04_PEP: { cls: string; pill: string; result: string }[] = [
+  { cls: "None",                                   pill: "bg-panel2 text-muted", result: "No floor" },
+  { cls: "Foreign",                                pill: "bg-hi/15 text-hi",     result: "High floor · OVR-008 · EDD mandatory · SAR review · eddRequired" },
+  { cls: "Domestic / IO · band ≠ Low or x-border", pill: "bg-med/15 text-med",   result: "Medium floor · OVR-016 · EDD · eddRequired" },
+  { cls: "Domestic / IO · otherwise",              pill: "bg-panel2 text-muted", result: "Identify gate — no floor, EDD tag (enhanced monitoring)" },
+];
+
+const V04_OVERRIDES: { cls: string; style: CSSProperties; items: string[] }[] = [
+  { cls: "Prohibited", style: { background: "rgba(255,92,119,.15)", color: "#FF5C77" }, items: [
+    "OVR-001 · sanctions / TFS true match",
+    "OVR-002 · internal watchlist true match",
+    "OVR-002 · Category-A country nexus (geoFirmMax ≥ 4)",
+    "OVR-002 · prohibited nature of business",
+    "OVR-006 · prohibited entity legal type (entities)",
+  ] },
+  { cls: "High", style: { background: "rgba(255,138,61,.15)", color: "#FF8A3D" }, items: [
+    "OVR-008 · Foreign PEP",
+    "OVR-009 · material adverse-media true match",
+    "OVR-011 · high-risk country (firmToScore(geoFirmMax) = 3)",
+    "OVR-012 · high-risk nature of business (nobScore ≥ 3)",
+    "OVR-004 · UBO refused / incomplete (entities)",
+    "OVR-NPO · NPO entity — EDD + HoC approval",
+    "OVR-010 · STR/SAR filed (existing customers only)",
+    "OVR-020 · expected-vs-actual behaviour override",
+  ] },
+  { cls: "Medium", style: { background: "rgba(246,166,35,.15)", color: "#F6A623" }, items: [
+    "OVR-016 · domestic/IO PEP, high-risk relationship",
+    "HOLD · potential sanctions match (4h hold)",
+  ] },
+];
+
+function V04Code({ children }: { children: ReactNode }) {
+  return (
+    <pre className="bg-panel2 border border-lineSoft rounded-lg p-3 text-[11px] mono text-muted overflow-x-auto whitespace-pre-wrap m-0">
+      {children}
+    </pre>
+  );
+}
+
+function InboundScreeningTab() {
+  return (
+    <div className="space-y-4">
+      <Card className="p-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          <AgentAiTag agent="sayed">CRAM-correct · v04</AgentAiTag>
+          <span className="pill bg-low/15 text-low text-[10px]">supersedes v02 / v03</span>
+        </div>
+        <p className="text-[12px] text-muted mt-2 mb-0">
+          <b className="text-ink mono">global_accounts_inbound_screening</b> is the CRAM-correct inbound onboarding
+          workflow for the Global Account (US / Zenus) perimeter — a six-factor weighted composite, a PEP zero-weight
+          gate, and non-dilutive override floors. Every constant below is taken directly from the live scoring engine
+          (CRAM US §3.1 · §5.1 · §7.1 · §12.6).
+        </p>
+      </Card>
+
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">Factor weights — US, by profile (sum = 1.0000)</div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[11px] mono">
+            <thead>
+              <tr className="text-faint text-[10px] uppercase">
+                <th className="text-left font-semibold p-2">Profile</th>
+                <th className="text-right font-semibold p-2">CustType</th>
+                <th className="text-right font-semibold p-2">Geo</th>
+                <th className="text-right font-semibold p-2">Product</th>
+                <th className="text-right font-semibold p-2">Service</th>
+                <th className="text-right font-semibold p-2">Channel</th>
+                <th className="text-right font-semibold p-2">Txn</th>
+              </tr>
+            </thead>
+            <tbody>
+              {V04_WEIGHTS.map((w) => (
+                <tr key={w.profile} className={`border-t border-lineSoft ${w.hot ? "bg-ai/5" : ""}`}>
+                  <td className="p-2 text-ink">{w.profile}</td>
+                  <td className="p-2 text-right tabular-nums">{w.ct}</td>
+                  <td className="p-2 text-right tabular-nums">{w.geo}</td>
+                  <td className="p-2 text-right tabular-nums">{w.prod}</td>
+                  <td className="p-2 text-right tabular-nums">{w.svc}</td>
+                  <td className="p-2 text-right tabular-nums">{w.ch}</td>
+                  <td className="p-2 text-right tabular-nums">{w.txn}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[10px] text-faint mt-2 mb-0">PEP weight = 0.00 in every profile — resolved as a gate, never a factor. Zenus retail onboarding = np_new.</p>
+      </Card>
+
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">Composite & geography</div>
+        <V04Code>{`composite =  customerType × 0.25
+           + geography    × 0.25   // US funds-flow: firmToScore(max(SoW, SoF[, opco]))
+           + max(product, service) × 0.20   // worst-of
+           + max(initiation, delivery) × 0.20   // worst-of, NOT 50/50 avg
+           + transaction  × 0.10   // max(actualBand, investigations, STRs, behaviour)
+// PEP = 0.00 — gate only, resolved after composite
+mathBand = Low ≤1.5 · Medium ≤2.15 · High >2.15`}</V04Code>
+        <p className="text-[11px] text-muted mt-2 mb-0">
+          <b className="text-ink">Geography is US §7.1 funds-flow only</b> — source-of-wealth / source-of-funds (+ operating
+          jurisdiction for entities). Residence, nationality and country of birth are <b>not</b> scored; they feed the
+          sanctions / high-country overrides only. Customer-type sub-weights (individual): employment 0.146 · profession 0.220 ·
+          nature-of-business 0.220 · segment 0.146 · expected-activity 0.098 · UBO 0.171.
+        </p>
+      </Card>
+
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">PEP gate — zero-weight, after composite (FinCEN CDD Rule · 31 CFR 1010.520)</div>
+        <div className="space-y-1.5">
+          {V04_PEP.map((p) => (
+            <div key={p.cls} className="flex items-start gap-2 p-2 rounded-lg bg-panel2 border border-lineSoft">
+              <span className={`pill text-[10px] shrink-0 ${p.pill}`}>{p.cls}</span>
+              <span className="text-[11px] text-muted">{p.result}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">Override floors — non-dilutive, most-restrictive-wins</div>
+        <div className="grid grid-cols-3 gap-2 max-md:grid-cols-1">
+          {V04_OVERRIDES.map((o) => (
+            <div key={o.cls} className="p-3 rounded-lg bg-panel2 border border-lineSoft">
+              <span className="pill text-[10px] font-bold" style={o.style}>{o.cls}</span>
+              <ul className="text-[10.5px] text-muted mt-2 mb-0 pl-3.5 space-y-1 mono">
+                {o.items.map((it) => <li key={it}>{it}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <V04Code>{`floor = PROHIBITED > HIGH > MEDIUM > none
+finalRating = floor==PROHIBITED ? "Prohibited"
+                                : max(floorBand, mathBand)   // floor never replaces a higher band`}</V04Code>
+      </Card>
+
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">Routing — final decision (Low no longer misrouted)</div>
+        <V04Code>{`if finalRating == "Prohibited"     → GA_CRR_Decline   (terminal)
+elif finalRating == "High Risk"    → GA_CRR_Review    (terminal · MLRO / EDD)
+elif finalRating in ("Medium","Low"):
+        if eddRequired             → GA_CRR_Review    (terminal · mandatory EDD)
+        else                       → GA_CRR_Approve   (terminal)`}</V04Code>
+        <p className="text-[11px] text-muted mt-2 mb-0">
+          v02 sent Low risk into the default → Review while Medium auto-approved; v04 approves Low and Medium, routes High
+          to Review, declines Prohibited. The <span className="mono">eddRequired → Review</span> branch conditions approval
+          on EDD for any PEP / floor case — the instant-onboarding-with-mandatory-EDD-tag pattern.
+        </p>
+      </Card>
+    </div>
+  );
+}
+
+// global_accounts_transaction_screening — CRAM/Oscilar-correct TARGET (replaces the approve-all stub).
+const TXN_SCREEN_PHASES: { no: string; label: string; color: string; steps: string[] }[] = [
+  {
+    no: "01", label: "Ingest & normalise payment", color: "#39B9ED",
+    steps: [
+      "Payload: customerId · amount · currency · corridor (origin → destination) · direction (money-in / money-out) · channel (C2C/C2B/B2C/B2B/Mal2Mal) · counterparty (name, account, BIC) · beneficiary / MCC · purpose code · device / IP · timestamp",
+      "Pull the customer's current CRR band and any mandatory-EDD tags",
+    ],
+  },
+  {
+    no: "02", label: "Real-time list screening — Vital4", color: "#2FD8A6",
+    steps: [
+      "Screen counterparty (and originator, if inbound) against sanctions · PEP · watchlist · adverse media",
+      "Set list_hit and match tier (potential / true match) — Vital4 is the sole screening authority",
+    ],
+  },
+  {
+    no: "03", label: "Rule library + ML — 10 categories", color: "#F6A623",
+    steps: [
+      "Evaluate: structuring & smurfing · layering & pass-through · velocity & volume · cross-border / corridor · sanctions & TF evasion · card & merchant fraud · mule & funnel · dormancy & profile deviation · crypto / VA off-ramp · PEP & enhanced monitoring",
+      "Compute alert_score (rules + anomaly models)",
+      "EDD-tag rule: mandatory-EDD customer with money-in / money-out → force Step-up / Review",
+    ],
+  },
+  {
+    no: "04", label: "Decision — Allow / Step-up / Hold / Block", color: "#A953DF",
+    steps: [
+      "Block: sanctions / TFS true match, or prohibited corridor / counterparty",
+      "Hold: potential sanctions match (pending Vital4, 4h SLA) or Critical typology alert",
+      "Step-up: medium-risk anomaly → auth challenge / source-of-funds evidence before settlement",
+      "Allow: clean list result and alert_score below threshold",
+    ],
+  },
+  {
+    no: "05", label: "List-hit mirror — Vital4", color: "#7C6CF7",
+    steps: [
+      "Any list signal → create Vital4 case via mirror API",
+      "Link oscilarAlertId ↔ vital4CaseId in case_links — Oscilar txn screening never writes CRAM fields",
+    ],
+  },
+  {
+    no: "06", label: "Settlement gate", color: "#FF8A3D",
+    steps: [
+      "Settle only if decision = Allow AND no pending Vital4 true-match hold",
+      "Otherwise hold or reject; step-up must clear before settlement",
+    ],
+  },
+  {
+    no: "07", label: "Post-transaction monitoring", color: "#2FD8A6",
+    steps: [
+      "Rolling windows re-evaluate velocity, pass-through and corridor drift",
+      "Batch TM alerts feed the same case queue",
+    ],
+  },
+  {
+    no: "08", label: "CRAM feed & investigation", color: "#8489bd",
+    steps: [
+      "High / Critical alert → POST /api/v1/crr/events (transaction-monitoring) → reRate() → OVR-020 / OVR-010 as applicable",
+      "Mohsen prepares the case (6-step pipeline); disposition syncs bi-directionally with Oscilar → Close | Escalate | SAR",
+    ],
+  },
+];
+
+const TXN_DECISIONS: { label: string; style: CSSProperties; when: string }[] = [
+  { label: "Block",   style: { background: "rgba(255,92,119,.15)", color: "#FF5C77" }, when: "Sanctions / TFS true match · prohibited corridor or counterparty" },
+  { label: "Hold",    style: { background: "rgba(246,166,35,.15)", color: "#F6A623" }, when: "Potential sanctions match (pending Vital4, 4h) · Critical typology alert" },
+  { label: "Step-up", style: { background: "rgba(169,83,223,.16)", color: "#C08CF0" }, when: "Medium anomaly · mandatory-EDD money-in/out → challenge / SoF before settle" },
+  { label: "Allow",   style: { background: "rgba(47,216,166,.15)", color: "#2FD8A6" }, when: "Clean list result · alert_score below threshold" },
+];
+
+const TXN_OUTCOMES: { code: string; label: string; pill: string; desc: string }[] = [
+  { code: "TS_Block",   label: "Block",   pill: "bg-hi/15 text-hi",   desc: "Payment blocked — true match / prohibited. No settlement." },
+  { code: "TS_Hold",    label: "Hold",    pill: "bg-med/15 text-med", desc: "Held pending Vital4 disposition or MLRO review." },
+  { code: "TS_Allow",   label: "Allow",   pill: "bg-low/15 text-low", desc: "Cleared to settlement gate; monitored post-settlement." },
+];
+
+function TransactionScreeningTab() {
+  return (
+    <div className="space-y-4">
+      <Card className="p-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          <AgentAiTag agent="mohsen">Transaction screening · target</AgentAiTag>
+          <span className="pill bg-low/15 text-low text-[10px]">CRAM/Oscilar-correct</span>
+          <span className="pill bg-hi/15 text-hi text-[10px]">replaces approve-all stub</span>
+        </div>
+        <p className="text-[12px] text-muted mt-2 mb-0">
+          The currently deployed <b className="text-ink mono">global_accounts_transaction_screening</b> approves on
+          <span className="mono"> transaction_amount &gt; 0</span> and performs no list screening — an approve-all
+          pass-through. This is the CRAM/Oscilar-correct target: real-time Vital4 list screening, the ten-category rule
+          library, an Allow / Step-up / Hold / Block decision, a settlement gate behind any Vital4 true-match hold,
+          post-transaction monitoring, and the CRAM re-rating feed.
+        </p>
+      </Card>
+
+      <div className="space-y-2">
+        {TXN_SCREEN_PHASES.map((p) => (
+          <Card key={p.no} className="p-4 flex gap-4 items-start">
+            <div
+              className="w-10 h-10 rounded-full grid place-items-center mono text-sm font-bold shrink-0"
+              style={{ background: `${p.color}22`, border: `1px solid ${p.color}`, color: p.color }}
+            >
+              {p.no}
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="m-0 text-sm font-display">{p.label}</h3>
+              <ul className="text-[12px] text-muted mt-1.5 mb-0 pl-4 space-y-1">
+                {p.steps.map((s) => <li key={s}>{s}</li>)}
+              </ul>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">Decision taxonomy</div>
+        <div className="space-y-1.5">
+          {TXN_DECISIONS.map((d) => (
+            <div key={d.label} className="flex items-start gap-2 p-2 rounded-lg bg-panel2 border border-lineSoft">
+              <span className="pill text-[10px] font-bold shrink-0" style={d.style}>{d.label}</span>
+              <span className="text-[11px] text-muted">{d.when}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">Terminal outcomes</div>
+        <div className="grid grid-cols-3 gap-2 max-sm:grid-cols-1">
+          {TXN_OUTCOMES.map((o) => (
+            <div key={o.code} className="p-3 rounded-lg bg-panel2 border border-lineSoft">
+              <div className="flex items-center gap-2">
+                <span className={`pill text-[10px] ${o.pill}`}>{o.label}</span>
+                <span className="mono text-[10px] text-muted truncate">{o.code}</span>
+              </div>
+              <p className="text-[11px] text-muted mt-1.5 mb-0">{o.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[10px] text-faint mt-2 mb-0">
+          Authority: Vital4 sole writer for sanctions / PEP / adverse / watchlist. Oscilar decisions mirror list hits to
+          Vital4 and never write CRAM fields. SLAs — sanctions true match: immediate · potential match: 4h · TM Critical: immediate.
+        </p>
+      </Card>
+    </div>
+  );
+}
+
+// ─── Scenario playbook: Foreign-PEP / RCA client on the Zenus corridor ───────────────
+const SCENARIO_COUNTRIES =
+  "Egypt · Pakistan · Turkey · Singapore · Bangladesh · India · Philippines · UAE · Jordan · UK · Morocco · other Middle-East high-risk";
+
+const SCENARIO_MATRIX: { profile: string; geo: string; floor: string; rating: string; onboarding: string; txn: string; pill: string }[] = [
+  { profile: "Clean · non-PEP",        geo: "Low–Medium", floor: "none",           rating: "Low / Medium", onboarding: "Approve + monitor",       txn: "Allow (screened)",          pill: "bg-low/15 text-low" },
+  { profile: "Foreign PEP",            geo: "Low–Medium", floor: "OVR-008 High",   rating: "High",         onboarding: "Review · EDD · eddRequired", txn: "Step-up / Review each txn", pill: "bg-hi/15 text-hi" },
+  { profile: "RCA of Foreign PEP *",   geo: "Low–Medium", floor: "OVR-008 High",   rating: "High",         onboarding: "Review · EDD · eddRequired", txn: "Step-up / Review each txn", pill: "bg-hi/15 text-hi" },
+  { profile: "IO PEP",                 geo: "Low–Medium", floor: "OVR-016 Medium", rating: "Medium",       onboarding: "Approve + EDD",          txn: "Enhanced monitoring",       pill: "bg-med/15 text-med" },
+];
+
+const SCENARIO_WORKFLOWS: {
+  key: string; label: string; intro: string; phases: { no: string; label: string; color: string; steps: string[] }[];
+}[] = [
+  {
+    key: "onboarding",
+    label: "global_accounts_zenus_onboarding",
+    intro: "Customer risk-rating at account opening. Geography is funds-flow (nationality/residence not scored); the Foreign-PEP / RCA gate is what elevates the rating.",
+    phases: [
+      { no: "01", label: "Capture", color: "#39B9ED", steps: [
+        "Residence / nationality recorded for the file — NOT scored (US §7.1)",
+        "Source-of-wealth country + source-of-funds country (funds from Zenus → SoF = US)",
+        "PEP relationship: self / relative / close associate + the principal PEP's tier",
+      ] },
+      { no: "02", label: "Screening — Vital4", color: "#2FD8A6", steps: [
+        "Sanctions · PEP · adverse media · watchlist on the customer",
+        "For an RCA, also screen and record the principal PEP",
+      ] },
+      { no: "03", label: "Geography — funds-flow", color: "#F6A623", steps: [
+        "geographyScore = firmToScore(max(SoW, SoF))",
+        "Zenus (US) = Low; home country still counts — Egypt 1.75 / Turkey 1.65 → Medium, the rest → Low",
+        "None of these reach High and none are FATF/OFAC-listed → no OVR-011 / OVR-002",
+      ] },
+      { no: "04", label: "PEP / RCA gate", color: "#A953DF", steps: [
+        "Self Foreign PEP OR relative/associate of a Foreign PEP → treat as Foreign → OVR-008 HIGH + eddRequired + SAR review",
+        "IO PEP → OVR-016 MEDIUM floor",
+        "None → no floor, rating from the composite band",
+      ] },
+      { no: "05", label: "Composite + overrides", color: "#7C6CF7", steps: [
+        "Six-factor composite (CT 0.25 · Geo 0.25 · P&S 0.20 · Ch 0.20 · Txn 0.10); PEP = 0 weight",
+        "finalRating = max(floorBand, mathBand) — non-dilutive",
+      ] },
+      { no: "06", label: "Route", color: "#8489bd", steps: [
+        "Prohibited → GA_CRR_Decline · High → GA_CRR_Review (EDD) · Medium/Low → GA_CRR_Approve",
+        "eddRequired → route to Review even at Medium/Low (mandatory-EDD tag set for downstream money-in/out)",
+      ] },
+    ],
+  },
+  {
+    key: "inbound",
+    label: "global_accounts_inbound_screening",
+    intro: "Money-in on the US (Zenus) → client-country corridor. Screens the payer and enforces the mandatory-EDD tag set at onboarding.",
+    phases: [
+      { no: "01", label: "Ingest", color: "#39B9ED", steps: [
+        "Corridor: US (Zenus) → client country · originator (payer) · amount · purpose code",
+        "Pull the customer's CRR band and mandatory-EDD tag",
+      ] },
+      { no: "02", label: "List screening — Vital4", color: "#2FD8A6", steps: [
+        "Screen originator and customer against sanctions / PEP / watchlist / adverse",
+        "Set list_hit + match tier",
+      ] },
+      { no: "03", label: "Rules + ML", color: "#F6A623", steps: [
+        "Structuring · pass-through · velocity · corridor concentration",
+        "PEP & enhanced-monitoring category always on for a Foreign-PEP / RCA customer",
+      ] },
+      { no: "04", label: "EDD-tag decision", color: "#A953DF", steps: [
+        "Mandatory-EDD (Foreign-PEP / RCA) → force Step-up / Review on the credit",
+        "Else Allow / Hold / Block by list result + alert_score",
+      ] },
+      { no: "05", label: "Mirror + settlement gate", color: "#7C6CF7", steps: [
+        "List hit → Vital4 mirror (oscilarAlertId ↔ vital4CaseId); Oscilar never writes CRAM",
+        "Post only if Allow AND no pending Vital4 true-match hold",
+      ] },
+      { no: "06", label: "CRAM feed", color: "#8489bd", steps: [
+        "High / Critical → reRate() → OVR-020 / OVR-010; case to Mohsen",
+      ] },
+    ],
+  },
+  {
+    key: "outbound",
+    label: "global_accounts_outbound_screening",
+    intro: "Money-out from the client account. Screens the beneficiary and applies the mandatory-EDD tag + destination-corridor risk (this is where FATF/OFAC bite, on the beneficiary jurisdiction).",
+    phases: [
+      { no: "01", label: "Ingest", color: "#39B9ED", steps: [
+        "Corridor: client country → destination · beneficiary (name, account, BIC) · amount · purpose code",
+        "Pull the customer's CRR band and mandatory-EDD tag",
+      ] },
+      { no: "02", label: "List screening — Vital4", color: "#2FD8A6", steps: [
+        "Screen beneficiary and customer against sanctions / PEP / watchlist / adverse",
+      ] },
+      { no: "03", label: "Rules + ML", color: "#F6A623", steps: [
+        "Destination-corridor risk: beneficiary jurisdiction on FATF grey/black or OFAC/UN → floor / Block",
+        "Funnel · pass-through · rapid out-flow after a Zenus credit",
+      ] },
+      { no: "04", label: "EDD-tag decision", color: "#A953DF", steps: [
+        "Mandatory-EDD (Foreign-PEP / RCA) → force Step-up / Review; require source-of-funds evidence before release",
+        "Beneficiary in FATF-black / OFAC → Block; potential match → Hold (4h)",
+      ] },
+      { no: "05", label: "Mirror + settlement gate", color: "#7C6CF7", steps: [
+        "List hit → Vital4 mirror; release only if Allow AND no pending true-match hold",
+      ] },
+      { no: "06", label: "CRAM feed", color: "#8489bd", steps: [
+        "High / Critical → reRate() → OVR-020 / OVR-010; case to Mohsen",
+      ] },
+    ],
+  },
+  {
+    key: "transaction",
+    label: "global_accounts_transaction_screening",
+    intro: "Applies to both directions. Same target as the general transaction-screening workflow, with the archetype rules always on.",
+    phases: [
+      { no: "01", label: "Both directions", color: "#39B9ED", steps: [
+        "Every money-in and money-out runs the full Allow / Step-up / Hold / Block flow",
+      ] },
+      { no: "02", label: "EDD-tag rule", color: "#A953DF", steps: [
+        "Foreign-PEP / RCA mandatory-EDD tag → force Step-up / Review on any transaction",
+        "PEP & enhanced-monitoring rule category evaluated on every event",
+      ] },
+      { no: "03", label: "Settlement + feed", color: "#8489bd", steps: [
+        "Settlement gate behind any Vital4 true-match hold; High/Critical → reRate()",
+        "See the global_accounts_transaction_screening tab in card 15 for the full 8-phase flow",
+      ] },
+    ],
+  },
+];
+
+function ScenarioPlaybookTab() {
+  const [wf, setWf] = useState<string>("onboarding");
+  const active = SCENARIO_WORKFLOWS.find((w) => w.key === wf) ?? SCENARIO_WORKFLOWS[0];
+  const tabCls = (on: boolean) =>
+    `px-3 py-1.5 rounded-lg text-[11px] font-semibold border transition mono ${on ? "bg-ai/20 border-ai text-ai" : "border-line text-muted hover:bg-panel2"}`;
+  return (
+    <div className="space-y-4">
+      <Card className="p-4">
+        <div className="flex items-center gap-2 flex-wrap">
+          <AgentAiTag agent="sayed">Scenario · Foreign-PEP / RCA</AgentAiTag>
+          <span className="pill bg-panel2 text-muted text-[10px]">Zenus corridor</span>
+          <span className="pill bg-low/15 text-low text-[10px]">CRAM-correct</span>
+        </div>
+        <p className="text-[12px] text-muted mt-2 mb-0">
+          Client resident in <b className="text-ink">{SCENARIO_COUNTRIES}</b>, with funds arriving from Zenus.
+          Under US §7.1 their nationality / residence is <b className="text-ink">not scored</b> — geography is funds-flow,
+          so the corridor sits Low–Medium and none of these jurisdictions trip a FATF/OFAC floor. The risk driver is the
+          <b className="text-ink"> Foreign-PEP / RCA gate</b>: a PEP, or a close relative / associate of a PEP, floors the
+          customer to High (OVR-008), mandates EDD, and forces review on every money-in and money-out.
+        </p>
+      </Card>
+
+      <Card className="p-4">
+        <div className="text-[11px] text-faint uppercase tracking-wide mb-2">Outcome — same client, by PEP profile</div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[11px]">
+            <thead>
+              <tr className="text-faint text-[10px] uppercase">
+                <th className="text-left font-semibold p-2">Profile</th>
+                <th className="text-left font-semibold p-2">Geography</th>
+                <th className="text-left font-semibold p-2">Floor</th>
+                <th className="text-left font-semibold p-2">Rating</th>
+                <th className="text-left font-semibold p-2">Onboarding</th>
+                <th className="text-left font-semibold p-2">Money-in/out</th>
+              </tr>
+            </thead>
+            <tbody>
+              {SCENARIO_MATRIX.map((r) => (
+                <tr key={r.profile} className="border-t border-lineSoft">
+                  <td className="p-2"><span className={`pill text-[10px] ${r.pill}`}>{r.profile}</span></td>
+                  <td className="p-2 text-muted">{r.geo}</td>
+                  <td className="p-2 mono text-muted">{r.floor}</td>
+                  <td className="p-2 text-ink">{r.rating}</td>
+                  <td className="p-2 text-muted">{r.onboarding}</td>
+                  <td className="p-2 text-muted">{r.txn}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[10px] text-faint mt-2 mb-0">* RCA is captured at the principal PEP's tier — a relative / close associate of a Foreign PEP is treated as Foreign. PepStatus has no separate RCA value, so this capture rule must be enforced at onboarding.</p>
+      </Card>
+
+      <div className="flex gap-2 flex-wrap">
+        {SCENARIO_WORKFLOWS.map((w) => (
+          <button key={w.key} type="button" onClick={() => setWf(w.key)} className={tabCls(wf === w.key)}>
+            {w.label}
+          </button>
+        ))}
+      </div>
+
+      <Card className="p-4">
+        <p className="text-[12px] text-muted m-0">{active.intro}</p>
+      </Card>
+      <div className="space-y-2">
+        {active.phases.map((p) => (
+          <Card key={p.no} className="p-4 flex gap-4 items-start">
+            <div
+              className="w-10 h-10 rounded-full grid place-items-center mono text-sm font-bold shrink-0"
+              style={{ background: `${p.color}22`, border: `1px solid ${p.color}`, color: p.color }}
+            >
+              {p.no}
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="m-0 text-sm font-display">{p.label}</h3>
+              <ul className="text-[12px] text-muted mt-1.5 mb-0 pl-4 space-y-1">
+                {p.steps.map((s) => <li key={s}>{s}</li>)}
+              </ul>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </div>
   );
 }

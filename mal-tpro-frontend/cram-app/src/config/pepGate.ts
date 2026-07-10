@@ -214,17 +214,22 @@ export function pepOverrideRationale(
   pep: PepStatus,
   relationshipHighRisk: boolean,
   perimeter: CompliancePerimeter,
+  rca?: "relative" | "associate",
 ): string {
+  const rcaSuffix =
+    rca === "relative" ? " · via close relative of PEP (RCA — inherits principal tier)"
+    : rca === "associate" ? " · via close associate of PEP (RCA — inherits principal tier)"
+    : "";
   if (pep === "Foreign") {
-    return perimeter === "global_account"
+    return (perimeter === "global_account"
       ? "Foreign PEP — FinCEN CDD Rule · automatic enhanced measures"
-      : "Foreign PEP — CBUAE Art. 15(14) First · automatic enhanced measures";
+      : "Foreign PEP — CBUAE Art. 15(14) First · automatic enhanced measures") + rcaSuffix;
   }
   if ((pep === "Domestic" || pep === "IO") && relationshipHighRisk) {
     const label = pep === "IO" ? "International-organization PEP" : "Domestic PEP";
-    return perimeter === "global_account"
+    return (perimeter === "global_account"
       ? `${label} — high-risk relationship (FinCEN CDD Rule)`
-      : `${label} — high-risk business relationship (CBUAE Art. 15 Second)`;
+      : `${label} — high-risk business relationship (CBUAE Art. 15 Second)`) + rcaSuffix;
   }
   return "";
 }

@@ -412,11 +412,12 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   if (i.watchlist === "True Match") overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: "Internal watchlist true match" });
   if (geoFirmMax >= 4 || SANCTIONS_A.includes(i.residenceName) || SANCTIONS_A.includes(i.sofName))
     overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: "Category-A sanctioned-country nexus" });
+  const rcaKind = i.pepRelationship === "relative" || i.pepRelationship === "associate" ? i.pepRelationship : undefined;
   if (i.pep === "Foreign") {
     overrides.push({
       id: "OVR-008",
       cls: "HIGH",
-      why: pepOverrideRationale("Foreign", true, perimeter) || "Foreign PEP — automatic enhanced measures",
+      why: pepOverrideRationale("Foreign", true, perimeter, rcaKind) || "Foreign PEP — automatic enhanced measures",
     });
   }
   if (i.adverse === "True Match") overrides.push({ id: "OVR-009", cls: "HIGH", why: "Material adverse media" });
@@ -432,7 +433,7 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
     overrides.push({
       id: "OVR-016",
       cls: "MEDIUM",
-      why: pepOverrideRationale(i.pep, true, perimeter) || `${i.pep === "IO" ? "International-organization PEP" : "Domestic PEP"} — high-risk relationship`,
+      why: pepOverrideRationale(i.pep, true, perimeter, rcaKind) || `${i.pep === "IO" ? "International-organization PEP" : "Domestic PEP"} — high-risk relationship`,
     });
   }
   if (pepGateRaw.crossBorderExposure && (i.pep === "Domestic" || i.pep === "IO")) {
@@ -441,6 +442,19 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
         ? "Cross-border exposure — domestic/IO PEP enhanced due diligence (FinCEN CDD Rule)"
         : "Cross-border exposure — domestic/IO PEP may require Art. 15(b–d) measures · Mohsen OS-TM-022",
     );
+  }
+  // RCA (relative / close associate of a PEP) — provenance + capture-consistency guard.
+  // Does not change the tier or floor; the inherited tier in `i.pep` already drives the gate.
+  if (rcaKind) {
+    if (i.pep === "None") {
+      profileNotes.push(
+        `PEP relationship captured as ${rcaKind === "relative" ? "close relative" : "close associate"} of a PEP, but tier is None — an RCA must inherit the principal PEP's tier (Foreign / IO). Capture incomplete (FATF/FinCEN RCA rule).`,
+      );
+    } else {
+      profileNotes.push(
+        `RCA: customer is a ${rcaKind === "relative" ? "close relative" : "close associate"} of a ${i.pep} PEP — inherits the ${i.pep} tier (FATF/FinCEN RCA rule).`,
+      );
+    }
   }
   if (!isNewCustomer && (i.strsScore >= 3 || i.investigationsScore >= 3))
     overrides.push({ id: "OVR-010", cls: "HIGH", why: "STR/SAR filed or confirmed suspicion" });

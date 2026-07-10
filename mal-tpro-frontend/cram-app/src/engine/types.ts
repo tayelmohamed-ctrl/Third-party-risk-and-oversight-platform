@@ -92,6 +92,13 @@ export interface ScoreInput {
   professionScore: Score;
   natureOfBusinessScore: Score;
   pep: PepStatus;
+  /**
+   * Provenance of the PEP tier in `pep`. An RCA — a close relative or associate of a PEP —
+   * inherits the principal PEP's tier (FATF/FinCEN RCA rule), so `pep` must hold that tier
+   * (Foreign / IO) with `pepRelationship` set to "relative" or "associate". Default "self".
+   * Does not change scoring — only the override provenance/audit and a capture-consistency guard.
+   */
+  pepRelationship?: "self" | "relative" | "associate";
   segmentScore: Score;
   /** @deprecated use expectedMonthlyBand — kept for assessment snapshot compat */
   monthlyValueScore?: Score;
