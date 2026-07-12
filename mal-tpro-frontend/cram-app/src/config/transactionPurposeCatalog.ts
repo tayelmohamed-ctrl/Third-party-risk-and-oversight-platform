@@ -134,6 +134,76 @@ export const TYPOLOGY_ANNEX = {
   })),
 };
 
+/**
+ * Corridor case intelligence — Pakistan & India.
+ * Investigator-facing typologies distilled from recent public enforcement reporting
+ * (2026). Complements the structured PK typology library; also gives India inline
+ * coverage (no dedicated India library yet). Surfaced in the TM investigator guide.
+ */
+export type CorridorCaseIntel = {
+  id: string;
+  country: "Pakistan" | "India";
+  name: string;
+  category: "ML" | "TF" | "TBML" | "Cyber" | "PEP";
+  severity: "Critical" | "High" | "Medium";
+  description: string;
+  indicators: string[];
+  oscilar: string[];
+  source: string;
+};
+
+export const CORRIDOR_CASE_INTEL: CorridorCaseIntel[] = [
+  {
+    id: "PK-INT-01", country: "Pakistan", name: "Hawala / hundi multi-currency cash", category: "ML", severity: "High",
+    description: "FIA raids in Lahore seized Rs20.4m plus USD / AED / GBP / SAR / AUD cash with digital and documentary hawala/hundi records — informal value transfer outside the formal channel.",
+    indicators: ["Multi-currency cash in/out", "Informal exchange counterparties", "Structured amounts across currencies", "No formal remittance trail"],
+    oscilar: ["Layering & pass-through", "Cross-border & corridor risk", "Mule & funnel accounts"],
+    source: "Gulf News, 2026 — FIA hawala raids",
+  },
+  {
+    id: "PK-INT-02", country: "Pakistan", name: "Real-estate laundering via front / benami company", category: "ML", severity: "Critical",
+    description: "NAB attached a ~Rs100bn Karachi tower; ~Rs8bn crime proceeds were funnelled through a front construction company and a benami (nominee) frontman while the principal absconded.",
+    indicators: ["Property / land via newly-formed company", "Benami / nominee holder", "Construction funded from opaque sources", "Undisclosed or absconding principal"],
+    oscilar: ["Layering & pass-through", "Dormancy & profile deviation"],
+    source: "Dawn, 2026 — NAB Bahria Icon Tower",
+  },
+  {
+    id: "PK-INT-03", country: "Pakistan", name: "UAE-diaspora unexplained wealth + crypto", category: "ML", severity: "High",
+    description: "~$150bn Pakistani-held UAE assets under review; crypto used to evade monitoring; ownership inconsistent with declared income or employment.",
+    indicators: ["UAE / Dubai assets vs declared income mismatch", "Rapid fiat→crypto after credits", "Dubai counterparty nexus", "No employment / business in the Gulf"],
+    oscilar: ["Cross-border & corridor risk", "Crypto / VA off-ramp", "PEP & enhanced monitoring"],
+    source: "Arab News PK, 2026 — NAB–UAE cooperation",
+  },
+  {
+    id: "PK-INT-04", country: "Pakistan", name: "Trade-based ML & DNFBP under-reporting", category: "TBML", severity: "High",
+    description: "IMF pressed Pakistan on trade-based money laundering and weak DNFBP / real-estate reporting and beneficial-ownership sharing ahead of the FY26-27 budget.",
+    indicators: ["Trade-value mismatch (over/under-invoicing)", "DNFBP counterparties (real estate, dealers)", "Missing / last-minute beneficial ownership", "Low-substance trading entities"],
+    oscilar: ["Cross-border & corridor risk", "Layering & pass-through"],
+    source: "Open Magazine, 2026 — IMF TBML pressure",
+  },
+  {
+    id: "PK-INT-05", country: "Pakistan", name: "Terror-financing — crypto & NPO / charity channels", category: "TF", severity: "Critical",
+    description: "FATF (2019) found Pakistan lacked sufficient understanding of transnational TF risk — assessed as persisting. LeT / JeM resurgence with increasing use of crypto and digital wallets; NPOs, charities, precious metals / gems and real estate remain vulnerable (Rec. 5 & 6 gaps).",
+    indicators: ["Donations / collections to NPO or charity with onward third-party transfers", "Crypto / digital-wallet fundraising", "Precious-metals / gems dealers", "Front charities", "Small-value many-to-one collections"],
+    oscilar: ["Sanctions & TF evasion", "Crypto / VA off-ramp", "PEP & enhanced monitoring"],
+    source: "Geopolitical Monitor, 2026 — Pakistan's Illusion of Compliance",
+  },
+  {
+    id: "IN-INT-01", country: "India", name: "Mule-network cyber-laundering + crypto off-ramp", category: "Cyber", severity: "Critical",
+    description: "FIU-IND uncovered a ~$101m cyber-fraud laundering network across 5,000+ mule accounts; funds moved between accounts within minutes then converted to cryptocurrency to break the trail.",
+    indicators: ["Sub-hour in→out", "Fan-out to many newly-opened accounts", "Credit then rapid emptying", "Fiat→crypto off-ramp", "Cyber-fraud victim funds"],
+    oscilar: ["Mule & funnel accounts", "Velocity & volume anomalies", "Crypto / VA off-ramp"],
+    source: "South Asian Herald, 2026 — India $101m laundering (Egmont)",
+  },
+  {
+    id: "IN-INT-02", country: "India", name: "PEP / political funds — asset purchase-leaseback round-trip", category: "PEP", severity: "High",
+    description: "India's ED froze ~$46m; ~$16.8m was routed via related companies to buy a jet and helicopter that were then leased back to the originating party — a circular related-party layering pattern.",
+    indicators: ["Transfers to related / associated companies", "Hard-asset purchase (aircraft, vehicles) then lease-back to originator", "Politically-exposed nexus", "Circular related-party flows"],
+    oscilar: ["PEP & enhanced monitoring", "Layering & pass-through"],
+    source: "Dawn, 2026 — ED freezes TMC accounts",
+  },
+];
+
 /** Link purpose codes to corridors and typologies for the annex */
 export function purposeTypologyLinks(entry: PurposeCatalogEntry & { flowId?: PurposeFlowId }) {
   const text = [

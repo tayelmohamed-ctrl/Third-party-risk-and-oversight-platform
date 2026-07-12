@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Network, Scale, ScrollText, Crosshair, Flag, FileText, Settings, RefreshCw, ShieldCheck, ClipboardList, GraduationCap, ClipboardCheck, Package, Archive } from "lucide-react";
+import { LayoutDashboard, Network, Scale, ScrollText, Crosshair, Flag, FileText, Settings, RefreshCw, ShieldCheck, ClipboardList, GraduationCap, ClipboardCheck, Package, Archive, UserCheck } from "lucide-react";
 import MalLogo from "./MalLogo";
 import AgentChip from "./agents/AgentChip";
 import AgentAvatar from "./agents/AgentAvatar";
@@ -18,6 +18,7 @@ const NAV = [
   { section: "Operate", items: [
     { to: "/test-bench", label: "CRAM Risk Test Bench", icon: Scale, agent: "sayed" as const },
     { to: "/kyb-checklist", label: "KYB Document Checklists", icon: ClipboardCheck, agent: "sayed" as const },
+    { to: "/edd-checklist", label: "EDD Checklists (Individuals)", icon: UserCheck, agent: "sayed" as const },
     { to: "/rerating", label: "Re-rating & Reviews", icon: RefreshCw, agent: "mohsen" as const },
     { to: "/feeds", label: "Signal Feeds", icon: Crosshair, agent: "sayed" as const },
     { to: "/screening", label: "Screening & Monitoring", icon: ShieldCheck, agent: "sayed" as const },

@@ -12,6 +12,7 @@ import {
   FLOW_LABELS,
   purposeTypologyLinks,
   TYPOLOGY_ANNEX,
+  CORRIDOR_CASE_INTEL,
   type PurposeFlowId,
   type PurposeCatalogEntry,
 } from "../../config/transactionPurposeCatalog";
@@ -407,6 +408,46 @@ function TypologiesTab() {
           </div>
         </Card>
       ))}
+
+      {/* Corridor case intelligence — Pakistan & India (recent enforcement) */}
+      <Card className="p-4">
+        <Sec>Corridor case intelligence — Pakistan &amp; India</Sec>
+        <p className="text-[11px] text-muted mt-1 mb-0">
+          Typologies distilled from 2026 public enforcement reporting on the Pakistan and India corridors. Use alongside the
+          structured PK library; India has no dedicated library yet, so these are its inline typologies.
+        </p>
+      </Card>
+      {(["Pakistan", "India"] as const).map((country) => {
+        const rows = CORRIDOR_CASE_INTEL.filter((c) => c.country === country);
+        if (!rows.length) return null;
+        return (
+          <div key={country}>
+            <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-1.5 mt-1">
+              {country} — {rows.length} typolog{rows.length === 1 ? "y" : "ies"}
+            </div>
+            <div className="space-y-2">
+              {rows.map((c) => (
+                <Card key={c.id} className="p-4">
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="mono text-[10px] text-faint">{c.id}</span>
+                    <span className="font-semibold text-[13px]">{c.name}</span>
+                    <span className={`pill text-[10px] ${c.severity === "Critical" ? "bg-proh/20 text-[#ff7ea0]" : c.severity === "High" ? "bg-med/15 text-med" : "bg-ai/15 text-ai"}`}>{c.severity}</span>
+                    <span className="pill bg-panel2 text-muted text-[10px]">{c.category}</span>
+                  </div>
+                  <p className="text-[11px] text-muted mt-2 mb-2">{c.description}</p>
+                  <div className="text-[10px] text-faint">
+                    <b className="text-muted">Indicators:</b> {c.indicators.join(" · ")}
+                  </div>
+                  <div className="text-[10px] text-faint mt-1">
+                    <b className="text-muted">Oscilar:</b> {c.oscilar.join(", ")}
+                  </div>
+                  <div className="text-[9px] text-faint mt-1 italic">{c.source}</div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
