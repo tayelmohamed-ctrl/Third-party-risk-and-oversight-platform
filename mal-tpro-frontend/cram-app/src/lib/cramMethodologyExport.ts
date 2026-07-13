@@ -9,10 +9,10 @@ export interface CramMethodologyDoc {
 }
 
 export const CRAM_METHODOLOGY_UAE: CramMethodologyDoc = {
-  url: "/Mal_Customer_Risk_Assessment_Methodology_v1_0.docx",
-  filename: "Mal_Customer_Risk_Assessment_Methodology_v1_0.docx",
+  url: "/Mal_Customer_Risk_Assessment_Methodology_CBUAE_v1_1.pdf",
+  filename: "Mal_Customer_Risk_Assessment_Methodology_CBUAE_v1_1.pdf",
   modelVersionId: "CRAM-CBUAE-2026-05-FREEZE-01",
-  label: "CBUAE Digital Bank CRAM",
+  label: "CBUAE Digital Bank CRAM · Mal-MTH-CRA-01 v1.1",
 };
 
 export const CRAM_METHODOLOGY_US: CramMethodologyDoc = {

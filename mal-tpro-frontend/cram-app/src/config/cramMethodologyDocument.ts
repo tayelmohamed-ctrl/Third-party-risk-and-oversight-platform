@@ -143,7 +143,7 @@ export const NP_PROFILE_PARAMETERS = {
   rows: [
     ["Employment / occupation risk", "15%", "Salaried employee, pensioner or student with verified sponsor/income source", "Self-employed, freelancer, commission-based, variable income, or occupation pending clarification", "Unemployed with high activity, high-risk occupation, cash-intensive occupation, or unclear source of funds"],
     ["Customer segment", "10%", "Mass retail/payroll with verified employer and ordinary product needs", "Affluent, SME owner, freelancer, non-payroll, or multiple product needs", "HNW, private-banking-like profile, politically connected exposure, or high-value relationship"],
-    ["PEP exposure", "Gate only (not in composite)", "No PEP exposure", "Domestic/IO PEP identified — enhanced measures only if high-risk relationship (Art. 15 Second)", "Foreign PEP — automatic High floor and EDD (Art. 15 First)"],
+    ["PEP exposure", "15%", "No PEP exposure", "Domestic PEP, former PEP or low-materiality associate where policy permits Medium treatment", "Foreign PEP, IO PEP, close associate/family of material PEP or high-risk PEP nexus"],
     ["Source of funds quality", "15%", "Verified salary, pension or regulated-employer income", "Self-declared income with reasonable evidence or partially verified business income", "Third-party funds, unexplained funds, complex or inconsistent source"],
     ["Source of wealth complexity", "10%", "Not applicable or simple verified accumulation", "Business ownership, investments or inheritance with partial support", "Complex offshore wealth, crypto-derived wealth, or unverified wealth"],
     ["Residency / legal status", "10%", "Resident with verified address and legal status", "Non-resident in acceptable country with strong evidence, or short-term residence with explanation", "Unclear residence, conflicting addresses, transient profile, or unable to verify"],
@@ -166,6 +166,31 @@ export const LP_PROFILE_PARAMETERS = {
   ],
 };
 
+/** §6.3.1 FI / Regulated Partner — Customer Profile Factor Parameters */
+export const FI_PROFILE_PARAMETERS = {
+  headers: ["Parameter", "Weight", "Low = 1", "Medium = 2", "High = 3"],
+  rows: [
+    ["Nature of FI activity", "25%", "Standard regulated banking/financial activity with no high-risk services", "Regulated FI with material cross-border, wholesale or higher-risk services within appetite", "Correspondent, nested/downstream, payable-through, MSB/exchange, stored value, VASP, private banking or trade-finance high-risk activity"],
+    ["Legal structure and physical presence", "20%", "Simple regulated legal structure with verified physical presence", "Group structure with added complexity but transparent and verified", "Shell bank, online-only bank without adequate licensing/physical presence, unlicensed entity or structure outside appetite"],
+    ["Ownership and control transparency", "20%", "Transparent ownership/control with no unexplained recent changes", "Complex ownership or recent ownership change but verified and explained", "Bearer/nominee/trust opacity, unidentified UBO or inability to verify control persons"],
+    ["Regulatory oversight", "20%", "Regulator applies FATF standards; no material AML/CFT/CPF concern", "Regime or enforcement history requires enhanced review", "Weak regulator, FATF high-risk jurisdiction, unclear licence or serious AML/CFT/CPF enforcement action"],
+    ["Adverse regulatory / financial-crime history", "15%", "No material enforcement, sanctions, fraud or adverse media history", "Minor or remediated issue with evidence", "Recent serious AML/CFT/CPF sanction, sanctions evasion, fraud, corruption or unresolved adverse intelligence"],
+  ],
+};
+
+/** §6.3.2 FI Systems and Controls Factor Parameters — enters composite once at its §5.1 factor weight */
+export const FI_SYSTEMS_CONTROLS_PARAMETERS = {
+  headers: ["Parameter", "Weight", "Low = 1", "Medium = 2", "High = 3"],
+  rows: [
+    ["KYC/CDD and sanctions policy", "20%", "Written, approved and recently updated AML/CFT/CPF/TFS policies", "Policy exists but is outdated, incomplete or weakly evidenced", "No adequate policy evidence or refusal to provide"],
+    ["TFS/sanctions screening capability", "20%", "Automated screening of customers, related parties and transactions with list updates and escalation", "Partial/manual screening or limitations requiring compensating controls", "No effective screening evidence or unresolved control weakness"],
+    ["AML monitoring and STR/SAR framework", "20%", "Documented monitoring, escalation and reporting framework with governance evidence", "Framework exists but gaps or limited evidence remain", "No documented framework or material weakness"],
+    ["PEP/adverse media controls", "15%", "Robust PEP/adverse media screening and periodic refresh", "Partial controls or manual reliance", "No effective PEP/adverse media control evidence"],
+    ["Correspondent/nested customer controls", "15%", "Clear downstream customer prohibition or controls, payable-through restrictions and respondent due diligence", "Limited downstream visibility but mitigants documented", "Unknown downstream exposure, nested relationships or payable-through features without control"],
+    ["Independent audit, training and governance", "10%", "Recent independent AML audit, remediation tracking, role-based training and governance reporting", "Audit/training exists but limited or stale", "No independent review, training or governance evidence"],
+  ],
+};
+
 export const GEOGRAPHY_PILLARS = {
   headers: ["Country risk pillar", "Weight", "Low = 1", "Medium = 2", "High = 3"],
   rows: [
@@ -180,11 +205,28 @@ export const GEOGRAPHY_PILLARS = {
   ],
 };
 
+/** §7.2 Customer-specific geography attributes — how country risk enters each customer type */
+export const GEOGRAPHY_ATTRIBUTES = {
+  headers: ["Customer type", "Attribute", "Weight in geography factor", "Scoring method", "Floor / treatment"],
+  rows: [
+    ["NP", "Residence country", "25%", "Lookup country library rating", "High-risk residence floors to High unless prohibited"],
+    ["NP", "Primary/secondary nationality", "20%", "Highest score across nationalities", "Sanctions/TFS nationality nexus triggers screening escalation"],
+    ["NP", "Country of birth", "10%", "Lookup where available; capture unavailable reason", "Does not alone floor to High unless combined with other indicators"],
+    ["NP", "SOF/SOW country", "15%", "Highest country score across recurring funds and wealth origin", "High-risk source country requires EDD evidence"],
+    ["NP", "Expected transaction corridors", "15%", "Highest corridor score or exposure-weighted method", "High-risk corridor enhances monitoring"],
+    ["NP", "Digital geolocation signals", "15%", "Highest risk among IP/GPS/SIM/device inconsistency", "VPN/TOR/high-risk mismatch may trigger Medium/High floor"],
+    ["LP/MER", "Incorporation, operation, UBO/controller and settlement countries", "Weighted / highest-risk mix", "Country library lookup and related-party materiality", "High-risk or prohibited country exposure floors Medium/High/Reject per appetite"],
+    ["FI", "Regulator, licensing, ownership, downstream exposure and corridors", "Weighted / highest-risk mix", "Country library plus regulator-quality assessment", "Weak regulator, unknown downstream exposure or high-risk corridor floors High"],
+  ],
+};
+
 export const PRODUCT_BASELINE_MATRIX = {
   headers: ["Product / service", "Baseline risk", "System treatment"],
   rows: [
     ["Basic current/savings account", "Medium", "Medium unless restricted to verified salary/own-account transfers and low limits"],
     ["Salary/payroll account", "Low–Medium", "Medium where employer is high-risk or source unclear"],
+    ["Debit card", "Medium", "High where cross-border/high-risk MCC/crypto/gambling exposure is enabled without controls"],
+    ["Credit or virtual card", "Medium–High", "High for high limits or instant virtual issuance with weak identity assurance"],
     ["Domestic transfers / instant payments", "Medium–High", "High for high limits, new-beneficiary velocity, or weak authentication"],
     ["International transfers / remittances", "High", "High by default; corridor controls and beneficiary screening mandatory"],
     ["Wallet / stored value", "High", "High by default; prohibited if anonymous or unverified"],
@@ -204,6 +246,8 @@ export const BEHAVIOUR_TRIGGERS = {
     ["Pass-through ratio", ">60% funds leave within 48 hours without explanation", ">80% funds leave within 24 hours with multiple counterparties"],
     ["Third-party funding", "Material third-party funds inconsistent with profile", "Repeated third-party funding from unrelated/high-risk parties"],
     ["Cross-border exposure", "Unexpected corridor appears", "High-risk corridor or sanctions/high-risk adjacency appears"],
+    ["Dormancy then sudden activity", "Dormant account resumes material activity", "Dormant account resumes high-volume/high-risk corridor activity"],
+    ["Rejected/fraudulent card or merchant activity", "Elevated but explainable rejection/chargeback/refund pattern", "High chargeback/refund/fraud rate or deceptive merchant indicator"],
     ["STR/SAR or confirmed suspicion", "Any confirmed suspicion outcome", "STR/SAR filed or suspicion cannot be mitigated"],
   ],
 };
@@ -296,15 +340,16 @@ export const TABLE_OF_CONTENTS = [
   "2. Core Design Principles",
   "3. Authoritative Scoring Framework",
   "4. Customer Segments and Relationship Hierarchy",
-  "5. Factor Weights by Segment and Lifecycle (§6.1)",
-  "6. Natural Person Profile Parameter Library (§7.1)",
-  "7. Legal Person / SME / Merchant Parameter Library (§7.2)",
-  "8. Geography and Country Risk (§8.1)",
-  "9. Product Baseline Matrix (§9.3)",
-  "10. Expected Activity and Behaviour Triggers (§11)",
-  "11. Overrides, Risk Floors and Prohibitions (§13)",
-  "12. Due Diligence, Approval, Monitoring and Review (§14)",
-  "13. EDD Evidence Matrix (§14.1)",
+  "5. Factor Weights by Segment and Lifecycle (§5.1)",
+  "6. Natural Person Profile Parameter Library (§6.1)",
+  "7. Legal Person / SME / Merchant Parameter Library (§6.2)",
+  "8. Financial Institution / Regulated Partner Libraries (§6.3)",
+  "9. Geography and Country Risk (§7.1) + Customer-Specific Attributes (§7.2)",
+  "10. Product Baseline Matrix (§8.3)",
+  "11. Expected Activity and Behaviour Triggers (§10)",
+  "12. Overrides, Risk Floors and Prohibitions (§12)",
+  "13. Due Diligence, Approval, Monitoring and Review (§13)",
+  "14. EDD Evidence Matrix (§13.1)",
   "Appendix A — Mal FinCrime OS Implementation Binding",
   "Appendix B — Entity Legal Types Register",
 ];

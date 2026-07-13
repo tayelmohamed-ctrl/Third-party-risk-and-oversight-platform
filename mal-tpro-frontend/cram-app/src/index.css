@@ -636,6 +636,17 @@ h1,h2,h3,h4,.font-display { font-family: "Outfit", sans-serif; }
 .cram-method__provenance dt { color: #6E72A6; font-weight: 600; }
 .cram-method__provenance dd { margin: 0; color: #A7ACDB; word-break: break-word; }
 .cram-method__footnote { font-size: 10px; color: #6E72A6; margin-top: 0.5rem; line-height: 1.4; }
+/* Methodology reference library (CBUAE v1.1 document tables on the CRAM cards) */
+.cram-method__block--doclib { border-top: 2px solid rgba(169, 83, 223, 0.25); }
+.cram-method__doc-table { margin-bottom: 0.9rem; }
+.cram-method__doc-table-head { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.35rem; }
+.cram-method__doc-table-title { font-size: 11px; font-weight: 800; color: #D9CDF3; letter-spacing: 0.01em; }
+.cram-method__doc-table-sub { font-size: 9.5px; color: #6E72A6; }
+.cram-method__doc-table-wrap { overflow-x: auto; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; }
+.cram-method__doc-table-el { font-size: 9.5px; }
+.cram-method__doc-table-el th { text-align: left; color: #6E72A6; font-weight: 700; padding: 0.3rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08); background: #0a0e22; white-space: nowrap; }
+.cram-method__doc-table-el td { padding: 0.3rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.04); color: #A7ACDB; vertical-align: top; line-height: 1.35; }
+.cram-method__doc-cell-key { color: #D9CDF3; font-weight: 600; min-width: 130px; }
 .cram-method__mini-factors { margin-top: 0.65rem; padding-top: 0.65rem; border-top: 1px solid rgba(255,255,255,0.06); }
 .cram-method__mini-title { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #6E72A6; margin-bottom: 0.35rem; }
 .cram-method__mini-row { display: flex; justify-content: space-between; font-size: 10px; color: #A7ACDB; padding: 0.15rem 0; }

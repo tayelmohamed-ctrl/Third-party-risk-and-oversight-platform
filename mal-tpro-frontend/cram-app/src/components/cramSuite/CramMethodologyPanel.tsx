@@ -38,6 +38,18 @@ import {
   type FactorRowView,
   type MethodologyAudience,
 } from "../../config/cramMethodologyContent";
+import {
+  BEHAVIOUR_TRIGGERS,
+  EDD_EVIDENCE_MATRIX,
+  FI_PROFILE_PARAMETERS,
+  FI_SYSTEMS_CONTROLS_PARAMETERS,
+  GEOGRAPHY_ATTRIBUTES,
+  GEOGRAPHY_PILLARS,
+  LP_PROFILE_PARAMETERS,
+  METHODOLOGY_DOCUMENT,
+  NP_PROFILE_PARAMETERS,
+  PRODUCT_BASELINE_MATRIX,
+} from "../../config/cramMethodologyDocument";
 
 type Props = {
   mode: CustomerMode;
@@ -337,6 +349,8 @@ export default function CramMethodologyPanel({
         </div>
       </section>
 
+      {perimeter === "mal_bank" && <MethodologyReferenceLibrary mode={mode} />}
+
       <section className="cram-method__block">
         <div className="cram-method__block-head">
           <span className="cram-method__block-icon">🧵</span>
@@ -541,6 +555,83 @@ function FactorMini({
         </div>
       )}
     </div>
+  );
+}
+
+function DocTable({
+  title,
+  sub,
+  table,
+}: {
+  title: string;
+  sub?: string;
+  table: { headers: string[]; rows: string[][] };
+}) {
+  return (
+    <div className="cram-method__doc-table">
+      <div className="cram-method__doc-table-head">
+        <span className="cram-method__doc-table-title">{title}</span>
+        {sub && <span className="cram-method__doc-table-sub">{sub}</span>}
+      </div>
+      <div className="cram-method__doc-table-wrap">
+        <table className="cram-method__ovr-table cram-method__doc-table-el">
+          <thead>
+            <tr>{table.headers.map((h) => <th key={h}>{h}</th>)}</tr>
+          </thead>
+          <tbody>
+            {table.rows.map((row, ri) => (
+              <tr key={row[0] + ri}>
+                {row.map((cell, ci) => (
+                  <td key={ci} className={ci === 0 ? "cram-method__doc-cell-key" : ci === 1 ? "mono" : undefined}>
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function MethodologyReferenceLibrary({ mode }: { mode: CustomerMode }) {
+  const isEntity = mode === "entity";
+  return (
+    <section className="cram-method__block cram-method__block--doclib">
+      <div className="cram-method__block-head">
+        <span className="cram-method__block-icon">📚</span>
+        <div>
+          <h3>Methodology reference library — {isEntity ? "Legal person (LP/MER/FI)" : "Natural person (NP)"}</h3>
+          <p className="cram-method__block-sub">
+            {METHODOLOGY_DOCUMENT.modelVersionId} · authoritative CBUAE parameter libraries, geography, product baselines,
+            behaviour triggers and EDD evidence — every parameter feeding this {isEntity ? "entity" : "individual"} card.
+          </p>
+        </div>
+      </div>
+
+      {isEntity ? (
+        <>
+          <DocTable title="§6.2 · Legal person / SME / merchant profile" sub="Weights sum to 100% within the customer-profile factor" table={LP_PROFILE_PARAMETERS} />
+          <DocTable title="§6.3.1 · Financial institution — customer profile" sub="FI segment only" table={FI_PROFILE_PARAMETERS} />
+          <DocTable title="§6.3.2 · Financial institution — systems & controls" sub="Standalone 15% factor · FI segment only" table={FI_SYSTEMS_CONTROLS_PARAMETERS} />
+        </>
+      ) : (
+        <DocTable title="§6.1 · Natural person profile" sub="Weights sum to 100% within the customer-profile factor" table={NP_PROFILE_PARAMETERS} />
+      )}
+
+      <DocTable title="§7.1 · Country-risk pillars" table={GEOGRAPHY_PILLARS} />
+      <DocTable title="§7.2 · Customer-specific geography attributes" table={GEOGRAPHY_ATTRIBUTES} />
+      <DocTable title="§8.3 · Digital-bank product baseline matrix" table={PRODUCT_BASELINE_MATRIX} />
+      <DocTable title="§10 · Expected activity & behaviour triggers" table={BEHAVIOUR_TRIGGERS} />
+      <DocTable title="§13.1 · EDD evidence matrix" table={EDD_EVIDENCE_MATRIX} />
+
+      <p className="cram-method__footnote">
+        PEP exposure appears in §6.1 at 15% for completeness; Mal FinCrime OS applies PEP through the non-dilution
+        override layer (OVR-008 foreign PEP → High; OVR-016 domestic/IO PEP → Medium when a high-risk relationship
+        exists) rather than diluting it inside the weighted average (§2.2 non-dilution, §11–§12).
+      </p>
+    </section>
   );
 }
 

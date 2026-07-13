@@ -10,10 +10,10 @@ import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 describe("CRAM methodology document export", () => {
-  it("UAE docx constants point at bundled public asset", () => {
+  it("UAE methodology constants point at bundled public asset (v1.1 PDF)", () => {
     expect(CRAM_METHODOLOGY_DOCX_URL).toBe(CRAM_METHODOLOGY_UAE.url);
     expect(CRAM_METHODOLOGY_DOCX_FILENAME).toBe(CRAM_METHODOLOGY_UAE.filename);
-    expect(CRAM_METHODOLOGY_UAE.url).toBe("/Mal_Customer_Risk_Assessment_Methodology_v1_0.docx");
+    expect(CRAM_METHODOLOGY_UAE.url).toBe("/Mal_Customer_Risk_Assessment_Methodology_CBUAE_v1_1.pdf");
   });
 
   it("selects US methodology for Global Account perimeter", () => {
@@ -25,10 +25,10 @@ describe("CRAM methodology document export", () => {
   it("selects UAE methodology for MAL Bank perimeter", () => {
     const doc = cramMethodologyDocForPerimeter("mal_bank");
     expect(doc.modelVersionId).toBe("CRAM-CBUAE-2026-05-FREEZE-01");
-    expect(doc.filename).toBe("Mal_Customer_Risk_Assessment_Methodology_v1_0.docx");
+    expect(doc.filename).toBe("Mal_Customer_Risk_Assessment_Methodology_CBUAE_v1_1.pdf");
   });
 
-  it("public UAE docx file exists and is non-empty", () => {
+  it("public UAE methodology file exists and is non-empty", () => {
     const path = resolve(process.cwd(), "public", CRAM_METHODOLOGY_UAE.filename);
     expect(existsSync(path)).toBe(true);
     expect(readFileSync(path).byteLength).toBeGreaterThan(10_000);
