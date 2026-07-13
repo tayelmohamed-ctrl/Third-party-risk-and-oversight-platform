@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Network, Scale, ScrollText, Crosshair, Flag, FileText, Settings, RefreshCw, ShieldCheck, ClipboardList, GraduationCap, ClipboardCheck, Package, Archive, UserCheck } from "lucide-react";
+import { LayoutDashboard, Network, Scale, ScrollText, Crosshair, Flag, FileText, Settings, RefreshCw, ShieldCheck, ClipboardList, GraduationCap, ClipboardCheck, Package, Archive, UserCheck, Trophy } from "lucide-react";
 import MalLogo from "./MalLogo";
 import AgentChip from "./agents/AgentChip";
 import AgentAvatar from "./agents/AgentAvatar";
@@ -28,6 +28,7 @@ const NAV = [
     { to: "/exam-pack", label: "Examination Pack", icon: Package, agent: "jana" as const },
   ]},
   { section: "Control", items: [
+    { to: "/execution", label: "Execution Dashboard", icon: Trophy },
     { to: "/activity-register", label: "Activity Register", icon: ScrollText, agent: "sayed" as const },
     { to: "/validation", label: "Model Validation", icon: Scale, agent: "sayed" as const },
     { to: "/audit", label: "Audit Log", icon: ClipboardList },
@@ -51,6 +52,7 @@ const TITLES: Record<string, [string, string]> = {
   "/reporting": ["Reporting Centre", "Jana drafts · UAE goAML · US FinCEN SAR & CTR Form 104 · MLRO approves & files"],
   "/exam-pack": ["CBUAE Examination Pack", "25-customer sample · CRAM evidence · &lt; 2h target"],
   "/governance": ["Governance & Admin", "RBAC · config · model versions · audit"],
+  "/execution": ["Execution Dashboard", "FinCrime AI operating model — the coach's roster, tasks & agent fine-tuning"],
   "/audit": ["Audit Log", "Append-only trail · overrides · cases · TM · screening"],
   "/retention": ["Records & Retention", "5-year policy · legal hold · governed export · scheduler"],
   "/training": ["AML Training Register", "Staff completion · examiner evidence · CBUAE & FFIEC"],

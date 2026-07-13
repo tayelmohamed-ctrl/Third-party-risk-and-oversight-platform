@@ -23,6 +23,7 @@ import AuthCallback from "./pages/AuthCallback";
 import PartnerPlatformPage from "./pages/PartnerPlatformPage";
 import KybChecklistCentre from "./pages/KybChecklistCentre";
 import EddIndividualChecklist from "./pages/EddIndividualChecklist";
+import ExecutionDashboard from "./pages/ExecutionDashboard";
 
 const ActivityRiskRegister = lazy(() => import("./pages/ActivityRiskRegister"));
 
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="cram" element={<CramWorkspace />} />
         <Route path="kyb-checklist" element={<KybChecklistCentre />} />
         <Route path="edd-checklist" element={<EddIndividualChecklist />} />
+        <Route path="execution" element={<ExecutionDashboard />} />
         <Route path="test-bench" element={<RiskTestBench />} />
         <Route path="investigation" element={<InvestigationHub />} />
         <Route path="transaction-monitoring" element={<TransactionMonitoring />} />

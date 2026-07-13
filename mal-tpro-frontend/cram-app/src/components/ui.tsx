@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
+import { ReactNode, type CSSProperties } from "react";
 
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <div className={`bg-panel border border-line rounded-2xl ${className}`}>{children}</div>;
+export function Card({ children, className = "", style }: { children: ReactNode; className?: string; style?: CSSProperties }) {
+  return <div className={`bg-panel border border-line rounded-2xl ${className}`} style={style}>{children}</div>;
 }
 
 export function Sec({ children }: { children: ReactNode }) {
