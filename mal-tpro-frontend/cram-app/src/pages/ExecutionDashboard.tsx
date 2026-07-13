@@ -9,6 +9,7 @@ import {
   tasksForOwner,
   type Line, type Phase, type TaskStatus, type Person,
 } from "../config/executionPlan";
+import CorridorTypologyBoard from "../components/execution/CorridorTypologyBoard";
 
 const STORAGE_KEY = "mal-exec-plan-status";
 const STATUS_CYCLE: TaskStatus[] = ["not_started", "in_progress", "done", "blocked"];
@@ -76,6 +77,8 @@ export default function ExecutionDashboard() {
   return (
     <div>
       <StartingElevenPitch selected={pitchSel} onSelect={setPitchSel} statusOf={statusOf} cycle={cycle} />
+
+      <CorridorTypologyBoard />
 
       <AgentBanner agent="sayed" title="Execution Dashboard — FinCrime AI Operating Model (v2)">
         The coach's oversight of the whole roster. Every human owner has their tasks, the report you ask from them, and the
@@ -366,12 +369,16 @@ const PITCH_NODES: PitchNode[] = [
   { key: "sayed",  name: "Sayed",  sub: "KYB / CRAM",        icon: ShieldCheck,   color: "#39B9ED", personId: "dinesh", agentId: "sayed",  x: 24, y: 16 },
   { key: "mohsen", name: "Mohsen", sub: "Investigation",     icon: Search,        color: "#A953DF", personId: "fiu",    agentId: "mohsen", x: 50, y: 12 },
   { key: "jana",   name: "Jana",   sub: "Reporting",         icon: MessageSquare, color: "#7C6CF7", personId: "jason",  agentId: "jana",   x: 76, y: 16 },
-  // Midfield — Corridor Investigation Pool
-  { key: "cor-us", name: "US",     sub: "Market context",    icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "US", x: 30, y: 45 },
-  { key: "cor-pk", name: "PK",     sub: "Market context",    icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "PK", x: 42, y: 47 },
-  { key: "cor-eg", name: "EG",     sub: "Market context",    icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "EG", x: 53, y: 47 },
-  { key: "cor-bd", name: "BD",     sub: "Market context",    icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "BD", x: 64, y: 47 },
-  { key: "cor-de", name: "DE",     sub: "Market context",    icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "DE", x: 74, y: 45 },
+  // Midfield — Corridor Investigation Pool (Global Account watch-list)
+  { key: "cor-pk",  name: "PK",  sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "PK",  x: 16,   y: 45 },
+  { key: "cor-bd",  name: "BD",  sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "BD",  x: 24.5, y: 47 },
+  { key: "cor-id",  name: "ID",  sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "ID",  x: 33,   y: 48.5 },
+  { key: "cor-ph",  name: "PH",  sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "PH",  x: 41.5, y: 49 },
+  { key: "cor-eg",  name: "EG",  sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "EG",  x: 50,   y: 49.5 },
+  { key: "cor-uae", name: "UAE", sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "UAE", x: 58.5, y: 49 },
+  { key: "cor-tr",  name: "TR",  sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "TR",  x: 67,   y: 48.5 },
+  { key: "cor-sa",  name: "SA",  sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "SA",  x: 75.5, y: 47 },
+  { key: "cor-jo",  name: "JO",  sub: "Corridor", icon: Globe, color: "#2FD8A6", personId: "cip", corridor: "JO",  x: 84,   y: 45 },
   // Captains — human accountable owners
   { key: "dinesh", name: "Dinesh", sub: "Onboarding",        icon: Handshake,  color: "#39B9ED", personId: "dinesh", x: 28, y: 80 },
   { key: "terani", name: "Terani", sub: "Sanctions",         icon: Gavel,      color: "#2FD8A6", personId: "terani", x: 50, y: 82 },

@@ -17,6 +17,8 @@ import {
   type PurposeCatalogEntry,
 } from "../../config/transactionPurposeCatalog";
 import { exportTransactionPurposeCatalogPdf } from "../../lib/transactionPurposeCatalogPdf";
+import { useCorridorTypologies, type CorridorTypology } from "../../store/corridorTypologyStore";
+import { GLOBAL_ACCOUNT_CORRIDORS, CORRIDOR_BY_CODE } from "../../config/globalAccountCorridors";
 
 const TIER_STYLE: Record<string, string> = {
   Low: "bg-low/15 text-low",
@@ -300,6 +302,73 @@ function Field({ label, value, ok, warn }: { label: string; value: string; ok?: 
   );
 }
 
+const UPLOADED_SEV_PILL: Record<string, string> = {
+  Critical: "bg-proh/20 text-[#ff7ea0]",
+  High: "bg-med/15 text-med",
+  Medium: "bg-ai/15 text-ai",
+  Low: "bg-low/15 text-low",
+};
+
+function UploadedTypologyCard({ t }: { t: CorridorTypology }) {
+  const corr = CORRIDOR_BY_CODE[t.corridorCode];
+  return (
+    <Card className="p-4">
+      <div className="flex flex-wrap gap-2 items-center">
+        <span className="mono text-[10px] text-faint">{t.id}</span>
+        <span className="font-semibold text-[13px]">{t.title}</span>
+        <span className={`pill text-[10px] ${UPLOADED_SEV_PILL[t.severity] ?? "bg-panel2 text-muted"}`}>{t.severity}</span>
+        <span className="pill bg-panel2 text-muted text-[10px]">{t.category}</span>
+        <span className="pill bg-panel3 text-faint text-[10px]">{t.week}</span>
+      </div>
+      <p className="text-[11px] text-muted mt-2 mb-2">{t.description}</p>
+      {t.indicators.length > 0 && (
+        <div className="text-[10px] text-faint"><b className="text-muted">Indicators:</b> {t.indicators.join(" · ")}</div>
+      )}
+      {t.oscilar.length > 0 && (
+        <div className="text-[10px] text-faint mt-1"><b className="text-muted">Oscilar:</b> {t.oscilar.join(", ")}</div>
+      )}
+      <div className="text-[9px] text-faint mt-1 italic">
+        {corr ? `${corr.flag} ${corr.name}` : t.corridorCode} · {t.source} · {t.addedBy} · {t.addedAt.slice(0, 10)}
+      </div>
+    </Card>
+  );
+}
+
+/** Live corridor intelligence uploaded from Slack via the Execution Dashboard board. */
+function LiveCorridorIntel({ variant }: { variant: "corridors" | "typologies" }) {
+  const uploaded = useCorridorTypologies();
+  if (uploaded.length === 0) return null;
+  const codesWithData = GLOBAL_ACCOUNT_CORRIDORS.filter((c) => uploaded.some((t) => t.corridorCode === c.code));
+  return (
+    <>
+      <Card className="p-4 border-ai/30 bg-ai/5">
+        <Sec>Live corridor intelligence — uploaded from Slack</Sec>
+        <p className="text-[11px] text-muted mt-1 mb-0">
+          {uploaded.length} typolog{uploaded.length === 1 ? "y" : "ies"} logged across {codesWithData.length} corridor(s) via the
+          Execution Dashboard corridor board. These grow weekly and feed this guide live.
+          <Link to="/execution" className="text-ai hover:underline ml-1">Add / manage on the Execution Dashboard →</Link>
+        </p>
+      </Card>
+      {codesWithData.map((c) => {
+        const rows = uploaded.filter((t) => t.corridorCode === c.code);
+        return (
+          <div key={c.code}>
+            <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-1.5 mt-1">
+              {c.flag} {c.name} ({c.code}) — {rows.length} typolog{rows.length === 1 ? "y" : "ies"}
+            </div>
+            <div className="space-y-2">
+              {rows.map((t) => <UploadedTypologyCard key={t.id} t={t} />)}
+            </div>
+          </div>
+        );
+      })}
+      {variant === "corridors" && (
+        <div className="border-t border-lineSoft my-1" />
+      )}
+    </>
+  );
+}
+
 function CorridorsTab() {
   return (
     <div className="space-y-4">
@@ -310,6 +379,8 @@ function CorridorsTab() {
           Full detail in the downloadable PDF — Section 6.
         </p>
       </Card>
+
+      <LiveCorridorIntel variant="corridors" />
       {CORRIDOR_GUIDANCE.map((c) => (
         <Card key={c.id} className="p-4">
           <div className="flex flex-wrap gap-2 items-center">
@@ -390,6 +461,8 @@ function TypologiesTab() {
           Open full PK typology library (Regulatory Management) →
         </Link>
       </Card>
+
+      <LiveCorridorIntel variant="typologies" />
 
       {TYPOLOGY_ANNEX.pakistanCorpus.map((t) => (
         <Card key={t.id} className="p-4">
