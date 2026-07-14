@@ -14,7 +14,9 @@ import { SCREENING_AUTHORITY, SCREENING_SLA } from "../config/partnerIntegration
 import { apiTmAlerts, type TmAlertRecord } from "../lib/api";
 import TmReadinessPanel from "../components/tm/TmReadinessPanel";
 import PaymentPurposeGuidancePanel, { type PanelTab } from "../components/tm/PaymentPurposeGuidancePanel";
+import ZenusPurposeCodeReview from "../components/tm/ZenusPurposeCodeReview";
 import { exportTransactionPurposeCatalogPdf } from "../lib/transactionPurposeCatalogPdf";
+import { usePerimeter } from "../context/PerimeterContext";
 
 type TabId = "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "purpose" | "readiness" | "onboarding" | "scenario";
 
@@ -89,6 +91,7 @@ const STATUS_STYLE: Record<string, string> = {
 };
 
 export default function TransactionMonitoring() {
+  const { perimeter } = usePerimeter();
   const [tab, setTab] = useState<TabId>("programme");
   const [channel, setChannel] = useState<PaymentChannel | "all">("all");
   const [category, setCategory] = useState<string>("all");
@@ -124,7 +127,17 @@ export default function TransactionMonitoring() {
     card: rules.filter((r) => r.channel === "card" || r.channel === "both").length,
   }), [rules]);
 
-  const activeDef = CARDS.find((c) => c.num === activeCard) ?? CARDS[0];
+  // Card #06 (Purpose Codes) is perimeter-aware: Global Account shows the
+  // reviewed Zenus register; Mal Bank keeps the CBUAE/UAE purpose catalog.
+  const cardView = useCallback(
+    (c: TmCardDef): TmCardDef =>
+      c.num === "06" && perimeter === "global_account"
+        ? { ...c, title: "Purpose Codes · Zenus", desc: "Reviewed Global Account register — corrected codes + PDF", value: "30", unit: "Codes" }
+        : c,
+    [perimeter],
+  );
+
+  const activeDef = cardView(CARDS.find((c) => c.num === activeCard) ?? CARDS[0]);
 
   return (
     <div>
@@ -152,7 +165,7 @@ export default function TransactionMonitoring() {
       {/* Row 1 — 6 primary sections */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 mb-2.5">
         {ROW1.map((c) => (
-          <TmCard key={c.num} def={c} active={activeCard === c.num} onClick={() => openCard(c)} />
+          <TmCard key={c.num} def={cardView(c)} active={activeCard === c.num} onClick={() => openCard(c)} />
         ))}
       </div>
       {/* Row 2 — readiness + purpose-flow deep links */}
@@ -195,7 +208,11 @@ export default function TransactionMonitoring() {
           {activeDef.tab === "readiness" && <TmReadinessPanel />}
           {activeDef.tab === "onboarding" && <OnboardingWorkflowTab />}
           {activeDef.tab === "scenario" && <ScenarioPlaybookTab />}
-          {activeDef.tab === "purpose" && <PaymentPurposeGuidancePanel defaultTab={purposeSub} key={purposeSub} />}
+          {activeDef.tab === "purpose" && (
+            activeDef.num === "06" && perimeter === "global_account"
+              ? <ZenusPurposeCodeReview />
+              : <PaymentPurposeGuidancePanel defaultTab={purposeSub} key={purposeSub} />
+          )}
         </TmDetailPanel>
       )}
 
