@@ -4,7 +4,7 @@ import {
   type AssessmentCapture, type KycQualityContext, scoreWithDataQualityGate,
 } from "../engine/dataQualityGate";
 import type { Boundary, PepStatus, Score, ScreenResult, AdverseResult, CustomerLegalForm, UboVerificationStatus } from "../engine/types";
-import { MONTHLY_BAND_LABEL } from "../engine/activityProfile";
+import { MONTHLY_BAND_LABEL, MONTHLY_BAND_LABEL_USD } from "../engine/activityProfile";
 import { COUNTRIES, lookupCountry } from "../engine/data";
 import { activityDropdownGroupsForPerimeter, professionGroupsForEmployment } from "../config/activityRegisterOptions";
 import { buildAssessment } from "../engine/rerating";
@@ -82,6 +82,11 @@ function AssessmentContextBanner({ perimeter, registryVersion, nraSource }: { pe
 
 const EMP_IND = [["Salaried employee", 1], ["Pensioner", 1], ["Student", 1], ["Self-employed", 2], ["Freelancer / consultant", 2], ["Business owner", 2], ["Unemployed (with activity)", 3]] as const;
 const EMP_ENT = [["Director / signatory", 1], ["Authorised manager", 2], ["Controlling person", 2], ["Not applicable", 1]] as const;
+// State stores the employment LABEL (unique) so the dropdown can display the exact selection;
+// several labels share a risk score, so keying the <option> by score would collapse the display.
+// Scoring only ever reads the numeric score, resolved here from the label.
+const EMP_SCORE_BY_LABEL: Record<string, number> = Object.fromEntries([...EMP_IND, ...EMP_ENT].map(([label, score]) => [label, score]));
+function empScoreFor(label: string): number { return EMP_SCORE_BY_LABEL[label] ?? 1; }
 const SVC = [["Standard domestic", 1], ["Cross-border", 2], ["Third-party / beneficiary payments", 2], ["Trade finance", 3], ["Correspondent / nested", 3], ["Crypto / VA off-ramp", 3]] as const;
 const INV_STR = [["None / clear", 1], ["Under review", 2], ["Confirmed / filed", 3]] as const;
 const EVENTS = ["Onboarding", "Periodic review", "Trigger event", "Manual rerating"] as const;
@@ -134,7 +139,7 @@ export default function CramRiskTestBench() {
     cres: "United Arab Emirates", cbirth: "India", nat: "India", sow: "United Arab Emirates", sof: "Germany",
     opco: "United Arab Emirates", incco: "United Arab Emirates", uboco: "United Arab Emirates",
     scrS: "Clear" as ScreenResult, scrW: "Clear", scrA: "None" as AdverseResult,
-    emp: "2",
+    emp: "Self-employed",
     activity: "Information technology (including manufacturing, trade and repair of computers, peripheral equipment and software)",
     profession: "Computer Engineer",
     isicCode: "",
@@ -180,12 +185,13 @@ export default function CramRiskTestBench() {
         next.legalForm = "natural";
         next.ubo = "na";
         next.uboLayers = "1";
+        if (!EMP_IND.some((e) => e[0] === s.emp)) next.emp = "Self-employed";
         if (!SEGMENT_OPTIONS.individual.includes(s.seg)) next.seg = "Retail";
       } else {
         next.legalForm = entityTypeToLegalForm(s.entityType);
         next.ubo = s.ubo === "na" ? "verified" : s.ubo;
         next.uboLayers = OWNERSHIP_LAYERS[s.ownership] ?? "1";
-        next.emp = "1";
+        next.emp = "Director / signatory";
         if (!SEGMENT_OPTIONS.entity.includes(s.seg)) next.seg = "SME";
       }
       return next;
@@ -209,7 +215,7 @@ export default function CramRiskTestBench() {
 
   function setEmployment(v: string) {
     setF((s) => {
-      const empScore = +v;
+      const empScore = empScoreFor(v);
       let profession = s.profession;
       if (profession && !isProfessionCompatibleWithEmployment(profession, empScore)) {
         profession = "";
@@ -222,7 +228,7 @@ export default function CramRiskTestBench() {
     setF((s) => {
       const next = { ...s, profession: v };
       const suggested = suggestedActivitiesForProfession(v);
-      if (+s.emp >= 2 && suggested.length > 0 && !suggested.includes(s.activity)) {
+      if (empScoreFor(s.emp) >= 2 && suggested.length > 0 && !suggested.includes(s.activity)) {
         next.activity = suggested[0];
       }
       return next;
@@ -230,7 +236,7 @@ export default function CramRiskTestBench() {
   }
 
   const professionGroups = useMemo(
-    () => professionGroupsForEmployment(+f.emp),
+    () => professionGroupsForEmployment(empScoreFor(f.emp)),
     [f.emp],
   );
   const activityGroups = useMemo(
@@ -244,11 +250,16 @@ export default function CramRiskTestBench() {
   const productOptions = useMemo(() => productNamesForPerimeter(perimeter), [perimeter]);
   const isNewCustomer = f.rel === "New";
   const professionMismatch = mode === "individual" && f.profession
-    && !isProfessionCompatibleWithEmployment(f.profession, +f.emp);
+    && !isProfessionCompatibleWithEmployment(f.profession, empScoreFor(f.emp));
   const entityMeta = mode === "entity" ? entityLegalTypeSummary(f.entityType) : null;
 
   const segmentOpts = SEGMENT_OPTIONS[mode];
   const empOpts = mode === "individual" ? EMP_IND : EMP_ENT;
+  const bandLabel = perimeter === "global_account" ? MONTHLY_BAND_LABEL_USD : MONTHLY_BAND_LABEL;
+  // Identity source options are perimeter-scoped — uae_pass / emirates_id are UAE-only digital IDs.
+  const identitySourceOpts = perimeter === "global_account"
+    ? ["document", "idsp", "branch"]
+    : ["uae_pass", "emirates_id", "idsp", "document", "branch"];
 
   const suggestedBehaviour = useMemo(
     () => suggestBehaviourStatus(+f.expected as Score, +f.actual as Score, f.rel === "New" ? "New" : "Existing"),
@@ -283,7 +294,7 @@ export default function CramRiskTestBench() {
     legalForm: f.legalForm,
     uboStatus: f.ubo,
     uboLayers: f.uboLayers,
-    employment: f.emp,
+    employment: String(empScoreFor(f.emp)),
     service: f.svc,
     initChannel: f.initChan,
     deliveryChannel: f.delChan,
@@ -554,11 +565,11 @@ export default function CramRiskTestBench() {
         <span className="text-[11px] text-muted ml-auto">Inherent → obligations → controls → residual → TM deploy</span>
         <div className="flex items-center gap-2">
           <a
-            href={perimeter === "global_account" ? "/CRAM_Risk_Architecture_Blueprint_v2_3.pdf" : "/CRAM_Risk_Architecture_Blueprint.pdf"}
-            download={perimeter === "global_account" ? "CRAM_Risk_Architecture_Blueprint_v2_3.pdf" : "CRAM_Risk_Architecture_Blueprint.pdf"}
+            href={perimeter === "global_account" ? "/CRAM_Risk_Architecture_Blueprint_v2_4.pdf" : "/CRAM_Risk_Architecture_Blueprint.pdf"}
+            download={perimeter === "global_account" ? "CRAM_Risk_Architecture_Blueprint_v2_4.pdf" : "CRAM_Risk_Architecture_Blueprint.pdf"}
             className="btn btn-ghost text-[11px] px-3 py-1.5 flex items-center gap-1.5 no-underline"
             title={perimeter === "global_account"
-              ? "Download US system blueprint PDF (REV 2.3 · CRAM-US-2026-07-FREEZE-03)"
+              ? "Download US system blueprint PDF (REV 2.4 · CRAM-US-2026-07-FREEZE-03)"
               : "Download system blueprint PDF"}
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
@@ -680,8 +691,8 @@ export default function CramRiskTestBench() {
               )}
               <Row3>
                 <Sel label="Segment" v={f.seg} set={(v) => set("seg", v)} opts={segmentOpts} />
-                <Sel label="Expected activity (onboarding)" v={f.expected} set={(v) => set("expected", v)} optsV={[["1", MONTHLY_BAND_LABEL[1]], ["2", MONTHLY_BAND_LABEL[2]], ["3", MONTHLY_BAND_LABEL[3]]]} />
-                <Sel label="Observed activity (TM)" v={f.actual} set={(v) => set("actual", v)} optsV={[["1", MONTHLY_BAND_LABEL[1]], ["2", MONTHLY_BAND_LABEL[2]], ["3", MONTHLY_BAND_LABEL[3]]]} />
+                <Sel label="Expected activity (onboarding)" v={f.expected} set={(v) => set("expected", v)} optsV={[["1", bandLabel[1]], ["2", bandLabel[2]], ["3", bandLabel[3]]]} />
+                <Sel label="Observed activity (TM)" v={f.actual} set={(v) => set("actual", v)} optsV={[["1", bandLabel[1]], ["2", bandLabel[2]], ["3", bandLabel[3]]]} />
               </Row3>
               <Row2>
                 <Sel label="Transaction behaviour — expected vs actual" v={f.behaviour} set={(v) => set("behaviour", v)} optsV={BEHAVIOUR_STATUSES.map((b) => [b.id, b.label])} />
@@ -703,7 +714,7 @@ export default function CramRiskTestBench() {
               </div>
               <Row3>
                 <Sel label="Identity source" v={kyc.identitySource} set={(v) => setKycField("identitySource", v as KycQualityContext["identitySource"])}
-                  opts={["uae_pass", "emirates_id", "idsp", "document", "branch"]} />
+                  opts={identitySourceOpts} />
                 <Sel label="Identity verified" v={kyc.identityVerified ? "yes" : "no"} set={(v) => setKycField("identityVerified", v === "yes")}
                   opts={["yes", "no"]} />
                 <Sel label="Liveness pass" v={kyc.livenessPass ? "yes" : "no"} set={(v) => setKycField("livenessPass", v === "yes")}
@@ -768,7 +779,7 @@ export default function CramRiskTestBench() {
                 <span className="aml-source-badge">Source: RAKEZ Activity Register · ISIC Rev.5 · {nraSourceForPerimeter(perimeter)}</span>
               </div>
               <Row2>
-                <Sel label={mode === "individual" ? "Employment status" : "Authorised signatory role"} v={f.emp} set={setEmployment} optsV={empOpts.map((e) => [String(e[1]), e[0]])} />
+                <Sel label={mode === "individual" ? "Employment status" : "Authorised signatory role"} v={f.emp} set={setEmployment} optsV={empOpts.map((e) => [e[0], e[0]])} />
                 <div className="text-[11px] text-muted self-end pb-2">{mode === "individual" ? "ISIC activity scored when self-employed (emp ≥ 2)" : "Entity ISIC drives nature-of-business factor (22%)"}</div>
               </Row2>
               <Row2>
@@ -795,7 +806,7 @@ export default function CramRiskTestBench() {
                 </Row2>
               )}
               <div className="cram-driver-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
-                <DriverChip icon="💼" label="Employment" value={empOpts.find((e) => String(e[1]) === f.emp)?.[0] ?? f.emp} />
+                <DriverChip icon="💼" label="Employment" value={f.emp} />
                 <DriverChip icon="🏭" label="ISIC activity" value={f.activity.slice(0, 32) + (f.activity.length > 32 ? "…" : "")} />
               </div>
             </GamifiedSec>

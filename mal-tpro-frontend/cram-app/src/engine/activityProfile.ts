@@ -41,9 +41,16 @@ export function activityDeviationLabel(expected: Score, actual: Score): string {
   return "Aligned with expected activity profile";
 }
 
-/** AED band labels aligned with onboarding procedure expected activity capture. */
+/** AED band labels (UAE / mal_bank) aligned with onboarding procedure expected activity capture. */
 export const MONTHLY_BAND_LABEL: Record<Score, string> = {
   1: "< AED 50k / month",
   2: "AED 50k–250k / month",
   3: "> AED 250k / month",
+};
+
+/** USD band labels (US / global_account) aligned with cramSuiteConfig.expectedUsd (15k/75k/150k). */
+export const MONTHLY_BAND_LABEL_USD: Record<Score, string> = {
+  1: "< USD 15k / month",
+  2: "USD 15k–75k / month",
+  3: "> USD 75k / month",
 };
