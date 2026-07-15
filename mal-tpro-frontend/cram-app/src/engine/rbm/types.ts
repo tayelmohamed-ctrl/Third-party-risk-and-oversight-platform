@@ -4,6 +4,7 @@
  */
 import type { CompliancePerimeter } from "../../config/perimeters";
 import type { CustomerMode } from "../../config/activityRiskConfig";
+import type { FinalRating } from "../types";
 
 export type RiskBand = "Low" | "Medium" | "Medium High" | "High" | "Prohibited";
 export type PolicyProfileId = "cbuae" | "us_baas";
@@ -29,7 +30,7 @@ export interface PolicyProfile {
   highRiskCountryCodes: string[];
   sanctionsProgrammes: string[];
   eddTriggers: string[];
-  reviewCycles: { band: RiskBand; months: number }[];
+  reviewCycles: { band: FinalRating; months: number }[];
   monitoringScenarios: { id: string; label: string; trigger: string }[];
   cddRules: string[];
   pepRules: string[];

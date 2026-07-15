@@ -62,7 +62,8 @@ export const POLICY_PROFILES: Record<PolicyProfileId, PolicyProfile> = {
       deliveryChannel: 2,
       expectedBehaviour: 2,
     },
-    highRiskCountryCodes: ["IR", "KP", "RU", "BY", "SY", "CU"],
+    // US Methodology §7.1 — OFAC comprehensive + Mal/Zenus USD-rail absolute prohibitions
+    highRiskCountryCodes: ["IR", "KP", "RU", "BY", "SY", "CU", "MM"],
     sanctionsProgrammes: ["OFAC SDN", "OFAC Sectoral", "FinCEN 311", "BIS Entity List"],
     eddTriggers: [
       "High inherent risk score ≥ 65",
@@ -71,7 +72,7 @@ export const POLICY_PROFILES: Record<PolicyProfileId, PolicyProfile> = {
       "High-risk jurisdiction corridor",
       "Beneficial ownership opacity",
     ],
-    // US Methodology §13: Low 36mo, Medium 24mo, High 12mo, Prohibited/Critical/Override 6mo
+    // US Methodology §13: Low 36mo, Medium 24mo, High 12mo, Prohibited/MLRO-escalated 6mo
     reviewCycles: [
       { band: "Low", months: 36 },
       { band: "Medium", months: 24 },
@@ -85,7 +86,11 @@ export const POLICY_PROFILES: Record<PolicyProfileId, PolicyProfile> = {
     ],
     cddRules: ["CDD Rule (FinCEN)", "Beneficial ownership ≥ 25%", "Customer identification program"],
     pepRules: ["PEP identification", "Senior foreign political figure EDD"],
-    sarThresholds: [{ currency: "USD", amount: 5000, label: "SAR structuring review" }],
+    // US Methodology §15.3 — MSB SAR filing threshold (31 CFR 1022.320); structuring surfaced around $3,000/$10,000
+    sarThresholds: [
+      { currency: "USD", amount: 2000, label: "MSB SAR filing threshold (31 CFR 1022.320)" },
+      { currency: "USD", amount: 3000, label: "Structuring review threshold" },
+    ],
     ctrRules: ["Currency Transaction Report > USD 10,000"],
     travelRule: true,
     beneficialOwnershipThreshold: 25,

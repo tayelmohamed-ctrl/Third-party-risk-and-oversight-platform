@@ -11,7 +11,7 @@ import {
   TXN_SCREENING_PROGRAMME, TXN_SCREENING_SCORING, TXN_SCREENING_WORKFLOW,
   TXN_SCREENING_CASE_MGMT, OSCILAR_RULE_CATEGORIES,
 } from "../config/oscilarProgramme";
-import { SCREENING_AUTHORITY, SCREENING_SLA, FIU_ROUTING } from "../config/partnerIntegration";
+import { SCREENING_AUTHORITY, SCREENING_SLA, FIU_ROUTING, kybVendorForPerimeter } from "../config/partnerIntegration";
 import { TRANSACTION_PURPOSE_CATALOG, FLOW_IDS, FLOW_LABELS, allCatalogEntries } from "../config/transactionPurposeCatalog";
 import ruleLibraryJson from "../data/oscilar_rule_library.json";
 
@@ -84,7 +84,7 @@ function addReadmeSheet(
       : "BSA 31 U.S.C. §5311 · FinCEN CDD Rule · OFAC SDN · USA PATRIOT Act §326"],
     ["TM vendor", "Oscilar (transaction monitoring & real-time payment decisions)"],
     ["Screening vendor", "Vital4 (sanctions / PEP / watchlist — sole disposition authority)"],
-    ["Identity / KYB", "Shufti Pro (identity only; AML fields ignored) · AiPrise (KYB)"],
+    ["Identity / KYB", `Shufti Pro (identity only; AML fields ignored) · ${isUae ? "AiPrise" : "SumSub"} (KYB)`],
     ["FIU reporting", isUae ? `${FIU_ROUTING.UAE.system} → ${FIU_ROUTING.UAE.regulator}` : `${FIU_ROUTING.US.system} → ${FIU_ROUTING.US.regulator}`],
     ["SLA — potential match", `${SCREENING_SLA.potentialMatchHours}h`],
     ["SLA — pending", `${SCREENING_SLA.pendingHours}h`],
@@ -273,7 +273,7 @@ function addScreeningProgrammeSheet(
     ["PEP screening", SCREENING_AUTHORITY.pep.toUpperCase(), "Sole PEP/watchlist disposition authority"],
     ["Adverse media", SCREENING_AUTHORITY.adverse.toUpperCase(), "Adverse disposition via Vital4"],
     ["Identity / IDV", SCREENING_AUTHORITY.identity.toUpperCase(), "AML fields from Shufti ignored; identity only"],
-    ["KYB", SCREENING_AUTHORITY.kyb.toUpperCase(), "Entity onboarding — 10 AiPrise jurisdictions"],
+    ["KYB", kybVendorForPerimeter(isUae ? "mal_bank" : "global_account").toUpperCase(), isUae ? "Entity onboarding — 10 AiPrise jurisdictions" : "Entity KYB + KYB TM — SumSub (CRAM-US-01 §9.1/§14.2)"],
     ["Transaction monitoring", SCREENING_AUTHORITY.transactionMonitoring.toUpperCase(), "Realtime TM; Oscilar never writes CRAM fields directly"],
     ["FIU reporting", isUae ? FIU_ROUTING.UAE.system : FIU_ROUTING.US.system, isUae ? FIU_ROUTING.UAE.regulator : FIU_ROUTING.US.regulator],
   ];

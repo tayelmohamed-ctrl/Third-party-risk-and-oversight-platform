@@ -17,6 +17,7 @@ import PaymentPurposeGuidancePanel, { type PanelTab } from "../components/tm/Pay
 import ZenusPurposeCodeReview from "../components/tm/ZenusPurposeCodeReview";
 import { exportTransactionPurposeCatalogPdf } from "../lib/transactionPurposeCatalogPdf";
 import { usePerimeter } from "../context/PerimeterContext";
+import { BRD_SCENARIOS, BRD_SCENARIO_META, type BrdScenario } from "../config/malBankBrdScenarios";
 
 type TabId = "programme" | "scoring" | "workflow" | "cases" | "monitoring" | "purpose" | "readiness" | "onboarding" | "scenario";
 
@@ -481,6 +482,7 @@ function MonitoringTab({
   query: string;
   setQuery: (v: string) => void;
 }) {
+  const { perimeter } = usePerimeter();
   return (
     <div>
       <Sec>Oscilar rule library — transfers &amp; card payments</Sec>
@@ -560,7 +562,98 @@ function MonitoringTab({
           </Card>
         ))}
       </div>
+
+      {perimeter === "mal_bank" && <BrdScenarioInventory query={query} />}
     </div>
+  );
+}
+
+const BRD_PRIORITY_STYLE: Record<string, string> = {
+  Must: "bg-proh/20 text-[#ff7ea0]",
+  "Must if applicable": "bg-proh/15 text-[#ff9db5]",
+  Should: "bg-med/15 text-med",
+  Conditional: "bg-ai/15 text-ai",
+};
+
+function brdTypologyStyle(typology: string): string {
+  if (/Sanctions|PF/.test(typology)) return "bg-proh/20 text-[#ff7ea0]";
+  if (/TF/.test(typology)) return "bg-med/15 text-med";
+  if (/Fraud/.test(typology)) return "bg-ai/15 text-ai";
+  return "bg-panel2 text-muted";
+}
+
+function BrdScenarioInventory({ query }: { query: string }) {
+  const q = query.trim().toLowerCase();
+  const scenarios = q
+    ? BRD_SCENARIOS.filter((s) =>
+        [s.id, s.name, s.typology, s.riskCovered, s.logic, s.segment, s.productChannel]
+          .join(" ").toLowerCase().includes(q))
+    : BRD_SCENARIOS;
+  return (
+    <div className="mt-6">
+      <div className="h-px w-full bg-[#1e2156] mb-4" />
+      <Sec>Mal Bank TM System BRD — Scenario Inventory (§12)</Sec>
+      <Card className="p-4 border-ai/30 bg-ai/5 mb-3">
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="pill bg-panel2 text-muted text-[10px]">{BRD_SCENARIO_META.documentId}</span>
+          <span className="pill bg-low/15 text-low text-[10px]">v{BRD_SCENARIO_META.version}</span>
+          <span className="pill bg-panel2 text-muted text-[10px]">CBUAE · Mal Bank</span>
+          <span className="text-[11px] text-muted ml-auto">{BRD_SCENARIOS.length} scenarios · SCN-001…SCN-027</span>
+        </div>
+        <p className="text-[11px] text-muted mt-2 mb-0">{BRD_SCENARIO_META.note}</p>
+        {q && <p className="text-[10px] text-faint mt-1 mb-0">Showing {scenarios.length} of {BRD_SCENARIOS.length} — filtered by the search box above.</p>}
+      </Card>
+
+      <div className="space-y-2.5">
+        {scenarios.length === 0 ? (
+          <Card className="p-4 text-muted text-[13px]">No BRD scenarios match your search.</Card>
+        ) : scenarios.map((s) => (
+          <BrdScenarioCard key={s.id} s={s} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BrdScenarioCard({ s }: { s: BrdScenario }) {
+  return (
+    <Card className="p-4">
+      <div className="flex flex-wrap gap-2 items-start justify-between mb-1.5">
+        <div className="min-w-0">
+          <span className="mono text-[10px] text-faint">{s.id}</span>
+          <h3 className="m-0 mt-0.5 text-sm font-display">{s.name}</h3>
+        </div>
+        <div className="flex gap-1.5 flex-wrap">
+          <span className={`pill text-[10px] ${brdTypologyStyle(s.typology)}`}>{s.typology}</span>
+          <span className={`pill text-[10px] ${BRD_PRIORITY_STYLE[s.priority] ?? "bg-panel2 text-muted"}`}>{s.priority}</span>
+          <span className="pill bg-panel2 text-muted text-[10px]">{s.frequency}</span>
+        </div>
+      </div>
+      <p className="text-[12px] text-muted m-0">{s.riskCovered}</p>
+      <div className="grid grid-cols-2 gap-3 mt-3 max-md:grid-cols-1 text-[11px]">
+        <div className="p-2 bg-panel2 rounded border border-lineSoft">
+          <div className="text-faint uppercase text-[10px]">Logic</div>
+          <div className="mt-0.5">{s.logic}</div>
+        </div>
+        <div className="p-2 bg-panel2 rounded border border-lineSoft">
+          <div className="text-faint uppercase text-[10px]">Threshold</div>
+          <div className="mt-0.5">{s.threshold}</div>
+        </div>
+        <div className="p-2 bg-panel2 rounded border border-lineSoft">
+          <div className="text-faint uppercase text-[10px]">Segment · product / channel</div>
+          <div className="mt-0.5">{s.segment} · {s.productChannel}</div>
+        </div>
+        <div className="p-2 bg-panel2 rounded border border-lineSoft">
+          <div className="text-faint uppercase text-[10px]">Expected alert output</div>
+          <div className="mt-0.5">{s.expectedOutput}</div>
+        </div>
+      </div>
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-faint">
+        <span><b className="text-muted">Data:</b> {s.dataFields.join(", ")}</span>
+        <span><b className="text-muted">Tuning:</b> {s.tuningNotes}</span>
+        <span className="mono">{s.uatRef}</span>
+      </div>
+    </Card>
   );
 }
 

@@ -18,8 +18,8 @@ describe("CRAM methodology document export", () => {
 
   it("selects US methodology for Global Account perimeter", () => {
     const doc = cramMethodologyDocForPerimeter("global_account");
-    expect(doc.modelVersionId).toBe("Mal-CRAM-US-01");
-    expect(doc.filename).toBe("Mal-CRAM-US-01_Customer_Risk_Assessment_Methodology_US_v1.0.docx");
+    expect(doc.modelVersionId).toBe("CRAM-US-2026-07-FREEZE-03");
+    expect(doc.filename).toBe("Mal-CRAM-US-01_Customer_Risk_Assessment_Methodology_US_v1.0.pdf");
   });
 
   it("selects UAE methodology for MAL Bank perimeter", () => {
@@ -34,7 +34,7 @@ describe("CRAM methodology document export", () => {
     expect(readFileSync(path).byteLength).toBeGreaterThan(10_000);
   });
 
-  it("public US docx file exists and is non-empty", () => {
+  it("public US methodology file exists and is non-empty", () => {
     const path = resolve(process.cwd(), "public", CRAM_METHODOLOGY_US.filename);
     expect(existsSync(path)).toBe(true);
     expect(readFileSync(path).byteLength).toBeGreaterThan(10_000);

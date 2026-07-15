@@ -15,6 +15,8 @@ import {
 } from "./activityRisk";
 import { CUSTOMER_TYPE_WEIGHTS, ACTIVITY_LIBRARY_VERSION } from "../config/activityRiskConfig";
 import { entityTypeNpoFlag, entityTypeProhibited } from "../config/entityLegalTypes";
+import { zenusCountryClass } from "../config/zenusRestrictedCountries";
+import { isZenusProhibitedBusiness } from "../config/zenusProhibitedBusinessTypes";
 import { getFactorWeightsForInput, getFactorWeights, DEFAULT_FACTOR_WEIGHTS } from "../config/runtimeConfig";
 import { bandFromScore } from "../config/bandBoundaries";
 
@@ -264,22 +266,22 @@ function computeUAEGeographyScore(i: ReturnType<typeof normalizeScoreInput>, mod
 }
 
 /**
- * US Methodology §7.1 — funds-flow / corridor geography model (P2-US-1).
- * Nationality and country of birth play NO role in US geography scoring.
- * For entities, operating jurisdiction (residenceFirm = opcoFirm) is a valid funds-flow proxy.
- * Full corridor-tier register: TODO(compliance-confirm) — B-1 implementation pending.
+ * US Methodology §2.2 / §7.1 / §7.3 — residency-primary geography model.
+ * The geography factor is a worst-of country of residence and the geography of funds
+ * (source of wealth / source of funds), so residency remains the primary determinant of
+ * geographic risk while still incorporating funds-flow. Nationality and country of birth are
+ * NOT scored (non-discrimination, §11.1) — they are screening/EDD inputs only.
+ * `residenceFirm` is residenceCountry for individuals and opcoCountry (operating jurisdiction)
+ * for legal entities (resolved in dataQualityGate). Entities also fold in the incorporation
+ * jurisdiction. Sanctioned/prohibited residence is handled by the block override (§7.1/§7.2)
+ * in scoreCustomer, which takes precedence over this weighted treatment.
+ * OFAC/UN sanctions floors + interim FATF floor + Zenus restricted floors are pre-applied in
+ * countryRiskPerimeter.ts via lookupCountry(); corridor-tier scoring is governance-only (§7.5).
  */
 function computeUSGeographyScore(i: ReturnType<typeof normalizeScoreInput>, mode: "individual" | "entity"): Score {
-  // Funds-flow inputs: SoW/SoF (both perimeters) + opco jurisdiction (entity only)
-  const sowSofFirm = Math.max(i.sowFirm, i.sofFirm);
-  const opcoFirm = mode === "entity" ? i.residenceFirm : undefined;
-  const firmsToConsider = opcoFirm !== undefined
-    ? [sowSofFirm, opcoFirm]
-    : [sowSofFirm];
-  // OFAC/UN sanctions floors already applied in countryRiskPerimeter.ts via lookupCountry()
-  // Interim FATF compensating control (B-1) also applied there
-  const fundsFirmMax = Math.max(...firmsToConsider);
-  return clampScore(firmToScore(fundsFirmMax)) as Score;
+  const firms = [i.residenceFirm, i.sowFirm, i.sofFirm];
+  if (mode === "entity" && i.incorpFirm !== undefined) firms.push(i.incorpFirm);
+  return clampScore(firmToScore(Math.max(...firms))) as Score;
 }
 
 export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"): ScoreResult {
@@ -323,6 +325,13 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   // geoFirmMax: used by sanctions override checks below (OVR-002/OVR-011)
   // — worst-of all geography firm scores regardless of perimeter model
   const geoFirmMax = Math.max(i.residenceFirm, i.nationalityFirm, i.birthFirm, i.sowFirm, i.sofFirm, i.incorpFirm ?? 0);
+  // US Methodology §7.4 Rule 3 / §11.1 — nationality and country of birth are screening/EDD
+  // inputs, NOT blocking/high-risk scoring inputs. The US nexus max therefore excludes them so a
+  // (e.g.) Russian national resident in a permitted jurisdiction is not blocked on birthplace alone.
+  // UAE keeps the full geoFirmMax (CBUAE scores nationality). residenceFirm = opco for entities.
+  const geoNexusFirmMax = perimeter === "global_account"
+    ? Math.max(i.residenceFirm, i.sowFirm, i.sofFirm, i.incorpFirm ?? 0)
+    : geoFirmMax;
 
   const product = clampScore(i.productScore) as Score;
   const service = clampScore(i.serviceScore) as Score;
@@ -410,8 +419,43 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   }
   if (i.sanctions === "True Match") overrides.push({ id: "OVR-001", cls: "PROHIBITED", why: "Confirmed sanctions/TFS true match" });
   if (i.watchlist === "True Match") overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: "Internal watchlist true match" });
-  if (geoFirmMax >= 4 || SANCTIONS_A.includes(i.residenceName) || SANCTIONS_A.includes(i.sofName))
+  if (geoNexusFirmMax >= 4 || SANCTIONS_A.includes(i.residenceName) || SANCTIONS_A.includes(i.sofName))
     overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: "Category-A sanctioned-country nexus" });
+  if (perimeter === "global_account") {
+    // US Methodology §7.1/§7.2/§7.4 — Zenus Restricted Country Codes (US perimeter only).
+    // Residence (or operating jurisdiction for entities) in a Zenus prohibited OR restricted
+    // country blocks (§7.2 "residence in any restricted country → blocked"; §7.4 Rule 2).
+    const resClass = zenusCountryClass(i.residenceName);
+    if (resClass)
+      overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: `Residence/operating jurisdiction is a Zenus ${resClass} country (${i.residenceName}) — US §7.1/§7.2` });
+    // Source of funds / source of wealth originating in a PROHIBITED jurisdiction blocks (§7.4 Rule 2).
+    // (Restricted SoF/SoW with residence elsewhere stays High via the firm-3 floor / OVR-011 — §7.4 Rule 1.)
+    if (zenusCountryClass(i.sofName) === "prohibited")
+      overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: `Source of funds from a Zenus prohibited jurisdiction (${i.sofName}) — US §7.4 Rule 2` });
+    if (i.sowName && zenusCountryClass(i.sowName) === "prohibited")
+      overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: `Source of wealth from a Zenus prohibited jurisdiction (${i.sowName}) — US §7.4 Rule 2` });
+    // §7.4 Rule 3 / §11.1 — nationality/birthplace nexus is a screening/EDD flag only, never a block.
+    if (mode === "individual" && !resClass && (zenusCountryClass(i.nationalityName ?? "") || zenusCountryClass(i.birthName ?? "")))
+      profileNotes.push("Nationality/birthplace nexus to a restricted/prohibited jurisdiction — screening/EDD flag only; not a scoring or blocking input (US §7.4 Rule 3, §11.1).");
+    // §6.4 — Zenus prohibited business type → reject/exit (keyword screen on declared business activity/type).
+    const bizText = [i.declaredActivity, i.declaredEntityType].filter(Boolean).join(" · ");
+    if (isZenusProhibitedBusiness(bizText))
+      overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: `Zenus-prohibited business type (US §6.4): ${bizText.slice(0, 80)}` });
+    // OVR-003 — sanctioned-wallet exposure → HIGH floor (CRAM §5.6/§7.3.3). Any direct/tagged or
+    // mixer-routed exposure, or an indirect low-severity cluster reached ≥10% within ≤5 hops. A
+    // confirmed direct SDN/terrorism true-match is a Prohibited sanctions hit (OVR-001), not here.
+    // Inert when undefined/"none".
+    if (i.walletExposure === "direct_tagged" || i.walletExposure === "mixer" || i.walletExposure === "indirect_low")
+      overrides.push({
+        id: "OVR-003",
+        cls: "HIGH",
+        why: i.walletExposure === "mixer"
+          ? "Sanctioned-wallet exposure — mixer/tumbler-routed funds (CRAM §5.6/§7.3.3)"
+          : i.walletExposure === "direct_tagged"
+            ? "Sanctioned-wallet exposure — direct terrorism/sanctions-tagged counterparty (CRAM §5.6/§7.3.3)"
+            : "Sanctioned-wallet exposure — indirect (≥10% within ≤5 hops to a sanctioned cluster) (CRAM §5.6/§7.3.3)",
+      });
+  }
   const rcaKind = i.pepRelationship === "relative" || i.pepRelationship === "associate" ? i.pepRelationship : undefined;
   if (i.pep === "Foreign") {
     overrides.push({
@@ -421,7 +465,12 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
     });
   }
   if (i.adverse === "True Match") overrides.push({ id: "OVR-009", cls: "HIGH", why: "Material adverse media" });
-  if (firmToScore(geoFirmMax) === 3 && geoFirmMax < 4) overrides.push({ id: "OVR-011", cls: "HIGH", why: "High-risk country exposure" });
+  if (firmToScore(geoNexusFirmMax) === 3 && geoNexusFirmMax < 4) overrides.push({
+    id: "OVR-011",
+    cls: "HIGH",
+    discretionary: true,
+    why: "High-risk country exposure — risk-appetite floor (FATF R.19 mandates EDD only for FATF-listed Tier 4/5; Tier-3 is a weighted geography input, CRAM §5.2/§5.6)",
+  });
   if (activityScores.activityResolution.prohibited)
     overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: `Prohibited nature of business: ${activityScores.activityResolution.basis}` });
   if (mode === "entity" && entityTypeProhibited(i.declaredEntityType))
@@ -472,6 +521,8 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
   else if (overrides.some((o) => o.cls === "HIGH")) floor = "HIGH";
   else if (overrides.some((o) => o.cls === "MEDIUM")) floor = "MEDIUM";
 
+  // Precedence: PROHIBITED > HIGH > MEDIUM > (math band). Prohibited is a floor-only override action —
+  // the weighted math band never produces it. Three rating tiers only: Low/Medium/High (CRAM §2.2/§3.1).
   let finalRating: FinalRating;
   if (floor === "PROHIBITED") finalRating = "Prohibited";
   else {

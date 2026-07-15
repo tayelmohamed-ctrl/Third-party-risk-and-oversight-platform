@@ -32,6 +32,7 @@ import RiskSummaryPanel from "../components/cramSuite/RiskSummaryPanel";
 import RiskVisualizationDashboard from "../components/cramSuite/RiskVisualizationDashboard";
 import RbmScoreBreakdown from "../components/rbm/RbmScoreBreakdown";
 import { usePerimeter } from "../context/PerimeterContext";
+import { CRAM_METHODOLOGY_US, CRAM_METHODOLOGY_UAE } from "../lib/cramMethodologyExport";
 import { scoreCaptureWithRbm } from "../lib/cramRbmBridge";
 import { corridorFilterToRegistryId } from "../lib/rbmCorridorMap";
 import { allUseCases, defaultProductNameForPerimeter, nraSourceForPerimeter, perimeterLabel, productNamesForPerimeter, registryMeta } from "../registries/master/registryService";
@@ -553,28 +554,51 @@ export default function CramRiskTestBench() {
         <span className="text-[11px] text-muted ml-auto">Inherent → obligations → controls → residual → TM deploy</span>
         <div className="flex items-center gap-2">
           <a
-            href="/CRAM_Risk_Architecture_Blueprint.pdf"
-            download="CRAM_Risk_Architecture_Blueprint.pdf"
+            href={perimeter === "global_account" ? "/CRAM_Risk_Architecture_Blueprint_v2_3.pdf" : "/CRAM_Risk_Architecture_Blueprint.pdf"}
+            download={perimeter === "global_account" ? "CRAM_Risk_Architecture_Blueprint_v2_3.pdf" : "CRAM_Risk_Architecture_Blueprint.pdf"}
             className="btn btn-ghost text-[11px] px-3 py-1.5 flex items-center gap-1.5 no-underline"
-            title="Download system blueprint PDF"
+            title={perimeter === "global_account"
+              ? "Download US system blueprint PDF (REV 2.3 · CRAM-US-2026-07-FREEZE-03)"
+              : "Download system blueprint PDF"}
           >
             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
               <path d="M6 1v7M3.5 5.5 6 8l2.5-2.5M2 10h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             Blueprint PDF
           </a>
-          <a
-            href="https://claude.ai/code/artifact/4dd36068-9da3-4676-83c1-bf7c5ef0257f"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-ghost text-[11px] px-3 py-1.5 flex items-center gap-1.5 no-underline"
-            title="Open engine reference document"
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-              <path d="M5 2H2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7M7 1h4m0 0v4m0-4L5.5 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            Engine Reference
-          </a>
+          <details className="relative">
+            <summary
+              className="btn btn-ghost text-[11px] px-3 py-1.5 flex items-center gap-1.5 no-underline cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden"
+              title="Authoritative CRAM methodology — UAE & US"
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M5 2H2a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V7M7 1h4m0 0v4m0-4L5.5 6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Engine Reference
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M2 3.5 5 6.5 8 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </summary>
+            <div
+              className="absolute right-0 mt-1 z-50 rounded-lg p-1.5 flex flex-col gap-0.5"
+              style={{ minWidth: 320, background: "#10103C", border: "1px solid #26285C", boxShadow: "0 8px 24px rgba(0,0,0,.45)" }}
+            >
+              <div className="text-[9px] uppercase tracking-[0.12em] text-muted px-2 pt-1 pb-1">Authoritative CRAM methodology</div>
+              {[
+                { label: "US · Global Account", doc: CRAM_METHODOLOGY_US },
+                { label: "UAE · Mal Bank", doc: CRAM_METHODOLOGY_UAE },
+              ].map(({ label, doc }) => (
+                <a
+                  key={doc.modelVersionId}
+                  href={doc.url}
+                  download={doc.filename}
+                  className="no-underline rounded-md px-2 py-1.5 flex flex-col gap-0.5 hover:bg-white/5"
+                  title={`Download ${doc.label}`}
+                >
+                  <span className="text-[11px] font-semibold" style={{ color: "#F8F6FE" }}>{label}</span>
+                  <span className="text-[10px] text-muted">{doc.label} · {doc.modelVersionId}</span>
+                </a>
+              ))}
+            </div>
+          </details>
         </div>
       </div>
 

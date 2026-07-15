@@ -7,6 +7,11 @@ import type { PepGateType } from "../config/pepGate";
 
 export type Score = 1 | 2 | 3;
 export type Band = "Low" | "Medium" | "High";
+/**
+ * Final customer rating. Three rating tiers only — Low / Medium / High (CRAM §2.2 / §3.1).
+ * "Prohibited" is an override ACTION (reject / block / exit), not a fourth tier; the weighted
+ * math band never produces it. Precedence: PROHIBITED > HIGH > MEDIUM > LOW (= math band).
+ */
 export type FinalRating = "Low" | "Medium" | "High" | "Prohibited";
 export type Boundary = "calculator" | "cram";
 
@@ -18,6 +23,8 @@ export interface OverrideHit {
   id: string;
   cls: "PROHIBITED" | "HIGH" | "MEDIUM";
   why: string;
+  /** True for risk-appetite floors that are NOT regulation-mandated (e.g. OVR-011 Tier-3 country). */
+  discretionary?: boolean;
 }
 
 export interface FactorOut {
@@ -166,6 +173,13 @@ export interface ScoreInput {
   /** Entity legal type label — 28-form register (CRAM Suite) */
   declaredEntityType?: string;
   selfEmployed?: boolean;
+  /**
+   * US perimeter (global_account) only — on-chain sanctioned-wallet exposure signal (OVR-003).
+   * "direct_tagged"/"mixer" and "indirect_low" (≥10% within ≤5 hops to a lower-severity cluster)
+   * → HIGH floor (CRAM §5.6/§7.3.3). A confirmed direct SDN / terrorism true-match is handled as a
+   * Prohibited sanctions hit (OVR-001) via the sanctions field, not here. Undefined/"none" = inert.
+   */
+  walletExposure?: "none" | "indirect_low" | "direct_tagged" | "mixer";
   /** Master Risk Registry audit trail (optional — set by captureToScoreInput). */
   masterRegistryVersion?: string;
   masterRegistryActivityId?: string;

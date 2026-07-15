@@ -16,10 +16,10 @@ export const CRAM_METHODOLOGY_UAE: CramMethodologyDoc = {
 };
 
 export const CRAM_METHODOLOGY_US: CramMethodologyDoc = {
-  url: "/Mal-CRAM-US-01_Customer_Risk_Assessment_Methodology_US_v1.0.docx",
-  filename: "Mal-CRAM-US-01_Customer_Risk_Assessment_Methodology_US_v1.0.docx",
-  modelVersionId: "Mal-CRAM-US-01",
-  label: "US BaaS/MSB CRAM",
+  url: "/Mal-CRAM-US-01_Customer_Risk_Assessment_Methodology_US_v1.0.pdf",
+  filename: "Mal-CRAM-US-01_Customer_Risk_Assessment_Methodology_US_v1.0.pdf",
+  modelVersionId: "CRAM-US-2026-07-FREEZE-03",
+  label: "US MSB CRAM · Mal-CRAM-US-01 v1.0 (FREEZE-03)",
 };
 
 /** @deprecated Use CRAM_METHODOLOGY_UAE — kept for backward-compatible imports */

@@ -23,6 +23,7 @@ import {
   type SanctionsCountryFloor,
 } from "./sanctionsCountryRegistry";
 import { interimUsFirmFloor } from "./usCorridorRisk";
+import { zenusCountryFirmFloor } from "./zenusRestrictedCountries";
 
 function countryKey(name: string): string {
   return normalizeCountryName(name).toLowerCase();
@@ -58,6 +59,9 @@ function applyGlobalAccountFirm(countryName: string, baseFirm: number): number {
   if (floor) {
     firm = Math.max(firm, floor.firmFloor);
   }
+  // US Methodology §7.1–7.2 — Zenus Restricted Country Codes (US perimeter only):
+  // prohibited class floors to Prohibited (4); restricted-conditional class floors to High (3).
+  firm = Math.max(firm, zenusCountryFirmFloor(countryName));
   return firm;
 }
 

@@ -221,13 +221,20 @@ export function computeGoldenThread(
   // A-4: UAE §13 "very high" sub-tier (6-month review) — TODO(compliance-confirm): confirm exact
   // trigger condition from UAE Methodology §13 footnote before enabling. Currently placeholder = false.
   const isVeryHighSubTier = perimeter === "mal_bank" && rating === "High" && false; // TODO §13
-  const reviewMonths: number | null = rating === "Prohibited"
-    ? (perimeter === "global_account"
-        ? (profile.reviewCycles.find((r) => r.band === "Prohibited")?.months ?? 6)
-        : null)
-    : isVeryHighSubTier
-      ? 6  // UAE Methodology §13 "very high" sub-tier
-      : (profile.reviewCycles.find((r) => r.band === rating)?.months ?? null);
+  // US taxonomy (FREEZE-03 / CRAM §12 Priority 2): confirmed suspicion / existing STR-SAR (OVR-010)
+  // is a HIGH floor on an accelerated 6-month MLRO-escalated review (SAR fired). MLRO sign-off is
+  // already routed via authority() for High/EDD.
+  const confirmedSuspicionHigh = perimeter === "global_account" && rating === "High"
+    && (result.overrides?.some((o) => o.id === "OVR-010") ?? false);
+  const reviewMonths: number | null = confirmedSuspicionHigh
+    ? 6
+    : rating === "Prohibited"
+      ? (perimeter === "global_account"
+          ? (profile.reviewCycles.find((r) => r.band === "Prohibited")?.months ?? 6)
+          : null)
+      : isVeryHighSubTier
+        ? 6  // UAE Methodology §13 "very high" sub-tier
+        : (profile.reviewCycles.find((r) => r.band === rating)?.months ?? null);
   // C-2: reviewMonths and nextReviewDate are computed client-side at assessment time.
   // No persistent review-schedule store exists — dates are not saved to a backend.
   // Displayed value is informational only; scheduling is the compliance team's responsibility.
