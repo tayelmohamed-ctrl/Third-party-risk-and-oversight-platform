@@ -1,6 +1,12 @@
 import catalog from "../data/transaction_purpose_code_catalog.json";
 import corridorPack from "../data/corridor_ewra_themes.json";
 import pkTypology from "../data/pakistan_risk_typology_library.json";
+import gaCorridorGuide from "../data/global_account_corridor_guidance.json";
+import gaSelfC2cScenarios from "../data/ga_self_c2c_scenarios.json";
+import gaC2bScenarios from "../data/ga_c2b_scenarios.json";
+import gaB2cScenarios from "../data/ga_b2c_scenarios.json";
+import gaB2bScenarios from "../data/ga_b2b_scenarios.json";
+import gaM2mScenarios from "../data/ga_m2m_scenarios.json";
 
 export type PurposeFlowId = "C2C" | "C2B" | "B2C" | "B2B" | "Mal2Mal";
 
@@ -102,6 +108,99 @@ export const CORRIDOR_GUIDANCE = corridorPack.corridorThemes.map((c) => ({
   typologyLibraryId: c.typologyLibraryId,
   targetGoLive: c.approval?.targetGoLive,
 }));
+
+/**
+ * Global Account (US MSB) corridor guidance — the 9 permitted corridors, self/C2C typologies,
+ * onward-corridor traps, and the periodic-review behaviour lens. Perimeter-scoped to
+ * global_account (Mal Bank uses CORRIDOR_GUIDANCE / COUNTRY_MODULES above). Guidance only —
+ * does not change the CRR composite (corridor stays governance-only). Source: Self-Transfer &
+ * C2C Scenario Pack (illustrative; counsel review required before adoption).
+ */
+export const GA_CORRIDOR_GUIDANCE = gaCorridorGuide.corridors;
+export const GA_CORRIDOR_ONWARD_TRAPS = gaCorridorGuide.onwardTraps;
+export const GA_SELF_C2C_FLOWS = gaCorridorGuide.selfC2cFlows;
+export const GA_PERIODIC_REVIEW_LENS = gaCorridorGuide.periodicReviewLens;
+export const GA_CORRIDOR_META = {
+  documentId: gaCorridorGuide.documentId,
+  source: gaCorridorGuide.source,
+  oneLiner: gaCorridorGuide.oneLiner,
+  rescoreCadence: gaCorridorGuide.rescoreCadence,
+};
+
+/**
+ * Global Account self-transfer & C2C scenarios (GA-01…GA-25) — the pack's §3 case walk-through,
+ * grouped by residence jurisdiction then nationality permutation. Surfaced inside the C2C card (#08)
+ * for global_account. Guidance only — illustrative, non-exhaustive; the customer rating is set by
+ * the CRAM composite.
+ */
+export const GA_SELF_C2C_SCENARIOS = gaSelfC2cScenarios.jurisdictions;
+export const GA_SELF_C2C_SCENARIOS_META = {
+  documentId: gaSelfC2cScenarios.documentId,
+  source: gaSelfC2cScenarios.source,
+  note: gaSelfC2cScenarios.note,
+  count: gaSelfC2cScenarios.jurisdictions.reduce((n, j) => n + j.scenarios.length, 0),
+};
+
+/**
+ * Global Account Individual → Business (C2B) scenarios (C2B-GA-01…24) — the pack's §3 case
+ * walk-through, grouped by residence jurisdiction. Surfaced inside the C2B card (#09) for
+ * global_account. Guidance only; the business payee is a second screened party; the customer
+ * rating is set by the CRAM composite.
+ */
+export const GA_C2B_SCENARIOS = gaC2bScenarios.jurisdictions;
+export const GA_C2B_SCENARIOS_META = {
+  documentId: gaC2bScenarios.documentId,
+  source: gaC2bScenarios.source,
+  note: gaC2bScenarios.note,
+  count: gaC2bScenarios.jurisdictions.reduce((n, j) => n + j.scenarios.length, 0),
+};
+
+/**
+ * Global Account Business → Individual (B2C) scenarios (B2C-GA-01…20) — the pack's §3 case
+ * walk-through, grouped by establishment jurisdiction, legal type & UBO permutation. Surfaced
+ * inside the B2C card (#10) for global_account. The customer scored is the ENTITY (legal type +
+ * UBO + §6.4 prohibited-type screen); the individual payees are screened as beneficiaries.
+ * Guidance only; the customer rating is set by the CRAM composite.
+ */
+export const GA_B2C_SCENARIOS = gaB2cScenarios.jurisdictions;
+export const GA_B2C_SCENARIOS_META = {
+  documentId: gaB2cScenarios.documentId,
+  source: gaB2cScenarios.source,
+  note: gaB2cScenarios.note,
+  count: gaB2cScenarios.jurisdictions.reduce((n, j) => n + j.scenarios.length, 0),
+};
+
+/**
+ * Global Account Business → Business (B2B) scenarios (B2B-GA-01…20) — the pack's §3 case
+ * walk-through, grouped by establishment jurisdiction, legal type & counterparty permutation.
+ * Surfaced inside the B2B card (#11) for global_account. Both parties are entities: the payer is
+ * the scored customer; the receiving business is a screened counterparty with a related-party test
+ * and — for trade flows — trade-doc reconciliation (the perimeter's highest TBML surface).
+ * Guidance only; the customer rating is set by the CRAM composite. Completes the C2C·C2B·B2C·B2B matrix.
+ */
+export const GA_B2B_SCENARIOS = gaB2bScenarios.jurisdictions;
+export const GA_B2B_SCENARIOS_META = {
+  documentId: gaB2bScenarios.documentId,
+  source: gaB2bScenarios.source,
+  note: gaB2bScenarios.note,
+  count: gaB2bScenarios.jurisdictions.reduce((n, j) => n + j.scenarios.length, 0),
+};
+
+/**
+ * Global Account Mal-to-Mal (on-us) scenarios (M2M-GA-01…14) — the pack's §3 case walk-through,
+ * grouped by on-us sub-flow (I→I/self, I→B, B→I, B→B, cross-cutting). Surfaced inside the Mal2Mal
+ * card (#12) for global_account. Both payer and payee are Mal customers, so the money never leaves
+ * the platform; the linkage lens (same-person / same-UBO / common-control / collusive-cluster) is
+ * the axis unique to on-us. Internal layering is the signature typology — aggregate the chain.
+ * Guidance only; the customer rating is set by the CRAM composite. Completes the C2C·C2B·B2C·B2B·Mal2Mal matrix.
+ */
+export const GA_M2M_SCENARIOS = gaM2mScenarios.jurisdictions;
+export const GA_M2M_SCENARIOS_META = {
+  documentId: gaM2mScenarios.documentId,
+  source: gaM2mScenarios.source,
+  note: gaM2mScenarios.note,
+  count: gaM2mScenarios.jurisdictions.reduce((n, j) => n + j.scenarios.length, 0),
+};
 
 export const COUNTRY_MODULES = corridorPack.complianceCountryModules.map((m) => ({
   countryCode: m.countryCode,

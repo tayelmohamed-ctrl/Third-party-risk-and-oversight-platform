@@ -1,0 +1,105 @@
+{
+  "documentId": "MAL-GA-CORR-GUIDE-v1.0",
+  "perimeter": "global_account",
+  "source": "Self-Transfer & C2C Scenario Pack (illustrative, non-exhaustive) · Mal-CRAM-US-01 v2.3 (CRAM-US-2026-07-FREEZE-03) · MAL-TA-01 v1.0 · MSB Compliance Risk Typology Register (Draft v0.1) · MAL-TM-PPC-CATALOG v1.0",
+  "oneLiner": "Residence must be permitted (gate). Corridor sets the heat. Nationality & birthplace decide how hard we screen (flags, not blocks — unless combined with a money/residence/corridor nexus). Segment tells you how the account is likely to be abused by third parties — monitor the behaviour, never deny the person (residency-primary / non-discrimination / UDAAP).",
+  "corridors": [
+    {
+      "code": "PK", "label": "US → Pakistan", "flag": "🇵🇰", "region": "South Asia",
+      "rating": "High", "ratingNote": "EWRA override", "edd": "Mandatory",
+      "dominantTypologies": ["Hawala / hundi", "Funnel many-to-one (iWRA)", "Pass-through / mule", "Wallet-tier structuring (JazzCash / Easypaisa)", "TF via NPO"],
+      "oscilarRules": ["OS-TM-031", "OS-TM-016", "OS-TM-017", "OS-TM-004", "OS-TM-040", "OS-TM-041", "OS-TM-042"],
+      "typologyLibraryId": "PK-TYPOLIB-2026-Q3"
+    },
+    {
+      "code": "EG", "label": "US → Egypt", "flag": "🇪🇬", "region": "MENA",
+      "rating": "High", "ratingNote": "FATF grey-list", "edd": "Mandatory",
+      "dominantTypologies": ["Parallel-market FX", "Currency smuggling", "FX-limit structuring", "Charity-channel TF", "TBML adjacency"],
+      "oscilarRules": ["OS-TM-044", "OS-TM-011", "OS-TM-001", "OS-TM-016", "OS-TM-045"],
+      "typologyLibraryId": null
+    },
+    {
+      "code": "TR", "label": "US → Turkey", "flag": "🇹🇷", "region": "MENA / Europe",
+      "rating": "Medium", "ratingNote": "EDD mandatory", "edd": "Mandatory",
+      "dominantTypologies": ["Dual-use trade adjacency", "Gold / DPMS value movement", "Invoice manipulation", "Sanctions-evasion adjacency"],
+      "oscilarRules": ["OS-TM-032", "OS-TM-010", "OS-TM-038", "OS-TM-045"],
+      "typologyLibraryId": null
+    },
+    {
+      "code": "BD", "label": "US → Bangladesh", "flag": "🇧🇩", "region": "South Asia",
+      "rating": "Medium", "ratingNote": "Standard+", "edd": "Standard+",
+      "dominantTypologies": ["Remittance velocity / funnel to single beneficiary", "Hundi", "Garment-TBML adjacency", "Mule pass-through"],
+      "oscilarRules": ["OS-TM-016", "OS-TM-031", "OS-TM-004", "OS-TM-030"],
+      "typologyLibraryId": null
+    },
+    {
+      "code": "ID", "label": "US → Indonesia", "flag": "🇮🇩", "region": "SE Asia",
+      "rating": "Medium", "ratingNote": "Virtual-asset watch", "edd": "Standard+",
+      "dominantTypologies": ["E-wallet / stored-value layering", "E-commerce mule", "Virtual-asset conversion off-profile"],
+      "oscilarRules": ["OS-TM-021", "OS-TM-038", "OS-TM-004", "OS-TM-029"],
+      "typologyLibraryId": null
+    },
+    {
+      "code": "PH", "label": "US → Philippines", "flag": "🇵🇭", "region": "SE Asia",
+      "rating": "Medium", "ratingNote": "Standard+", "edd": "Standard+",
+      "dominantTypologies": ["OFW-remittance funnel", "Scam-proceeds inflow (pig-butchering victim / mule)", "E-wallet mule", "Gaming / POGO adjacency"],
+      "oscilarRules": ["OS-TM-016", "OS-TM-036", "OS-TM-004", "OS-TM-039"],
+      "typologyLibraryId": null
+    },
+    {
+      "code": "SA", "label": "US → Saudi Arabia", "flag": "🇸🇦", "region": "GCC",
+      "rating": "Medium", "ratingNote": "Provisional · PEP screen mandatory", "edd": "Standard+",
+      "dominantTypologies": ["Trade settlement", "PEP / state-linked", "Charity / NPO", "High-value-goods movement"],
+      "oscilarRules": ["OS-TM-022", "OS-TM-011", "OS-TM-020"],
+      "typologyLibraryId": null
+    },
+    {
+      "code": "JO", "label": "US → Jordan", "flag": "🇯🇴", "region": "MENA",
+      "rating": "Medium-High", "ratingNote": "Provisional · enhanced EDD", "edd": "Enhanced",
+      "dominantTypologies": ["Hawala", "Conflict-adjacency TF / NPO", "Cash-intensive", "Charity channels"],
+      "oscilarRules": ["OS-TM-031", "OS-TM-011", "OS-TM-043", "OS-TM-024"],
+      "typologyLibraryId": null
+    },
+    {
+      "code": "AE", "label": "UAE (residence) — hub", "flag": "🇦🇪", "region": "GCC",
+      "rating": "Critical", "ratingNote": "Register (hub) · Medium domestic", "edd": "Mandatory",
+      "dominantTypologies": ["Re-export / gold value transfer", "Hawala density", "Hub-for-onward (incl. onward to Iran = block)", "Real-estate placement"],
+      "oscilarRules": ["OS-TM-031", "OS-TM-032", "OS-TM-038", "OS-TM-010"],
+      "typologyLibraryId": null
+    }
+  ],
+  "onwardTraps": [
+    {
+      "route": "UAE → Pakistan",
+      "rating": "Critical", "likelihoodImpact": 25,
+      "note": "The register's hottest route (L×I 25). Self-transfers / C2C chaining onward to PK inherit enhanced-everything: mandatory EDD, tightest limits, reduced velocity, ≤6–12-month review, low anomaly tolerance."
+    },
+    {
+      "route": "Any → Iran / sanctioned wallet",
+      "rating": "Prohibited",
+      "note": "Any nexus onward to Iran or a sanctioned wallet is a Prohibited override — block + OFAC blocking report within 10 business days (CRAM §7.1)."
+    }
+  ],
+  "selfC2cFlows": [
+    { "code": "C2C-12 / M2M-01", "flow": "Self-transfer (own account, other bank / on-us)", "coreTypologies": "Name-mismatch at receiving side (CoP fail); 'own account' used to break the audit trail before dispersal; self-transfer velocity feeding a layering pre-stage", "hardControl": "Same-name Confirmation of Payee (CoP) — hard control, not evidence; mismatch = block / review" },
+    { "code": "C2C-01 / M2M-02", "flow": "Family support", "coreTypologies": "Many-to-one funnel; remittance ≫ wage; hawala / hundi interface; missing settlement leg", "hardControl": "Beneficiary coherence (name–ID–account, relationship, purpose); income evidence for remittance-vs-wage" },
+    { "code": "C2C-02 / M2M-03", "flow": "Gift", "coreTypologies": "High-frequency 'gifts' as layering cover; gifts from recent unknown counterparties (scam / mule)", "hardControl": "Frequency cap for gifts; counterparty coherence" },
+    { "code": "C2C-05 / C2C-06", "flow": "Personal loan / repayment", "coreTypologies": "Serial 'loans' = unlicensed lending; loan-back round-trips; repayment with no visible prior loan", "hardControl": "Relationship + expected-repayment declaration; pairing test with prior inbound; unlicensed-lending frequency rule" },
+    { "code": "C2C-03 / C2C-10", "flow": "Shared-expense / second-hand", "coreTypologies": "Structured many-to-one collections; high-frequency 'purchases' = undeclared business on a personal account", "hardControl": "Aggregation review; undeclared-business re-book test" },
+    { "code": "C2C-13", "flow": "Charitable help to an individual", "coreTypologies": "Crowd-collection into one individual (unlicensed fundraising / TF); high-risk corridor destinations", "hardControl": "Low per-txn cap; aggregation review; corridor restrictions; unregistered / conflict-adjacent beneficiary → decline" }
+  ],
+  "periodicReviewLens": [
+    { "behaviour": "Self-transfer name-mismatch at the receiving side (CoP fail)", "signals": "Audit-trail break before dispersal", "action": "Block / review the transfer; investigate layering pre-stage", "oscilar": ["OS-TM-041"] },
+    { "behaviour": "Self-transfer velocity spike, no lifestyle rationale", "signals": "Layering pre-stage / pre-positioning", "action": "Step-up; RFI on purpose", "oscilar": ["OS-TM-042"] },
+    { "behaviour": "C2C inbound from many unrelated senders → rapid forward", "signals": "Mule / funnel", "action": "Freeze + SAR (victim-aware)", "oscilar": ["OS-TM-016", "OS-TM-017"] },
+    { "behaviour": "Remittance C2C ≫ declared wage / income", "signals": "Hawala interface / undeclared source", "action": "EDD; RFI on SoF; funnel check", "oscilar": ["OS-TM-031", "OS-TM-016"] },
+    { "behaviour": "High-frequency 'gifts' / 'loans' / 'second-hand purchases'", "signals": "Layering cover / undeclared business / unlicensed lending", "action": "Re-classify; step-up; possible SME re-book or decline", "oscilar": ["OS-TM-019", "OS-TM-020"] },
+    { "behaviour": "Charity-to-individual fan-in then onward to high-risk zone", "signals": "Unlicensed fundraising / TF", "action": "EDD + STR; rapid reporting", "oscilar": ["OS-TM-043", "OS-TM-011"] },
+    { "behaviour": "fiat↔crypto bursts / self-transfer to wallet then off-ramp", "signals": "VA layering", "action": "Chain-analysis; mixer / sanctioned-wallet screen; High floor", "oscilar": ["OS-TM-021", "OS-TM-038"] },
+    { "behaviour": "Parallel-FX timing / sub-threshold clustering (EG / PK)", "signals": "Currency-exchange abuse / structuring", "action": "SAR; step-up; CTR on aggregate", "oscilar": ["OS-TM-044", "OS-TM-001"] },
+    { "behaviour": "Purpose-code switching / 'Other'-rate spike", "signals": "Classification avoidance", "action": "KRI review; free-text keyword scan; step-up", "oscilar": ["OS-TM-045"] },
+    { "behaviour": "New corridor with no profile rationale", "signals": "Unexplained expansion", "action": "RFI; re-score; corridor-permission check", "oscilar": ["OS-TM-008"] },
+    { "behaviour": "Same customer using multiple MSBs / wallets for one route", "signals": "Distributed structuring", "action": "Aggregate monitoring; SAR assessment", "oscilar": ["OS-TM-046"] }
+  ],
+  "rescoreCadence": "Watchlist hit → SDN delta re-screen ≤24h, other lists ≤48h, re-score on hit. Alert triage: P1 ≤4h · P2 ≤24h · P3 ≤48h. High / PEP / Rule-1 relationships get a ≤12-month review (≤6-month on the hottest UAE→PK route). Any confirmed typology → most-restrictive rating persists until cleared."
+}

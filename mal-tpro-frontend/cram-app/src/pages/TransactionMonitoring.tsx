@@ -7,6 +7,7 @@ import AgentAiTag from "../components/agents/AgentAiTag";
 import {
   TXN_SCREENING_PROGRAMME, TXN_SCREENING_SCORING, TXN_SCREENING_WORKFLOW,
   TXN_SCREENING_CASE_MGMT, OSCILAR_RULE_CATEGORIES,
+  FIVE_GATE_SPINE, ALERT_TRIAGE_SLA, RESCREEN_CADENCE, TM_HANDLING_PRINCIPLES,
   type OscilarTmRule, type PaymentChannel,
 } from "../config/oscilarProgramme";
 import ruleLibrary from "../data/oscilar_rule_library.json";
@@ -58,7 +59,7 @@ const CARDS: TmCardDef[] = [
   { num: "02", title: "Scoring Model",       desc: "Alert tiers, dimensions and risk scoring logic",       value: "4",  unit: "Tiers",     accent: "#39B9ED", illust: "scoring",    tab: "scoring" },
   { num: "03", title: "Workflow",            desc: "End-to-end workflow from alert to closure",            value: "7",  unit: "Steps",     accent: "#7C6CF7", illust: "workflow",   tab: "workflow" },
   { num: "04", title: "Alerts & Cases",      desc: "SLA, ownership, queues and case management",           value: "7",  unit: "Stages",    accent: "#F6A623", illust: "cases",      tab: "cases" },
-  { num: "05", title: "TM Rule Library",     desc: "Oscilar rules — transfers & cards (with logic)",       value: "40", unit: "Rules",     accent: "#2FD8A6", illust: "monitoring", tab: "monitoring" },
+  { num: "05", title: "TM Rule Library",     desc: "Oscilar rules — transfers & cards (with logic)",       value: "70", unit: "Rules",     accent: "#2FD8A6", illust: "monitoring", tab: "monitoring" },
   { num: "06", title: "Purpose Codes",       desc: "Accept, condition, eliminate — PDF guide",             value: "80", unit: "Codes",     accent: "#E8B84B", illust: "purpose",    tab: "purpose", sub: "overview" },
   // Row 2
   { num: "07", title: "Pre-Impl Readiness",  desc: "BRD gates · alert & screening rules readiness",        value: "7",  unit: "Gates",     accent: "#39B9ED", illust: "readiness",  tab: "readiness" },
@@ -131,10 +132,19 @@ export default function TransactionMonitoring() {
   // Card #06 (Purpose Codes) is perimeter-aware: Global Account shows the
   // reviewed Zenus register; Mal Bank keeps the CBUAE/UAE purpose catalog.
   const cardView = useCallback(
-    (c: TmCardDef): TmCardDef =>
-      c.num === "06" && perimeter === "global_account"
-        ? { ...c, title: "Purpose Codes · Zenus", desc: "Reviewed Global Account register — corrected codes + PDF", value: "30", unit: "Codes" }
-        : c,
+    (c: TmCardDef): TmCardDef => {
+      if (perimeter !== "global_account") return c;
+      if (c.num === "06") return { ...c, title: "Purpose Codes · Zenus", desc: "Reviewed Global Account register — corrected codes + PDF", value: "30", unit: "Codes" };
+      // Global Account corridor guidance / country typologies cover the nine permitted corridors.
+      if (c.num === "08") return { ...c, desc: "GA-01…GA-25 self-transfer & C2C scenarios + purpose codes", value: "25", unit: "Scenarios" };
+      if (c.num === "09") return { ...c, desc: "C2B-GA-01…24 Individual→Business scenarios + purpose codes", value: "24", unit: "Scenarios" };
+      if (c.num === "10") return { ...c, desc: "B2C-GA-01…20 Business→Individual (entity) scenarios + purpose codes", value: "20", unit: "Scenarios" };
+      if (c.num === "11") return { ...c, desc: "B2B-GA-01…20 Business→Business (entity-to-entity) scenarios + purpose codes", value: "20", unit: "Scenarios" };
+      if (c.num === "12") return { ...c, desc: "M2M-GA-01…14 on-us scenarios — linkage lens & internal-layering + purpose codes", value: "14", unit: "Scenarios" };
+      if (c.num === "13") return { ...c, desc: "US MSB — nine permitted corridors, self/C2C typologies", value: "9", unit: "Corridors" };
+      if (c.num === "14") return { ...c, desc: "Per-corridor self/C2C typologies + periodic-review lens", value: "9", unit: "Corridors" };
+      return c;
+    },
     [perimeter],
   );
 
@@ -172,7 +182,7 @@ export default function TransactionMonitoring() {
       {/* Row 2 — readiness + purpose-flow deep links */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 mb-4">
         {ROW2.map((c) => (
-          <TmCard key={c.num} def={c} active={activeCard === c.num} onClick={() => openCard(c)} />
+          <TmCard key={c.num} def={cardView(c)} active={activeCard === c.num} onClick={() => openCard(c)} />
         ))}
       </div>
 
@@ -183,7 +193,7 @@ export default function TransactionMonitoring() {
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 mb-4">
         {ROW3.map((c) => (
-          <TmCard key={c.num} def={c} active={activeCard === c.num} onClick={() => openCard(c)} />
+          <TmCard key={c.num} def={cardView(c)} active={activeCard === c.num} onClick={() => openCard(c)} />
         ))}
       </div>
 
@@ -355,6 +365,41 @@ function WorkflowTab() {
           </Card>
         ))}
       </div>
+
+      <Card className="p-4">
+        <Sec>Five-gate decision spine — onboarding (CRAM §0)</Sec>
+        <p className="text-[11px] text-muted mt-1 mb-3">
+          The AI never scores first — it runs these gates in order and stops at the first that produces an outcome.
+          This keeps EDD quick: only documents that surviving gates trigger are requested.
+        </p>
+        <div className="space-y-2">
+          {FIVE_GATE_SPINE.map((g) => (
+            <div key={g.id} className="flex gap-3 items-start">
+              <span className="pill bg-ai/15 text-ai text-[10px] mono shrink-0 mt-0.5">{g.id}</span>
+              <div className="min-w-0">
+                <div className="text-[12px] font-semibold">{g.name}</div>
+                <div className="text-[11px] text-muted">{g.checks}</div>
+                <div className="text-[11px] text-[#ff9db0] mt-0.5">Fail → {g.failCondition}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <div className="grid grid-cols-2 gap-3 max-md:grid-cols-1">
+        <Card className="p-4">
+          <Sec>Anti-tipping-off (always)</Sec>
+          <ul className="mt-2 mb-0 pl-4 space-y-1 text-[11px] text-muted list-disc">
+            {TM_HANDLING_PRINCIPLES.antiTippingOff.map((x) => <li key={x}>{x}</li>)}
+          </ul>
+        </Card>
+        <Card className="p-4">
+          <Sec>Victim-aware exit (fair access)</Sec>
+          <ul className="mt-2 mb-0 pl-4 space-y-1 text-[11px] text-muted list-disc">
+            {TM_HANDLING_PRINCIPLES.victimAwareExit.map((x) => <li key={x}>{x}</li>)}
+          </ul>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -386,6 +431,14 @@ function CasesTab() {
           Alert and case SLAs for investigators. Potential Vital4 matches: <b>{SCREENING_SLA.potentialMatchHours}h</b>.
           Pending screening: <b>{SCREENING_SLA.pendingHours}h</b> before Compliance escalation.
         </p>
+        <div className="flex flex-wrap gap-2 mt-3">
+          {ALERT_TRIAGE_SLA.map((t) => (
+            <span key={t.priority} className="pill bg-panel2 text-muted text-[10px]">
+              <b className="text-ink">{t.priority}</b> {t.target} · {t.scope}
+            </span>
+          ))}
+        </div>
+        <p className="text-[10px] text-faint mt-2 mb-0">{RESCREEN_CADENCE}</p>
       </Card>
 
       <Card>
@@ -1649,6 +1702,7 @@ const SCENARIO_WORKFLOWS: {
         "Self Foreign PEP OR relative/associate of a Foreign PEP → treat as Foreign → OVR-008 HIGH + eddRequired + SAR review",
         "IO PEP → OVR-016 MEDIUM floor",
         "None → no floor, rating from the composite band",
+        "Anti-tipping-off: never use the word 'PEP' to the customer — frame every request as routine verification (Self-Transfer & C2C Pack §1.3)",
       ] },
       { no: "05", label: "Composite + overrides", color: "#7C6CF7", steps: [
         "Six-factor composite (CT 0.25 · Geo 0.25 · P&S 0.20 · Ch 0.20 · Txn 0.10); PEP = 0 weight",

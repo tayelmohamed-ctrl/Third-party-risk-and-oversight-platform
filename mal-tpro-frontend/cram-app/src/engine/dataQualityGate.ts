@@ -19,6 +19,7 @@ import {
   lookupProduct,
   MASTER_REGISTRY_VERSION,
 } from "../registries/master/registryService";
+import { CARD_ISSUER, isCardProduct, isRainCardMarket } from "../config/rainCardMarkets";
 import type {
   AdverseResult, Band, Boundary, CustomerLegalForm, PepStatus,
   Score, ScoreInput, ScoreResult, ScreenResult, UboVerificationStatus,
@@ -349,6 +350,21 @@ export function validateDataQuality(
     req("uboCountry", capture.uboCountry, "UBO country");
     req("sowCountry", capture.sowCountry, "Source-of-wealth country");
     req("sofCountry", capture.sofCountry, "Source-of-funds country");
+  }
+
+  // Rain card launch-market eligibility (Global Account / US only). The USD card is issued by Rain
+  // and is live only in the launch markets — a customer may hold a card only if resident (or, for
+  // entities, operating) in one of them. USD account + payout remain available everywhere else.
+  if (perimeter === "global_account" && isCardProduct(capture.product)) {
+    const cardGeo = capture.mode === "entity" ? capture.opcoCountry : capture.residenceCountry;
+    if (!isBlank(cardGeo) && !isRainCardMarket(cardGeo)) {
+      issues.push({
+        code: "CARD_MARKET_INELIGIBLE",
+        field: "product",
+        message: `Card product unavailable — ${CARD_ISSUER} issues USD cards only in the launch markets; residence (${cardGeo}) is not eligible. USD account + payout remain available.`,
+        severity: "blocking",
+      });
+    }
   }
 
   // Identity verification (digital KYC gate)

@@ -13,12 +13,28 @@ import {
   purposeTypologyLinks,
   TYPOLOGY_ANNEX,
   CORRIDOR_CASE_INTEL,
+  GA_CORRIDOR_GUIDANCE,
+  GA_CORRIDOR_ONWARD_TRAPS,
+  GA_SELF_C2C_FLOWS,
+  GA_PERIODIC_REVIEW_LENS,
+  GA_CORRIDOR_META,
+  GA_SELF_C2C_SCENARIOS,
+  GA_SELF_C2C_SCENARIOS_META,
+  GA_C2B_SCENARIOS,
+  GA_C2B_SCENARIOS_META,
+  GA_B2C_SCENARIOS,
+  GA_B2C_SCENARIOS_META,
+  GA_B2B_SCENARIOS,
+  GA_B2B_SCENARIOS_META,
+  GA_M2M_SCENARIOS,
+  GA_M2M_SCENARIOS_META,
   type PurposeFlowId,
   type PurposeCatalogEntry,
 } from "../../config/transactionPurposeCatalog";
 import { exportTransactionPurposeCatalogPdf } from "../../lib/transactionPurposeCatalogPdf";
 import { useCorridorTypologies, type CorridorTypology } from "../../store/corridorTypologyStore";
 import { GLOBAL_ACCOUNT_CORRIDORS, CORRIDOR_BY_CODE } from "../../config/globalAccountCorridors";
+import { usePerimeter } from "../../context/PerimeterContext";
 
 const TIER_STYLE: Record<string, string> = {
   Low: "bg-low/15 text-low",
@@ -116,6 +132,46 @@ export default function PaymentPurposeGuidancePanel({ defaultTab }: { defaultTab
       </div>
 
       {tab === "overview" && <OverviewTab stats={stats} />}
+      {tab === "C2C" && (
+        <GaScenarioAccordion
+          jurisdictions={GA_SELF_C2C_SCENARIOS as unknown as ScenarioJurisdiction[]}
+          meta={GA_SELF_C2C_SCENARIOS_META}
+          title="Self-transfer & C2C scenarios"
+          flowLabel="Flow & product use case"
+        />
+      )}
+      {tab === "C2B" && (
+        <GaScenarioAccordion
+          jurisdictions={GA_C2B_SCENARIOS as unknown as ScenarioJurisdiction[]}
+          meta={GA_C2B_SCENARIOS_META}
+          title="Individual → Business (C2B) scenarios"
+          flowLabel="C2B purpose & beneficiary business"
+        />
+      )}
+      {tab === "B2C" && (
+        <GaScenarioAccordion
+          jurisdictions={GA_B2C_SCENARIOS as unknown as ScenarioJurisdiction[]}
+          meta={GA_B2C_SCENARIOS_META}
+          title="Business → Individual (B2C) scenarios"
+          flowLabel="B2C payout type & individual payee"
+        />
+      )}
+      {tab === "B2B" && (
+        <GaScenarioAccordion
+          jurisdictions={GA_B2B_SCENARIOS as unknown as ScenarioJurisdiction[]}
+          meta={GA_B2B_SCENARIOS_META}
+          title="Business → Business (B2B) scenarios"
+          flowLabel="B2B purpose & counterparty business"
+        />
+      )}
+      {tab === "Mal2Mal" && (
+        <GaScenarioAccordion
+          jurisdictions={GA_M2M_SCENARIOS as unknown as ScenarioJurisdiction[]}
+          meta={GA_M2M_SCENARIOS_META}
+          title="Mal-to-Mal (on-us) scenarios"
+          flowLabel="On-us purpose & linkage type"
+        />
+      )}
       {FLOW_IDS.includes(tab as PurposeFlowId) && (
         <FlowTab
           flowId={tab as PurposeFlowId}
@@ -128,6 +184,96 @@ export default function PaymentPurposeGuidancePanel({ defaultTab }: { defaultTab
       )}
       {tab === "corridors" && <CorridorsTab />}
       {tab === "typologies" && <TypologiesTab />}
+    </div>
+  );
+}
+
+interface ScenarioRecord {
+  id: string; title: string; ratingBand: string; profile: string; segment: string; geography: string;
+  flow: string; corridor: string; screening: string; rating: string; documents: string;
+  expectedActivity: string; behaviourWatch: string; sarPosture?: string; outcome: string; oscilar: string[];
+}
+interface ScenarioJurisdiction { code: string; name: string; corridorRating: string; edd: string; scenarios: ScenarioRecord[]; }
+
+/**
+ * Reusable Global-Account scenario walk-through, surfaced inside a flow card (C2C #08 / C2B #09)
+ * above the purpose codes. Grouped by residence jurisdiction; each card collapsible with the full
+ * attribute model. Global Account only; guidance only.
+ */
+function GaScenarioAccordion({ jurisdictions, meta, title, flowLabel }: {
+  jurisdictions: ScenarioJurisdiction[];
+  meta: { count: number; note: string; source: string };
+  title: string;
+  flowLabel: string;
+}) {
+  const { perimeter } = usePerimeter();
+  const [open, setOpen] = useState<string | null>(null);
+  if (perimeter !== "global_account") return null;
+  return (
+    <div className="space-y-4 mb-4">
+      <Card className="p-4 border-ai/30 bg-ai/5">
+        <Sec>{title} — {meta.count} cases</Sec>
+        <p className="text-[11px] text-muted mt-1 mb-0">
+          {meta.note} <span className="text-faint">{meta.source}</span>
+        </p>
+      </Card>
+      {jurisdictions.map((j) => (
+        <div key={j.code}>
+          <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6] mb-1.5 mt-1">
+            {j.name} — corridor {j.corridorRating} · EDD {j.edd} · {j.scenarios.length} scenario(s)
+          </div>
+          <div className="space-y-2">
+            {j.scenarios.map((s) => {
+              const isOpen = open === s.id;
+              return (
+                <Card key={s.id} className="p-0 overflow-hidden">
+                  <button
+                    type="button"
+                    className="w-full text-left px-4 py-3 flex items-center gap-2 flex-wrap hover:bg-panel2/50"
+                    onClick={() => setOpen(isOpen ? null : s.id)}
+                  >
+                    {isOpen ? <ChevronDown size={14} className="text-faint shrink-0" /> : <ChevronRight size={14} className="text-faint shrink-0" />}
+                    <span className="mono text-[10px] text-ai shrink-0">{s.id}</span>
+                    <span className="text-[12px] font-semibold min-w-0">{s.title}</span>
+                    <span className={`pill text-[10px] ml-auto ${GA_RATING_STYLE[s.ratingBand] ?? "bg-panel2 text-muted"}`}>{s.ratingBand}</span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-4 pb-4 pt-1 border-t border-lineSoft grid grid-cols-2 gap-x-4 gap-y-2 max-md:grid-cols-1 text-[11px]">
+                      <ScenAttr label="Profile" value={s.profile} />
+                      <ScenAttr label="Segment / employment" value={s.segment} />
+                      <ScenAttr label="Geography (residence · nationality · SoW/SoF)" value={s.geography} />
+                      <ScenAttr label={flowLabel} value={s.flow} />
+                      <ScenAttr label="Corridor risk" value={s.corridor} />
+                      <ScenAttr label="Screening (PEP · sanctions · watchlist · adverse)" value={s.screening} />
+                      <ScenAttr label="Rating" value={s.rating} />
+                      <ScenAttr label="Documents the AI pulls" value={s.documents} />
+                      <ScenAttr label="Expected activity (declared baseline)" value={s.expectedActivity} />
+                      <ScenAttr label="Transaction-behaviour watch (periodic review)" value={s.behaviourWatch} />
+                      {"sarPosture" in s && (s as { sarPosture?: string }).sarPosture ? <ScenAttr label="Investigation / SAR-STR posture" value={(s as { sarPosture: string }).sarPosture} /> : null}
+                      <ScenAttr label="Outcome" value={s.outcome} highlight />
+                      <div className="col-span-2 max-md:col-span-1">
+                        <span className="text-faint uppercase text-[9px]">Oscilar / typology: </span>
+                        <span className="mono text-[10px] text-muted">{s.oscilar.join(", ")}</span>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+      <div className="border-t border-lineSoft my-1" />
+      <div className="text-[10px] font-semibold tracking-[0.12em] uppercase text-[#6E72A6]">Purpose codes</div>
+    </div>
+  );
+}
+
+function ScenAttr({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+  return (
+    <div className={highlight ? "col-span-2 max-md:col-span-1 p-2 rounded bg-panel2 border border-lineSoft" : ""}>
+      <span className="text-faint uppercase text-[9px]">{label}: </span>
+      <span className={highlight ? "text-ink" : "text-muted"}>{value}</span>
     </div>
   );
 }
@@ -369,7 +515,152 @@ function LiveCorridorIntel({ variant }: { variant: "corridors" | "typologies" })
   );
 }
 
+const GA_RATING_STYLE: Record<string, string> = {
+  "Low": "bg-low/15 text-low",
+  "Medium": "bg-med/15 text-med",
+  "Medium-High": "bg-med/20 text-[#ffcf8a]",
+  "High": "bg-proh/20 text-[#ff7ea0]",
+  "Critical": "bg-[#E0344F]/20 text-[#ffb3c0]",
+  "Prohibited": "bg-proh/25 text-[#ff7ea0]",
+};
+
+/** Global Account (US MSB) corridor guidance — the 9 permitted corridors + onward-corridor traps. */
+function GaCorridorsTab() {
+  return (
+    <div className="space-y-4">
+      <Card className="p-4">
+        <Sec>Global Account corridor guidance — the nine permitted corridors</Sec>
+        <p className="text-[11px] text-muted mt-1 mb-0">
+          Residence must be permitted (the gate); the corridor sets the heat. Ratings below are the outbound-from-US
+          corridor scores blended with the MAL-TA-01 EWRA override. Guidance for monitoring &amp; EDD — the customer
+          rating is set by the CRAM composite. <span className="text-faint">{GA_CORRIDOR_META.source}</span>
+        </p>
+      </Card>
+
+      <LiveCorridorIntel variant="corridors" />
+
+      <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
+        {GA_CORRIDOR_GUIDANCE.map((c) => (
+          <Card key={c.code} className="p-4">
+            <div className="flex flex-wrap gap-2 items-center">
+              <h3 className="m-0 text-sm font-display">{c.flag} {c.label}</h3>
+              <span className={`pill text-[10px] ${GA_RATING_STYLE[c.rating] ?? "bg-panel2 text-muted"}`}>{c.rating}</span>
+              <span className="pill bg-panel2 text-muted text-[10px]">EDD: {c.edd}</span>
+            </div>
+            <p className="text-[10px] text-faint mt-1 mb-2">{c.ratingNote}{c.typologyLibraryId ? ` · Library: ${c.typologyLibraryId}` : ""}</p>
+            <div className="p-2 bg-panel2 rounded border border-lineSoft text-[10px]">
+              <span className="text-faint uppercase">Dominant self/C2C typologies: </span>
+              <span className="text-muted">{c.dominantTypologies.join(", ")}</span>
+            </div>
+            <p className="text-[10px] text-faint mt-2 mb-0">Oscilar: {c.oscilarRules.join(", ")}</p>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="p-4 border-proh/30 bg-proh/5">
+        <Sec>Onward-corridor traps</Sec>
+        <div className="space-y-2 mt-2">
+          {GA_CORRIDOR_ONWARD_TRAPS.map((t) => (
+            <div key={t.route} className="flex flex-wrap gap-2 items-baseline text-[11px]">
+              <span className="mono font-semibold text-ink">{t.route}</span>
+              <span className={`pill text-[10px] ${GA_RATING_STYLE[t.rating] ?? "bg-panel2 text-muted"}`}>{t.rating}{(t as { likelihoodImpact?: number }).likelihoodImpact ? ` · L×I ${(t as { likelihoodImpact?: number }).likelihoodImpact}` : ""}</span>
+              <span className="text-muted">{t.note}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      <Card className="p-0 overflow-hidden">
+        <div className="px-4 py-3 border-b border-line"><h3 className="m-0 text-sm font-display">Self-transfer &amp; C2C flows — core typologies &amp; hard controls</h3></div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[11px]">
+            <thead>
+              <tr className="text-faint text-[10px] uppercase border-b border-line">
+                <th className="text-left p-3">Catalog code</th>
+                <th className="text-left p-3">Flow</th>
+                <th className="text-left p-3">Core self/C2C typologies</th>
+                <th className="text-left p-3">Hard control / evidence</th>
+              </tr>
+            </thead>
+            <tbody>
+              {GA_SELF_C2C_FLOWS.map((f) => (
+                <tr key={f.code} className="border-b border-lineSoft align-top">
+                  <td className="p-3 mono text-faint whitespace-nowrap">{f.code}</td>
+                  <td className="p-3 text-ink">{f.flow}</td>
+                  <td className="p-3 text-muted">{f.coreTypologies}</td>
+                  <td className="p-3 text-muted">{f.hardControl}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+/** Global Account country typologies — per-corridor + the periodic-review behaviour lens. */
+function GaTypologiesTab() {
+  return (
+    <div className="space-y-4">
+      <Card className="p-4">
+        <Sec>Global Account country typologies &amp; periodic-review lens</Sec>
+        <p className="text-[11px] text-muted mt-1 mb-0">
+          Per-corridor dominant self/C2C typologies plus the behaviour lens for periodic review of existing customers
+          (observed pattern vs declared expected-activity profile). {GA_CORRIDOR_META.rescoreCadence}
+        </p>
+      </Card>
+
+      <LiveCorridorIntel variant="typologies" />
+
+      <div className="space-y-2">
+        {GA_CORRIDOR_GUIDANCE.map((c) => (
+          <Card key={c.code} className="p-3">
+            <div className="flex flex-wrap gap-2 items-center">
+              <span className="text-[12px] font-semibold">{c.flag} {c.label}</span>
+              <span className={`pill text-[10px] ${GA_RATING_STYLE[c.rating] ?? "bg-panel2 text-muted"}`}>{c.rating}</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5 mt-2">
+              {c.dominantTypologies.map((t) => (
+                <span key={t} className="pill bg-panel2 text-muted text-[10px]">{t}</span>
+              ))}
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="p-0 overflow-hidden">
+        <div className="px-4 py-3 border-b border-line"><h3 className="m-0 text-sm font-display">Periodic review — transaction-behaviour lens (existing customers)</h3></div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-[11px]">
+            <thead>
+              <tr className="text-faint text-[10px] uppercase border-b border-line">
+                <th className="text-left p-3">Observed behaviour (vs declared)</th>
+                <th className="text-left p-3">What it signals</th>
+                <th className="text-left p-3">Review action</th>
+                <th className="text-left p-3">Oscilar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {GA_PERIODIC_REVIEW_LENS.map((r) => (
+                <tr key={r.behaviour} className="border-b border-lineSoft align-top">
+                  <td className="p-3 text-ink">{r.behaviour}</td>
+                  <td className="p-3 text-muted">{r.signals}</td>
+                  <td className="p-3 text-muted">{r.action}</td>
+                  <td className="p-3 mono text-faint whitespace-nowrap">{r.oscilar.join(", ")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
 function CorridorsTab() {
+  const { perimeter } = usePerimeter();
+  if (perimeter === "global_account") return <GaCorridorsTab />;
   return (
     <div className="space-y-4">
       <Card className="p-4">
@@ -445,6 +736,8 @@ function TypologyRow({ label, items }: { label: string; items: string[] }) {
 }
 
 function TypologiesTab() {
+  const { perimeter } = usePerimeter();
+  if (perimeter === "global_account") return <GaTypologiesTab />;
   return (
     <div className="space-y-4">
       <Card className="p-4">

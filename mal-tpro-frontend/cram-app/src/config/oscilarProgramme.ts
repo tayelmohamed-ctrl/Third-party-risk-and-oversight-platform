@@ -181,3 +181,39 @@ export const OSCILAR_RULE_CATEGORIES = [
 ] as const;
 
 export type OscilarRuleCategory = (typeof OSCILAR_RULE_CATEGORIES)[number];
+
+/**
+ * Five-gate onboarding decision spine (Self-Transfer & C2C Scenario Pack §0.1 / CRAM §0).
+ * The AI never scores first — it runs the gates in order and stops at the first that produces an
+ * outcome, so only the documents surviving gates trigger are requested ("quick EDD").
+ */
+export interface DecisionGate { id: string; name: string; checks: string; failCondition: string; }
+export const FIVE_GATE_SPINE: DecisionGate[] = [
+  { id: "G0", name: "Residence & corridor hard-stops", checks: "Country of residence + active corridor vs the Zenus restricted/prohibited list", failCondition: "Residence in a restricted/prohibited country → permanent hard block. Corridor to/from restricted/prohibited → reject." },
+  { id: "G1", name: "Screening (fail-closed)", checks: "Sanctions/OFAC, 50%-rule, PEP, adverse media — before any score", failCondition: "Confirmed SDN / 50%-owned / prohibited-jurisdiction nexus → Prohibited/Block; no score computed." },
+  { id: "G2", name: "Prohibited type / structure", checks: "(Entities) business type; UBO; lawful purpose", failCondition: "N/A for individual self/C2C flows except unlicensed-MSB / hawala use of a personal account → decline + escalate." },
+  { id: "G3", name: "Score + floors", checks: "Weighted CRAM score → Low/Medium/High, then floors", failCondition: "Foreign PEP, restricted-country SoW/SoF (Rule 1), high-corridor concentration → High floor." },
+  { id: "G4", name: "Targeted EDD pull", checks: "Only the incremental documents each surviving trigger requires", failCondition: "Missing baseline KYC → block activation (no default-to-Low). Missing EDD after 72h RFI → hold/decline." },
+];
+
+/** Alert-triage priority SLAs (Self-Transfer & C2C Scenario Pack §4). */
+export const ALERT_TRIAGE_SLA = [
+  { priority: "P1", target: "≤ 4h", scope: "Critical alert · potential sanctions match" },
+  { priority: "P2", target: "≤ 24h", scope: "High alert" },
+  { priority: "P3", target: "≤ 48h", scope: "Medium alert · pending screening" },
+] as const;
+export const RESCREEN_CADENCE = "Watchlist hit → SDN delta re-screen ≤24h, other lists ≤48h, re-score on hit. High / PEP / Rule-1 relationships get a ≤12-month review (≤6-month on the hottest UAE→PK route).";
+
+/** Always-on handling — anti-tipping-off + victim-aware exit (Self-Transfer & C2C Scenario Pack §5.3–5.4). */
+export const TM_HANDLING_PRINCIPLES = {
+  antiTippingOff: [
+    "Never state that a customer triggered a sanctions match, PEP flag, mule/synthetic review, or that a SAR is being considered.",
+    "Never use the word 'PEP' to the customer — every request is framed as routine verification.",
+    "SAR records are access-restricted and retained 5 years.",
+  ],
+  victimAwareExit: [
+    "Where a segment is targeted as mules (migrant workers, students, retirees, remote workers), the risk is third-party abuse of the account — the control is behaviour-based monitoring + EDD, never denial of service by nationality or occupation (residency-primary / non-discrimination / UDAAP).",
+    "Confirmed coerced mule → victim-aware exit (educate / exit), not punitive; still assess and file a SAR.",
+    "Anti-tipping-off applies throughout the exit.",
+  ],
+} as const;

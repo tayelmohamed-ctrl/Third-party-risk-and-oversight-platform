@@ -458,7 +458,9 @@
       "status": "active",
       "workflowStep": "WF-TXN-HAWALA-01",
       "pakistanTypologyId": "TYP-PK-001",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-032",
@@ -476,7 +478,9 @@
       "status": "active",
       "workflowStep": "WF-TXN-TBML-01",
       "pakistanTypologyId": "TYP-PK-003",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-033",
@@ -494,7 +498,9 @@
       "status": "active",
       "workflowStep": "WF-SCR-GEO-01",
       "pakistanTypologyId": "TYP-PK-006",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-034",
@@ -512,7 +518,9 @@
       "status": "active",
       "workflowStep": "WF-TXN-TF-PK-01",
       "pakistanTypologyId": "TYP-PK-007",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-035",
@@ -530,7 +538,9 @@
       "status": "active",
       "workflowStep": "WF-TXN-PK-TAX-01",
       "pakistanTypologyId": "TYP-PK-008",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-036",
@@ -548,7 +558,9 @@
       "status": "active",
       "workflowStep": "WF-TXN-FRAUD-01",
       "pakistanTypologyId": "TYP-PK-009",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-037",
@@ -566,7 +578,9 @@
       "status": "active",
       "workflowStep": "WF-TXN-COERCE-01",
       "pakistanTypologyId": "TYP-PK-010",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-038",
@@ -584,7 +598,9 @@
       "status": "active",
       "workflowStep": "WF-TXN-CRYPTO-PK-01",
       "pakistanTypologyId": "TYP-PK-011",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-039",
@@ -602,7 +618,9 @@
       "status": "active",
       "workflowStep": "WF-KYC-SYNTH-01",
       "pakistanTypologyId": "TYP-PK-012",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
     },
     {
       "id": "OS-TM-040",
@@ -620,7 +638,491 @@
       "status": "active",
       "workflowStep": "WF-TXN-WALLET-PK-01",
       "pakistanTypologyId": "TYP-PK-014",
-      "corridorCountries": ["PK"]
+      "corridorCountries": [
+        "PK"
+      ]
+    },
+    {
+      "id": "OS-TM-041",
+      "name": "Self-transfer own-account — CoP name-mismatch",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Self-transfer / Confirmation of Payee",
+      "description": "Same-name self-transfer to the customer's own account elsewhere fails Confirmation of Payee (name mismatch) — 'own account' used to break the audit trail before dispersal.",
+      "trigger": "Self-transfer (C2C-12 / M2M-01) where receiving-side beneficiary name != account holder (CoP fail)",
+      "thresholds": "Same-name CoP required · hard control (not evidence)",
+      "severity": "high",
+      "action": "Block / review transfer · investigate layering pre-stage",
+      "cramRef": "GA-4",
+      "overrideId": "OVR-020",
+      "policyRef": "Self-Transfer & C2C Pack §5.2",
+      "status": "active",
+      "workflowStep": "WF-TXN-SELFXFER-COP-01"
+    },
+    {
+      "id": "OS-TM-042",
+      "name": "Self-transfer velocity — layering pre-stage",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Self-transfer velocity",
+      "description": "Inbound third-party credit(s) immediately followed by a same-name self-transfer out — self-transfer velocity feeding a layering pre-stage.",
+      "trigger": ">=1 unrelated third-party inbound credit within 48h before a same-name self-transfer out · self-transfer velocity above declared profile",
+      "thresholds": "Window: 48h · velocity vs expected-activity baseline",
+      "severity": "medium",
+      "action": "Step-up · RFI on purpose",
+      "overrideId": "OVR-020",
+      "policyRef": "Self-Transfer & C2C Pack §4 / §5.2",
+      "status": "active",
+      "workflowStep": "WF-TXN-SELFXFER-VEL-01"
+    },
+    {
+      "id": "OS-TM-043",
+      "name": "Charity-to-individual fan-in — unlicensed fundraising / TF",
+      "category": "Sanctions & TF evasion",
+      "channel": "transfer",
+      "typology": "Charity-to-individual / TF",
+      "description": "Crowd-collection into one individual (C2C-13): small-value aggregation then onward to conflict-adjacent / opaque beneficiaries — unlicensed fundraising / TF risk.",
+      "trigger": "Multiple unrelated inbound 'charitable' credits aggregating into one individual · onward to high-risk / conflict-adjacent corridor",
+      "thresholds": "Low per-txn cap · aggregation review · corridor restrictions",
+      "severity": "high",
+      "action": "EDD + STR · rapid reporting · decline crowd-collection use",
+      "policyRef": "Self-Transfer & C2C Pack §3.8 / §5.2",
+      "status": "active",
+      "workflowStep": "WF-TXN-CHARITY-TF-01"
+    },
+    {
+      "id": "OS-TM-044",
+      "name": "Parallel-market FX structuring — EG / PK",
+      "category": "Structuring & smurfing",
+      "channel": "transfer",
+      "typology": "Parallel-FX / currency-exchange abuse",
+      "description": "Sub-threshold clustering timed to FX-rate gaps; structuring around FX limits; USD-cash conversion pressure (EG/PK parallel-market FX).",
+      "trigger": "Corridor in {EG,PK} · sub-threshold clusters timed to FX-rate movements · USD-cash conversion pattern",
+      "thresholds": "Sub-threshold clustering · FX-gap timing",
+      "severity": "high",
+      "action": "SAR · step-up · CTR on aggregate",
+      "overrideId": "OVR-020",
+      "policyRef": "Self-Transfer & C2C Pack §3.2 / §4",
+      "status": "active",
+      "workflowStep": "WF-TXN-FX-STRUCT-01",
+      "corridorCountries": [
+        "EG",
+        "PK"
+      ]
+    },
+    {
+      "id": "OS-TM-045",
+      "name": "Purpose-vs-behaviour divergence",
+      "category": "Dormancy & profile deviation",
+      "channel": "both",
+      "typology": "Purpose-vs-behaviour / classification avoidance",
+      "description": "Observed pattern diverges from declared expected-activity purpose; purpose-code switching or 'Other'-rate spike — classification avoidance.",
+      "trigger": "Observed counterparties / amounts / frequency != declared purpose · purpose-code switching · 'Other'-rate spike",
+      "thresholds": "Divergence vs declared baseline · KRI review",
+      "severity": "medium",
+      "action": "KRI review · free-text keyword scan · step-up / RFI",
+      "overrideId": "OVR-020",
+      "policyRef": "Self-Transfer & C2C Pack §4",
+      "status": "active",
+      "workflowStep": "WF-TXN-PURPOSE-DIV-01"
+    },
+    {
+      "id": "OS-TM-046",
+      "name": "Distributed structuring across multiple MSBs / wallets",
+      "category": "Structuring & smurfing",
+      "channel": "transfer",
+      "typology": "Distributed structuring",
+      "description": "Same customer uses multiple MSBs / wallets for one route to distribute value below single-institution detection thresholds.",
+      "trigger": "Same customer / route observed across multiple MSBs or wallets · aggregate exceeds single-institution thresholds",
+      "thresholds": "Aggregate monitoring across institutions",
+      "severity": "high",
+      "action": "Aggregate monitoring · SAR assessment",
+      "overrideId": "OVR-020",
+      "policyRef": "Self-Transfer & C2C Pack §4",
+      "status": "active",
+      "workflowStep": "WF-TXN-DIST-STRUCT-01"
+    },
+    {
+      "id": "OS-TM-047",
+      "name": "MCC-vs-purpose mismatch — transaction laundering (C2B)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Transaction laundering / MCC mismatch",
+      "description": "C2B goods/services payment to a payee whose merchant category or trade does not match the declared purpose — payee has no matching trade footprint.",
+      "trigger": "C2B purpose (goods/services) != beneficiary MCC/declared trade; goods payment to a payee with no goods trade",
+      "thresholds": "MCC-vs-purpose cross-check · above-tier invoice on request",
+      "severity": "high",
+      "action": "Step-up · RFI for invoice · re-classify",
+      "overrideId": "OVR-020",
+      "policyRef": "C2B Pack §4",
+      "status": "active",
+      "workflowStep": "WF-TXN-MCC-MISMATCH-01"
+    },
+    {
+      "id": "OS-TM-048",
+      "name": "Fake-invoice / fake-service payment (C2B)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Fake-invoice value transfer",
+      "description": "Round-amount recurring 'services' payments to a consulting/shell-type business with no deliverable — value-transfer laundering dressed as a service (TYP-PK-003).",
+      "trigger": "C2B-02 services · round-amount + recurrence conjunction · no service footprint · circular payments",
+      "thresholds": "Round-amount recurrence · engagement/deliverable reconciliation",
+      "severity": "high",
+      "action": "EDD · RFI engagement + deliverable · SAR if no substance",
+      "overrideId": "OVR-020",
+      "policyRef": "C2B Pack §3.1 · TYP-PK-003",
+      "status": "active",
+      "workflowStep": "WF-TXN-FAKE-INVOICE-01"
+    },
+    {
+      "id": "OS-TM-049",
+      "name": "Crypto-exchange funding — unlicensed / off-whitelist VASP (C2B)",
+      "category": "Crypto / VA off-ramp",
+      "channel": "transfer",
+      "typology": "VA layering / licensed-VASP gate",
+      "description": "C2B-12 crypto-exchange funding where the VASP is not on the licensed-VASP whitelist, or funding shifts off-whitelist; rapid in-convert-out conduit shape.",
+      "trigger": "C2B-12 · beneficiary VASP not on licensed-VASP whitelist · same-name fail · velocity above tier cap",
+      "thresholds": "Licensed-VASP whitelist gate · same-name · velocity caps by tier",
+      "severity": "high",
+      "action": "Decline the payment (whitelist gate); block on sanctioned-wallet exposure",
+      "overrideId": "OVR-020",
+      "policyRef": "C2B Pack §3 · C2B-12",
+      "status": "active",
+      "workflowStep": "WF-TXN-VASP-GATE-01"
+    },
+    {
+      "id": "OS-TM-050",
+      "name": "Investment / brokerage funding to an unregulated beneficiary (C2B)",
+      "category": "Mule & funnel accounts",
+      "channel": "transfer",
+      "typology": "Investment scam / Ponzi funding",
+      "description": "C2B-11 investment/brokerage funding to an unregulated beneficiary; many customers fund the same new business (fan-in) — investment-scam / unlicensed deposit-taking shape.",
+      "trigger": "C2B-11 · beneficiary not licensed/whitelisted platform · many-customers→same-new-business fan-in · off-profile funding",
+      "thresholds": "Platform licence/whitelist check · same-name preferred · fan-in detection",
+      "severity": "high",
+      "action": "Decline (unregulated beneficiary) · scheme review · SAR on scheme indicators",
+      "overrideId": "OVR-020",
+      "policyRef": "C2B Pack §3.5",
+      "status": "active",
+      "workflowStep": "WF-TXN-INVEST-SCAM-01"
+    },
+    {
+      "id": "OS-TM-051",
+      "name": "Payment to a prohibited-end-type business (C2B)",
+      "category": "Sanctions & TF evasion",
+      "channel": "transfer",
+      "typology": "Prohibited end-type / placement",
+      "description": "C2B payment to a prohibited business end-type — gaming/casino/POGO, real-estate/construction, DPMS/gold, unlicensed MSB/hawala, unlicensed lender.",
+      "trigger": "Beneficiary business is a prohibited end-type (§6.4) · personal account funding a prohibited business",
+      "thresholds": "Prohibited-end-type screen on the payee",
+      "severity": "high",
+      "action": "Decline the payment; EDD + SAR on the individual's exposure",
+      "policyRef": "C2B Pack §5.2 · CRAM §6.4",
+      "status": "active",
+      "workflowStep": "WF-TXN-PROHIB-PAYEE-01"
+    },
+    {
+      "id": "OS-TM-052",
+      "name": "Charity donation — licensed-charity whitelist gate / NPO-diversion (C2B)",
+      "category": "Sanctions & TF evasion",
+      "channel": "transfer",
+      "typology": "Charity whitelist / NPO diversion (TF)",
+      "description": "C2B-10 charity donation where the charity is not on the licensed-charity whitelist, or an NPO-diversion / conflict-adjacent-beneficiary pattern.",
+      "trigger": "C2B-10 · charity not on licensed-charity whitelist · high-risk-geography NPO · charity onward flows to conflict-adjacent zones",
+      "thresholds": "Licensed-charity whitelist (hard control) · NPO-diversion overlay · per-period cap",
+      "severity": "high",
+      "action": "Decline (unlicensed/conflict-adjacent) · STR + rapid reporting",
+      "policyRef": "C2B Pack §3.8 · C2B-10",
+      "status": "active",
+      "workflowStep": "WF-TXN-CHARITY-WL-01"
+    },
+    {
+      "id": "OS-TM-053",
+      "name": "Ghost-employee / fake-payroll fan-out (B2C)",
+      "category": "Mule & funnel accounts",
+      "channel": "transfer",
+      "typology": "Ghost payroll / salary funnel",
+      "description": "B2C payroll where WPS/payroll payee names diverge from the verified roster, headcount is implausible for turnover, or salaries are funnelled to a common account — ghost employees or a salary-label remittance funnel.",
+      "trigger": "Payroll names != verified roster/WPS SIF; payroll >> declared headcount; multiple salaries routed to one account; salary-labelled remittance velocity",
+      "thresholds": "Roster-to-payroll reconciliation · headcount-vs-turnover plausibility · funnel-to-common-account detection",
+      "severity": "high",
+      "action": "Step-up · roster reconciliation RFI · SAR on confirmed ghost-payroll / funnel",
+      "overrideId": "OVR-020",
+      "policyRef": "B2C Pack §1.5 · §4 · TYP-PK-002",
+      "status": "active",
+      "workflowStep": "WF-TXN-GHOST-PAYROLL-01"
+    },
+    {
+      "id": "OS-TM-054",
+      "name": "Commission / agent payout — kickback & corruption overlay (B2C)",
+      "category": "PEP & enhanced monitoring",
+      "channel": "transfer",
+      "typology": "Commission kickback / bribery",
+      "description": "B2C-09 commission or agent payout to individuals with no underlying-sales linkage, an implausible commission-to-revenue ratio, or PEP-linked payees — a corruption/kickback conduit.",
+      "trigger": "Commission with no documented sales linkage; commission-to-revenue ratio implausible; commission/agent payee is PEP-linked or state-linked",
+      "thresholds": "Commission-to-revenue ratio · sales-linkage evidence · PEP screening of beneficiaries (corruption overlay)",
+      "severity": "high",
+      "action": "EDD + corroborated SoW + senior sign-off (PEP) · SAR + decline on confirmed kickback",
+      "overrideId": "OVR-008",
+      "policyRef": "B2C Pack §1.5 · B2C-09",
+      "status": "active",
+      "workflowStep": "WF-TXN-COMMISSION-KICKBACK-01"
+    },
+    {
+      "id": "OS-TM-055",
+      "name": "Dividend / distribution to a non-shareholder — hidden-ownership signal (B2C)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Hidden ownership / disguised distribution",
+      "description": "B2C-10 dividend paid to an individual not on the shareholder registry, or dividends grossly exceeding plausible profits — a hidden-ownership / disguised-distribution signal; also fires on unresolvable-UBO / nominee-front structures.",
+      "trigger": "Dividend payee not registry-matched; dividends >> plausible profits; control-vs-declared mismatch; nominee/front markers on the entity",
+      "thresholds": "Shareholder-registry match (hard control) · profit plausibility · UBO refresh on mismatch",
+      "severity": "high",
+      "action": "Escalate · UBO refresh · SAR on hidden ownership · refuse if UBO becomes unresolvable",
+      "overrideId": "OVR-002",
+      "policyRef": "B2C Pack §1.5 · §6.2 · B2C-10",
+      "status": "active",
+      "workflowStep": "WF-TXN-DIVIDEND-OWNERSHIP-01"
+    },
+    {
+      "id": "OS-TM-056",
+      "name": "Refund fan-out — refund laundering (B2C)",
+      "category": "Card & merchant fraud",
+      "channel": "transfer",
+      "typology": "Refund laundering",
+      "description": "B2C-11 refunds to individuals with no matching original inbound sale, refunds fanned out to unrelated individuals, or refund volume disproportionate to sales — a refund-laundering channel.",
+      "trigger": "Refund with no paired inbound sale; refund fan-out to unrelated individuals; refunds >> sales volume",
+      "thresholds": "Systemic refund-to-sale pairing · refund-ratio baseline · beneficiary coherence",
+      "severity": "medium",
+      "action": "Enforce refund-pairing · step-up · SAR on unpaired refund fan-out",
+      "overrideId": "OVR-020",
+      "policyRef": "B2C Pack §1.5 · B2C-11",
+      "status": "active",
+      "workflowStep": "WF-TXN-REFUND-FANOUT-01"
+    },
+    {
+      "id": "OS-TM-057",
+      "name": "Loan disbursement by an unlicensed lender — unregistered MSB (B2C)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Unlicensed lending / unregistered money transmission",
+      "description": "B2C-13 loan disbursements to individuals by an entity with no lending licence — serial disbursements, loan-back round-trips, pass-through shape; treated as unlicensed lending / unregistered MSB.",
+      "trigger": "Loan disbursement selected by a non-licensed entity (licence-verification hard gate fails); serial disbursements to many individuals; loan-back round-trips; pass-through",
+      "thresholds": "Lending-licence verification (hard gate) · serial-disbursement + round-trip detection",
+      "severity": "critical",
+      "action": "Decline + escalate + SAR (unlicensed lending / unregistered money transmission, §6.4)",
+      "overrideId": "OVR-002",
+      "policyRef": "B2C Pack §1.3 · §6.4 · B2C-13",
+      "status": "active",
+      "workflowStep": "WF-TXN-UNLICENSED-LOAN-01"
+    },
+    {
+      "id": "OS-TM-058",
+      "name": "Prize / promotion payout — lottery-scam & TF cover (B2C)",
+      "category": "Sanctions & TF evasion",
+      "channel": "transfer",
+      "typology": "Lottery-scam / prize-payout TF cover",
+      "description": "B2C-15 prize/promotion payouts used as disguised transfers, without a promotion permit, fanned out beyond genuine winners, or to conflict-adjacent individuals — lottery-scam or TF cover.",
+      "trigger": "'Prizes' as disguised transfers; no promotion permit; prize-payout fan-out beyond capped genuine winners; payees in conflict-adjacent regions",
+      "thresholds": "Promotion-permit gate · beneficiary + frequency caps · payee/region TF screening",
+      "severity": "high",
+      "action": "Decline/SAR on scam-pattern or no permit · STR + rapid reporting on TF indicators",
+      "overrideId": "OVR-020",
+      "policyRef": "B2C Pack §1.5 · B2C-15",
+      "status": "active",
+      "workflowStep": "WF-TXN-PRIZE-SCAM-01"
+    },
+    {
+      "id": "OS-TM-059",
+      "name": "Trade-based ML — over/under-invoicing / phantom shipment (B2B)",
+      "category": "Cross-border & corridor risk",
+      "channel": "transfer",
+      "typology": "Trade-based money laundering (TBML)",
+      "description": "B2B goods/import/export payment where invoice value, goods description and shipping/customs docs do not reconcile — over/under-invoicing, phantom shipments, unit-price outliers, or payment to a third country unrelated to the trade.",
+      "trigger": "Invoice != goods/shipping; unit-price outliers; payment to a third country unrelated to trade; 3rd-party (non-invoice) payer; dual-use goods",
+      "thresholds": "Trade-doc reconciliation (invoice + BoL + customs) · unit-price outlier tests · customs-duty vs import-volume consistency · 3rd-party-payment detection",
+      "severity": "high",
+      "action": "Trade-doc RFI · reconcile · decline the flow + SAR on TBML (scenario 5.15)",
+      "overrideId": "OVR-020",
+      "policyRef": "B2B Pack §0.2 · §1.1 · B2B-02 · TM 5.15",
+      "status": "active",
+      "workflowStep": "WF-TXN-TBML-RECON-01"
+    },
+    {
+      "id": "OS-TM-060",
+      "name": "Related-party / circular trade round-trip (B2B)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Circular trade / round-tripping / turnover manufacturing",
+      "description": "B2B trade/intercompany flow between entities under common control — inflated related-party invoicing, circular supplier rings, or intra-group round-trips that manufacture turnover (gross ≫ net).",
+      "trigger": "Payer & counterparty under common control; circular supplier rings; undeclared 'group' transfers; gross ≫ net; round-amount invoice grids",
+      "thresholds": "Related-party / common-control test · group-relationship registry (intercompany) · netting analysis · circular-flow detection (TM 5.9)",
+      "severity": "high",
+      "action": "Related-party review · registry check · decline the flow + SAR on round-trip / no lawful purpose",
+      "overrideId": "OVR-002",
+      "policyRef": "B2B Pack §0.2 · B2B-09 · TM 5.9",
+      "status": "active",
+      "workflowStep": "WF-TXN-RELATED-PARTY-01"
+    },
+    {
+      "id": "OS-TM-061",
+      "name": "Shell-payment consulting/management fees to a secrecy jurisdiction (B2B)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Shell-payment / fake-service value transfer",
+      "description": "B2B-04 professional/consulting/management fees to a counterparty in a low-transparency/secrecy jurisdiction with no deliverable footprint — a shell-payment value-transfer label.",
+      "trigger": "Vague 'consulting/management fees'; no deliverable; counterparty in a secrecy jurisdiction; consulting-fee share of outflows dominant",
+      "thresholds": "Engagement letter + deliverable evidence · counterparty existence/KYB · secrecy-jurisdiction flag · consulting-fee-share analytics",
+      "severity": "high",
+      "action": "EDD · deliverable RFI · decline the flow + SAR on no-substance",
+      "overrideId": "OVR-020",
+      "policyRef": "B2B Pack §1.5 · B2B-04",
+      "status": "active",
+      "workflowStep": "WF-TXN-SHELL-CONSULTING-01"
+    },
+    {
+      "id": "OS-TM-062",
+      "name": "Intercompany / dividend / capital round-trip — hidden ownership (B2B)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Hidden ownership / UBO-chain mismatch / capital round-tripping",
+      "description": "B2B dividend, intercompany or capital-injection flow where the corporate counterparty falls outside the declared ownership chain, the UBO-chain match fails, or capital round-trips into a shell — a hidden-ownership signal; also fires on unresolvable-UBO / nominee-front payers.",
+      "trigger": "Dividend/capital counterparty outside declared UBO chain; UBO-chain match fails; 'investments' into shells; capital round-tripping; nominee/front markers",
+      "thresholds": "UBO-chain match (hard control, dividends) · investee UBO refresh (capital) · board resolution · round-trip detection · ownership-inconsistency (TM 5.23)",
+      "severity": "high",
+      "action": "Escalate · UBO refresh · SAR on hidden ownership / round-trip · refuse if payer UBO unresolvable",
+      "overrideId": "OVR-002",
+      "policyRef": "B2B Pack §1.1 · §6.2 · B2B-10 · B2B-18 · TM 5.23",
+      "status": "active",
+      "workflowStep": "WF-TXN-OWNERSHIP-ROUNDTRIP-01"
+    },
+    {
+      "id": "OS-TM-063",
+      "name": "Commission / agency-fee kickback to a shell intermediary (B2B)",
+      "category": "PEP & enhanced monitoring",
+      "channel": "transfer",
+      "typology": "Commission kickback / procurement corruption",
+      "description": "B2B-12 commission/agency fee (or B2B-14 construction progress payment) to an intermediary with no underlying-transaction linkage, or to a PEP-linked / state-linked principal — a bribery/kickback or procurement-corruption conduit.",
+      "trigger": "Agency fees to shell intermediaries; no underlying transaction; PEP-linked / state-linked principals; procurement-corruption patterns; progress payments without project evidence",
+      "thresholds": "Agreement + underlying-transaction linkage · intermediary KYB / intermediary-web analysis · PEP screening of principals · commission-to-revenue ratio · procurement red-flag overlay",
+      "severity": "high",
+      "action": "EDD + senior sign-off (PEP) · SAR + escalate on kickback / procurement corruption",
+      "overrideId": "OVR-008",
+      "policyRef": "B2B Pack §1.5 · B2B-12 · B2B-14",
+      "status": "active",
+      "workflowStep": "WF-TXN-COMMISSION-KICKBACK-B2B-01"
+    },
+    {
+      "id": "OS-TM-064",
+      "name": "Royalty / IP-fee mispricing — profit-shifting (B2B)",
+      "category": "Cross-border & corridor risk",
+      "channel": "transfer",
+      "typology": "Royalty/IP mispricing / profit-shifting",
+      "description": "B2B-13 royalty/IP fee to a related or low-transparency counterparty with pricing outliers — a transfer-pricing / profit-shifting channel; also captures software-licence-as-IP-mispricing (B2B-05).",
+      "trigger": "IP fees to low-transparency jurisdictions; pricing outliers vs arm's-length; related-party licence; software-licence-as-IP mispricing",
+      "thresholds": "Licence agreement · pricing basis · transfer-pricing outlier tests · secrecy-jurisdiction flag · related-party check",
+      "severity": "high",
+      "action": "EDD · transfer-pricing review · escalate/decline + SAR on mispricing / profit-shifting",
+      "overrideId": "OVR-020",
+      "policyRef": "B2B Pack §1.1 · B2B-13 · B2B-05",
+      "status": "active",
+      "workflowStep": "WF-TXN-ROYALTY-MISPRICING-01"
+    },
+    {
+      "id": "OS-TM-065",
+      "name": "Internal-layering chain — on-us A→B→C→D then out (Mal2Mal)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Internal layering / on-us chain",
+      "description": "On-us funds injected to account A and swept A→B→C→D across Mal accounts, then out via an external cash-out leg — each hop looks small and clean, but the aggregate chain is layering. The signature on-us typology: aggregate the chain, do not score each hop in isolation.",
+      "trigger": "Injection → multi-account on-us sweep → external cash-out; short dwell time per hop; on-us chain-depth + velocity + pass-through (in-then-straight-out); no economic rationale per hop",
+      "thresholds": "Aggregate chain reconstruction (not per-hop) · chain-depth · on-us velocity · pass-through (in-then-out) · SoF at injection point",
+      "severity": "high",
+      "action": "Freeze / review the chain · SoF + per-hop rationale RFI · SAR + exit on confirmed internal layering",
+      "overrideId": "OVR-020",
+      "policyRef": "M2M Pack §0.2 · §3.5 · M2M-GA-13",
+      "status": "active",
+      "workflowStep": "WF-TXN-INTERNAL-LAYERING-01"
+    },
+    {
+      "id": "OS-TM-066",
+      "name": "Collusive cluster / internal mule ring — on-us fan-in/fan-out (Mal2Mal)",
+      "category": "Mule & funnel accounts",
+      "channel": "transfer",
+      "typology": "Collusive account cluster / internal mule ring",
+      "description": "On-us many-to-one (fan-in) or one-to-many (fan-out) patterns across Mal accounts with shared device/IP and rapid pass-through — a collusive cluster or internal mule ring. Individual accounts may screen clear; the cluster is the signal (graph analytics).",
+      "trigger": "Fan-in / fan-out across many on-us accounts; shared device/IP; rapid pass-through; no economic rationale; scam-proceeds distribution shape",
+      "thresholds": "Graph analytics (edges, shared device/IP, new-edge re-clustering) · fan degree · pass-through velocity",
+      "severity": "critical",
+      "action": "Freeze the cluster · graph review + SoF RFI to the hub · SAR + victim-aware exit of mule nodes",
+      "overrideId": "OVR-020",
+      "policyRef": "M2M Pack §0.2 · §1.2 · M2M-GA-03",
+      "status": "active",
+      "workflowStep": "WF-TXN-COLLUSIVE-CLUSTER-01"
+    },
+    {
+      "id": "OS-TM-067",
+      "name": "Self-transfer limit-evasion structuring / self-layering (Mal2Mal)",
+      "category": "Structuring & smurfing",
+      "channel": "transfer",
+      "typology": "Limit-evasion structuring / self-layering",
+      "description": "Same-person on-us moves between a customer's own Mal accounts used to stay under a limit (structuring) or to layer own funds (rapid in-then-out via a second own account). On-us convenience never lowers a floor; structuring across own/related accounts is itself a SAR typology.",
+      "trigger": "Repeated sub-threshold self-moves to evade a limit; rapid in-then-out via a second own account; aggregate own-account velocity off-profile",
+      "thresholds": "Same-person identity match · sub-threshold clustering · aggregate self-move velocity vs profile",
+      "severity": "medium",
+      "action": "Step-up · aggregate-velocity monitoring · SAR on confirmed structuring / self-layering",
+      "overrideId": "OVR-020",
+      "policyRef": "M2M Pack §1.1 · §1.2 · M2M-GA-01",
+      "status": "active",
+      "workflowStep": "WF-TXN-SELF-STRUCTURING-01"
+    },
+    {
+      "id": "OS-TM-068",
+      "name": "Owner personal/business commingling & round-tripping (Mal2Mal)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Personal/business commingling / round-tripping",
+      "description": "Same-UBO on-us flow between an individual and their own Mal business used to commingle personal and business funds, obscure origin, or round-trip personal funds through the entity with no business rationale.",
+      "trigger": "Personal/business commingling to obscure origin; round-tripping personal funds through the owned business; owner injections with no business rationale",
+      "thresholds": "Ownership match (person = UBO) · SoF for injections · commingling flag · business-substance / rationale check",
+      "severity": "high",
+      "action": "SoF EDD · step-up · SAR on commingling / round-tripping to obscure origin",
+      "overrideId": "OVR-020",
+      "policyRef": "M2M Pack §1.2 · M2M-GA-05",
+      "status": "active",
+      "workflowStep": "WF-TXN-COMMINGLING-01"
+    },
+    {
+      "id": "OS-TM-069",
+      "name": "Undeclared common-control intercompany round-trip — on-us (Mal2Mal)",
+      "category": "Layering & pass-through",
+      "channel": "transfer",
+      "typology": "Undeclared common control / turnover manufacturing",
+      "description": "On-us 'intercompany' flow between two Mal entities secretly under one UBO, swept back and forth (circular A→B→A) to manufacture turnover with no external trade — undeclared common control. The group-relationship registry is mandatory before an intercompany purpose is selectable.",
+      "trigger": "Undeclared common control between on-us entities; circular A→B→A round-trips; gross ≫ net; turnover manufacturing with no external trade",
+      "thresholds": "Group-relationship registry (hard control, pre-selection) · common-control mapping · circular-flow detection (TM 5.9) · netting (gross vs net)",
+      "severity": "high",
+      "action": "Decline the flow until registry-declared · auditor-confirmed structure + netting RFI · SAR on undeclared control / round-trip",
+      "overrideId": "OVR-002",
+      "policyRef": "M2M Pack §0.3 · §1.2 · M2M-GA-11 · TM 5.9",
+      "status": "active",
+      "workflowStep": "WF-TXN-INTERCO-ONUS-01"
+    },
+    {
+      "id": "OS-TM-070",
+      "name": "On-us pair freeze — sanctioned / prohibited-type node (Mal2Mal)",
+      "category": "Sanctions & TF evasion",
+      "channel": "both",
+      "typology": "Sanctioned / prohibited node — both-legs freeze",
+      "description": "When either on-us party (or a linked node/UBO) becomes a confirmed SDN / 50%-owned nexus, or is a prohibited business type, BOTH legs of the on-us pair are frozen — on-us convenience never lowers a floor and a sanctioned/prohibited node freezes the pair.",
+      "trigger": "Confirmed SDN / 50%-owned / prohibited-jurisdiction nexus on either on-us node or UBO (continuous screening delta); prohibited business type as an on-us party",
+      "thresholds": "Continuous screening both parties (SDN delta ≤24h / other lists ≤48h) · 50%-rule · §6.4 prohibited-type screen",
+      "severity": "critical",
+      "action": "Freeze BOTH legs of the on-us pair · no score · SAR + OFAC blocking report ≤10 business days (sanctions) · decline + exit (prohibited type)",
+      "overrideId": "OVR-001",
+      "policyRef": "M2M Pack §0.1 · §1.4 · M2M-GA-04 · M2M-GA-14 · CRAM §7.1",
+      "status": "active",
+      "workflowStep": "WF-TXN-ONUS-FREEZE-01"
     }
   ]
 }
