@@ -14,6 +14,7 @@ import ActionKpiRow from "../components/dashboard/executive/ActionKpiRow";
 import ControlStatePanel from "../components/dashboard/executive/ControlStatePanel";
 import DashboardMetricsTab from "../components/dashboard/executive/DashboardMetricsTab";
 import ApproverDirectoryPanel from "../components/dashboard/executive/ApproverDirectoryPanel";
+import OnboardingCyclesPanel from "../components/dashboard/executive/OnboardingCyclesPanel";
 
 type Tab = "operations" | "metrics";
 
@@ -76,6 +77,8 @@ export default function Dashboard() {
         <>
           <Sec>Action KPIs — click to drill down</Sec>
           <ActionKpiRow kpis={dash.actionKpis} />
+
+          <OnboardingCyclesPanel />
 
           <Sec>Operational queues</Sec>
           <div className="space-y-4">

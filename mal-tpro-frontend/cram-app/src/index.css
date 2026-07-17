@@ -46,6 +46,8 @@ h1,h2,h3,h4,.font-display { font-family: "Outfit", sans-serif; }
   .motion-safe\:animate-pulse2 { animation: none !important; }
   .agent-avatar-active::after { animation: none; opacity: 0.6; }
   .pipe-conn::after { animation: none; }
+  .onb-gif-scan { animation: none !important; opacity: 0.04; }
+  .onb-gif-frame-pop { animation: none !important; }
 }
 .pipe-conn { background: rgba(169,83,223,.18); position: relative; overflow: hidden; }
 .pipe-conn::after { content:""; position:absolute; inset:0; background: linear-gradient(90deg, transparent, #A953DF, transparent); background-size: 55% 100%; animation: flow 1.8s linear infinite; }
@@ -1124,4 +1126,33 @@ h1,h2,h3,h4,.font-display { font-family: "Outfit", sans-serif; }
 }
 .cram-viz-method-details__toggle:hover { color: #A7ACDB; }
 .cram-viz-method-details[open] .cram-viz-method-details__toggle { color: #C8CCF8; }
+
+/* Executive Dashboard — onboarding cycle GIF demos */
+.onb-gif-tile:focus-visible {
+  outline: 2px solid rgba(169, 83, 223, 0.55);
+  outline-offset: 3px;
+  border-radius: 1rem;
+}
+.onb-gif-scan {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.015) 2px,
+    rgba(255, 255, 255, 0.015) 3px
+  );
+  opacity: 0.55;
+  animation: onbGifScan 3.6s linear infinite;
+}
+.onb-gif-frame-pop {
+  animation: onbGifPop 0.45s ease-out;
+}
+@keyframes onbGifScan {
+  from { transform: translateY(0); }
+  to { transform: translateY(6px); }
+}
+@keyframes onbGifPop {
+  from { opacity: 0.35; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 

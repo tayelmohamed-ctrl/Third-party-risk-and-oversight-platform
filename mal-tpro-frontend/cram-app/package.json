@@ -19,7 +19,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "generate:logo": "tsx scripts/generate-mal-logo.ts",
-    "generate:country-risk": "tsx scripts/generate-country-risk-json.ts"
+    "generate:country-risk": "tsx scripts/generate-country-risk-json.ts",
+    "export:onboarding-playbooks": "tsx scripts/export-onboarding-playbook-pdfs.ts"
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.758.0",
