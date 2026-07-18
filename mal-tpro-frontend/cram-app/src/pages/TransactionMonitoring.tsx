@@ -59,7 +59,7 @@ const CARDS: TmCardDef[] = [
   { num: "02", title: "Scoring Model",       desc: "Alert tiers, dimensions and risk scoring logic",       value: "4",  unit: "Tiers",     accent: "#39B9ED", illust: "scoring",    tab: "scoring" },
   { num: "03", title: "Workflow",            desc: "End-to-end workflow from alert to closure",            value: "7",  unit: "Steps",     accent: "#7C6CF7", illust: "workflow",   tab: "workflow" },
   { num: "04", title: "Alerts & Cases",      desc: "SLA, ownership, queues and case management",           value: "7",  unit: "Stages",    accent: "#F6A623", illust: "cases",      tab: "cases" },
-  { num: "05", title: "TM Rule Library",     desc: "Oscilar rules — transfers & cards (with logic)",       value: "70", unit: "Rules",     accent: "#2FD8A6", illust: "monitoring", tab: "monitoring" },
+  { num: "05", title: "TM Rule Library",     desc: "Oscilar rules — transfers & cards (with logic)",       value: "76", unit: "Rules",     accent: "#2FD8A6", illust: "monitoring", tab: "monitoring" },
   { num: "06", title: "Purpose Codes",       desc: "Accept, condition, eliminate — PDF guide",             value: "80", unit: "Codes",     accent: "#E8B84B", illust: "purpose",    tab: "purpose", sub: "overview" },
   // Row 2
   { num: "07", title: "Pre-Impl Readiness",  desc: "BRD gates · alert & screening rules readiness",        value: "7",  unit: "Gates",     accent: "#39B9ED", illust: "readiness",  tab: "readiness" },

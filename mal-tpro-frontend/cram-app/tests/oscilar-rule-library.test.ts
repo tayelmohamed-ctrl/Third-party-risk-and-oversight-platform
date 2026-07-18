@@ -7,7 +7,7 @@ import { SCREENING_AUTHORITY } from "../src/config/partnerIntegration";
 
 describe("Oscilar TM rule library", () => {
   it("loads rules from redline-aligned library", () => {
-    expect(ruleLibrary.rules.length).toBe(70);
+    expect(ruleLibrary.rules.length).toBe(76);
     expect(ruleLibrary.version).toBeTruthy();
   });
 

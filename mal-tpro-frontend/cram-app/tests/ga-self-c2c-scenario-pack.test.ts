@@ -46,7 +46,7 @@ describe("GA Self-Transfer & C2C scenario-pack alignment", () => {
       expect(OSCILAR_RULE_CATEGORIES).toContain(r!.category as (typeof OSCILAR_RULE_CATEGORIES)[number]);
       expect(["critical", "high", "medium", "low"]).toContain(r!.severity);
     }
-    expect(rules.length).toBe(70);
+    expect(rules.length).toBe(76);
   });
 
   it("adds the Mal2Mal (on-us) TM rules OS-TM-065..070 with valid category & severity", () => {

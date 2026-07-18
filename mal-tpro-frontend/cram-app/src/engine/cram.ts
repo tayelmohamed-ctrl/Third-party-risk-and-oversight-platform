@@ -441,6 +441,11 @@ export function scoreCustomer(raw: ScoreInput, boundary: Boundary = "calculator"
     const bizText = [i.declaredActivity, i.declaredEntityType].filter(Boolean).join(" · ");
     if (isZenusProhibitedBusiness(bizText))
       overrides.push({ id: "OVR-002", cls: "PROHIBITED", why: `Zenus-prohibited business type (US §6.4): ${bizText.slice(0, 80)}` });
+    // NOTE: The Rain Prohibitions List (2026-04-27) is a CARD + VIRTUAL-ACCOUNT product-eligibility layer,
+    // NOT a customer CRAM rating driver. A resident of a Rain-prohibited country (e.g. Turkey) can still
+    // hold a USD account and transfer/payout — they simply cannot be issued a Rain card or a virtual
+    // account. That gate lives in dataQualityGate.ts (product-scoped), not here — so the customer's
+    // financial-crime rating is unaffected and transfers remain available.
     // OVR-003 — sanctioned-wallet exposure → HIGH floor (CRAM §5.6/§7.3.3). Any direct/tagged or
     // mixer-routed exposure, or an indirect low-severity cluster reached ≥10% within ≤5 hops. A
     // confirmed direct SDN/terrorism true-match is a Prohibited sanctions hit (OVR-001), not here.

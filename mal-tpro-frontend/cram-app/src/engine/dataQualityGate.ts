@@ -20,6 +20,7 @@ import {
   MASTER_REGISTRY_VERSION,
 } from "../registries/master/registryService";
 import { CARD_ISSUER, isCardProduct, isRainCardMarket } from "../config/rainCardMarkets";
+import { isRainProhibitedResidence, isRainVirtualAccountProduct } from "../config/rainProhibitions";
 import type {
   AdverseResult, Band, Boundary, CustomerLegalForm, PepStatus,
   Score, ScoreInput, ScoreResult, ScreenResult, UboVerificationStatus,
@@ -350,6 +351,25 @@ export function validateDataQuality(
     req("uboCountry", capture.uboCountry, "UBO country");
     req("sowCountry", capture.sowCountry, "Source-of-wealth country");
     req("sofCountry", capture.sofCountry, "Source-of-funds country");
+  }
+
+  // Rain Prohibitions List (2026-04-27) — CARD + VIRTUAL-ACCOUNT product eligibility (Global Account /
+  // US only, individuals & entities). The card (§I.A) and virtual account (§III.A) cannot be issued to
+  // a resident/registrant of a Rain-prohibited country. This is product-scoped: the USD account +
+  // payout/transfers remain available, and the customer's CRAM rating is unaffected — only the Rain
+  // card / virtual account is withheld. Covers 6 residences beyond the Zenus floors (China, India,
+  // Israel, Nepal, Turkey, Vietnam).
+  if (perimeter === "global_account" && (isCardProduct(capture.product) || isRainVirtualAccountProduct(capture.product))) {
+    const resGeo = capture.mode === "entity" ? (capture.opcoCountry ?? capture.residenceCountry) : capture.residenceCountry;
+    if (!isBlank(resGeo) && isRainProhibitedResidence(resGeo)) {
+      const kind = isCardProduct(capture.product) ? "card" : "virtual account";
+      issues.push({
+        code: "RAIN_PRODUCT_PROHIBITED",
+        field: "product",
+        message: `${CARD_ISSUER} ${kind} unavailable — residence/registration (${resGeo}) is on the Rain Prohibitions List §I.A/§III.A (2026-04-27). USD account + payout/transfers remain available.`,
+        severity: "blocking",
+      });
+    }
   }
 
   // Rain card launch-market eligibility (Global Account / US only). The USD card is issued by Rain
